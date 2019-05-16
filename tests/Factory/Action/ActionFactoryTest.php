@@ -4,6 +4,7 @@
 namespace webignition\BasilParser\Tests\Factory\Action;
 
 use webignition\BasilParser\Factory\Action\ActionFactory;
+use webignition\BasilParser\Factory\Action\ActionOnlyActionFactory;
 use webignition\BasilParser\Factory\Action\InteractionActionFactory;
 use webignition\BasilParser\Factory\Action\WaitActionFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -26,10 +27,12 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $interactionActionFactory = new InteractionActionFactory();
         $waitActionFactory = new WaitActionFactory();
+        $actionOnlyActionFactory = new ActionOnlyActionFactory();
 
         $this->actionFactory = new ActionFactory([
             $interactionActionFactory,
             $waitActionFactory,
+            $actionOnlyActionFactory,
         ]);
     }
 
@@ -229,6 +232,37 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'action' => 'wait $data.name',
                 'expectedVerb' => ActionTypes::WAIT,
                 'expectedDuration' => '$data.name',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createFromActionStringForValidWaitActionDataProvider
+     */
+    public function testCreateFromActionStringForValidActionOnlyAction(
+        string $action,
+        string $expectedVerb
+    ) {
+        $action = $this->actionFactory->createFromActionString($action);
+
+        $this->assertInstanceOf(WaitAction::class, $action);
+        $this->assertSame($expectedVerb, $action->getVerb());
+    }
+
+    public function createFromActionStringForValidActionOnlyActionDataProvider(): array
+    {
+        return [
+            'reload' => [
+                'action' => 'reload',
+                'expectedVerb' => ActionTypes::RELOAD,
+            ],
+            'back' => [
+                'action' => 'back',
+                'expectedVerb' => ActionTypes::BACK,
+            ],
+            'forward' => [
+                'action' => 'forward',
+                'expectedVerb' => ActionTypes::FORWARD,
             ],
         ];
     }
