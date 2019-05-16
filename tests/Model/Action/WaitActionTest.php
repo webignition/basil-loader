@@ -9,11 +9,11 @@ class WaitActionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $numberOfSeconds = 10;
+        $duration = '10';
 
-        $action = new WaitAction($numberOfSeconds);
+        $action = new WaitAction($duration);
 
         $this->assertSame(ActionTypes::WAIT, $action->getVerb());
-        $this->assertSame($numberOfSeconds, $action->getNumberOfSeconds());
+        $this->assertSame($duration, $action->getDuration());
     }
 }

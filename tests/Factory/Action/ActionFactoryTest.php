@@ -5,8 +5,10 @@ namespace webignition\BasilParser\Tests\Factory\Action;
 
 use webignition\BasilParser\Factory\Action\ActionFactory;
 use webignition\BasilParser\Factory\Action\InteractionActionFactory;
+use webignition\BasilParser\Factory\Action\WaitActionFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
+use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
@@ -22,10 +24,12 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $interactionActionParser = new InteractionActionFactory();
+        $interactionActionFactory = new InteractionActionFactory();
+        $waitActionFactory = new WaitActionFactory();
 
         $this->actionFactory = new ActionFactory([
-            $interactionActionParser,
+            $interactionActionFactory,
+            $waitActionFactory,
         ]);
     }
 
@@ -186,6 +190,45 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     IdentifierTypes::ELEMENT_PARAMETER,
                     '$elements.name'
                 ),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createFromActionStringForValidWaitActionDataProvider
+     */
+    public function testCreateFromActionStringForValidWaitAction(
+        string $action,
+        string $expectedVerb,
+        string $expectedDuration
+    ) {
+        $action = $this->actionFactory->createFromActionString($action);
+
+        $this->assertInstanceOf(WaitAction::class, $action);
+        $this->assertSame($expectedVerb, $action->getVerb());
+
+        if ($action instanceof WaitAction) {
+            $this->assertSame($expectedDuration, $action->getDuration());
+        }
+    }
+
+    public function createFromActionStringForValidWaitActionDataProvider(): array
+    {
+        return [
+            'wait 1' => [
+                'action' => 'wait 1',
+                'expectedVerb' => ActionTypes::WAIT,
+                'expectedDuration' => '1',
+            ],
+            'wait 15' => [
+                'action' => 'wait 15',
+                'expectedVerb' => ActionTypes::WAIT,
+                'expectedDuration' => '15',
+            ],
+            'wait $data.name' => [
+                'action' => 'wait $data.name',
+                'expectedVerb' => ActionTypes::WAIT,
+                'expectedDuration' => '$data.name',
             ],
         ];
     }

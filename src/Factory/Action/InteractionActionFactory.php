@@ -7,14 +7,8 @@ use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 
-class InteractionActionFactory implements ActionFactoryInterface
+class InteractionActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
-    private $handledTypes = [
-        ActionTypes::CLICK,
-        ActionTypes::SUBMIT,
-        ActionTypes::WAIT_FOR,
-    ];
-
     private $identifierFactory;
 
     public function __construct(?IdentifierFactory $identifierFactory = null)
@@ -24,24 +18,17 @@ class InteractionActionFactory implements ActionFactoryInterface
         $this->identifierFactory = $identifierFactory;
     }
 
-    public function handles(string $type): bool
+    protected function getHandledActionTypes(): array
     {
-        return in_array($type, $this->handledTypes);
+        return [
+            ActionTypes::CLICK,
+            ActionTypes::SUBMIT,
+            ActionTypes::WAIT_FOR,
+        ];
     }
 
-    public function createFromActionString(string $actionString): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        list($type, $arguments) = explode(' ', $actionString, 2);
-
-        return $this->createFromTypeAndArguments($type, $arguments);
-    }
-
-    public function createFromTypeAndArguments(string $type, string $arguments): ActionInterface
-    {
-        if (!$this->handles($type)) {
-            throw new \RuntimeException('Invalid action type');
-        }
-
         return new InteractionAction(
             $type,
             $this->identifierFactory->create($arguments)

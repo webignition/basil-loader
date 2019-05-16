@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 
-class ActionFactory implements ActionFactoryInterface
+class ActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
     /**
      * @var ActionFactoryInterface[]
@@ -21,9 +21,9 @@ class ActionFactory implements ActionFactoryInterface
         }
     }
 
-    public function handles(string $type): bool
+    protected function getHandledActionTypes(): array
     {
-        return in_array($type, ActionTypes::ALL);
+        return ActionTypes::ALL;
     }
 
     public function createFromActionString(string $actionString): ActionInterface
@@ -39,7 +39,7 @@ class ActionFactory implements ActionFactoryInterface
         return $typeParser->createFromTypeAndArguments($type, $arguments);
     }
 
-    public function createFromTypeAndArguments(string $type, string $arguments): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
         $typeParser = $this->findTypeParser($type);
 
