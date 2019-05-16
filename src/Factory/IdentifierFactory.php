@@ -49,7 +49,7 @@ class IdentifierFactory
         if (empty($positionMatches)) {
             $quotedValue = $identifier;
         } else {
-            $quotedValue = preg_replace(self::POSITION_REGEX, '', $identifier);
+            $quotedValue = (string) preg_replace(self::POSITION_REGEX, '', $identifier);
 
             $positionMatch = $positionMatches[0];
             $positionString = ltrim($positionMatch, ':');
