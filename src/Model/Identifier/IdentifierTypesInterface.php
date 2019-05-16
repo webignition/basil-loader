@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Model\Identifier;
 
-interface TypesInterface
+interface IdentifierTypesInterface
 {
     const SELECTOR = 'selector';
     const PAGE_MODEL_ELEMENT_REFERENCE = 'page-model-element-reference';

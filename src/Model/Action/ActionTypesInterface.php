@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Model\Action;
 
-interface TypesInterface
+interface ActionTypesInterface
 {
     const CLICK = 'click';
     const SET = 'set';

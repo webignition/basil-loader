@@ -3,13 +3,13 @@
 namespace webignition\BasilParser\Tests\Model\Identifier;
 
 use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\TypesInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierTypesInterface;
 
 class IdentifierTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $type = TypesInterface::SELECTOR;
+        $type = IdentifierTypesInterface::SELECTOR;
         $value = '.foo';
 
         $identifier = new Identifier($type, $value);

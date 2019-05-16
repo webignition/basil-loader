@@ -2,15 +2,17 @@
 
 namespace webignition\BasilParser\Tests\Model\Action;
 
-use webignition\BasilParser\Model\Action\TypesInterface;
+use webignition\BasilParser\Model\Action\ActionTypesInterface;
 use webignition\BasilParser\Model\Action\InteractionAction;
+use webignition\BasilParser\Model\Identifier\Identifier;
+use webignition\BasilParser\Model\Identifier\IdentifierTypesInterface;
 
 class InteractionActionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $verb = TypesInterface::CLICK;
-        $identifier = '.class';
+        $verb = ActionTypesInterface::CLICK;
+        $identifier = new Identifier(IdentifierTypesInterface::SELECTOR, '.foo');
 
         $action = new InteractionAction($verb, $identifier);
 
