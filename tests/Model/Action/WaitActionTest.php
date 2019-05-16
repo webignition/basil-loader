@@ -1,9 +1,9 @@
 <?php
 
-namespace webignition\BasilParser\Tests\Model;
+namespace webignition\BasilParser\Tests\Model\Action;
 
-use webignition\BasilParser\Model\ActionTypesInterface;
-use webignition\BasilParser\Model\WaitAction;
+use webignition\BasilParser\Model\Action\ActionTypesInterface;
+use webignition\BasilParser\Model\Action\WaitAction;
 
 class WaitActionTest extends \PHPUnit\Framework\TestCase
 {
