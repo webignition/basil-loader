@@ -8,5 +8,5 @@ interface AssertionInterface
 {
     public function getIdentifier(): IdentifierInterface;
     public function getComparison(): string;
-    public function getValue(): ?string;
+    public function getValue(): ?AssertionValueInterface;
 }
