@@ -4,5 +4,5 @@ namespace webignition\BasilParser\Model\Action;
 
 interface WaitActionInterface
 {
-    public function getNumberOfSeconds(): int;
+    public function getDuration(): string;
 }

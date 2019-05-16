@@ -4,7 +4,7 @@
 namespace webignition\BasilParser\Tests\Model\Identifier;
 
 use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypesInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 
 class IdentifierTest extends \PHPUnit\Framework\TestCase
 {
@@ -24,12 +24,12 @@ class IdentifierTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no explicit position' => [
-                'type' => IdentifierTypesInterface::CSS_SELECTOR,
+                'type' => IdentifierTypes::CSS_SELECTOR,
                 'value' => '.foo',
                 'expectedPosition' => Identifier::DEFAULT_POSITION,
             ],
             'has explicit position' => [
-                'type' => IdentifierTypesInterface::CSS_SELECTOR,
+                'type' => IdentifierTypes::CSS_SELECTOR,
                 'value' => '.foo',
                 'expectedPosition' => 3,
                 'position' => 3,

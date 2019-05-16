@@ -4,17 +4,17 @@ namespace webignition\BasilParser\Model\Action;
 
 class WaitAction extends Action implements ActionInterface, WaitActionInterface
 {
-    private $numberOfSeconds = 0;
+    private $duration;
 
-    public function __construct(int $numberOfSeconds)
+    public function __construct(string $duration)
     {
-        parent::__construct(ActionTypesInterface::WAIT);
+        parent::__construct(ActionTypes::WAIT);
 
-        $this->numberOfSeconds = $numberOfSeconds;
+        $this->duration = $duration;
     }
 
-    public function getNumberOfSeconds(): int
+    public function getDuration(): string
     {
-        return $this->numberOfSeconds;
+        return $this->duration;
     }
 }

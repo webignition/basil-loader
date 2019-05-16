@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Factory;
 
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
-use webignition\BasilParser\Model\Identifier\IdentifierTypesInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 
 class IdentifierFactory
 {
@@ -22,20 +22,20 @@ class IdentifierFactory
         if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifier)) {
             list($value, $position) = $this->extractValueAndPosition($identifier);
 
-            return new Identifier(IdentifierTypesInterface::CSS_SELECTOR, $value, $position);
+            return new Identifier(IdentifierTypes::CSS_SELECTOR, $value, $position);
         }
 
         if (1 === preg_match(self::XPATH_EXPRESSION_REGEX, $identifier)) {
             list($value, $position) = $this->extractValueAndPosition($identifier);
 
-            return new Identifier(IdentifierTypesInterface::XPATH_EXPRESSION, $value, $position);
+            return new Identifier(IdentifierTypes::XPATH_EXPRESSION, $value, $position);
         }
 
         if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifier)) {
-            return new Identifier(IdentifierTypesInterface::ELEMENT_PARAMETER, $identifier, 1);
+            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifier, 1);
         }
 
-        return new Identifier(IdentifierTypesInterface::PAGE_MODEL_ELEMENT_REFERENCE, $identifier, 1);
+        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifier, 1);
     }
 
     private function extractValueAndPosition(string $identifier)

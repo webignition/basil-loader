@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Model\Identifier;
 
-interface IdentifierTypesInterface
+class IdentifierTypes
 {
     const CSS_SELECTOR = 'css-selector';
     const XPATH_EXPRESSION = 'xpath-expression';
