@@ -30,9 +30,9 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromClickActionStringForValidInteractionActionDataProvider
-     * @dataProvider createFromSubmitActionStringForValidInteractionActionDataProvider
-     * @dataProvider createFromWaitForActionStringForValidInteractionActionDataProvider
+     * @dataProvider createFromActionStringForValidClickActionDataProvider
+     * @dataProvider createFromActionStringForValidSubmitActionDataProvider
+     * @dataProvider createFromActionStringForValidWaitForActionDataProvider
      */
     public function testCreateFromActionStringForValidInteractionAction(
         string $action,
@@ -49,7 +49,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function createFromClickActionStringForValidInteractionActionDataProvider(): array
+    public function createFromActionStringForValidClickActionDataProvider(): array
     {
         return [
             'click css selector with null position double-quoted' => [
@@ -93,50 +93,10 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     '$elements.name'
                 ),
             ],
-//            'submit css selector double-quoted' => [
-//                'action' => 'submit ".sign-in-form .submit-button"',
-//                'expectedVerb' => ActionTypes::SUBMIT,
-//                'expectedIdentifier' => '.sign-in-form .submit-button',
-//            ],
-//            'submit css selector unquoted' => [
-//                'action' => 'submit .sign-in-form .submit-button',
-//                'expectedVerb' => ActionTypes::SUBMIT,
-//                'expectedIdentifier' => '.sign-in-form .submit-button',
-//            ],
-//            'submit page model reference' => [
-//                'action' => 'submit imported_page_model.elements.element_name',
-//                'expectedVerb' => ActionTypes::SUBMIT,
-//                'expectedIdentifier' => 'imported_page_model.elements.element_name',
-//            ],
-//            'submit element parameter reference' => [
-//                'action' => 'submit $elements.name',
-//                'expectedVerb' => ActionTypes::SUBMIT,
-//                'expectedIdentifier' => '$elements.name',
-//            ],
-//            'wait-for css selector double-quoted' => [
-//                'action' => 'wait-for ".sign-in-form .submit-button"',
-//                'expectedVerb' => ActionTypes::WAIT_FOR,
-//                'expectedIdentifier' => '.sign-in-form .submit-button',
-//            ],
-//            'wait-for css selector unquoted' => [
-//                'action' => 'wait-for .sign-in-form .submit-button',
-//                'expectedVerb' => ActionTypes::WAIT_FOR,
-//                'expectedIdentifier' => '.sign-in-form .submit-button',
-//            ],
-//            'wait-for page model reference' => [
-//                'action' => 'wait-for imported_page_model.elements.element_name',
-//                'expectedVerb' => ActionTypes::WAIT_FOR,
-//                'expectedIdentifier' => 'imported_page_model.elements.element_name',
-//            ],
-//            'wait-for element parameter reference' => [
-//                'action' => 'wait-for $elements.name',
-//                'expectedVerb' => ActionTypes::WAIT_FOR,
-//                'expectedIdentifier' => '$elements.name',
-//            ],
         ];
     }
 
-    public function createFromSubmitActionStringForValidInteractionActionDataProvider(): array
+    public function createFromActionStringForValidSubmitActionDataProvider(): array
     {
         return [
             'submit css selector with null position double-quoted' => [
@@ -183,7 +143,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromWaitForActionStringForValidInteractionActionDataProvider(): array
+    public function createFromActionStringForValidWaitForActionDataProvider(): array
     {
         return [
             'wait-for css selector with null position double-quoted' => [
