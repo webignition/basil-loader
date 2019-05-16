@@ -6,4 +6,5 @@ interface IdentifierInterface
 {
     public function getType(): string;
     public function getValue(): string;
+    public function getPosition(): int;
 }
