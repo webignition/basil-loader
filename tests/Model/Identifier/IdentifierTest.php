@@ -24,12 +24,12 @@ class IdentifierTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no explicit position' => [
-                'type' => IdentifierTypesInterface::SELECTOR,
+                'type' => IdentifierTypesInterface::CSS_SELECTOR,
                 'value' => '.foo',
                 'expectedPosition' => Identifier::DEFAULT_POSITION,
             ],
             'has explicit position' => [
-                'type' => IdentifierTypesInterface::SELECTOR,
+                'type' => IdentifierTypesInterface::CSS_SELECTOR,
                 'value' => '.foo',
                 'expectedPosition' => 3,
                 'position' => 3,

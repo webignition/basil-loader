@@ -11,7 +11,7 @@ class InputActionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $identifier = new Identifier(IdentifierTypesInterface::SELECTOR, '.foo');
+        $identifier = new Identifier(IdentifierTypesInterface::CSS_SELECTOR, '.foo');
         $value = 'foo';
 
         $action = new InputAction($identifier, $value);

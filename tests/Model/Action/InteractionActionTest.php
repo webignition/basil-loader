@@ -12,7 +12,7 @@ class InteractionActionTest extends \PHPUnit\Framework\TestCase
     public function testCreate()
     {
         $verb = ActionTypesInterface::CLICK;
-        $identifier = new Identifier(IdentifierTypesInterface::SELECTOR, '.foo');
+        $identifier = new Identifier(IdentifierTypesInterface::CSS_SELECTOR, '.foo');
 
         $action = new InteractionAction($verb, $identifier);
 
