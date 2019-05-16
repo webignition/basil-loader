@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
+use webignition\BasilParser\Model\Action\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 
@@ -26,31 +27,16 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
         return ActionTypes::ALL;
     }
 
-    public function createFromActionString(string $actionString): ActionInterface
-    {
-        list($type, $arguments) = explode(' ', $actionString, 2);
-
-        $typeParser = $this->findTypeParser($type);
-
-        if (!$typeParser instanceof ActionFactoryInterface) {
-            throw new \RuntimeException('Invalid action type');
-        }
-
-        return $typeParser->createFromTypeAndArguments($type, $arguments);
-    }
-
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        $typeParser = $this->findTypeParser($type);
+        $typeSpecificActionFactory = $this->findTypeSpecificActionFactory($type);
 
-        if (!$typeParser instanceof ActionFactoryInterface) {
-            throw new \RuntimeException('Invalid action type');
-        }
-
-        return $typeParser->createFromTypeAndArguments($type, $arguments);
+        return $typeSpecificActionFactory instanceof ActionFactoryInterface
+            ? $typeSpecificActionFactory->createFromTypeAndArguments($type, $arguments)
+            : new Action($type);
     }
 
-    private function findTypeParser(string $type): ?ActionFactoryInterface
+    private function findTypeSpecificActionFactory(string $type): ?ActionFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {
