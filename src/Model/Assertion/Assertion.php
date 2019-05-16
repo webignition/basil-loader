@@ -10,7 +10,7 @@ class Assertion implements AssertionInterface
     private $comparison;
     private $value;
 
-    public function __construct(IdentifierInterface $identifier, string $comparison, ?string $value)
+    public function __construct(IdentifierInterface $identifier, string $comparison, ?AssertionValueInterface $value)
     {
         $this->identifier = $identifier;
         $this->comparison = $comparison;
@@ -27,7 +27,7 @@ class Assertion implements AssertionInterface
         return $this->comparison;
     }
 
-    public function getValue(): ?string
+    public function getValue(): ?AssertionValueInterface
     {
         return $this->value;
     }
