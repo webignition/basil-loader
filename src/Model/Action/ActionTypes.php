@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Model\Action;
 
-interface ActionTypesInterface
+class ActionTypes
 {
     const CLICK = 'click';
     const SET = 'set';
@@ -12,4 +12,15 @@ interface ActionTypesInterface
     const BACK = 'back';
     const FORWARD = 'forward';
     const RELOAD = 'reload';
+
+    const ALL = [
+        self::CLICK,
+        self::SET,
+        self::SUBMIT,
+        self::WAIT,
+        self::WAIT_FOR,
+        self::BACK,
+        self::FORWARD,
+        self::RELOAD
+    ];
 }

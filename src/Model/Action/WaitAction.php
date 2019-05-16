@@ -8,7 +8,7 @@ class WaitAction extends Action implements ActionInterface, WaitActionInterface
 
     public function __construct(int $numberOfSeconds)
     {
-        parent::__construct(ActionTypesInterface::WAIT);
+        parent::__construct(ActionTypes::WAIT);
 
         $this->numberOfSeconds = $numberOfSeconds;
     }
