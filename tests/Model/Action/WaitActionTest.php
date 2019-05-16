@@ -1,9 +1,9 @@
 <?php
 
-namespace webignition\BasilParser\Tests\Model;
+namespace webignition\BasilParser\Tests\Model\Action;
 
-use webignition\BasilParser\Model\ActionTypesInterface;
-use webignition\BasilParser\Model\WaitAction;
+use webignition\BasilParser\Model\Action\TypesInterface;
+use webignition\BasilParser\Model\Action\WaitAction;
 
 class WaitActionTest extends \PHPUnit\Framework\TestCase
 {
@@ -13,7 +13,7 @@ class WaitActionTest extends \PHPUnit\Framework\TestCase
 
         $action = new WaitAction($numberOfSeconds);
 
-        $this->assertSame(ActionTypesInterface::WAIT, $action->getVerb());
+        $this->assertSame(TypesInterface::WAIT, $action->getVerb());
         $this->assertSame($numberOfSeconds, $action->getNumberOfSeconds());
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Model;
+namespace webignition\BasilParser\Model\Action;
 
 class InputAction extends InteractionAction implements ActionInterface, InteractionActionInterface, InputActionInterface
 {
@@ -8,7 +8,7 @@ class InputAction extends InteractionAction implements ActionInterface, Interact
 
     public function __construct(string $identifier, string $value)
     {
-        parent::__construct(ActionTypesInterface::SET, $identifier);
+        parent::__construct(TypesInterface::SET, $identifier);
 
         $this->value = $value;
     }

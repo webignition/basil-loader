@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Model;
+namespace webignition\BasilParser\Model\Action;
 
 class WaitAction extends Action implements ActionInterface, WaitActionInterface
 {
@@ -8,7 +8,7 @@ class WaitAction extends Action implements ActionInterface, WaitActionInterface
 
     public function __construct(int $numberOfSeconds)
     {
-        parent::__construct(ActionTypesInterface::WAIT);
+        parent::__construct(TypesInterface::WAIT);
 
         $this->numberOfSeconds = $numberOfSeconds;
     }

@@ -1,8 +1,8 @@
 <?php
 
-namespace webignition\BasilParser\Model;
+namespace webignition\BasilParser\Model\Action;
 
-interface ActionTypesInterface
+interface TypesInterface
 {
     const CLICK = 'click';
     const SET = 'set';

@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Model;
+namespace webignition\BasilParser\Model\Action;
 
 class InteractionAction extends Action implements ActionInterface, InteractionActionInterface
 {

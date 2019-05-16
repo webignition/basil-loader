@@ -1,9 +1,9 @@
 <?php
 
-namespace webignition\BasilParser\Tests\Model;
+namespace webignition\BasilParser\Tests\Model\Action;
 
-use webignition\BasilParser\Model\ActionTypesInterface;
-use webignition\BasilParser\Model\InputAction;
+use webignition\BasilParser\Model\Action\TypesInterface;
+use webignition\BasilParser\Model\Action\InputAction;
 
 class InputActionTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,7 +14,7 @@ class InputActionTest extends \PHPUnit\Framework\TestCase
 
         $action = new InputAction($identifier, $value);
 
-        $this->assertSame(ActionTypesInterface::SET, $action->getVerb());
+        $this->assertSame(TypesInterface::SET, $action->getVerb());
         $this->assertSame($identifier, $action->getIdentifier());
         $this->assertSame($value, $action->getValue());
     }
