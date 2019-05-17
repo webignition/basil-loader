@@ -22,6 +22,6 @@ class UnrecognisedActionFactory implements ActionFactoryInterface
 
     public function createFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        return new UnrecognisedAction($type);
+        return new UnrecognisedAction($type, $arguments);
     }
 }

@@ -19,6 +19,6 @@ class NoArgumentsActionFactory extends AbstractActionFactory implements ActionFa
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        return new NoArgumentsAction($type);
+        return new NoArgumentsAction($type, $arguments);
     }
 }

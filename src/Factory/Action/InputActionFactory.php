@@ -44,6 +44,6 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         $identifier = $this->identifierFactory->create($identifierString);
         $value = $this->valueFactory->createFromValueString($valueString);
 
-        return new InputAction($identifier, $value);
+        return new InputAction($identifier, $value, $arguments);
     }
 }

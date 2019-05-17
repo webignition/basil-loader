@@ -9,9 +9,9 @@ class InputAction extends InteractionAction implements ActionInterface, Interact
 {
     private $value;
 
-    public function __construct(IdentifierInterface $identifier, ValueInterface $value)
+    public function __construct(IdentifierInterface $identifier, ValueInterface $value, string $arguments)
     {
-        parent::__construct(ActionTypes::SET, $identifier);
+        parent::__construct(ActionTypes::SET, $identifier, $arguments);
 
         $this->value = $value;
     }

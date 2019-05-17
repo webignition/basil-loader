@@ -4,8 +4,8 @@ namespace webignition\BasilParser\Model\Action;
 
 class UnrecognisedAction extends AbstractAction
 {
-    public function __construct(string $type)
+    public function __construct(string $type, string $arguments)
     {
-        parent::__construct($type, false);
+        parent::__construct($type, $arguments, false);
     }
 }

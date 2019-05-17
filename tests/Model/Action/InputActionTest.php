@@ -16,9 +16,10 @@ class InputActionTest extends \PHPUnit\Framework\TestCase
         $identifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.foo');
         $value = new Value(ValueTypes::STRING, 'foo');
 
-        $action = new InputAction($identifier, $value);
+        $action = new InputAction($identifier, $value, '".foo" to "foo"');
 
         $this->assertSame(ActionTypes::SET, $action->getType());
+        $this->assertSame('".foo" to "foo"', $action->getArguments());
         $this->assertSame($identifier, $action->getIdentifier());
         $this->assertSame($value, $action->getValue());
         $this->assertTrue($action->isRecognised());
