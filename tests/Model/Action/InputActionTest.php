@@ -21,5 +21,6 @@ class InputActionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(ActionTypes::SET, $action->getType());
         $this->assertSame($identifier, $action->getIdentifier());
         $this->assertSame($value, $action->getValue());
+        $this->assertTrue($action->isRecognised());
     }
 }

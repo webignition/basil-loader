@@ -12,6 +12,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InputActionInterface;
 use webignition\BasilParser\Model\Action\InteractionAction;
+use webignition\BasilParser\Model\Action\UnrecognisedAction;
 use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
@@ -58,6 +59,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(InteractionAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof InteractionAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());
@@ -217,6 +219,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(WaitAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof WaitAction) {
             $this->assertSame($expectedDuration, $action->getDuration());
@@ -253,6 +256,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(WaitAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
     }
 
     public function createFromActionStringForValidActionOnlyActionDataProvider(): array
@@ -285,6 +289,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(InputActionInterface::class, $action);
         $this->assertEquals(ActionTypes::SET, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof InputAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());
@@ -373,5 +378,16 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
+    }
+
+    public function testCreateFromActionStringForUnrecognisedAction()
+    {
+        $actionString = 'foo ".selector" to "value';
+
+        $action = $this->actionFactory->createFromActionString($actionString);
+
+        $this->assertInstanceOf(UnrecognisedAction::class, $action);
+        $this->assertSame('foo', $action->getType());
+        $this->assertFalse($action->isRecognised());
     }
 }

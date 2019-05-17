@@ -18,5 +18,6 @@ class InteractionActionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($type, $action->getType());
         $this->assertSame($identifier, $action->getIdentifier());
+        $this->assertTrue($action->isRecognised());
     }
 }
