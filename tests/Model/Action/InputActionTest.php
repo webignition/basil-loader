@@ -6,13 +6,15 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\Value\Value;
+use webignition\BasilParser\Model\Value\ValueTypes;
 
 class InputActionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
         $identifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.foo');
-        $value = 'foo';
+        $value = new Value(ValueTypes::STRING, 'foo');
 
         $action = new InputAction($identifier, $value);
 
