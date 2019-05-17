@@ -1,0 +1,200 @@
+<?php
+/** @noinspection PhpDocSignatureInspection */
+
+namespace webignition\BasilParser\Tests\Factory\Assertion;
+
+use webignition\BasilParser\Factory\Assertion\AssertionFactory;
+use webignition\BasilParser\Model\Assertion\AssertionComparisons;
+use webignition\BasilParser\Model\Assertion\AssertionInterface;
+use webignition\BasilParser\Model\Assertion\AssertionValue;
+use webignition\BasilParser\Model\Assertion\AssertionValueInterface;
+use webignition\BasilParser\Model\Assertion\AssertionValueTypes;
+use webignition\BasilParser\Model\Identifier\Identifier;
+use webignition\BasilParser\Model\Identifier\IdentifierInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+
+class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * @var AssertionFactory
+     */
+    private $assertionFactory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->assertionFactory = new AssertionFactory();
+    }
+
+    /**
+     * @dataProvider createFromAssertionStringForValidAssertionDataProvider
+     */
+    public function testCreateFromAssertionStringForValidAssertion(
+        string $assertionString,
+        IdentifierInterface $expectedIdentifier,
+        string $expectedComparison,
+        ?AssertionValueInterface $expectedValue
+    ) {
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
+
+        $this->assertInstanceOf(AssertionInterface::class, $assertion);
+        $this->assertEquals($expectedIdentifier, $assertion->getIdentifier());
+        $this->assertSame($expectedComparison, $assertion->getComparison());
+        $this->assertEquals($expectedValue, $assertion->getValue());
+    }
+
+    public function createFromAssertionStringForValidAssertionDataProvider(): array
+    {
+        return [
+            'simple css selector, is, scalar value' => [
+                'assertionString' => '".selector" is "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple css selector, is, data parameter value' => [
+                'assertionString' => '".selector" is $data.name',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::DATA_PARAMETER,
+                    '$data.name'
+                ),
+            ],
+            'simple css selector, is, escaped quotes scalar value' => [
+                'assertionString' => '".selector" is "\"value\""',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    '"value"'
+                ),
+            ],
+            'simple css selector, is-not, scalar value' => [
+                'assertionString' => '".selector" is-not "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS_NOT,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple css selector, exists, no value' => [
+                'assertionString' => '".selector" exists',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::EXISTS,
+                'expectedValue' => null,
+            ],
+            'simple css selector, exists, scalar value is ignored' => [
+                'assertionString' => '".selector" exists "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::EXISTS,
+                'expectedValue' => null,
+            ],
+            'simple css selector, exists, data parameter value is ignored' => [
+                'assertionString' => '".selector" exists $data.name"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::EXISTS,
+                'expectedValue' => null,
+            ],
+            'simple css selector, includes, scalar value' => [
+                'assertionString' => '".selector" includes "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::INCLUDES,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple css selector, excludes, scalar value' => [
+                'assertionString' => '".selector" excludes "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::EXCLUDES,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple css selector, matches, scalar value' => [
+                'assertionString' => '".selector" matches "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::MATCHES,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'comparison-including css selector, is, scalar value' => [
+                'assertionString' => '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector is is-not exists not-exists includes excludes matches foo'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple xpath expression, is, scalar value' => [
+                'assertionString' => '"//foo" is "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    '//foo'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'comparison-including non-simple xpath expression, is, scalar value' => [
+                'assertionString' =>
+                    '"//a[ends-with(@href is exists not-exists matches includes excludes, ".pdf")]" is "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    '//a[ends-with(@href is exists not-exists matches includes excludes, ".pdf")]'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new AssertionValue(
+                    AssertionValueTypes::STRING,
+                    'value'
+                ),
+            ],
+        ];
+    }
+}

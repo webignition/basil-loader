@@ -10,8 +10,11 @@ class Assertion implements AssertionInterface
     private $comparison;
     private $value;
 
-    public function __construct(IdentifierInterface $identifier, string $comparison, ?AssertionValueInterface $value)
-    {
+    public function __construct(
+        IdentifierInterface $identifier,
+        string $comparison,
+        ?AssertionValueInterface $value = null
+    ) {
         $this->identifier = $identifier;
         $this->comparison = $comparison;
         $this->value = $value;
