@@ -20,7 +20,14 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
 
     public function createFromActionString(string $actionString): ActionInterface
     {
-        list($type, $arguments) = explode(' ', $actionString, 2);
+        $actionString = trim($actionString);
+
+        $type = $actionString;
+        $arguments = '';
+
+        if (mb_substr_count($actionString, ' ') > 0) {
+            list($type, $arguments) = explode(' ', $actionString, 2);
+        }
 
         return $this->createFromTypeAndArguments($type, $arguments);
     }

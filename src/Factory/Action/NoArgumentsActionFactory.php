@@ -2,11 +2,11 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
-use webignition\BasilParser\Model\Action\Action;
+use webignition\BasilParser\Model\Action\NoArgumentsAction;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 
-class ActionOnlyActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class NoArgumentsActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
     protected function getHandledActionTypes(): array
     {
@@ -19,6 +19,6 @@ class ActionOnlyActionFactory extends AbstractActionFactory implements ActionFac
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        return new Action($type);
+        return new NoArgumentsAction($type);
     }
 }
