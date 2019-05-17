@@ -1,9 +1,9 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Factory\Assertion;
+namespace webignition\BasilParser\Tests\Factory;
 
-use webignition\BasilParser\Factory\Assertion\AssertionFactory;
+use webignition\BasilParser\Factory\AssertionFactory;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\Model\Value\Value;

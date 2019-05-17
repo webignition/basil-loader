@@ -1,9 +1,7 @@
 <?php
 
-namespace webignition\BasilParser\Factory\Assertion;
+namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
