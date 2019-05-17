@@ -71,6 +71,18 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '$data.name'
                 ),
             ],
+            'simple css selector, is, element parameter value' => [
+                'actionString' => '".selector" is $elements.name',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new Value(
+                    ValueTypes::ELEMENT_PARAMETER,
+                    '$elements.name'
+                ),
+            ],
             'simple css selector, is, escaped quotes scalar value' => [
                 'assertionString' => '".selector" is "\"value\""',
                 'expectedIdentifier' => new Identifier(

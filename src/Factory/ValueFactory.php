@@ -8,13 +8,21 @@ use webignition\BasilParser\Model\Value\ValueTypes;
 
 class ValueFactory
 {
+    const DATA_PARAMETER_PREFIX = '$data.';
+    const ELEMENT_PARAMETER_PREFIX = '$elements.';
+
     public function createFromValueString(string $valueString): ValueInterface
     {
         $valueString = trim($valueString);
         $type = ValueTypes::STRING;
 
-        if ('$' === $valueString[0]) {
+        $hasDataParameterPrefix = mb_strpos($valueString, self::DATA_PARAMETER_PREFIX) === 0;
+        $hasElementParameterPrefix = mb_strpos($valueString, self::ELEMENT_PARAMETER_PREFIX) === 0;
+
+        if ($hasDataParameterPrefix) {
             $type = ValueTypes::DATA_PARAMETER;
+        } elseif ($hasElementParameterPrefix) {
+            $type = ValueTypes::ELEMENT_PARAMETER;
         } else {
             if ('"' === $valueString[0]) {
                 $valueString = mb_substr($valueString, 1);
