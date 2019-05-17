@@ -13,6 +13,16 @@ class AssertionFactory
     private $assertionValueFactory;
     private $identifierStringExtractor;
 
+    const IDENTIFIER_STRING_STOP_STRINGS = [
+        ' is ',
+        ' is-not ',
+        ' exists',
+        ' not-exists',
+        ' includes ',
+        ' excludes ',
+        ' matches ',
+    ];
+
     public function __construct(
         ?IdentifierFactory $identifierFactory = null,
         ?ValueFactory $assertionValueFactory = null,
@@ -29,7 +39,10 @@ class AssertionFactory
 
     public function createFromAssertionString(string $assertionString): AssertionInterface
     {
-        $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
+        $identifierString = $this->identifierStringExtractor->extractFromStart(
+            $assertionString,
+            self::IDENTIFIER_STRING_STOP_STRINGS
+        );
 
         $identifier = $this->identifierFactory->create($identifierString);
         $value = null;

@@ -5,14 +5,20 @@ namespace webignition\BasilParser\Tests\Factory\Action;
 
 use webignition\BasilParser\Factory\Action\ActionFactory;
 use webignition\BasilParser\Factory\Action\ActionOnlyActionFactory;
+use webignition\BasilParser\Factory\Action\InputActionFactory;
 use webignition\BasilParser\Factory\Action\InteractionActionFactory;
 use webignition\BasilParser\Factory\Action\WaitActionFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
+use webignition\BasilParser\Model\Action\InputAction;
+use webignition\BasilParser\Model\Action\InputActionInterface;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\Value\Value;
+use webignition\BasilParser\Model\Value\ValueInterface;
+use webignition\BasilParser\Model\Value\ValueTypes;
 
 class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,11 +34,13 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         $interactionActionFactory = new InteractionActionFactory();
         $waitActionFactory = new WaitActionFactory();
         $actionOnlyActionFactory = new ActionOnlyActionFactory();
+        $inputActionFactory = new InputActionFactory();
 
         $this->actionFactory = new ActionFactory([
             $interactionActionFactory,
             $waitActionFactory,
             $actionOnlyActionFactory,
+            $inputActionFactory,
         ]);
     }
 
@@ -42,11 +50,11 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromActionStringForValidWaitForActionDataProvider
      */
     public function testCreateFromActionStringForValidInteractionAction(
-        string $action,
+        string $actionString,
         string $expectedVerb,
         IdentifierInterface $expectedIdentifier
     ) {
-        $action = $this->actionFactory->createFromActionString($action);
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(InteractionAction::class, $action);
         $this->assertSame($expectedVerb, $action->getVerb());
@@ -60,7 +68,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'click css selector with null position double-quoted' => [
-                'action' => 'click ".sign-in-form .submit-button"',
+                'actionString' => 'click ".sign-in-form .submit-button"',
                 'expectedVerb' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -68,7 +76,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'click css selector with position double-quoted' => [
-                'action' => 'click ".sign-in-form .submit-button":3',
+                'actionString' => 'click ".sign-in-form .submit-button":3',
                 'expectedVerb' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -77,7 +85,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'click css selector unquoted is treated as page model element reference' => [
-                'action' => 'click .sign-in-form .submit-button',
+                'actionString' => 'click .sign-in-form .submit-button',
                 'expectedVerb' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -85,7 +93,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'click page model reference' => [
-                'action' => 'click imported_page_model.elements.element_name',
+                'actionString' => 'click imported_page_model.elements.element_name',
                 'expectedVerb' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -93,7 +101,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'click element parameter reference' => [
-                'action' => 'click $elements.name',
+                'actionString' => 'click $elements.name',
                 'expectedVerb' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
@@ -107,7 +115,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'submit css selector with null position double-quoted' => [
-                'action' => 'submit ".sign-in-form .submit-button"',
+                'actionString' => 'submit ".sign-in-form .submit-button"',
                 'expectedVerb' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -115,7 +123,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'submit css selector with position double-quoted' => [
-                'action' => 'submit ".sign-in-form .submit-button":3',
+                'actionString' => 'submit ".sign-in-form .submit-button":3',
                 'expectedVerb' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -124,7 +132,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'submit css selector unquoted is treated as page model element reference' => [
-                'action' => 'submit .sign-in-form .submit-button',
+                'actionString' => 'submit .sign-in-form .submit-button',
                 'expectedVerb' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -132,7 +140,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'submit page model reference' => [
-                'action' => 'submit imported_page_model.elements.element_name',
+                'actionString' => 'submit imported_page_model.elements.element_name',
                 'expectedVerb' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -140,7 +148,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'submit element parameter reference' => [
-                'action' => 'submit $elements.name',
+                'actionString' => 'submit $elements.name',
                 'expectedVerb' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
@@ -154,7 +162,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'wait-for css selector with null position double-quoted' => [
-                'action' => 'wait-for ".sign-in-form .submit-button"',
+                'actionString' => 'wait-for ".sign-in-form .submit-button"',
                 'expectedVerb' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -162,7 +170,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'wait-for css selector with position double-quoted' => [
-                'action' => 'wait-for ".sign-in-form .submit-button":3',
+                'actionString' => 'wait-for ".sign-in-form .submit-button":3',
                 'expectedVerb' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
@@ -171,7 +179,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'wait-for css selector unquoted is treated as page model element reference' => [
-                'action' => 'wait-for .sign-in-form .submit-button',
+                'actionString' => 'wait-for .sign-in-form .submit-button',
                 'expectedVerb' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -179,7 +187,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'wait-for page model reference' => [
-                'action' => 'wait-for imported_page_model.elements.element_name',
+                'actionString' => 'wait-for imported_page_model.elements.element_name',
                 'expectedVerb' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -187,7 +195,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'wait-for element parameter reference' => [
-                'action' => 'wait-for $elements.name',
+                'actionString' => 'wait-for $elements.name',
                 'expectedVerb' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
@@ -201,11 +209,11 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromActionStringForValidWaitActionDataProvider
      */
     public function testCreateFromActionStringForValidWaitAction(
-        string $action,
+        string $actionString,
         string $expectedVerb,
         string $expectedDuration
     ) {
-        $action = $this->actionFactory->createFromActionString($action);
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(WaitAction::class, $action);
         $this->assertSame($expectedVerb, $action->getVerb());
@@ -219,17 +227,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'wait 1' => [
-                'action' => 'wait 1',
+                'actionString' => 'wait 1',
                 'expectedVerb' => ActionTypes::WAIT,
                 'expectedDuration' => '1',
             ],
             'wait 15' => [
-                'action' => 'wait 15',
+                'actionString' => 'wait 15',
                 'expectedVerb' => ActionTypes::WAIT,
                 'expectedDuration' => '15',
             ],
             'wait $data.name' => [
-                'action' => 'wait $data.name',
+                'actionString' => 'wait $data.name',
                 'expectedVerb' => ActionTypes::WAIT,
                 'expectedDuration' => '$data.name',
             ],
@@ -239,11 +247,9 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromActionStringForValidWaitActionDataProvider
      */
-    public function testCreateFromActionStringForValidActionOnlyAction(
-        string $action,
-        string $expectedVerb
-    ) {
-        $action = $this->actionFactory->createFromActionString($action);
+    public function testCreateFromActionStringForValidActionOnlyAction(string $actionString, string $expectedVerb)
+    {
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(WaitAction::class, $action);
         $this->assertSame($expectedVerb, $action->getVerb());
@@ -253,16 +259,118 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'reload' => [
-                'action' => 'reload',
+                'actionString' => 'reload',
                 'expectedVerb' => ActionTypes::RELOAD,
             ],
             'back' => [
-                'action' => 'back',
+                'actionString' => 'back',
                 'expectedVerb' => ActionTypes::BACK,
             ],
             'forward' => [
-                'action' => 'forward',
+                'actionString' => 'forward',
                 'expectedVerb' => ActionTypes::FORWARD,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createFromActionStringForValidInputActionDataProvider
+     */
+    public function testCreateFromActionStringForValidInputAction(
+        string $actionString,
+        IdentifierInterface $expectedIdentifier,
+        ValueInterface $expectedValue
+    ) {
+        $action = $this->actionFactory->createFromActionString($actionString);
+
+        $this->assertInstanceOf(InputActionInterface::class, $action);
+        $this->assertEquals(ActionTypes::SET, $action->getVerb());
+
+        if ($action instanceof InputAction) {
+            $this->assertEquals($expectedIdentifier, $action->getIdentifier());
+            $this->assertEquals($expectedValue, $action->getValue());
+        }
+    }
+
+    public function createFromActionStringForValidInputActionDataProvider(): array
+    {
+        return [
+            'simple css selector, scalar value' => [
+                'actionString' => 'set ".selector" to "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple css selector, data parameter value' => [
+                'actionString' => 'set ".selector" to $data.name',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::DATA_PARAMETER,
+                    '$data.name'
+                ),
+            ],
+            'simple css selector, element parameter value' => [
+                'actionString' => 'set ".selector" to $elements.name',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::ELEMENT_PARAMETER,
+                    '$elements.name'
+                ),
+            ],
+            'simple css selector, escaped quotes scalar value' => [
+                'actionString' => 'set ".selector" to "\"value\""',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
+                    '"value"'
+                ),
+            ],
+            'css selector includes stop words, scalar value' => [
+                'actionString' => 'set ".selector to value" to "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector to value'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'simple xpath expression, scalar value' => [
+                'actionString' => 'set "//foo" to "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    '//foo'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
+                    'value'
+                ),
+            ],
+            'xpath expression includes stopwords, scalar value' => [
+                'actionString' => 'set "//a[ends-with(@href to value, ".pdf")]" to "value"',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    '//a[ends-with(@href to value, ".pdf")]'
+                ),
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
+                    'value'
+                ),
             ],
         ];
     }
