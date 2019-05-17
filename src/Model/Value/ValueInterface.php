@@ -1,8 +1,8 @@
 <?php
 
-namespace webignition\BasilParser\Model\Assertion;
+namespace webignition\BasilParser\Model\Value;
 
-interface AssertionValueInterface
+interface ValueInterface
 {
     public function getType(): string;
     public function getValue(): string;

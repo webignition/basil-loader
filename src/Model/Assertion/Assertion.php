@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Model\Assertion;
 
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
+use webignition\BasilParser\Model\Value\ValueInterface;
 
 class Assertion implements AssertionInterface
 {
@@ -13,7 +14,7 @@ class Assertion implements AssertionInterface
     public function __construct(
         IdentifierInterface $identifier,
         string $comparison,
-        ?AssertionValueInterface $value = null
+        ?ValueInterface $value = null
     ) {
         $this->identifier = $identifier;
         $this->comparison = $comparison;
@@ -30,7 +31,7 @@ class Assertion implements AssertionInterface
         return $this->comparison;
     }
 
-    public function getValue(): ?AssertionValueInterface
+    public function getValue(): ?ValueInterface
     {
         return $this->value;
     }

@@ -4,8 +4,8 @@ namespace webignition\BasilParser\Tests\Model\Assertion;
 
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Assertion\AssertionValue;
-use webignition\BasilParser\Model\Assertion\AssertionValueTypes;
+use webignition\BasilParser\Model\Value\Value;
+use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 
@@ -13,15 +13,9 @@ class AssertionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $identifier = new Identifier(
-            IdentifierTypes::CSS_SELECTOR,
-            '.foo'
-        );
+        $identifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.foo');
         $comparison = AssertionComparisons::IS;
-        $value = new AssertionValue(
-            AssertionValueTypes::STRING,
-            'foo'
-        );
+        $value = new Value(ValueTypes::STRING, 'foo');
 
         $assertion = new Assertion($identifier, $comparison, $value);
 

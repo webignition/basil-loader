@@ -1,14 +1,14 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Factory\Assertion;
+namespace webignition\BasilParser\Tests\Factory;
 
-use webignition\BasilParser\Factory\Assertion\AssertionFactory;
+use webignition\BasilParser\Factory\AssertionFactory;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
-use webignition\BasilParser\Model\Assertion\AssertionValue;
-use webignition\BasilParser\Model\Assertion\AssertionValueInterface;
-use webignition\BasilParser\Model\Assertion\AssertionValueTypes;
+use webignition\BasilParser\Model\Value\Value;
+use webignition\BasilParser\Model\Value\ValueInterface;
+use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
@@ -34,7 +34,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
         string $assertionString,
         IdentifierInterface $expectedIdentifier,
         string $expectedComparison,
-        ?AssertionValueInterface $expectedValue
+        ?ValueInterface $expectedValue
     ) {
         $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
 
@@ -54,8 +54,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -66,9 +66,21 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::DATA_PARAMETER,
+                'expectedValue' => new Value(
+                    ValueTypes::DATA_PARAMETER,
                     '$data.name'
+                ),
+            ],
+            'simple css selector, is, element parameter value' => [
+                'actionString' => '".selector" is $elements.name',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new Value(
+                    ValueTypes::ELEMENT_PARAMETER,
+                    '$elements.name'
                 ),
             ],
             'simple css selector, is, escaped quotes scalar value' => [
@@ -78,8 +90,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     '"value"'
                 ),
             ],
@@ -90,8 +102,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS_NOT,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -129,8 +141,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::INCLUDES,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -141,8 +153,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::EXCLUDES,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -153,8 +165,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::MATCHES,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -165,8 +177,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector is is-not exists not-exists includes excludes matches foo'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -177,8 +189,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '//foo'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
@@ -190,8 +202,8 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '//a[ends-with(@href is exists not-exists matches includes excludes, ".pdf")]'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new AssertionValue(
-                    AssertionValueTypes::STRING,
+                'expectedValue' => new Value(
+                    ValueTypes::STRING,
                     'value'
                 ),
             ],
