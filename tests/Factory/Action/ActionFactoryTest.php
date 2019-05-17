@@ -4,7 +4,7 @@
 namespace webignition\BasilParser\Tests\Factory\Action;
 
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Factory\Action\ActionOnlyActionFactory;
+use webignition\BasilParser\Factory\Action\NoArgumentsActionFactory;
 use webignition\BasilParser\Factory\Action\InputActionFactory;
 use webignition\BasilParser\Factory\Action\InteractionActionFactory;
 use webignition\BasilParser\Factory\Action\WaitActionFactory;
@@ -12,6 +12,8 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InputActionInterface;
 use webignition\BasilParser\Model\Action\InteractionAction;
+use webignition\BasilParser\Model\Action\NoArgumentsAction;
+use webignition\BasilParser\Model\Action\UnrecognisedAction;
 use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
@@ -33,13 +35,13 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $interactionActionFactory = new InteractionActionFactory();
         $waitActionFactory = new WaitActionFactory();
-        $actionOnlyActionFactory = new ActionOnlyActionFactory();
+        $noArgumentsActionFactory = new NoArgumentsActionFactory();
         $inputActionFactory = new InputActionFactory();
 
         $this->actionFactory = new ActionFactory([
             $interactionActionFactory,
             $waitActionFactory,
-            $actionOnlyActionFactory,
+            $noArgumentsActionFactory,
             $inputActionFactory,
         ]);
     }
@@ -58,6 +60,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(InteractionAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof InteractionAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());
@@ -217,6 +220,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(WaitAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof WaitAction) {
             $this->assertSame($expectedDuration, $action->getDuration());
@@ -245,17 +249,18 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromActionStringForValidWaitActionDataProvider
+     * @dataProvider createFromActionStringForValidNoArgumentsActionDataProvider
      */
-    public function testCreateFromActionStringForValidActionOnlyAction(string $actionString, string $expectedType)
+    public function testCreateFromActionStringForValidNoArgumentsAction(string $actionString, string $expectedType)
     {
         $action = $this->actionFactory->createFromActionString($actionString);
 
-        $this->assertInstanceOf(WaitAction::class, $action);
+        $this->assertInstanceOf(NoArgumentsAction::class, $action);
         $this->assertSame($expectedType, $action->getType());
+        $this->assertTrue($action->isRecognised());
     }
 
-    public function createFromActionStringForValidActionOnlyActionDataProvider(): array
+    public function createFromActionStringForValidNoArgumentsActionDataProvider(): array
     {
         return [
             'reload' => [
@@ -285,6 +290,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(InputActionInterface::class, $action);
         $this->assertEquals(ActionTypes::SET, $action->getType());
+        $this->assertTrue($action->isRecognised());
 
         if ($action instanceof InputAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());
@@ -373,5 +379,16 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
+    }
+
+    public function testCreateFromActionStringForUnrecognisedAction()
+    {
+        $actionString = 'foo ".selector" to "value';
+
+        $action = $this->actionFactory->createFromActionString($actionString);
+
+        $this->assertInstanceOf(UnrecognisedAction::class, $action);
+        $this->assertSame('foo', $action->getType());
+        $this->assertFalse($action->isRecognised());
     }
 }

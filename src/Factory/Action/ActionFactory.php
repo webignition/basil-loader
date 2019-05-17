@@ -2,7 +2,6 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
-use webignition\BasilParser\Model\Action\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 
@@ -13,6 +12,11 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
      */
     private $actionTypeFactories;
 
+    /**
+     * @var UnrecognisedActionFactory
+     */
+    private $unrecognisedActionFactory;
+
     public function __construct(array $actionTypeFactories)
     {
         foreach ($actionTypeFactories as $actionTypeFactory) {
@@ -20,6 +24,13 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
                 $this->actionTypeFactories[] = $actionTypeFactory;
             }
         }
+
+        $this->unrecognisedActionFactory = new UnrecognisedActionFactory();
+    }
+
+    public function handles(string $type): bool
+    {
+        return true;
     }
 
     protected function getHandledActionTypes(): array
@@ -29,14 +40,10 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        $typeSpecificActionFactory = $this->findTypeSpecificActionFactory($type);
-
-        return $typeSpecificActionFactory instanceof ActionFactoryInterface
-            ? $typeSpecificActionFactory->createFromTypeAndArguments($type, $arguments)
-            : new Action($type);
+        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments($type, $arguments);
     }
 
-    private function findTypeSpecificActionFactory(string $type): ?ActionFactoryInterface
+    private function findTypeSpecificActionFactory(string $type): ActionFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {
@@ -44,6 +51,6 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
             }
         }
 
-        return null;
+        return $this->unrecognisedActionFactory;
     }
 }

@@ -15,5 +15,6 @@ class WaitActionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(ActionTypes::WAIT, $action->getType());
         $this->assertSame($duration, $action->getDuration());
+        $this->assertTrue($action->isRecognised());
     }
 }

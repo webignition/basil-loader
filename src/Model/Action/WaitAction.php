@@ -2,13 +2,13 @@
 
 namespace webignition\BasilParser\Model\Action;
 
-class WaitAction extends Action implements ActionInterface, WaitActionInterface
+class WaitAction extends AbstractAction implements ActionInterface, WaitActionInterface
 {
     private $duration;
 
     public function __construct(string $duration)
     {
-        parent::__construct(ActionTypes::WAIT);
+        parent::__construct(ActionTypes::WAIT, true);
 
         $this->duration = $duration;
     }
