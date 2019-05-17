@@ -1,8 +1,8 @@
 <?php
 
-namespace webignition\BasilParser\Model\Assertion;
+namespace webignition\BasilParser\Model\Value;
 
-class AssertionValue implements AssertionValueInterface
+class Value implements ValueInterface
 {
     private $type;
     private $value;

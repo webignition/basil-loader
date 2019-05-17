@@ -1,8 +1,8 @@
 <?php
 
-namespace webignition\BasilParser\Model\Assertion;
+namespace webignition\BasilParser\Model\Value;
 
-class AssertionValueTypes
+class ValueTypes
 {
     const DATA_PARAMETER = 'data-parameter';
     const STRING = 'string';

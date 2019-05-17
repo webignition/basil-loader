@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Factory\Assertion;
 
+use webignition\BasilParser\Factory\ValueFactory;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
@@ -17,10 +18,10 @@ class AssertionFactory
 
     public function __construct(
         ?IdentifierFactory $identifierFactory = null,
-        ?AssertionValueFactory $assertionValueFactory = null
+        ?ValueFactory $assertionValueFactory = null
     ) {
         $identifierFactory = $identifierFactory ?? new IdentifierFactory();
-        $assertionValueFactory = $assertionValueFactory ?? new AssertionValueFactory();
+        $assertionValueFactory = $assertionValueFactory ?? new ValueFactory();
 
         $this->identifierFactory = $identifierFactory;
         $this->assertionValueFactory = $assertionValueFactory;
