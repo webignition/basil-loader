@@ -2,35 +2,34 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
 
 class AssertionFactory
 {
-    const IDENTIFIER_REGEX =
-        '/.+?(?=(( is )|( is-not )|( exists)|( not-exists)|( includes )|( excludes )|( matches )))/';
-
     private $identifierFactory;
     private $assertionValueFactory;
+    private $identifierStringExtractor;
 
     public function __construct(
         ?IdentifierFactory $identifierFactory = null,
-        ?ValueFactory $assertionValueFactory = null
+        ?ValueFactory $assertionValueFactory = null,
+        ?IdentifierStringExtractor $identifierStringExtractor = null
     ) {
         $identifierFactory = $identifierFactory ?? new IdentifierFactory();
         $assertionValueFactory = $assertionValueFactory ?? new ValueFactory();
+        $identifierStringExtractor = $identifierStringExtractor ?? new IdentifierStringExtractor();
 
         $this->identifierFactory = $identifierFactory;
         $this->assertionValueFactory = $assertionValueFactory;
+        $this->identifierStringExtractor = $identifierStringExtractor;
     }
 
     public function createFromAssertionString(string $assertionString): AssertionInterface
     {
-        $identifierMatches = [];
-        preg_match_all(self::IDENTIFIER_REGEX, $assertionString, $identifierMatches);
-
-        $identifierString = implode($identifierMatches[0], '');
+        $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
         $identifier = $this->identifierFactory->create($identifierString);
         $value = null;
