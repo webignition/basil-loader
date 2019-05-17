@@ -51,13 +51,13 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForValidInteractionAction(
         string $actionString,
-        string $expectedVerb,
+        string $expectedType,
         IdentifierInterface $expectedIdentifier
     ) {
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(InteractionAction::class, $action);
-        $this->assertSame($expectedVerb, $action->getVerb());
+        $this->assertSame($expectedType, $action->getType());
 
         if ($action instanceof InteractionAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());
@@ -69,7 +69,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'click css selector with null position double-quoted' => [
                 'actionString' => 'click ".sign-in-form .submit-button"',
-                'expectedVerb' => ActionTypes::CLICK,
+                'expectedType' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button'
@@ -77,7 +77,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click css selector with position double-quoted' => [
                 'actionString' => 'click ".sign-in-form .submit-button":3',
-                'expectedVerb' => ActionTypes::CLICK,
+                'expectedType' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button',
@@ -86,7 +86,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'click .sign-in-form .submit-button',
-                'expectedVerb' => ActionTypes::CLICK,
+                'expectedType' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     '.sign-in-form .submit-button'
@@ -94,7 +94,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click page model reference' => [
                 'actionString' => 'click imported_page_model.elements.element_name',
-                'expectedVerb' => ActionTypes::CLICK,
+                'expectedType' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     'imported_page_model.elements.element_name'
@@ -102,7 +102,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click element parameter reference' => [
                 'actionString' => 'click $elements.name',
-                'expectedVerb' => ActionTypes::CLICK,
+                'expectedType' => ActionTypes::CLICK,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
                     '$elements.name'
@@ -116,7 +116,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'submit css selector with null position double-quoted' => [
                 'actionString' => 'submit ".sign-in-form .submit-button"',
-                'expectedVerb' => ActionTypes::SUBMIT,
+                'expectedType' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button'
@@ -124,7 +124,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit css selector with position double-quoted' => [
                 'actionString' => 'submit ".sign-in-form .submit-button":3',
-                'expectedVerb' => ActionTypes::SUBMIT,
+                'expectedType' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button',
@@ -133,7 +133,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'submit .sign-in-form .submit-button',
-                'expectedVerb' => ActionTypes::SUBMIT,
+                'expectedType' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     '.sign-in-form .submit-button'
@@ -141,7 +141,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit page model reference' => [
                 'actionString' => 'submit imported_page_model.elements.element_name',
-                'expectedVerb' => ActionTypes::SUBMIT,
+                'expectedType' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     'imported_page_model.elements.element_name'
@@ -149,7 +149,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit element parameter reference' => [
                 'actionString' => 'submit $elements.name',
-                'expectedVerb' => ActionTypes::SUBMIT,
+                'expectedType' => ActionTypes::SUBMIT,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
                     '$elements.name'
@@ -163,7 +163,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'wait-for css selector with null position double-quoted' => [
                 'actionString' => 'wait-for ".sign-in-form .submit-button"',
-                'expectedVerb' => ActionTypes::WAIT_FOR,
+                'expectedType' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button'
@@ -171,7 +171,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for css selector with position double-quoted' => [
                 'actionString' => 'wait-for ".sign-in-form .submit-button":3',
-                'expectedVerb' => ActionTypes::WAIT_FOR,
+                'expectedType' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.sign-in-form .submit-button',
@@ -180,7 +180,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'wait-for .sign-in-form .submit-button',
-                'expectedVerb' => ActionTypes::WAIT_FOR,
+                'expectedType' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     '.sign-in-form .submit-button'
@@ -188,7 +188,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for page model reference' => [
                 'actionString' => 'wait-for imported_page_model.elements.element_name',
-                'expectedVerb' => ActionTypes::WAIT_FOR,
+                'expectedType' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     'imported_page_model.elements.element_name'
@@ -196,7 +196,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for element parameter reference' => [
                 'actionString' => 'wait-for $elements.name',
-                'expectedVerb' => ActionTypes::WAIT_FOR,
+                'expectedType' => ActionTypes::WAIT_FOR,
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
                     '$elements.name'
@@ -210,13 +210,13 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForValidWaitAction(
         string $actionString,
-        string $expectedVerb,
+        string $expectedType,
         string $expectedDuration
     ) {
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(WaitAction::class, $action);
-        $this->assertSame($expectedVerb, $action->getVerb());
+        $this->assertSame($expectedType, $action->getType());
 
         if ($action instanceof WaitAction) {
             $this->assertSame($expectedDuration, $action->getDuration());
@@ -228,17 +228,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'wait 1' => [
                 'actionString' => 'wait 1',
-                'expectedVerb' => ActionTypes::WAIT,
+                'expectedType' => ActionTypes::WAIT,
                 'expectedDuration' => '1',
             ],
             'wait 15' => [
                 'actionString' => 'wait 15',
-                'expectedVerb' => ActionTypes::WAIT,
+                'expectedType' => ActionTypes::WAIT,
                 'expectedDuration' => '15',
             ],
             'wait $data.name' => [
                 'actionString' => 'wait $data.name',
-                'expectedVerb' => ActionTypes::WAIT,
+                'expectedType' => ActionTypes::WAIT,
                 'expectedDuration' => '$data.name',
             ],
         ];
@@ -247,12 +247,12 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromActionStringForValidWaitActionDataProvider
      */
-    public function testCreateFromActionStringForValidActionOnlyAction(string $actionString, string $expectedVerb)
+    public function testCreateFromActionStringForValidActionOnlyAction(string $actionString, string $expectedType)
     {
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(WaitAction::class, $action);
-        $this->assertSame($expectedVerb, $action->getVerb());
+        $this->assertSame($expectedType, $action->getType());
     }
 
     public function createFromActionStringForValidActionOnlyActionDataProvider(): array
@@ -260,15 +260,15 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'reload' => [
                 'actionString' => 'reload',
-                'expectedVerb' => ActionTypes::RELOAD,
+                'expectedType' => ActionTypes::RELOAD,
             ],
             'back' => [
                 'actionString' => 'back',
-                'expectedVerb' => ActionTypes::BACK,
+                'expectedType' => ActionTypes::BACK,
             ],
             'forward' => [
                 'actionString' => 'forward',
-                'expectedVerb' => ActionTypes::FORWARD,
+                'expectedType' => ActionTypes::FORWARD,
             ],
         ];
     }
@@ -284,7 +284,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(InputActionInterface::class, $action);
-        $this->assertEquals(ActionTypes::SET, $action->getVerb());
+        $this->assertEquals(ActionTypes::SET, $action->getType());
 
         if ($action instanceof InputAction) {
             $this->assertEquals($expectedIdentifier, $action->getIdentifier());

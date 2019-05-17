@@ -8,9 +8,9 @@ class InteractionAction extends Action implements ActionInterface, InteractionAc
 {
     private $identifier;
 
-    public function __construct(string $verb, IdentifierInterface $identifier)
+    public function __construct(string $type, IdentifierInterface $identifier)
     {
-        parent::__construct($verb);
+        parent::__construct($type);
 
         $this->identifier = $identifier;
     }

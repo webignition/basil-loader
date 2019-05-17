@@ -9,10 +9,10 @@ class ActionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $verb = ActionTypes::RELOAD;
+        $type = ActionTypes::RELOAD;
 
-        $action = new Action($verb);
+        $action = new Action($type);
 
-        $this->assertSame($verb, $action->getVerb());
+        $this->assertSame($type, $action->getType());
     }
 }

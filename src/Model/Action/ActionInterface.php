@@ -4,5 +4,5 @@ namespace webignition\BasilParser\Model\Action;
 
 interface ActionInterface
 {
-    public function getVerb(): string;
+    public function getType(): string;
 }

@@ -4,15 +4,15 @@ namespace webignition\BasilParser\Model\Action;
 
 class Action implements ActionInterface
 {
-    private $verb = '';
+    private $type = '';
 
-    public function __construct(string $verb)
+    public function __construct(string $type)
     {
-        $this->verb = $verb;
+        $this->type = $type;
     }
 
-    public function getVerb(): string
+    public function getType(): string
     {
-        return $this->verb;
+        return $this->type;
     }
 }
