@@ -46,7 +46,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         );
 
         if ('' === $identifierString) {
-            list($identifierString, $valueString) = $this->resolveEmptyIdentifierString($arguments);
+            $valueString = '';
         } else {
             $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
         }
@@ -55,21 +55,5 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         $value = $this->valueFactory->createFromValueString($valueString);
 
         return new InputAction($identifier, $value, $arguments);
-    }
-
-    private function resolveEmptyIdentifierString(string $arguments)
-    {
-        $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
-        $endsWithStopWordRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
-        $identifierString = $arguments;
-
-        if (preg_match($endsWithStopWordRegex, $arguments) > 0) {
-            $identifierString = preg_replace($endsWithStopWordRegex, '', $arguments);
-        }
-
-        return [
-            $identifierString,
-            '',
-        ];
     }
 }
