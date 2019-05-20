@@ -10,16 +10,13 @@ use webignition\BasilParser\Factory\Action\InteractionActionFactory;
 use webignition\BasilParser\Factory\Action\WaitActionFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
-use webignition\BasilParser\Model\Action\InputActionInterface;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Action\NoArgumentsAction;
 use webignition\BasilParser\Model\Action\UnrecognisedAction;
 use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueInterface;
 use webignition\BasilParser\Model\Value\ValueTypes;
 
 class ActionFactoryTest extends \PHPUnit\Framework\TestCase
@@ -119,6 +116,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     '$elements.name'
                 ),
             ],
+            'click with no arguments' => [
+                'actionString' => 'click',
+                'expectedAction' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::EMPTY,
+                        ''
+                    ),
+                    ''
+                ),
+            ],
         ];
     }
 
@@ -181,6 +189,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     '$elements.name'
                 ),
             ],
+            'submit no arguments' => [
+                'actionString' => 'submit',
+                'expectedAction' => new InteractionAction(
+                    ActionTypes::SUBMIT,
+                    new Identifier(
+                        IdentifierTypes::EMPTY,
+                        ''
+                    ),
+                    ''
+                ),
+            ],
         ];
     }
 
@@ -241,6 +260,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                         '$elements.name'
                     ),
                     '$elements.name'
+                ),
+            ],
+            'wait-for no arguments' => [
+                'actionString' => 'wait-for',
+                'expectedAction' => new InteractionAction(
+                    ActionTypes::WAIT_FOR,
+                    new Identifier(
+                        IdentifierTypes::EMPTY,
+                        ''
+                    ),
+                    ''
                 ),
             ],
         ];
