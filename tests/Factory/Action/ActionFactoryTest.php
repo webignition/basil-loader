@@ -4,10 +4,6 @@
 namespace webignition\BasilParser\Tests\Factory\Action;
 
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Factory\Action\NoArgumentsActionFactory;
-use webignition\BasilParser\Factory\Action\InputActionFactory;
-use webignition\BasilParser\Factory\Action\InteractionActionFactory;
-use webignition\BasilParser\Factory\Action\WaitActionFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
@@ -30,17 +26,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $interactionActionFactory = new InteractionActionFactory();
-        $waitActionFactory = new WaitActionFactory();
-        $noArgumentsActionFactory = new NoArgumentsActionFactory();
-        $inputActionFactory = new InputActionFactory();
-
-        $this->actionFactory = new ActionFactory([
-            $interactionActionFactory,
-            $waitActionFactory,
-            $noArgumentsActionFactory,
-            $inputActionFactory,
-        ]);
+        $this->actionFactory = new ActionFactory();
     }
 
     /**
@@ -436,17 +422,17 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'xpath expression includes stopwords, scalar value' => [
-                'actionString' => 'set "//a[ends-with(@href to value, ".pdf")]" to "value"',
+                'actionString' => 'set "//a[ends-with(@href to value, \".pdf\")]" to "value"',
                 'expectedAction' => new InputAction(
                     new Identifier(
                         IdentifierTypes::XPATH_EXPRESSION,
-                        '//a[ends-with(@href to value, ".pdf")]'
+                        '//a[ends-with(@href to value, \".pdf\")]'
                     ),
                     new Value(
                         ValueTypes::STRING,
                         'value'
                     ),
-                    '"//a[ends-with(@href to value, ".pdf")]" to "value"'
+                    '"//a[ends-with(@href to value, \".pdf\")]" to "value"'
                 ),
             ],
             'no arguments' => [
@@ -476,9 +462,12 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'expectedAction' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector" "value'
+                        '.selector'
                     ),
-                    null,
+                    new Value(
+                        ValueTypes::STRING,
+                        'value'
+                    ),
                     '".selector" "value"'
                 ),
             ],
@@ -486,12 +475,12 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'actionString' => 'set ".selector to value" "value"',
                 'expectedAction' => new InputAction(
                     new Identifier(
-                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                        '".selector'
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector to value'
                     ),
                     new Value(
                         ValueTypes::STRING,
-                        'value" "value'
+                        'value'
                     ),
                     '".selector to value" "value"'
                 ),

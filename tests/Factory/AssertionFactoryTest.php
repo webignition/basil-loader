@@ -242,10 +242,10 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'comparison-including non-simple xpath expression, is, scalar value' => [
                 'assertionString' =>
-                    '"//a[ends-with(@href is exists not-exists matches includes excludes, ".pdf")]" is "value"',
+                    '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
-                    '//a[ends-with(@href is exists not-exists matches includes excludes, ".pdf")]'
+                    '//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
                 'expectedValue' => new Value(

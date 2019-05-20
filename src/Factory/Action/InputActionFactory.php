@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\IdentifierStringExtractor;
+use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
@@ -17,18 +17,11 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
     private $identifierStringExtractor;
     private $valueFactory;
 
-    public function __construct(
-        ?IdentifierFactory $identifierFactory = null,
-        ?IdentifierStringExtractor $identifierStringExtractor = null,
-        ?ValueFactory $valueFactory = null
-    ) {
-        $identifierFactory = $identifierFactory ?? new IdentifierFactory();
-        $identifierStringExtractor = $identifierStringExtractor ?? new IdentifierStringExtractor();
-        $valueFactory = $valueFactory ?? new ValueFactory();
-
-        $this->identifierFactory = $identifierFactory;
-        $this->identifierStringExtractor = $identifierStringExtractor;
-        $this->valueFactory = $valueFactory;
+    public function __construct()
+    {
+        $this->identifierFactory = new IdentifierFactory();
+        $this->identifierStringExtractor = new IdentifierStringExtractor();
+        $this->valueFactory = new ValueFactory();
     }
 
     protected function getHandledActionTypes(): array
@@ -40,10 +33,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        $identifierString = $this->identifierStringExtractor->extractFromStart(
-            $arguments,
-            [self::IDENTIFIER_STOP_WORD]
-        );
+        $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {
             return new InputAction(
@@ -72,28 +62,32 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
             );
         }
 
-        $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
+        $keywordAndValueString = mb_substr($arguments, mb_strlen($identifierString));
 
-        if ($this->lacksToKeyword($arguments, $identifierString, $valueString)) {
+        $hasToKeyword = substr(
+            $keywordAndValueString,
+            0,
+            strlen(self::IDENTIFIER_STOP_WORD)
+        ) === self::IDENTIFIER_STOP_WORD;
+
+        if (!$hasToKeyword) {
+            $keywordAndValueString = trim($keywordAndValueString);
+
+            $value = '' === $keywordAndValueString
+                ? null
+                : $this->valueFactory->createFromValueString($keywordAndValueString);
+
             return new InputAction(
                 $this->identifierFactory->create($identifierString),
-                null,
+                $value,
                 $arguments
             );
         }
 
-        $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
+        $valueString = mb_substr($keywordAndValueString, mb_strlen(self::IDENTIFIER_STOP_WORD));
         $value = $this->valueFactory->createFromValueString($valueString);
         $identifier = $this->identifierFactory->create($identifierString);
 
         return new InputAction($identifier, $value, $arguments);
-    }
-
-    private function lacksToKeyword(string $arguments, string $identifierString, string $valueString)
-    {
-        $valuePosition = mb_strpos($arguments, $valueString);
-        $expectedValuePosition = mb_strlen($identifierString) + strlen(self::IDENTIFIER_STOP_WORD);
-
-        return $valuePosition !== $expectedValuePosition;
     }
 }

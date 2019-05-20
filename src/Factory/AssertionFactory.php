@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\IdentifierStringExtractor;
+use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
@@ -10,44 +10,19 @@ use webignition\BasilParser\Model\Assertion\AssertionInterface;
 class AssertionFactory
 {
     private $identifierFactory;
-    private $assertionValueFactory;
+    private $valueFactory;
     private $identifierStringExtractor;
 
-    const IDENTIFIER_STRING_STOP_STRINGS = [
-        ' is ',
-        ' is-not ',
-        ' exists',
-        ' not-exists',
-        ' includes ',
-        ' excludes ',
-        ' matches ',
-    ];
-
-    public function __construct(
-        ?IdentifierFactory $identifierFactory = null,
-        ?ValueFactory $assertionValueFactory = null,
-        ?IdentifierStringExtractor $identifierStringExtractor = null
-    ) {
-        $identifierFactory = $identifierFactory ?? new IdentifierFactory();
-        $assertionValueFactory = $assertionValueFactory ?? new ValueFactory();
-        $identifierStringExtractor = $identifierStringExtractor ?? new IdentifierStringExtractor();
-
-        $this->identifierFactory = $identifierFactory;
-        $this->assertionValueFactory = $assertionValueFactory;
-        $this->identifierStringExtractor = $identifierStringExtractor;
+    public function __construct()
+    {
+        $this->identifierFactory = new IdentifierFactory();
+        $this->valueFactory = new ValueFactory();
+        $this->identifierStringExtractor = new IdentifierStringExtractor();
     }
 
     public function createFromAssertionString(string $assertionString): AssertionInterface
     {
-        $identifierString = $this->identifierStringExtractor->extractFromStart(
-            $assertionString,
-            self::IDENTIFIER_STRING_STOP_STRINGS
-        );
-
-        if ('' === $identifierString) {
-            var_dump($assertionString, $identifierString);
-            exit();
-        }
+        $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
         $identifier = $this->identifierFactory->create($identifierString);
         $value = null;
@@ -64,7 +39,7 @@ class AssertionFactory
             if (in_array($comparison, AssertionComparisons::NO_VALUE_TYPES)) {
                 $value = null;
             } else {
-                $value = $this->assertionValueFactory->createFromValueString($valueString);
+                $value = $this->valueFactory->createFromValueString($valueString);
             }
         }
 
