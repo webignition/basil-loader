@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\IdentifierStringExtractor;
+use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;

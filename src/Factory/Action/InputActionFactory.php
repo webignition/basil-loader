@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\IdentifierStringExtractor;
+use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
