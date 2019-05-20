@@ -4,46 +4,30 @@ namespace webignition\BasilParser\IdentifierStringExtractor;
 
 class IdentifierStringExtractor
 {
-    const IDENTIFIER_REGEX = '/.+?(?=%s)/';
-    const DOM_EXPRESSION_FIRST_CHARACTER = '"';
-
     /**
      * @var IdentifierStringExtractorInterface[]
      */
     private $typeSpecificIdentifierStringExtractors = [];
 
-    /**
-     * @var LiteralParameterIdentifierStringExtractor
-     */
-    private $literalParameterIdentifierStringExtractor;
-
-    public function __construct(array $typeSpecificIdentifierStringExtractors = [])
+    public function __construct()
     {
-        foreach ($typeSpecificIdentifierStringExtractors as $typeSpecificIdentifierStringExtractor) {
-            if ($typeSpecificIdentifierStringExtractor instanceof IdentifierStringExtractorInterface) {
-                $this->typeSpecificIdentifierStringExtractors[] = $typeSpecificIdentifierStringExtractor;
-            }
-        }
-
-        $this->literalParameterIdentifierStringExtractor = new LiteralParameterIdentifierStringExtractor();
-    }
-
-    public static function create()
-    {
-        return new IdentifierStringExtractor([
-            new QuotedIdentifierStringExtractor(),
-            new VariableParameterIdentifierStringExtractor(),
-        ]);
+        $this->typeSpecificIdentifierStringExtractors[] = new QuotedIdentifierStringExtractor();
+        $this->typeSpecificIdentifierStringExtractors[] = new VariableParameterIdentifierStringExtractor();
+        $this->typeSpecificIdentifierStringExtractors[] = new LiteralParameterIdentifierStringExtractor();
     }
 
     public function extractFromStart(string $string): string
     {
         $typeSpecificIdentifierStringExtractor = $this->findTypeSpecificIdentifierStringExtractor($string);
 
-        return $typeSpecificIdentifierStringExtractor->extractFromStart($string);
+        if ($typeSpecificIdentifierStringExtractor instanceof IdentifierStringExtractorInterface) {
+            return $typeSpecificIdentifierStringExtractor->extractFromStart($string);
+        }
+
+        return '';
     }
 
-    private function findTypeSpecificIdentifierStringExtractor(string $string): IdentifierStringExtractorInterface
+    private function findTypeSpecificIdentifierStringExtractor(string $string): ?IdentifierStringExtractorInterface
     {
         foreach ($this->typeSpecificIdentifierStringExtractors as $typeSpecificIdentifierStringExtractor) {
             if ($typeSpecificIdentifierStringExtractor->handles($string)) {
@@ -51,6 +35,6 @@ class IdentifierStringExtractor
             }
         }
 
-        return $this->literalParameterIdentifierStringExtractor;
+        return null;
     }
 }

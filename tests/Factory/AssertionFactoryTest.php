@@ -24,7 +24,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->assertionFactory = AssertionFactory::create();
+        $this->assertionFactory = new AssertionFactory();
     }
 
     /**

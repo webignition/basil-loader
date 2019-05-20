@@ -8,6 +8,10 @@ class LiteralParameterIdentifierStringExtractor implements IdentifierStringExtra
 
     public function handles(string $string): bool
     {
+        if ('' === $string) {
+            return false;
+        }
+
         $firstCharacter = $string[0];
 
         return $firstCharacter !== '"' && $firstCharacter !== '$';

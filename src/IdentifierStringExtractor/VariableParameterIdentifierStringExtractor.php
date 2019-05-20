@@ -8,7 +8,7 @@ class VariableParameterIdentifierStringExtractor implements IdentifierStringExtr
 
     public function handles(string $string): bool
     {
-        return self::VARIABLE_START_CHARACTER === $string[0];
+        return '' !== $string && self::VARIABLE_START_CHARACTER === $string[0];
     }
 
     public function extractFromStart(string $string): ?string

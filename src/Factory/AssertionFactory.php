@@ -10,36 +10,14 @@ use webignition\BasilParser\Model\Assertion\AssertionInterface;
 class AssertionFactory
 {
     private $identifierFactory;
-    private $assertionValueFactory;
+    private $valueFactory;
     private $identifierStringExtractor;
 
-    const IDENTIFIER_STRING_STOP_STRINGS = [
-        ' is ',
-        ' is-not ',
-        ' exists',
-        ' not-exists',
-        ' includes ',
-        ' excludes ',
-        ' matches ',
-    ];
-
-    public function __construct(
-        IdentifierFactory $identifierFactory = null,
-        ValueFactory $assertionValueFactory = null,
-        IdentifierStringExtractor $identifierStringExtractor = null
-    ) {
-        $this->identifierFactory = $identifierFactory;
-        $this->assertionValueFactory = $assertionValueFactory;
-        $this->identifierStringExtractor = $identifierStringExtractor;
-    }
-
-    public static function create()
+    public function __construct()
     {
-        return new AssertionFactory(
-            new IdentifierFactory(),
-            new ValueFactory(),
-            IdentifierStringExtractor::create()
-        );
+        $this->identifierFactory = new IdentifierFactory();
+        $this->valueFactory = new ValueFactory();
+        $this->identifierStringExtractor = new IdentifierStringExtractor();
     }
 
     public function createFromAssertionString(string $assertionString): AssertionInterface
@@ -61,7 +39,7 @@ class AssertionFactory
             if (in_array($comparison, AssertionComparisons::NO_VALUE_TYPES)) {
                 $value = null;
             } else {
-                $value = $this->assertionValueFactory->createFromValueString($valueString);
+                $value = $this->valueFactory->createFromValueString($valueString);
             }
         }
 

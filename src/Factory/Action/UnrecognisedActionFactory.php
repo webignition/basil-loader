@@ -7,7 +7,6 @@ use webignition\BasilParser\Model\Action\UnrecognisedAction;
 
 class UnrecognisedActionFactory implements ActionFactoryInterface
 {
-
     public function handles(string $type): bool
     {
         return true;

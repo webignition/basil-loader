@@ -9,7 +9,7 @@ class QuotedIdentifierStringExtractor implements IdentifierStringExtractorInterf
 
     public function handles(string $string): bool
     {
-        return self::DELIMITER === $string[0];
+        return '' !== $string && self::DELIMITER === $string[0];
     }
 
     public function extractFromStart(string $string): ?string

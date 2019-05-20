@@ -17,13 +17,12 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
      */
     private $unrecognisedActionFactory;
 
-    public function __construct(array $actionTypeFactories)
+    public function __construct()
     {
-        foreach ($actionTypeFactories as $actionTypeFactory) {
-            if ($actionTypeFactory instanceof ActionFactoryInterface) {
-                $this->actionTypeFactories[] = $actionTypeFactory;
-            }
-        }
+        $this->actionTypeFactories[] = new InteractionActionFactory();
+        $this->actionTypeFactories[] = new WaitActionFactory();
+        $this->actionTypeFactories[] = new NoArgumentsActionFactory();
+        $this->actionTypeFactories[] = new InputActionFactory();
 
         $this->unrecognisedActionFactory = new UnrecognisedActionFactory();
     }
