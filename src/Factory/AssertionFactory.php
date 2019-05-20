@@ -63,6 +63,6 @@ class AssertionFactory
             }
         }
 
-        return new Assertion($identifier, $comparison, $value);
+        return new Assertion($assertionString, $identifier, $comparison, $value);
     }
 }

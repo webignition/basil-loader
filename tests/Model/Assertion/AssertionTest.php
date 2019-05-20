@@ -13,12 +13,14 @@ class AssertionTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
+        $assertionString = '.foo is "foo"';
         $identifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.foo');
         $comparison = AssertionComparisons::IS;
         $value = new Value(ValueTypes::STRING, 'foo');
 
-        $assertion = new Assertion($identifier, $comparison, $value);
+        $assertion = new Assertion($assertionString, $identifier, $comparison, $value);
 
+        $this->assertSame($assertionString, $assertion->getAssertionString());
         $this->assertSame($identifier, $assertion->getIdentifier());
         $this->assertSame($comparison, $assertion->getComparison());
         $this->assertSame($value, $assertion->getValue());

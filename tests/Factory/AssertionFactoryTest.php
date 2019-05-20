@@ -39,6 +39,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
         $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
+        $this->assertSame($assertionString, $assertion->getAssertionString());
         $this->assertEquals($expectedIdentifier, $assertion->getIdentifier());
         $this->assertSame($expectedComparison, $assertion->getComparison());
         $this->assertEquals($expectedValue, $assertion->getValue());
