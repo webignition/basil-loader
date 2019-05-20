@@ -21,7 +21,7 @@ class IdentifierStringExtractor
         $typeSpecificIdentifierStringExtractor = $this->findTypeSpecificIdentifierStringExtractor($string);
 
         if ($typeSpecificIdentifierStringExtractor instanceof IdentifierStringExtractorInterface) {
-            return $typeSpecificIdentifierStringExtractor->extractFromStart($string);
+            return (string) $typeSpecificIdentifierStringExtractor->extractFromStart($string);
         }
 
         return '';
