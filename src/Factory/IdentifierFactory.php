@@ -17,12 +17,12 @@ class IdentifierFactory
     const XPATH_EXPRESSION_REGEX = '/^"\/.+("|' . self::POSITION_PATTERN . ')$/';
     const ELEMENT_PARAMETER_REGEX = '/^\$.+/';
 
-    public function create(string $identifier): IdentifierInterface
+    public function create(string $identifier): ?IdentifierInterface
     {
         $identifier = trim($identifier);
 
         if (empty($identifier)) {
-            return new Identifier(IdentifierTypes::EMPTY, '');
+            return null;
         }
 
         if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifier)) {

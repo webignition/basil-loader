@@ -6,5 +6,5 @@ use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 
 interface InteractionActionInterface extends ActionInterface
 {
-    public function getIdentifier(): IdentifierInterface;
+    public function getIdentifier(): ?IdentifierInterface;
 }
