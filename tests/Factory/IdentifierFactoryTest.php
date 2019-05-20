@@ -173,4 +173,22 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    public function createEmptyDataProvider(): array
+    {
+        return [
+            'empty string' => [
+                'identifierString' => '',
+                'expectedType' => IdentifierTypes::EMPTY,
+                'expectedValue' => '',
+                'expectedPosition' => 1,
+            ],
+            'whitespace-only string' => [
+                'identifierString' => ' ',
+                'expectedType' => IdentifierTypes::EMPTY,
+                'expectedValue' => '',
+                'expectedPosition' => 1,
+            ],
+        ];
+    }
 }
