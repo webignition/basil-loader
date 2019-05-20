@@ -449,6 +449,20 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     '"//a[ends-with(@href to value, ".pdf")]" to "value"'
                 ),
             ],
+            'no arguments' => [
+                'actionString' => 'set',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::EMPTY,
+                        ''
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    ''
+                ),
+            ],
         ];
     }
 
