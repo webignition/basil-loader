@@ -24,30 +24,27 @@ class AssertionFactory
     ];
 
     public function __construct(
-        ?IdentifierFactory $identifierFactory = null,
-        ?ValueFactory $assertionValueFactory = null,
-        ?IdentifierStringExtractor $identifierStringExtractor = null
+        IdentifierFactory $identifierFactory = null,
+        ValueFactory $assertionValueFactory = null,
+        IdentifierStringExtractor $identifierStringExtractor = null
     ) {
-        $identifierFactory = $identifierFactory ?? new IdentifierFactory();
-        $assertionValueFactory = $assertionValueFactory ?? new ValueFactory();
-        $identifierStringExtractor = $identifierStringExtractor ?? new IdentifierStringExtractor();
-
         $this->identifierFactory = $identifierFactory;
         $this->assertionValueFactory = $assertionValueFactory;
         $this->identifierStringExtractor = $identifierStringExtractor;
     }
 
+    public static function create()
+    {
+        return new AssertionFactory(
+            new IdentifierFactory(),
+            new ValueFactory(),
+            IdentifierStringExtractor::create()
+        );
+    }
+
     public function createFromAssertionString(string $assertionString): AssertionInterface
     {
-        $identifierString = $this->identifierStringExtractor->extractFromStart(
-            $assertionString,
-            self::IDENTIFIER_STRING_STOP_STRINGS
-        );
-
-        if ('' === $identifierString) {
-            var_dump($assertionString, $identifierString);
-            exit();
-        }
+        $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
         $identifier = $this->identifierFactory->create($identifierString);
         $value = null;
