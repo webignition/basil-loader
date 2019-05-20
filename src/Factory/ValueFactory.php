@@ -16,6 +16,10 @@ class ValueFactory
         $valueString = trim($valueString);
         $type = ValueTypes::STRING;
 
+        if ('' === $valueString) {
+            return new Value($type, '');
+        }
+
         $hasDataParameterPrefix = mb_strpos($valueString, self::DATA_PARAMETER_PREFIX) === 0;
         $hasElementParameterPrefix = mb_strpos($valueString, self::ELEMENT_PARAMETER_PREFIX) === 0;
 
