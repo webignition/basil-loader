@@ -11,6 +11,8 @@ use webignition\BasilParser\Model\Action\InputAction;
 
 class InputActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
+    const IDENTIFIER_STOP_WORD = ' to ';
+
     private $identifierFactory;
     private $identifierStringExtractor;
     private $valueFactory;
@@ -38,12 +40,36 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        $identifierString = $this->identifierStringExtractor->extractFromStart($arguments, [ 'to' ]);
-        $valueString = mb_substr($arguments, mb_strlen($identifierString . ' to '));
+        $identifierString = $this->identifierStringExtractor->extractFromStart(
+            $arguments,
+            [self::IDENTIFIER_STOP_WORD]
+        );
+
+        if ('' === $identifierString) {
+            list($identifierString, $valueString) = $this->resolveEmptyIdentifierString($arguments);
+        } else {
+            $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
+        }
 
         $identifier = $this->identifierFactory->create($identifierString);
         $value = $this->valueFactory->createFromValueString($valueString);
 
         return new InputAction($identifier, $value, $arguments);
+    }
+
+    private function resolveEmptyIdentifierString(string $arguments)
+    {
+        $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
+        $endsWithStopWordRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
+        $identifierString = $arguments;
+
+        if (preg_match($endsWithStopWordRegex, $arguments) > 0) {
+            $identifierString = preg_replace($endsWithStopWordRegex, '', $arguments);
+        }
+
+        return [
+            $identifierString,
+            '',
+        ];
     }
 }

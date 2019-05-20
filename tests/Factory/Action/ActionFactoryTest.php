@@ -463,6 +463,90 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                     ''
                 ),
             ],
+            'lacking value' => [
+                'actionString' => 'set ".selector" to',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    '".selector" to'
+                ),
+            ],
+            '".selector" lacking identifier and "to" keyword' => [
+                'actionString' => 'set ".selector"',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    '".selector"'
+                ),
+            ],
+            '".selector to" lacking identifier and "to" keyword' => [
+                'actionString' => 'set ".selector to"',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector to'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    '".selector to"'
+                ),
+            ],
+            '".selector" lacking "to" keyword' => [
+                'actionString' => 'set ".selector" "value"',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector" "value'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    '".selector" "value"'
+                ),
+            ],
+            '".selector to value" lacking "to" keyword' => [
+                'actionString' => 'set ".selector to value" "value"',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        '".selector'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        'value" "value'
+                    ),
+                    '".selector to value" "value"'
+                ),
+            ],
+            '".selector" lacking "to" keyword and lacking value' => [
+                'actionString' => 'set ".selector"',
+                'expectedAction' => new InputAction(
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.selector'
+                    ),
+                    new Value(
+                        ValueTypes::STRING,
+                        ''
+                    ),
+                    '".selector"'
+                ),
+            ],
         ];
     }
 
