@@ -3,6 +3,8 @@
 
 namespace webignition\BasilParser\Tests;
 
+use webignition\BasilParser\Factory\Action\InputActionFactory;
+use webignition\BasilParser\Factory\AssertionFactory;
 use webignition\BasilParser\IdentifierStringExtractor;
 
 class IdentifierStringExtractorTest extends \PHPUnit\Framework\TestCase
@@ -32,52 +34,73 @@ class IdentifierStringExtractorTest extends \PHPUnit\Framework\TestCase
     public function extractFromStartDataProvider(): array
     {
         return [
-            'empty' => [
-                'string' => '',
-                'stopStrings' => [],
-                'expectedIdentifierString' => '',
-            ],
             'assertion: whole-word selector is value' => [
                 'string' => '".selector" is "value"',
-                'stopStrings' => [
-                    ' is ',
-                ],
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
                 'expectedIdentifierString' => '".selector"',
             ],
             'assertion: selector ending with stop word is value' => [
                 'string' => '".selector is" is "value"',
-                'stopStrings' => [
-                    ' is ',
-                ],
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
                 'expectedIdentifierString' => '".selector is"',
             ],
             'assertion: selector containing with stop word is value' => [
                 'string' => '".selector is .value" is "value"',
-                'stopStrings' => [
-                    ' is ',
-                ],
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
                 'expectedIdentifierString' => '".selector is .value"',
             ],
             'set action arguments: whole-word selector' => [
                 'string' => '".selector" to "value"',
                 'stopStrings' => [
-                    ' to ',
+                    InputActionFactory::IDENTIFIER_STOP_WORD,
                 ],
                 'expectedIdentifierString' => '".selector"',
             ],
             'set action arguments: whole-word selector ending with stop word' => [
                 'string' => '".selector to " to "value"',
                 'stopStrings' => [
-                    ' to ',
+                    InputActionFactory::IDENTIFIER_STOP_WORD,
                 ],
                 'expectedIdentifierString' => '".selector to "',
             ],
             'set action arguments: whole-word containing with stop word' => [
                 'string' => '".selector to value" to "value"',
                 'stopStrings' => [
-                    ' to ',
+                    InputActionFactory::IDENTIFIER_STOP_WORD,
                 ],
                 'expectedIdentifierString' => '".selector to value"',
+            ],
+            'set action arguments: no value following stop word' => [
+                'string' => '".selector" to',
+                'stopStrings' => [
+                    InputActionFactory::IDENTIFIER_STOP_WORD,
+                ],
+                'expectedIdentifierString' => '".selector"',
+            ],
+            'assertions: no value following "is" keyword' => [
+                'string' => '".selector" is',
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
+                'expectedIdentifierString' => '".selector"',
+            ],
+            'assertions: no value following "is-not" keyword' => [
+                'string' => '".selector" is-not',
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
+                'expectedIdentifierString' => '".selector"',
+            ],
+            'assertions: no value following "includes" keyword' => [
+                'string' => '".selector" includes',
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
+                'expectedIdentifierString' => '".selector"',
+            ],
+            'assertions: no value following "excludes" keyword' => [
+                'string' => '".selector" excludes',
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
+                'expectedIdentifierString' => '".selector"',
+            ],
+            'assertions: no value following "matches" keyword' => [
+                'string' => '".selector" matches',
+                'stopStrings' => AssertionFactory::IDENTIFIER_STRING_STOP_STRINGS,
+                'expectedIdentifierString' => '".selector"',
             ],
         ];
     }

@@ -14,7 +14,13 @@ class IdentifierStringExtractor
         $identifierMatches = [];
         preg_match_all($identifierRegex, $string, $identifierMatches);
 
-        return (string) trim(implode($identifierMatches[0], ''));
+        $identifierString = (string) trim(implode($identifierMatches[0], ''));
+
+        if ('' === $identifierString) {
+            $identifierString = $this->resolveEmptyIdentifierStringForStopStrings($string, $stopStrings);
+        }
+
+        return $identifierString;
     }
 
     private function createStopStringsPattern(array $stopStrings): string
@@ -26,5 +32,31 @@ class IdentifierStringExtractor
         }
 
         return implode('|', $stopStringsPatternParts);
+    }
+
+    private function resolveEmptyIdentifierStringForStopStrings(string $string, array $stopStrings): string
+    {
+        foreach ($stopStrings as $stopString) {
+            $resolvedIdentifierString = $this->resolveEmptyIdentifierStringForStopString($string, $stopString);
+
+            if ($resolvedIdentifierString !== $string) {
+                return $resolvedIdentifierString;
+            }
+        }
+
+        return $string;
+    }
+
+    private function resolveEmptyIdentifierStringForStopString(string $string, string $stopString): string
+    {
+        $trimmedStopString = trim($stopString);
+        $endsWithStopStringRegex = '/(( ' . $trimmedStopString . ' )|( ' . $trimmedStopString . '))$/';
+        $identifierString = $string;
+
+        if (preg_match($endsWithStopStringRegex, $string) > 0) {
+            $identifierString = (string) preg_replace($endsWithStopStringRegex, '', $string);
+        }
+
+        return $identifierString;
     }
 }

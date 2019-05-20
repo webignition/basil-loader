@@ -44,6 +44,11 @@ class AssertionFactory
             self::IDENTIFIER_STRING_STOP_STRINGS
         );
 
+        if ('' === $identifierString) {
+            var_dump($assertionString, $identifierString);
+            exit();
+        }
+
         $identifier = $this->identifierFactory->create($identifierString);
         $value = null;
 

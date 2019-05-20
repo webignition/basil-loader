@@ -28,9 +28,9 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromAssertionStringForValidAssertionDataProvider
+     * @dataProvider createFromAssertionString
      */
-    public function testCreateFromAssertionStringForValidAssertion(
+    public function testCreateFromAssertionString(
         string $assertionString,
         IdentifierInterface $expectedIdentifier,
         string $expectedComparison,
@@ -45,7 +45,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedValue, $assertion->getValue());
     }
 
-    public function createFromAssertionStringForValidAssertionDataProvider(): array
+    public function createFromAssertionString(): array
     {
         return [
             'simple css selector, is, scalar value' => [
@@ -96,6 +96,15 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '"value"'
                 ),
             ],
+            'simple css selector, is, lacking value' => [
+                'assertionString' => '".selector" is',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => null,
+            ],
             'simple css selector, is-not, scalar value' => [
                 'assertionString' => '".selector" is-not "value"',
                 'expectedIdentifier' => new Identifier(
@@ -107,6 +116,15 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     ValueTypes::STRING,
                     'value'
                 ),
+            ],
+            'simple css selector, is-not, lacking value' => [
+                'assertionString' => '".selector" is-not',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS_NOT,
+                'expectedValue' => null,
             ],
             'simple css selector, exists, no value' => [
                 'assertionString' => '".selector" exists',
@@ -147,6 +165,15 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     'value'
                 ),
             ],
+            'simple css selector, includes, lacking value' => [
+                'assertionString' => '".selector" includes',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::INCLUDES,
+                'expectedValue' => null,
+            ],
             'simple css selector, excludes, scalar value' => [
                 'assertionString' => '".selector" excludes "value"',
                 'expectedIdentifier' => new Identifier(
@@ -159,6 +186,15 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     'value'
                 ),
             ],
+            'simple css selector, excludes, lacking value' => [
+                'assertionString' => '".selector" excludes',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::EXCLUDES,
+                'expectedValue' => null,
+            ],
             'simple css selector, matches, scalar value' => [
                 'assertionString' => '".selector" matches "value"',
                 'expectedIdentifier' => new Identifier(
@@ -170,6 +206,15 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     ValueTypes::STRING,
                     'value'
                 ),
+            ],
+            'simple css selector, matches, lacking value' => [
+                'assertionString' => '".selector" matches',
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::MATCHES,
+                'expectedValue' => null,
             ],
             'comparison-including css selector, is, scalar value' => [
                 'assertionString' => '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
