@@ -44,11 +44,11 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromActionStringForValidClickActionDataProvider
-     * @dataProvider createFromActionStringForValidSubmitActionDataProvider
-     * @dataProvider createFromActionStringForValidWaitForActionDataProvider
+     * @dataProvider createFromActionStringForClickActionDataProvider
+     * @dataProvider createFromActionStringForSubmitActionDataProvider
+     * @dataProvider createFromActionStringForWaitForActionDataProvider
      */
-    public function testCreateFromActionStringForValidInteractionAction(
+    public function testCreateFromActionStringForInteractionAction(
         string $actionString,
         InteractionAction $expectedAction
     ) {
@@ -57,7 +57,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAction, $action);
     }
 
-    public function createFromActionStringForValidClickActionDataProvider(): array
+    public function createFromActionStringForClickActionDataProvider(): array
     {
         return [
             'click css selector with null position double-quoted' => [
@@ -130,7 +130,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromActionStringForValidSubmitActionDataProvider(): array
+    public function createFromActionStringForSubmitActionDataProvider(): array
     {
         return [
             'submit css selector with null position double-quoted' => [
@@ -203,7 +203,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromActionStringForValidWaitForActionDataProvider(): array
+    public function createFromActionStringForWaitForActionDataProvider(): array
     {
         return [
             'wait-for css selector with null position double-quoted' => [
@@ -277,16 +277,16 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromActionStringForValidWaitActionDataProvider
+     * @dataProvider createFromActionStringForWaitActionDataProvider
      */
-    public function testCreateFromActionStringForValidWaitAction(string $actionString, WaitAction $expectedAction)
+    public function testCreateFromActionStringForWaitAction(string $actionString, WaitAction $expectedAction)
     {
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
 
-    public function createFromActionStringForValidWaitActionDataProvider(): array
+    public function createFromActionStringForWaitActionDataProvider(): array
     {
         return [
             'wait 1' => [
@@ -309,9 +309,9 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromActionStringForValidNoArgumentsActionDataProvider
+     * @dataProvider createFromActionStringForNoArgumentsActionDataProvider
      */
-    public function testCreateFromActionStringForValidNoArgumentsAction(
+    public function testCreateFromActionStringForNoArgumentsAction(
         string $actionString,
         NoArgumentsAction $expectedAction
     ) {
@@ -320,7 +320,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAction, $action);
     }
 
-    public function createFromActionStringForValidNoArgumentsActionDataProvider(): array
+    public function createFromActionStringForNoArgumentsActionDataProvider(): array
     {
         return [
             'reload' => [
@@ -339,16 +339,16 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromActionStringForValidInputActionDataProvider
+     * @dataProvider createFromActionStringForInputActionDataProvider
      */
-    public function testCreateFromActionStringForValidInputAction(string $actionString, InputAction $expectedAction)
+    public function testCreateFromActionStringForInputAction(string $actionString, InputAction $expectedAction)
     {
         $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
 
-    public function createFromActionStringForValidInputActionDataProvider(): array
+    public function createFromActionStringForInputActionDataProvider(): array
     {
         return [
             'simple css selector, scalar value' => [
