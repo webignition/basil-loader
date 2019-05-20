@@ -37,9 +37,11 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
 
-        $this->assertSame($expectedType, $identifier->getType());
-        $this->assertSame($expectedValue, $identifier->getValue());
-        $this->assertSame($expectedPosition, $identifier->getPosition());
+        if ($identifier instanceof IdentifierInterface) {
+            $this->assertSame($expectedType, $identifier->getType());
+            $this->assertSame($expectedValue, $identifier->getValue());
+            $this->assertSame($expectedPosition, $identifier->getPosition());
+        }
     }
 
     public function createCssSelectorDataProvider(): array
