@@ -27,7 +27,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createElementParameterDataProvider
      * @dataProvider createPageModelElementReferenceDataProvider
      */
-    public function testCreate(
+    public function testCreateNonEmpty(
         string $identifierString,
         string $expectedType,
         string $expectedValue,
@@ -37,9 +37,11 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
 
-        $this->assertSame($expectedType, $identifier->getType());
-        $this->assertSame($expectedValue, $identifier->getValue());
-        $this->assertSame($expectedPosition, $identifier->getPosition());
+        if ($identifier instanceof IdentifierInterface) {
+            $this->assertSame($expectedType, $identifier->getType());
+            $this->assertSame($expectedValue, $identifier->getValue());
+            $this->assertSame($expectedPosition, $identifier->getPosition());
+        }
     }
 
     public function createCssSelectorDataProvider(): array
@@ -174,21 +176,9 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createEmptyDataProvider(): array
+    public function testCreateEmpty()
     {
-        return [
-            'empty string' => [
-                'identifierString' => '',
-                'expectedType' => IdentifierTypes::EMPTY,
-                'expectedValue' => '',
-                'expectedPosition' => 1,
-            ],
-            'whitespace-only string' => [
-                'identifierString' => ' ',
-                'expectedType' => IdentifierTypes::EMPTY,
-                'expectedValue' => '',
-                'expectedPosition' => 1,
-            ],
-        ];
+        $this->assertNull($this->factory->create(''));
+        $this->assertNull($this->factory->create(' '));
     }
 }

@@ -36,57 +36,35 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {
-            return new InputAction(
-                $this->identifierFactory->create(''),
-                null,
-                $arguments
-            );
+            return new InputAction(null, null, $arguments);
         }
+
+        $identifier = $this->identifierFactory->create($identifierString);
 
         $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
 
         if (preg_match($endsWithStopStringRegex, $arguments) > 0) {
-            return new InputAction(
-                $this->identifierFactory->create($identifierString),
-                null,
-                $arguments
-            );
+            return new InputAction($identifier, null, $arguments);
         }
 
         if ($arguments === $identifierString) {
-            return new InputAction(
-                $this->identifierFactory->create($identifierString),
-                null,
-                $arguments
-            );
+            return new InputAction($identifier, null, $arguments);
         }
 
         $keywordAndValueString = mb_substr($arguments, mb_strlen($identifierString));
 
-        $hasToKeyword = substr(
-            $keywordAndValueString,
-            0,
-            strlen(self::IDENTIFIER_STOP_WORD)
-        ) === self::IDENTIFIER_STOP_WORD;
+        $stopWord = self::IDENTIFIER_STOP_WORD;
+        $hasToKeyword = substr($keywordAndValueString, 0, strlen($stopWord)) === $stopWord;
 
-        if (!$hasToKeyword) {
-            $keywordAndValueString = trim($keywordAndValueString);
-
-            $value = '' === $keywordAndValueString
+        if ($hasToKeyword) {
+            $valueString = mb_substr($keywordAndValueString, mb_strlen(self::IDENTIFIER_STOP_WORD));
+            $value = $this->valueFactory->createFromValueString($valueString);
+        } else {
+            $value = '' === trim($keywordAndValueString)
                 ? null
                 : $this->valueFactory->createFromValueString($keywordAndValueString);
-
-            return new InputAction(
-                $this->identifierFactory->create($identifierString),
-                $value,
-                $arguments
-            );
         }
-
-        $valueString = mb_substr($keywordAndValueString, mb_strlen(self::IDENTIFIER_STOP_WORD));
-        $value = $this->valueFactory->createFromValueString($valueString);
-        $identifier = $this->identifierFactory->create($identifierString);
 
         return new InputAction($identifier, $value, $arguments);
     }

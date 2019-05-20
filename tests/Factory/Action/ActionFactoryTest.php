@@ -106,10 +106,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'actionString' => 'click',
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::EMPTY,
-                        ''
-                    ),
+                    null,
                     ''
                 ),
             ],
@@ -179,10 +176,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'actionString' => 'submit',
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
-                    new Identifier(
-                        IdentifierTypes::EMPTY,
-                        ''
-                    ),
+                    null,
                     ''
                 ),
             ],
@@ -252,10 +246,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'actionString' => 'wait-for',
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
-                    new Identifier(
-                        IdentifierTypes::EMPTY,
-                        ''
-                    ),
+                    null,
                     ''
                 ),
             ],
@@ -438,10 +429,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'no arguments' => [
                 'actionString' => 'set',
                 'expectedAction' => new InputAction(
-                    new Identifier(
-                        IdentifierTypes::EMPTY,
-                        ''
-                    ),
+                    null,
                     null,
                     ''
                 ),
