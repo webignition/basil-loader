@@ -456,10 +456,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                         IdentifierTypes::EMPTY,
                         ''
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
+                    null,
                     ''
                 ),
             ],
@@ -470,39 +467,8 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                         IdentifierTypes::CSS_SELECTOR,
                         '.selector'
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
+                    null,
                     '".selector" to'
-                ),
-            ],
-            '".selector" lacking identifier and "to" keyword' => [
-                'actionString' => 'set ".selector"',
-                'expectedAction' => new InputAction(
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
-                    ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
-                    '".selector"'
-                ),
-            ],
-            '".selector to" lacking identifier and "to" keyword' => [
-                'actionString' => 'set ".selector to"',
-                'expectedAction' => new InputAction(
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        '.selector to'
-                    ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
-                    '".selector to"'
                 ),
             ],
             '".selector" lacking "to" keyword' => [
@@ -512,10 +478,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                         IdentifierTypes::CSS_SELECTOR,
                         '.selector" "value'
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
+                    null,
                     '".selector" "value"'
                 ),
             ],
@@ -540,10 +503,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                         IdentifierTypes::CSS_SELECTOR,
                         '.selector'
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        ''
-                    ),
+                    null,
                     '".selector"'
                 ),
             ],

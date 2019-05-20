@@ -46,14 +46,54 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         );
 
         if ('' === $identifierString) {
-            $valueString = '';
-        } else {
-            $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
+            return new InputAction(
+                $this->identifierFactory->create(''),
+                null,
+                $arguments
+            );
         }
 
-        $identifier = $this->identifierFactory->create($identifierString);
+        $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
+        $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
+
+        if (preg_match($endsWithStopStringRegex, $arguments) > 0) {
+            return new InputAction(
+                $this->identifierFactory->create($identifierString),
+                null,
+                $arguments
+            );
+        }
+
+        if ($arguments === $identifierString) {
+            return new InputAction(
+                $this->identifierFactory->create($identifierString),
+                null,
+                $arguments
+            );
+        }
+
+        $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
+
+        if ($this->lacksToKeyword($arguments, $identifierString, $valueString)) {
+            return new InputAction(
+                $this->identifierFactory->create($identifierString),
+                null,
+                $arguments
+            );
+        }
+
+        $valueString = mb_substr($arguments, mb_strlen($identifierString . self::IDENTIFIER_STOP_WORD));
         $value = $this->valueFactory->createFromValueString($valueString);
+        $identifier = $this->identifierFactory->create($identifierString);
 
         return new InputAction($identifier, $value, $arguments);
+    }
+
+    private function lacksToKeyword(string $arguments, string $identifierString, string $valueString)
+    {
+        $valuePosition = mb_strpos($arguments, $valueString);
+        $expectedValuePosition = mb_strlen($identifierString) + strlen(self::IDENTIFIER_STOP_WORD);
+
+        return $valuePosition !== $expectedValuePosition;
     }
 }
