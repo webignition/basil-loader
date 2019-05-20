@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Model\Action;
 
-class WaitAction extends AbstractAction implements ActionInterface, WaitActionInterface
+class WaitAction extends AbstractAction implements WaitActionInterface
 {
     private $duration;
 

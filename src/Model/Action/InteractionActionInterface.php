@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Model\Action;
 
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 
-interface InteractionActionInterface
+interface InteractionActionInterface extends ActionInterface
 {
     public function getIdentifier(): IdentifierInterface;
 }
