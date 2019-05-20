@@ -19,6 +19,12 @@ class IdentifierFactory
 
     public function create(string $identifier): IdentifierInterface
     {
+        $identifier = trim($identifier);
+
+        if (empty($identifier)) {
+            return new Identifier(IdentifierTypes::EMPTY, '');
+        }
+
         if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifier)) {
             list($value, $position) = $this->extractValueAndPosition($identifier);
 
