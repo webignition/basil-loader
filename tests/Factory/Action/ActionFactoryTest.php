@@ -271,6 +271,10 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                 'actionString' => 'wait $data.name',
                 'expectedAction' => new WaitAction('$data.name'),
             ],
+            'wait no arguments' => [
+                'actionString' => 'wait',
+                'expectedAction' => new WaitAction(''),
+            ],
         ];
     }
 
