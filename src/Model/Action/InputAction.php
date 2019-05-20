@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Model\Action;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Value\ValueInterface;
 
-class InputAction extends InteractionAction implements ActionInterface, InteractionActionInterface, InputActionInterface
+class InputAction extends InteractionAction implements InputActionInterface
 {
     private $value;
 

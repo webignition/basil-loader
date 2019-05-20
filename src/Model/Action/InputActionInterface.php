@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Model\Action;
 
 use webignition\BasilParser\Model\Value\ValueInterface;
 
-interface InputActionInterface
+interface InputActionInterface extends InteractionActionInterface
 {
     public function getValue(): ValueInterface;
 }

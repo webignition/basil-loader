@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Model\Action;
 
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 
-class InteractionAction extends AbstractAction implements ActionInterface, InteractionActionInterface
+class InteractionAction extends AbstractAction implements InteractionActionInterface
 {
     private $identifier;
 
