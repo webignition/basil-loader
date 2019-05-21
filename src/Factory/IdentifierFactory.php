@@ -19,7 +19,7 @@ class IdentifierFactory
     const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
     const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
 
-    public function create(string $identifierString): ?IdentifierInterface
+    public function createWithElementReference(string $identifierString): ?IdentifierInterface
     {
         $identifierString = trim($identifierString);
 
@@ -34,7 +34,7 @@ class IdentifierFactory
                 $this->extractElementReferenceAndIdentifierString($identifierString);
         }
 
-        $identifier = $this->createIgnoringElementReference($identifierString);
+        $identifier = $this->create($identifierString);
 
         if ($identifier instanceof IdentifierInterface && $elementReference) {
             return $identifier->withElementReference($elementReference);
@@ -43,7 +43,7 @@ class IdentifierFactory
         return $identifier;
     }
 
-    public function createIgnoringElementReference(string $identifierString): ?IdentifierInterface
+    public function create(string $identifierString): ?IdentifierInterface
     {
         $identifierString = trim($identifierString);
 

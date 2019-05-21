@@ -35,7 +35,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         ?string $expectedElementReference,
         int $expectedPosition
     ) {
-        $identifier = $this->factory->create($identifierString);
+        $identifier = $this->factory->createWithElementReference($identifierString);
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
 
@@ -254,7 +254,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateEmpty()
     {
-        $this->assertNull($this->factory->create(''));
-        $this->assertNull($this->factory->create(' '));
+        $this->assertNull($this->factory->createWithElementReference(''));
+        $this->assertNull($this->factory->createWithElementReference(' '));
     }
 }

@@ -39,7 +39,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
             return new InputAction(null, null, $arguments);
         }
 
-        $identifier = $this->identifierFactory->createIgnoringElementReference($identifierString);
+        $identifier = $this->identifierFactory->create($identifierString);
 
         $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
