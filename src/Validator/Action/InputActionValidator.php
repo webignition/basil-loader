@@ -40,7 +40,7 @@ class InputActionValidator implements ActionValidatorInterface
             return false;
         }
 
-        $argumentsWithoutSelector = mb_substr($arguments, mb_strlen($action->getIdentifier()));
+        $argumentsWithoutSelector = mb_substr($arguments, mb_strlen((string) $action->getIdentifier()));
 
         $stopWord = self::IDENTIFIER_STOP_WORD;
         return mb_substr($argumentsWithoutSelector, 0, strlen($stopWord)) === $stopWord;
