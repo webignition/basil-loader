@@ -16,32 +16,60 @@ class IdentifierFactory
     const CSS_SELECTOR_REGEX = '/^"((?!\/).).+("|' . self::POSITION_PATTERN . ')$/';
     const XPATH_EXPRESSION_REGEX = '/^"\/.+("|' . self::POSITION_PATTERN . ')$/';
     const ELEMENT_PARAMETER_REGEX = '/^\$.+/';
+    const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
+    const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
 
-    public function create(string $identifier): ?IdentifierInterface
+    public function createWithElementReference(string $identifierString): ?IdentifierInterface
     {
-        $identifier = trim($identifier);
+        $identifierString = trim($identifierString);
 
-        if (empty($identifier)) {
+        if (empty($identifierString)) {
             return null;
         }
 
-        if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifier)) {
-            list($value, $position) = $this->extractValueAndPosition($identifier);
+        $elementReference = null;
+
+        if (1 === preg_match(self::REFERENCED_ELEMENT_REGEX, $identifierString)) {
+            list($elementReference, $identifierString) =
+                $this->extractElementReferenceAndIdentifierString($identifierString);
+        }
+
+        $identifier = $this->create($identifierString);
+
+        if ($identifier instanceof IdentifierInterface && $elementReference) {
+            return $identifier->withElementReference($elementReference);
+        }
+
+        return $identifier;
+    }
+
+    public function create(string $identifierString): ?IdentifierInterface
+    {
+        $identifierString = trim($identifierString);
+
+        if (empty($identifierString)) {
+            return null;
+        }
+
+        if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifierString)) {
+            list($value, $position) = $this->extractValueAndPosition($identifierString);
+            $value = trim($value, '"');
 
             return new Identifier(IdentifierTypes::CSS_SELECTOR, $value, $position);
         }
 
-        if (1 === preg_match(self::XPATH_EXPRESSION_REGEX, $identifier)) {
-            list($value, $position) = $this->extractValueAndPosition($identifier);
+        if (1 === preg_match(self::XPATH_EXPRESSION_REGEX, $identifierString)) {
+            list($value, $position) = $this->extractValueAndPosition($identifierString);
+            $value = trim($value, '"');
 
             return new Identifier(IdentifierTypes::XPATH_EXPRESSION, $value, $position);
         }
 
-        if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifier)) {
-            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifier, 1);
+        if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifierString)) {
+            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifierString, 1);
         }
 
-        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifier, 1);
+        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifierString, 1);
     }
 
     private function extractValueAndPosition(string $identifier)
@@ -69,11 +97,46 @@ class IdentifierFactory
             }
         }
 
-        $value = trim($quotedValue, '""');
+        return [
+            $quotedValue,
+            $position,
+        ];
+    }
+
+    private function extractElementReferenceAndIdentifierString(string $identifier)
+    {
+        $elementReferenceMatches = [];
+        preg_match(self::REFERENCED_ELEMENT_EXTRACTOR_REGEX, $identifier, $elementReferenceMatches);
+
+        $elementReferencePart = $elementReferenceMatches[0];
+        $identifierStringPart = trim(mb_substr($identifier, mb_strlen($elementReferencePart)));
+
+        $elementReference = $elementReferencePart;
+
+        if ('"' === $elementReference[0]) {
+            $elementReference = ltrim($elementReference, '"');
+        }
+
+        $elementReference = trim($elementReference, '{} ');
+
+        $identifierString = $identifierStringPart;
+        $position = null;
+
+        if (preg_match(self::POSITION_REGEX, $identifierString)) {
+            list($identifierString, $position) = $this->extractValueAndPosition($identifierString);
+        }
+
+        if ('"' === $identifierString[-1] && '"' !== $identifierString[0]) {
+            $identifierString = '"' . $identifierString;
+        }
+
+        if ($position) {
+            $identifierString .= ':' . $position;
+        }
 
         return [
-            $value,
-            $position,
+            $elementReference,
+            $identifierString
         ];
     }
 }
