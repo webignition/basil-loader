@@ -33,4 +33,17 @@ class Identifier implements IdentifierInterface
     {
         return $this->position;
     }
+
+    public function __toString(): string
+    {
+        $string = in_array($this->type, [IdentifierTypes::CSS_SELECTOR, IdentifierTypes::XPATH_EXPRESSION])
+            ? '"' . $this->value . '"'
+            : $this->value;
+
+        if (self::DEFAULT_POSITION !== $this->position) {
+            $string .= ':' . $this->position;
+        }
+
+        return $string;
+    }
 }
