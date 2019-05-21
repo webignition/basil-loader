@@ -24,7 +24,7 @@ class AssertionFactory
     {
         $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
-        $identifier = $this->identifierFactory->create($identifierString);
+        $identifier = $this->identifierFactory->createIgnoringElementReference($identifierString);
         $value = null;
 
         $comparisonAndValue = trim(mb_substr($assertionString, mb_strlen($identifierString)));

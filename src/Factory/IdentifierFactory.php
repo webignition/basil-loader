@@ -41,8 +41,14 @@ class IdentifierFactory
             : $identifier;
     }
 
-    private function createIgnoringElementReference(string $identifierString): IdentifierInterface
+    public function createIgnoringElementReference(string $identifierString): ?IdentifierInterface
     {
+        $identifierString = trim($identifierString);
+
+        if (empty($identifierString)) {
+            return null;
+        }
+
         if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifierString)) {
             list($value, $position) = $this->extractValueAndPosition($identifierString);
             $value = trim($value, '"');
