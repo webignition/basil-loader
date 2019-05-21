@@ -29,6 +29,10 @@ class InteractionActionFactory extends AbstractActionFactory implements ActionFa
 
     protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
     {
-        return new InteractionAction($type, $this->identifierFactory->createIgnoringElementReference($arguments), $arguments);
+        return new InteractionAction(
+            $type,
+            $this->identifierFactory->createIgnoringElementReference($arguments),
+            $arguments
+        );
     }
 }

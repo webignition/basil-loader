@@ -36,9 +36,11 @@ class IdentifierFactory
 
         $identifier = $this->createIgnoringElementReference($identifierString);
 
-        return $elementReference
-            ? $identifier->withElementReference($elementReference)
-            : $identifier;
+        if ($identifier instanceof IdentifierInterface && $elementReference) {
+            return $identifier->withElementReference($elementReference);
+        }
+
+        return $identifier;
     }
 
     public function createIgnoringElementReference(string $identifierString): ?IdentifierInterface
