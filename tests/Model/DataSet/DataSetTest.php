@@ -49,7 +49,7 @@ class DataSetTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetParameterNames(DataSetInterface $dataSet, array $expectedParameterNames)
     {
-        $this->assertEquals($expectedParameterNames, $dataSet->getParameterNames());
+        $this->assertSame($expectedParameterNames, $dataSet->getParameterNames());
     }
 
     public function getParameterNamesDataProvider()
@@ -61,8 +61,8 @@ class DataSetTest extends \PHPUnit\Framework\TestCase
             ],
             'non-empty' => [
                 'dataSet' => new DataSet([
-                    1 => 'value for one',
-                    2 => 'value for two',
+                    '1' => 'value for one',
+                    '2' => 'value for two',
                     'three' => 'value for three',
                 ]),
                 'expectedParameterNames' => [

@@ -9,7 +9,7 @@ class DataSet implements DataSetInterface
     public function __construct(array $data)
     {
         foreach ($data as $key => $value) {
-            $this->data[(string) $key] = (string) $value;
+            $this->data[$key] = (string) $value;
         }
     }
 
@@ -23,6 +23,12 @@ class DataSet implements DataSetInterface
      */
     public function getParameterNames(): array
     {
-        return array_keys($this->data);
+        $keys = [];
+
+        foreach (array_keys($this->data) as $key) {
+            $keys[] = (string) $key;
+        }
+
+        return $keys;
     }
 }
