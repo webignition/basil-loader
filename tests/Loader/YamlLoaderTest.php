@@ -52,4 +52,11 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 
         $yamlLoader->loadArray($path);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        \Mockery::close();
+    }
 }
