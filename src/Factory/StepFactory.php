@@ -27,7 +27,7 @@ class StepFactory
         $this->assertionFactory = new AssertionFactory();
     }
 
-    public function createFromStepData(array $stepData): StepInterface
+    public function createFromStepData(array $stepData, array $dataSets, array $elementReferences): StepInterface
     {
         $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
         $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
@@ -46,6 +46,6 @@ class StepFactory
             }
         }
 
-        return new Step($actions, $assertions);
+        return new Step($actions, $assertions, $dataSets, $elementReferences);
     }
 }

@@ -9,8 +9,10 @@ use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
+use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
@@ -32,14 +34,15 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromStepDataDataProvider
      */
-    public function testCreateFromStepData(array $stepData, array $expectedActions, array $expectedAssertions)
-    {
-        $step = $this->stepFactory->createFromStepData($stepData);
+    public function testCreateFromStepData(
+        array $stepData,
+        array $dataSets,
+        array $elementReferences,
+        StepInterface $expectedStep
+    ) {
+        $step = $this->stepFactory->createFromStepData($stepData, $dataSets, $elementReferences);
 
-        $this->assertInstanceOf(StepInterface::class, $step);
-
-        $this->assertEquals($expectedActions, $step->getActions());
-        $this->assertEquals($expectedAssertions, $step->getAssertions());
+        $this->assertEquals($expectedStep, $step);
     }
 
     public function createFromStepDataDataProvider(): array
@@ -47,8 +50,9 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'empty step data' => [
                 'stepData' => [],
-                'expectedActions' => [],
-                'expectedAssertions' => [],
+                'dataSets' => [],
+                'elementReferences' => [],
+                'expectedStep' => new Step([], [], [], []),
             ],
             'actions only' => [
                 'stepData' => [
@@ -57,28 +61,34 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'set ".input" to "value"',
                     ],
                 ],
-                'expectedActions' => [
-                    new InteractionAction(
-                        ActionTypes::CLICK,
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.selector'
+                'dataSets' => [],
+                'elementReferences' => [],
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            '".selector"'
                         ),
-                        '".selector"'
-                    ),
-                    new InputAction(
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.input'
-                        ),
-                        new Value(
-                            ValueTypes::STRING,
-                            'value'
-                        ),
-                        '".input" to "value"'
-                    )
-                ],
-                'expectedAssertions' => [],
+                        new InputAction(
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.input'
+                            ),
+                            new Value(
+                                ValueTypes::STRING,
+                                'value'
+                            ),
+                            '".input" to "value"'
+                        )
+                    ],
+                    [],
+                    [],
+                    []
+                ),
             ],
             'assertions only' => [
                 'stepData' => [
@@ -87,29 +97,84 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         '".input" exists'
                     ],
                 ],
-                'expectedActions' => [],
-                'expectedAssertions' => [
-                    new Assertion(
+                'dataSets' => [],
+                'elementReferences' => [],
+                'expectedStep' => new Step(
+                    [
+                    ],
+                    [
+                        new Assertion(
+                            '".selector" is "value"',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            AssertionComparisons::IS,
+                            new Value(
+                                ValueTypes::STRING,
+                                'value'
+                            )
+                        ),
+                        new Assertion(
+                            '".input" exists',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.input'
+                            ),
+                            AssertionComparisons::EXISTS
+                        ),
+                    ],
+                    [],
+                    []
+                ),
+            ],
+            'actions, assertions, data sets and element references' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepFactory::KEY_ASSERTIONS => [
                         '".selector" is "value"',
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.selector'
-                        ),
-                        AssertionComparisons::IS,
-                        new Value(
-                            ValueTypes::STRING,
-                            'value'
-                        )
-                    ),
-                    new Assertion(
-                        '".input" exists',
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.input'
-                        ),
-                        AssertionComparisons::EXISTS
-                    ),
+                    ],
                 ],
+                'dataSets' => [
+                    new DataSet([]),
+                ],
+                'elementReferences' => [
+                    'foo' => 'page_model.elements.element_name'
+                ],
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            '".selector"'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            '".selector" is "value"',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            AssertionComparisons::IS,
+                            new Value(
+                                ValueTypes::STRING,
+                                'value'
+                            )
+                        ),
+                    ],
+                    [
+                        new DataSet([]),
+                    ],
+                    [
+                        'foo' => 'page_model.elements.element_name'
+                    ]
+                ),
             ],
         ];
     }
