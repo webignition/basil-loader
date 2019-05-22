@@ -37,6 +37,11 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function createFromPageDataDataProvider(): array
     {
+        $parentIdentifier = new Identifier(
+            IdentifierTypes::CSS_SELECTOR,
+            '.form'
+        );
+
         return [
             'empty page data' => [
                 'pageData' => [],
@@ -83,15 +88,12 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                 'expectedPage' => new Page(
                     new Uri('http://example.com/'),
                     [
-                        'form' => new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.form'
-                        ),
+                        'form' => $parentIdentifier,
                         'form_field' =>
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 '.field'
-                            ))->withElementReference('form'),
+                            ))->withParentIdentifier($parentIdentifier),
                     ]
                 ),
             ],
