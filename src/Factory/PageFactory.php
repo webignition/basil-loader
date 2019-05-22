@@ -31,8 +31,11 @@ class PageFactory
         $elementIdentifiers = [];
 
         foreach ($elementsData as $elementName => $identifierString) {
-            $identifier = $this->identifierFactory->createWithElementReference($identifierString);
-
+            $identifier = $this->identifierFactory->createWithElementReference(
+                $identifierString,
+                $elementName,
+                $elementIdentifiers
+            );
             $elementIdentifiers[$elementName] = $identifier;
         }
 

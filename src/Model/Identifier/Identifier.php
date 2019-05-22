@@ -9,15 +9,21 @@ class Identifier implements IdentifierInterface
     private $type = '';
     private $value = '';
     private $position = 1;
-    private $elementReference = null;
+    private $name;
 
-    public function __construct(string $type, string $value, int $position = null)
+    /**
+     * @var IdentifierInterface
+     */
+    private $parentIdentifier;
+
+    public function __construct(string $type, string $value, int $position = null, string $name = null)
     {
         $position = $position ?? self::DEFAULT_POSITION;
 
         $this->type = $type;
         $this->value = $value;
         $this->position = $position;
+        $this->name = $name;
     }
 
     public function getType(): string
@@ -35,15 +41,20 @@ class Identifier implements IdentifierInterface
         return $this->position;
     }
 
-    public function getElementReference(): ?string
+    public function getName(): ?string
     {
-        return $this->elementReference;
+        return $this->name;
     }
 
-    public function withElementReference(string $elementReference): IdentifierInterface
+    public function getParentIdentifier(): ?IdentifierInterface
+    {
+        return $this->parentIdentifier;
+    }
+
+    public function withParentIdentifier(IdentifierInterface $parentIdentifier): IdentifierInterface
     {
         $new = clone $this;
-        $new->elementReference = $elementReference;
+        $new->parentIdentifier = $parentIdentifier;
 
         return $new;
     }
@@ -52,8 +63,8 @@ class Identifier implements IdentifierInterface
     {
         $value = $this->value;
 
-        if ($this->elementReference) {
-            $value = '{{ ' . $this->elementReference . ' }} ' . $value;
+        if ($this->parentIdentifier instanceof IdentifierInterface) {
+            $value = '{{ ' . $this->parentIdentifier->getName() . ' }} ' . $value;
         }
 
         $string = in_array($this->type, [IdentifierTypes::CSS_SELECTOR, IdentifierTypes::XPATH_EXPRESSION])

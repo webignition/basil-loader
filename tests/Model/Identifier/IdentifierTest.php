@@ -38,16 +38,18 @@ class IdentifierTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testWithElementReference()
+    public function testWithParentIdentifier()
     {
         $identifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.selector');
 
-        $this->assertNull($identifier->getElementReference());
+        $this->assertNull($identifier->getParentIdentifier());
 
-        $identifierWithElementReference = $identifier->withElementReference('element_name');
+        $parentIdentifier = new Identifier(IdentifierTypes::CSS_SELECTOR, '.parent', null, 'parent_name');
+
+        $identifierWithElementReference = $identifier->withParentIdentifier($parentIdentifier);
 
         $this->assertNotSame($identifier, $identifierWithElementReference);
-        $this->assertEquals('element_name', $identifierWithElementReference->getElementReference());
+        $this->assertSame($parentIdentifier, $identifierWithElementReference->getParentIdentifier());
     }
 
     /**
@@ -60,21 +62,24 @@ class IdentifierTest extends \PHPUnit\Framework\TestCase
 
     public function toStringDataProvider(): array
     {
-        $cssSelectorWithElementReference = new Identifier(
+        $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.selector'
+            '.parent',
+            null,
+            'parent_identifier_name'
         );
 
         $cssSelectorWithElementReference =
-            $cssSelectorWithElementReference->withElementReference('referenced_element_name');
-
-        $xpathExpressionWithElementReference = new Identifier(
-            IdentifierTypes::XPATH_EXPRESSION,
-            '//foo'
-        );
+            (new Identifier(
+                IdentifierTypes::CSS_SELECTOR,
+                '.selector'
+            ))->withParentIdentifier($parentIdentifier);
 
         $xpathExpressionWithElementReference =
-            $xpathExpressionWithElementReference->withElementReference('referenced_element_name');
+            (new Identifier(
+                IdentifierTypes::XPATH_EXPRESSION,
+                '//foo'
+            ))->withParentIdentifier($parentIdentifier);
 
         return [
             'css selector, position null' => [
@@ -149,11 +154,11 @@ class IdentifierTest extends \PHPUnit\Framework\TestCase
             ],
             'css selector with element reference, position null' => [
                 'identifier' => $cssSelectorWithElementReference,
-                'expectedString' => '"{{ referenced_element_name }} .selector"',
+                'expectedString' => '"{{ parent_identifier_name }} .selector"',
             ],
             'xpath expression with element reference, position null' => [
                 'identifier' => $xpathExpressionWithElementReference,
-                'expectedString' => '"{{ referenced_element_name }} //foo"',
+                'expectedString' => '"{{ parent_identifier_name }} //foo"',
             ],
         ];
     }
