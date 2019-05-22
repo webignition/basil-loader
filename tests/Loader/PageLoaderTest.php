@@ -37,6 +37,11 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
+        $parentIdentifier = new Identifier(
+            IdentifierTypes::CSS_SELECTOR,
+            '.form'
+        );
+
         return [
             'empty' => [
                 'yamlLoaderReturnValue' => [],
@@ -67,7 +72,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 '.input'
-                            ))->withElementReference('form'),
+                            ))->withParentIdentifier($parentIdentifier),
                     ]
                 ),
             ],
