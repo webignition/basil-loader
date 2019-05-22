@@ -39,7 +39,9 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.form'
+            '.form',
+            null,
+            'form'
         );
 
         return [
@@ -72,7 +74,9 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                     [
                         'css-selector' => new Identifier(
                             IdentifierTypes::CSS_SELECTOR,
-                            '.selector'
+                            '.selector',
+                            null,
+                            'css-selector'
                         ),
                     ]
                 ),
@@ -92,7 +96,9 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                         'form_field' =>
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.field'
+                                '.field',
+                                null,
+                                'form_field'
                             ))->withParentIdentifier($parentIdentifier),
                     ]
                 ),

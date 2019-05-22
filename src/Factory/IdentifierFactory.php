@@ -21,6 +21,7 @@ class IdentifierFactory
 
     public function createWithElementReference(
         string $identifierString,
+        ?string $elementName,
         array $existingIdentifiers
     ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
@@ -37,7 +38,7 @@ class IdentifierFactory
         }
 
         $parentIdentifier = $existingIdentifiers[$parentIdentifierName] ?? null;
-        $identifier = $this->create($identifierString);
+        $identifier = $this->create($identifierString, $elementName);
 
         if ($identifier instanceof IdentifierInterface && $parentIdentifier) {
             return $identifier->withParentIdentifier($parentIdentifier);
