@@ -15,7 +15,7 @@ class AssertionValidator
         AssertionComparisons::MATCHES,
     ];
 
-    public function validate(AssertionInterface $assertion)
+    public function validate(AssertionInterface $assertion): bool
     {
         $requiresValue = in_array($assertion->getComparison(), self::REQUIRES_VALUE_COMPARISONS);
 
