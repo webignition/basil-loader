@@ -55,25 +55,33 @@ class IdentifierFactory
             return null;
         }
 
-        if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifierString)) {
+        $type = $this->deriveType($identifierString);
+
+        if (in_array($type, [IdentifierTypes::CSS_SELECTOR, IdentifierTypes::XPATH_EXPRESSION])) {
             list($value, $position) = $this->extractValueAndPosition($identifierString);
             $value = trim($value, '"');
 
-            return new Identifier(IdentifierTypes::CSS_SELECTOR, $value, $position, $name);
+            return new Identifier($type, $value, $position, $name);
+        }
+
+        return new Identifier($type, $identifierString, 1, $name);
+    }
+
+    private function deriveType(string $identifierString): string
+    {
+        if (1 === preg_match(self::CSS_SELECTOR_REGEX, $identifierString)) {
+            return IdentifierTypes::CSS_SELECTOR;
         }
 
         if (1 === preg_match(self::XPATH_EXPRESSION_REGEX, $identifierString)) {
-            list($value, $position) = $this->extractValueAndPosition($identifierString);
-            $value = trim($value, '"');
-
-            return new Identifier(IdentifierTypes::XPATH_EXPRESSION, $value, $position, $name);
+            return IdentifierTypes::XPATH_EXPRESSION;
         }
 
         if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifierString)) {
-            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifierString, 1, $name);
+            return IdentifierTypes::ELEMENT_PARAMETER;
         }
 
-        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifierString, 1, $name);
+        return IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE;
     }
 
     private function extractValueAndPosition(string $identifier)
