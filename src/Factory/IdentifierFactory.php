@@ -19,31 +19,34 @@ class IdentifierFactory
     const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
     const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
 
-    public function createWithElementReference(string $identifierString): ?IdentifierInterface
-    {
+    public function createWithElementReference(
+        string $identifierString,
+        array $existingIdentifiers
+    ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
 
         if (empty($identifierString)) {
             return null;
         }
 
-        $elementReference = null;
+        $parentIdentifierName = null;
 
         if (1 === preg_match(self::REFERENCED_ELEMENT_REGEX, $identifierString)) {
-            list($elementReference, $identifierString) =
+            list($parentIdentifierName, $identifierString) =
                 $this->extractElementReferenceAndIdentifierString($identifierString);
         }
 
+        $parentIdentifier = $existingIdentifiers[$parentIdentifierName] ?? null;
         $identifier = $this->create($identifierString);
 
-        if ($identifier instanceof IdentifierInterface && $elementReference) {
-            return $identifier->withElementReference($elementReference);
+        if ($identifier instanceof IdentifierInterface && $parentIdentifier) {
+            return $identifier->withParentIdentifier($parentIdentifier);
         }
 
         return $identifier;
     }
 
-    public function create(string $identifierString): ?IdentifierInterface
+    public function create(string $identifierString, ?string $name = null): ?IdentifierInterface
     {
         $identifierString = trim($identifierString);
 
@@ -55,21 +58,21 @@ class IdentifierFactory
             list($value, $position) = $this->extractValueAndPosition($identifierString);
             $value = trim($value, '"');
 
-            return new Identifier(IdentifierTypes::CSS_SELECTOR, $value, $position);
+            return new Identifier(IdentifierTypes::CSS_SELECTOR, $value, $position, $name);
         }
 
         if (1 === preg_match(self::XPATH_EXPRESSION_REGEX, $identifierString)) {
             list($value, $position) = $this->extractValueAndPosition($identifierString);
             $value = trim($value, '"');
 
-            return new Identifier(IdentifierTypes::XPATH_EXPRESSION, $value, $position);
+            return new Identifier(IdentifierTypes::XPATH_EXPRESSION, $value, $position, $name);
         }
 
         if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifierString)) {
-            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifierString, 1);
+            return new Identifier(IdentifierTypes::ELEMENT_PARAMETER, $identifierString, 1, $name);
         }
 
-        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifierString, 1);
+        return new Identifier(IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE, $identifierString, 1, $name);
     }
 
     private function extractValueAndPosition(string $identifier)
