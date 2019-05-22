@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Model\Step;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
+use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
 interface StepInterface
 {
@@ -16,4 +17,14 @@ interface StepInterface
      * @return AssertionInterface[]
      */
     public function getAssertions() :array;
+
+    /**
+     * @return DataSetInterface[]
+     */
+    public function getDataSets(): array;
+
+    /**
+     * @return string[]
+     */
+    public function getElementReferences(): array;
 }

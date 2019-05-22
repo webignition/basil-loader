@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Model\Step;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
+use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
 class Step implements StepInterface
 {
@@ -17,7 +18,17 @@ class Step implements StepInterface
      */
     private $assertions = [];
 
-    public function __construct(array $actions, array $assertions)
+    /**
+     * @var DataSetInterface[]
+     */
+    private $dataSets = [];
+
+    /**
+     * @var string[]
+     */
+    private $elementReferences = [];
+
+    public function __construct(array $actions, array $assertions, array $dataSets, array $elementReferences)
     {
         foreach ($actions as $action) {
             if ($action instanceof ActionInterface) {
@@ -28,6 +39,18 @@ class Step implements StepInterface
         foreach ($assertions as $assertion) {
             if ($assertion instanceof AssertionInterface) {
                 $this->assertions[] = $assertion;
+            }
+        }
+
+        foreach ($dataSets as $name => $dataSet) {
+            if ($dataSet instanceof DataSetInterface) {
+                $this->dataSets[$name] = $dataSet;
+            }
+        }
+
+        foreach ($elementReferences as $elementName => $elementReference) {
+            if (is_string($elementReference)) {
+                $this->elementReferences[$elementName] = $elementReference;
             }
         }
     }
@@ -46,5 +69,21 @@ class Step implements StepInterface
     public function getAssertions(): array
     {
         return $this->assertions;
+    }
+
+    /**
+     * @return DataSetInterface[]
+     */
+    public function getDataSets(): array
+    {
+        return $this->dataSets;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getElementReferences(): array
+    {
+        return $this->elementReferences;
     }
 }
