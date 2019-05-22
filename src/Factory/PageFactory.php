@@ -25,6 +25,7 @@ class PageFactory
     {
         $uriString = $pageData[self::KEY_URL] ?? '';
         $elementsData = $pageData[self::KEY_ELEMENTS] ?? [];
+        $elementsData = is_array($elementsData) ? $elementsData : [];
 
         $uri = new Uri($uriString);
         $elementIdentifiers = [];

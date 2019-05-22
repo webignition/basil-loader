@@ -48,6 +48,13 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedPage' => new Page(new Uri('http://example.com/'), []),
             ],
+            'elements is not an array' => [
+                'pageData' => [
+                    PageFactory::KEY_URL => new Uri('http://example.com/'),
+                    PageFactory::KEY_ELEMENTS => true,
+                ],
+                'expectedPage' => new Page(new Uri('http://example.com/'), [])
+            ],
             'single element identifier' => [
                 'pageData' => [
                     PageFactory::KEY_URL => new Uri('http://example.com/'),
