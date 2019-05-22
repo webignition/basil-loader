@@ -39,7 +39,9 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
     {
         $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.form'
+            '.form',
+            null,
+            'form'
         );
 
         return [
@@ -64,14 +66,13 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedPage' => new Page(
                     new Uri('http://example.com'),
                     [
-                        'form' => new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            '.form'
-                        ),
+                        'form' => $parentIdentifier,
                         'input' =>
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.input'
+                                '.input',
+                                null,
+                                'input'
                             ))->withParentIdentifier($parentIdentifier),
                     ]
                 ),
