@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Builder;
 
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Loader\StepLoader;
+use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Step\StepInterface;
 
@@ -14,11 +15,13 @@ class StepBuilder
 
     private $stepFactory;
     private $stepLoader;
+    private $yamlLoader;
 
-    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader)
+    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader, YamlLoader $yamlLoader)
     {
         $this->stepFactory = $stepFactory;
         $this->stepLoader = $stepLoader;
+        $this->yamlLoader = $yamlLoader;
     }
 
     /**
@@ -31,6 +34,7 @@ class StepBuilder
      *
      * @throws UnknownStepImportException
      * @throws YamlLoaderException
+     * @throws UnknownDataProviderImportException
      */
     public function build(string $stepName, array $stepData, array $stepImportPaths, array $dataProviderImportPaths)
     {
@@ -49,13 +53,20 @@ class StepBuilder
 
         $data = $stepData[self::KEY_DATA] ?? null;
         if (null !== $data) {
+            if (is_string($data)) {
+                $importName = $data;
+                $importPath = $dataProviderImportPaths[$importName] ?? null;
+
+                if (null === $importPath) {
+                    throw new UnknownDataProviderImportException($stepName, $importName, $dataProviderImportPaths);
+                }
+
+                $data = $this->yamlLoader->loadArray($importPath);
+            }
+
             if (is_array($data)) {
                 $step = $step->withDataSets($data);
             }
-
-//            if (is_string($data) {
-//
-//            }
         }
 
         return $step;

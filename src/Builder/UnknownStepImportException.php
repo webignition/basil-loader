@@ -11,7 +11,7 @@ class UnknownStepImportException extends \Exception
     public function __construct(string $stepName, string $importName, array $stepImportPaths)
     {
         parent::__construct(
-            'Unknown import "' . $importName . '" in step "' . $importName . '"'
+            'Unknown step import "' . $importName . '" in step "' . $stepName . '"'
         );
 
         $this->stepName = $stepName;

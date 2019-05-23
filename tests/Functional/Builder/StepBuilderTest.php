@@ -5,6 +5,8 @@ namespace webignition\BasilParser\Tests\Functional\Builder;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\Builder\UnknownDataProviderImportException;
+use webignition\BasilParser\Builder\UnknownStepImportException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
@@ -18,6 +20,7 @@ use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class StepBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,7 +38,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $yamlLoader = new YamlLoader($yamlParser);
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader);
+        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
     }
 
     /**
@@ -111,12 +114,153 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             ],
             'import step' => [
                 'stepData' => [
-
+                    StepBuilder::KEY_USE => 'step_import_name',
                 ],
-                'stepImportPaths' => [],
+                'stepImportPaths' => [
+                    'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
+                ],
                 'dataProviderImportPaths' => [],
-                'expectedStep' => new Step([], []),
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.button'
+                            ),
+                            '".button"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '".heading" includes "Hello World"',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading'
+                            ),
+                            AssertionComparisons::INCLUDES,
+                            new Value(
+                                ValueTypes::STRING,
+                                'Hello World'
+                            )
+                        ),
+                    ]
+                ),
+            ],
+            'inline data' => [
+                'stepData' => [
+                    StepBuilder::KEY_USE => 'step_import_name',
+                    StepBuilder::KEY_DATA => [
+                        [
+                            'expected_title' => 'Foo',
+                        ],
+                        [
+                            'expected_title' => 'Bar',
+                        ],
+                    ],
+                ],
+                'stepImportPaths' => [
+                    'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                ],
+                'dataProviderImportPaths' => [],
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.button'
+                            ),
+                            '".button"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '".heading" includes $data.expected_title',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading'
+                            ),
+                            AssertionComparisons::INCLUDES,
+                            new Value(
+                                ValueTypes::DATA_PARAMETER,
+                                '$data.expected_title'
+                            )
+                        ),
+                    ]
+                ),
+            ],
+            'imported data' => [
+                'stepData' => [
+                    StepBuilder::KEY_USE => 'step_import_name',
+                    StepBuilder::KEY_DATA => 'data_provider_name',
+                ],
+                'stepImportPaths' => [
+                    'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                ],
+                'dataProviderImportPaths' => [
+                    'data_provider_name' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
+                ],
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.button'
+                            ),
+                            '".button"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '".heading" includes $data.expected_title',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading'
+                            ),
+                            AssertionComparisons::INCLUDES,
+                            new Value(
+                                ValueTypes::DATA_PARAMETER,
+                                '$data.expected_title'
+                            )
+                        ),
+                    ]
+                ),
             ],
         ];
+    }
+
+    public function testBuildUseUnknownStepImport()
+    {
+        $this->expectException(UnknownStepImportException::class);
+        $this->expectExceptionMessage('Unknown step import "unknown_step_import_name" in step "Step Name"');
+
+        $this->stepBuilder->build(
+            'Step Name',
+            [
+                StepBuilder::KEY_USE => 'unknown_step_import_name',
+            ],
+            [],
+            []
+        );
+    }
+
+    public function testBuildUseUnknownDataProviderImport()
+    {
+        $this->expectException(UnknownDataProviderImportException::class);
+        $this->expectExceptionMessage('Unknown data provider import "unknown_data_provider_name" in step "Step Name"');
+
+        $this->stepBuilder->build(
+            'Step Name',
+            [
+                StepBuilder::KEY_USE => 'step_import_name',
+                StepBuilder::KEY_DATA => 'unknown_data_provider_name',
+            ],
+            [
+                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+            ],
+            []
+        );
     }
 }
