@@ -27,4 +27,18 @@ interface StepInterface
      * @return string[]
      */
     public function getElementReferences(): array;
+
+    /**
+     * @param DataSetInterface[] $dataSets
+     *
+     * @return StepInterface
+     */
+    public function withDataSets(array $dataSets): StepInterface;
+
+    /**
+     * @param string[] $elementReferences
+     *
+     * @return StepInterface
+     */
+    public function withElementReferences(array $elementReferences): StepInterface;
 }
