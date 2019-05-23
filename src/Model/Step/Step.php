@@ -98,7 +98,7 @@ class Step implements StepInterface
     }
 
     /**
-     * @param string[] $elementIdentifiers
+     * @param IdentifierInterface[] $elementIdentifiers
      *
      * @return StepInterface
      */
