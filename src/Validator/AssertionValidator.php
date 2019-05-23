@@ -17,6 +17,14 @@ class AssertionValidator
 
     public function validate(AssertionInterface $assertion): bool
     {
+        if (null === $assertion->getIdentifier()) {
+            return false;
+        }
+
+        if ('' === $assertion->getComparison()) {
+            return false;
+        }
+
         $requiresValue = in_array($assertion->getComparison(), self::REQUIRES_VALUE_COMPARISONS);
 
         if ($requiresValue && null ===$assertion->getValue()) {
