@@ -15,7 +15,9 @@ class IdentifierFactory
     const POSITION_REGEX = '/' . self::POSITION_PATTERN . '$/';
     const CSS_SELECTOR_REGEX = '/^"((?!\/).).+("|' . self::POSITION_PATTERN . ')$/';
     const XPATH_EXPRESSION_REGEX = '/^"\/.+("|' . self::POSITION_PATTERN . ')$/';
-    const ELEMENT_PARAMETER_REGEX = '/^\$.+/';
+    const ELEMENT_PARAMETER_REGEX = '/^\$elements.+/';
+    const PAGE_OBJECT_PARAMETER_REGEX = '/^\$page.+/';
+    const BROWSER_OBJECT_PARAMETER_REGEX = '/^\$browser.+/';
     const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
     const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
 
@@ -79,6 +81,14 @@ class IdentifierFactory
 
         if (1 === preg_match(self::ELEMENT_PARAMETER_REGEX, $identifierString)) {
             return IdentifierTypes::ELEMENT_PARAMETER;
+        }
+
+        if (1 === preg_match(self::PAGE_OBJECT_PARAMETER_REGEX, $identifierString)) {
+            return IdentifierTypes::PAGE_OBJECT_PARAMETER;
+        }
+
+        if (1 === preg_match(self::BROWSER_OBJECT_PARAMETER_REGEX, $identifierString)) {
+            return IdentifierTypes::BROWSER_OBJECT_PARAMETER;
         }
 
         return IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE;

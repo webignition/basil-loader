@@ -27,6 +27,8 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createXpathExpressionDataProvider
      * @dataProvider createElementParameterDataProvider
      * @dataProvider createPageModelElementReferenceDataProvider
+     * @dataProvider createPageObjectParameterDataProvider
+     * @dataProvider createBrowserObjectParameterDataProvider
      */
     public function testCreate(
         string $identifierString,
@@ -174,6 +176,30 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
                 'identifierString' => 'page_import_name.elements.element_name',
                 'expectedType' => IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                 'expectedValue' => 'page_import_name.elements.element_name',
+                'expectedPosition' => 1,
+            ],
+        ];
+    }
+
+    public function createPageObjectParameterDataProvider(): array
+    {
+        return [
+            'page object parameter' => [
+                'identifierString' => '$page.title',
+                'expectedType' => IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                'expectedValue' => '$page.title',
+                'expectedPosition' => 1,
+            ],
+        ];
+    }
+
+    public function createBrowserObjectParameterDataProvider(): array
+    {
+        return [
+            'browser object parameter' => [
+                'identifierString' => '$browser.url',
+                'expectedType' => IdentifierTypes::BROWSER_OBJECT_PARAMETER,
+                'expectedValue' => '$browser.url',
                 'expectedPosition' => 1,
             ],
         ];
