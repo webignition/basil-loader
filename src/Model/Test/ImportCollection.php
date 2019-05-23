@@ -4,36 +4,19 @@ namespace webignition\BasilParser\Model\Test;
 
 class ImportCollection implements ImportCollectionInterface
 {
-    private $pageImportPaths = [];
-    private $stepImportPaths = [];
+    private $importPaths = [];
 
-    public function __construct(array $pageImportPaths, array $stepImportPaths)
+    public function __construct(array $importPaths)
     {
-        foreach ($pageImportPaths as $importName => $importPath) {
+        foreach ($importPaths as $importName => $importPath) {
             if (is_string($importPath)) {
-                $this->pageImportPaths[$importName] = $importPath;
-            }
-        }
-
-        foreach ($stepImportPaths as $importName => $importPath) {
-            if (is_string($importPath)) {
-                $this->stepImportPaths[$importName] = $importPath;
+                $this->importPaths[$importName] = $importPath;
             }
         }
     }
 
 
-    public function getPageImportPath(string $name): ?string
-    {
-        return $this->getImportPath($this->pageImportPaths, $name);
-    }
-
-    public function getStepImportPath(string $name): ?string
-    {
-        return $this->getImportPath($this->stepImportPaths, $name);
-    }
-
-    private function getImportPath(array $collection, string $name): ?string
+    public function getImportPath(string $name): ?string
     {
         return $collection[$name] ?? null;
     }
