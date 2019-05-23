@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Model\Step;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\Model\DataSet\DataSetInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 
 interface StepInterface
 {
@@ -24,9 +25,9 @@ interface StepInterface
     public function getDataSets(): array;
 
     /**
-     * @return string[]
+     * @return IdentifierInterface[]
      */
-    public function getElementReferences(): array;
+    public function getElementIdentifiers(): array;
 
     /**
      * @param DataSetInterface[] $dataSets
@@ -36,9 +37,9 @@ interface StepInterface
     public function withDataSets(array $dataSets): StepInterface;
 
     /**
-     * @param string[] $elementReferences
+     * @param IdentifierInterface[] $elementIdentifiers
      *
      * @return StepInterface
      */
-    public function withElementReferences(array $elementReferences): StepInterface;
+    public function withElementIdentifiers(array $elementIdentifiers): StepInterface;
 }

@@ -139,55 +139,73 @@ class StepTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider withElementReferencesDataProvider
+     * @dataProvider withElementIdentifiersDataProvider
      */
-    public function testWithElementReferences(
+    public function testWithElementIdentifiers(
         StepInterface $step,
-        array $elementReferences,
-        array $expectedElementReferences
+        array $elementIdentifiers,
+        array $expectedElementIdentifiers
     ) {
-        $currentElementReferences = $step->getElementReferences();
+        $currentElementIdentifiers = $step->getElementIdentifiers();
 
-        $mutatedStep = $step->withElementReferences($elementReferences);
+        $mutatedStep = $step->withElementIdentifiers($elementIdentifiers);
 
         $this->assertNotSame($mutatedStep, $step);
-        $this->assertEquals($expectedElementReferences, $mutatedStep->getElementReferences());
-        $this->assertSame($currentElementReferences, $step->getElementReferences());
+        $this->assertEquals($expectedElementIdentifiers, $mutatedStep->getElementIdentifiers());
+        $this->assertSame($currentElementIdentifiers, $step->getElementIdentifiers());
     }
 
-    public function withElementReferencesDataProvider(): array
+    public function withElementIdentifiersDataProvider(): array
     {
         return [
             'no existing element references, empty element references' => [
                 'step' => new Step([], []),
-                'elementReferences' => [],
-                'expectedElementReferences' => [],
+                'elementIdentifiers' => [],
+                'expectedElementIdentifiers' => [],
             ],
             'no existing element references, non-empty element references' => [
                 'step' => new Step([], []),
-                'elementReferences' => [
-                    'input' => 'page_model.elements.input',
+                'elementIdentifiers' => [
+                    'input' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.input'
+                    ),
                 ],
-                'expectedElementReferences' => [
-                    'input' => 'page_model.elements.input',
+                'expectedElementIdentifiers' => [
+                    'input' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.input'
+                    ),
                 ],
             ],
             'has existing element references, empty element references' => [
-                'step' => (new Step([], []))->withElementReferences([
-                    'input' => 'page_model.elements.input',
+                'step' => (new Step([], []))->withElementIdentifiers([
+                    'input' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.input'
+                    ),
                 ]),
-                'elementReferences' => [],
-                'expectedElementReferences' => [],
+                'elementIdentifiers' => [],
+                'expectedElementIdentifiers' => [],
             ],
             'has existing element references, non-empty element references' => [
-                'step' => (new Step([], []))->withElementReferences([
-                    'input' => 'page_model.elements.input',
+                'step' => (new Step([], []))->withElementIdentifiers([
+                    'input' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.input'
+                    ),
                 ]),
-                'elementReferences' => [
-                    'button' => 'page_model.elements.button',
+                'elementIdentifiers' => [
+                    'button' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.button'
+                    ),
                 ],
-                'expectedElementReferences' => [
-                    'button' => 'page_model.elements.button',
+                'expectedElementIdentifiers' => [
+                    'button' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        '.button'
+                    ),
                 ],
             ],
         ];

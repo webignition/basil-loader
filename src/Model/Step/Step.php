@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Model\Step;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\Model\DataSet\DataSetInterface;
+use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 
 class Step implements StepInterface
 {
@@ -24,9 +25,9 @@ class Step implements StepInterface
     private $dataSets = [];
 
     /**
-     * @var string[]
+     * @var IdentifierInterface[]
      */
-    private $elementReferences = [];
+    private $elementIdentifiers = [];
 
     public function __construct(array $actions, array $assertions)
     {
@@ -68,11 +69,11 @@ class Step implements StepInterface
     }
 
     /**
-     * @return string[]
+     * @return IdentifierInterface[]
      */
-    public function getElementReferences(): array
+    public function getElementIdentifiers(): array
     {
-        return $this->elementReferences;
+        return $this->elementIdentifiers;
     }
 
     /**
@@ -97,22 +98,22 @@ class Step implements StepInterface
     }
 
     /**
-     * @param string[] $elementReferences
+     * @param string[] $elementIdentifiers
      *
      * @return StepInterface
      */
-    public function withElementReferences(array $elementReferences): StepInterface
+    public function withElementIdentifiers(array $elementIdentifiers): StepInterface
     {
-        $filteredElementReferences = [];
+        $filteredElementIdentifiers = [];
 
-        foreach ($elementReferences as $elementName => $elementReference) {
-            if (is_string($elementReference)) {
-                $filteredElementReferences[$elementName] = $elementReference;
+        foreach ($elementIdentifiers as $elementName => $identifier) {
+            if ($identifier instanceof IdentifierInterface) {
+                $filteredElementIdentifiers[$elementName] = $identifier;
             }
         }
 
         $new = clone $this;
-        $new->elementReferences = $filteredElementReferences;
+        $new->elementIdentifiers = $filteredElementIdentifiers;
 
         return $new;
     }
