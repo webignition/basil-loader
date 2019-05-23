@@ -9,11 +9,7 @@ class Test implements TestInterface
     private $configuration;
     private $steps;
 
-    /**
-     * @param Configuration $configuration
-     * @param StepInterface[] $steps
-     */
-    public function __construct(Configuration $configuration, array $steps)
+    public function __construct(ConfigurationInterface $configuration, array $steps)
     {
         $this->configuration = $configuration;
 
