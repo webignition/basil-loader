@@ -28,7 +28,7 @@ class Step implements StepInterface
      */
     private $elementReferences = [];
 
-    public function __construct(array $actions, array $assertions, array $dataSets, array $elementReferences)
+    public function __construct(array $actions, array $assertions)
     {
         foreach ($actions as $action) {
             if ($action instanceof ActionInterface) {
@@ -39,18 +39,6 @@ class Step implements StepInterface
         foreach ($assertions as $assertion) {
             if ($assertion instanceof AssertionInterface) {
                 $this->assertions[] = $assertion;
-            }
-        }
-
-        foreach ($dataSets as $name => $dataSet) {
-            if ($dataSet instanceof DataSetInterface) {
-                $this->dataSets[$name] = $dataSet;
-            }
-        }
-
-        foreach ($elementReferences as $elementName => $elementReference) {
-            if (is_string($elementReference)) {
-                $this->elementReferences[$elementName] = $elementReference;
             }
         }
     }
@@ -85,5 +73,47 @@ class Step implements StepInterface
     public function getElementReferences(): array
     {
         return $this->elementReferences;
+    }
+
+    /**
+     * @param DataSetInterface[] $dataSets
+     *
+     * @return StepInterface
+     */
+    public function withDataSets(array $dataSets): StepInterface
+    {
+        $filteredDataSets = [];
+
+        foreach ($dataSets as $name => $dataSet) {
+            if ($dataSet instanceof DataSetInterface) {
+                $filteredDataSets[$name] = $dataSet;
+            }
+        }
+
+        $new = clone $this;
+        $new->dataSets = $filteredDataSets;
+
+        return $new;
+    }
+
+    /**
+     * @param string[] $elementReferences
+     *
+     * @return StepInterface
+     */
+    public function withElementReferences(array $elementReferences): StepInterface
+    {
+        $filteredElementReferences = [];
+
+        foreach ($elementReferences as $elementName => $elementReference) {
+            if (is_string($elementReference)) {
+                $filteredElementReferences[$elementName] = $elementReference;
+            }
+        }
+
+        $new = clone $this;
+        $new->elementReferences = $filteredElementReferences;
+
+        return $new;
     }
 }
