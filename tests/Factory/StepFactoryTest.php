@@ -47,6 +47,19 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 'stepData' => [],
                 'expectedStep' => new Step([], []),
             ],
+            'empty actions and empty assertions' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [
+                        '',
+                        ' ',
+                    ],
+                    StepFactory::KEY_ASSERTIONS => [
+                        '',
+                        ' ',
+                    ],
+                ],
+                'expectedStep' => new Step([], []),
+            ],
             'actions only' => [
                 'stepData' => [
                     StepFactory::KEY_ACTIONS => [
