@@ -28,9 +28,9 @@ class ConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
         array $configurationData,
         ConfigurationInterface $expectedConfiguration
     ) {
-        $importCollection = $this->configurationFactory->createFromConfigurationData($configurationData);
+        $configuration = $this->configurationFactory->createFromConfigurationData($configurationData);
 
-        $this->assertEquals($expectedConfiguration, $importCollection);
+        $this->assertEquals($expectedConfiguration, $configuration);
     }
 
     public function createFromConfigurationDataDataProvider(): array
