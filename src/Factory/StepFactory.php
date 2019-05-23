@@ -38,14 +38,22 @@ class StepFactory
         $actions = [];
         foreach ($actionStrings as $actionString) {
             if ('string' === gettype($actionString)) {
-                $actions[] = $this->actionFactory->createFromActionString($actionString);
+                $actionString = trim($actionString);
+
+                if ('' !== $actionString) {
+                    $actions[] = $this->actionFactory->createFromActionString($actionString);
+                }
             }
         }
 
         $assertions = [];
         foreach ($assertionStrings as $assertionString) {
             if ('string' === gettype($assertionString)) {
-                $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
+                $assertionString = trim($assertionString);
+
+                if ('' !== $assertionString) {
+                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
+                }
             }
         }
 
