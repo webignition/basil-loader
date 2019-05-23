@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Builder;
 
 use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
@@ -12,14 +13,21 @@ class StepBuilder
 {
     const KEY_USE = 'use';
     const KEY_DATA = 'data';
+    const KEY_ELEMENTS = 'elements';
 
     private $stepFactory;
+    private $pageLoader;
     private $stepLoader;
     private $yamlLoader;
 
-    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader, YamlLoader $yamlLoader)
-    {
+    public function __construct(
+        StepFactory $stepFactory,
+        PageLoader $pageLoader,
+        StepLoader $stepLoader,
+        YamlLoader $yamlLoader
+    ) {
         $this->stepFactory = $stepFactory;
+        $this->pageLoader = $pageLoader;
         $this->stepLoader = $stepLoader;
         $this->yamlLoader = $yamlLoader;
     }
@@ -27,17 +35,25 @@ class StepBuilder
     /**
      * @param string $stepName
      * @param array $stepData
-     * @param array $stepImportPaths
-     * @param array $dataProviderImportPaths
+     * @param string[] $stepImportPaths
+     * @param string[] $dataProviderImportPaths
+     * @param string[] $pageImportPaths
      *
      * @return StepInterface
      *
+     * @throws UnknownDataProviderImportException
      * @throws UnknownStepImportException
      * @throws YamlLoaderException
-     * @throws UnknownDataProviderImportException
+     * @throws UnknownPageImportException
+     * @throws UnknownPageElementException
      */
-    public function build(string $stepName, array $stepData, array $stepImportPaths, array $dataProviderImportPaths)
-    {
+    public function build(
+        string $stepName,
+        array $stepData,
+        array $stepImportPaths,
+        array $dataProviderImportPaths,
+        array $pageImportPaths
+    ) {
         $importName = $stepData[self::KEY_USE] ?? null;
         if (null === $importName) {
             $step = $this->stepFactory->createFromStepData($stepData);
@@ -69,6 +85,47 @@ class StepBuilder
             }
         }
 
+        $elementUses = $stepData[self::KEY_ELEMENTS] ?? null;
+        if (null !== $elementUses) {
+            $elementIdentifiers = [];
+
+            foreach ($elementUses as $elementName => $pageModelElementReference) {
+                list($importName, $elementName) = $this->findPageImportNameAndElementName($pageModelElementReference);
+
+                $importPath = $pageImportPaths[$importName] ?? null;
+
+                if (null === $importPath) {
+                    throw new UnknownPageImportException($stepName, $importName, $pageImportPaths);
+                }
+
+                $page = $this->pageLoader->load($importPath);
+                $elementIdentifier = $page->getElementIdentifier($elementName);
+
+                if (null === $elementIdentifier) {
+                    throw new UnknownPageElementException(
+                        $stepName,
+                        $importName,
+                        $elementName,
+                        $page->getElementNames()
+                    );
+                }
+
+                $elementIdentifiers[$elementName] = $elementIdentifier;
+            }
+
+            $step = $step->withElementIdentifiers($elementIdentifiers);
+        }
+
         return $step;
+    }
+
+    private function findPageImportNameAndElementName(string $pageModelElementReference)
+    {
+        $parts = explode('.', $pageModelElementReference);
+
+        return [
+            $parts[0],
+            $parts[2],
+        ];
     }
 }

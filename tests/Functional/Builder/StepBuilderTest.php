@@ -3,11 +3,14 @@
 
 namespace webignition\BasilParser\Tests\Functional\Builder;
 
+use Nyholm\Psr7\Uri;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\UnknownDataProviderImportException;
 use webignition\BasilParser\Builder\UnknownStepImportException;
+use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -34,11 +37,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $stepFactory = new StepFactory();
+        $pageFactory = new PageFactory();
+
         $yamlParser = new YamlParser();
         $yamlLoader = new YamlLoader($yamlParser);
+        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
+        $this->stepBuilder = new StepBuilder($stepFactory, $pageLoader, $stepLoader, $yamlLoader);
     }
 
     /**
@@ -48,9 +54,16 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         array $stepData,
         array $stepImportPaths,
         array $dataProviderImportPaths,
+        array $pages,
         StepInterface $expectedStep
     ) {
-        $step = $this->stepBuilder->build('Step Name', $stepData, $stepImportPaths, $dataProviderImportPaths);
+        $step = $this->stepBuilder->build(
+            'Step Name',
+            $stepData,
+            $stepImportPaths,
+            $dataProviderImportPaths,
+            $pages
+        );
 
         $this->assertInstanceOf(StepInterface::class, $step);
         $this->assertEquals($expectedStep, $step);
@@ -63,6 +76,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepData' => [],
                 'stepImportPaths' => [],
                 'dataProviderImportPaths' => [],
+                'pages' => [],
                 'expectedStep' => new Step([], []),
             ],
             'no imports, empty actions, empty assertions' => [
@@ -72,6 +86,21 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
                 'stepImportPaths' => [],
                 'dataProviderImportPaths' => [],
+                'pages' => [],
+                'expectedStep' => new Step([], []),
+            ],
+            'unused invalid imports, empty actions, empty assertions' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [],
+                    StepFactory::KEY_ASSERTIONS => [],
+                ],
+                'stepImportPaths' => [
+                    'invalid' => 'invalid.yml',
+                ],
+                'dataProviderImportPaths' => [
+                    'invalid' => 'invalid.yml',
+                ],
+                'pages' => [],
                 'expectedStep' => new Step([], []),
             ],
             'no imports, has actions, has assertions' => [
@@ -85,6 +114,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
                 'stepImportPaths' => [],
                 'dataProviderImportPaths' => [],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -120,6 +150,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
                 ],
                 'dataProviderImportPaths' => [],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -163,6 +194,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                 ],
                 'dataProviderImportPaths' => [],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -201,6 +233,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'dataProviderImportPaths' => [
                     'data_provider_name' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
                 ],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -228,6 +261,55 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'element parameters' => [
+                'stepData' => [
+                    StepBuilder::KEY_USE => 'step_import_name',
+                    StepBuilder::KEY_ELEMENTS => [
+                        'heading' => 'page_import_name.elements.heading',
+                    ],
+                ],
+                'stepImportPaths' => [
+                    'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                ],
+                'dataProviderImportPaths' => [],
+                'pagesImportPaths' => [
+                    'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                ],
+                'expectedStep' =>
+                    (new Step(
+                        [
+                            new InteractionAction(
+                                ActionTypes::CLICK,
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    '.button'
+                                ),
+                                '".button"'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.heading includes "Hello World"',
+                                new Identifier(
+                                    IdentifierTypes::ELEMENT_PARAMETER,
+                                    '$elements.heading'
+                                ),
+                                AssertionComparisons::INCLUDES,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    'Hello World'
+                                )
+                            ),
+                        ]
+                    ))->withElementIdentifiers([
+                        'heading' => new Identifier(
+                            IdentifierTypes::CSS_SELECTOR,
+                            '.heading',
+                            null,
+                            'heading'
+                        ),
+                    ]),
+            ],
         ];
     }
 
@@ -241,6 +323,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 StepBuilder::KEY_USE => 'unknown_step_import_name',
             ],
+            [],
             [],
             []
         );
@@ -260,7 +343,11 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
             ],
+            [],
             []
         );
     }
+
+    // test for unknown page import exception
+    // test for unknown page element exception
 }
