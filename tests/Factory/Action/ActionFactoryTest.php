@@ -497,4 +497,15 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('foo', $action->getType());
         $this->assertFalse($action->isRecognised());
     }
+
+    public function testCreateFromEmptyActionString()
+    {
+        $actionString = '';
+
+        $action = $this->actionFactory->createFromActionString($actionString);
+
+        $this->assertInstanceOf(UnrecognisedAction::class, $action);
+        $this->assertSame('', $action->getType());
+        $this->assertFalse($action->isRecognised());
+    }
 }
