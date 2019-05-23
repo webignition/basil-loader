@@ -39,6 +39,10 @@ class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
     public function validateDataProvider(): array
     {
         return [
+            'empty assertion string' => [
+                'assertionString' => '',
+                'expectedIsValid' => false,
+            ],
             'simple css selector, is, scalar value' => [
                 'assertionString' => '".selector" is "value"',
                 'expectedIsValid' => true,

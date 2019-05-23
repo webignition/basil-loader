@@ -4,6 +4,7 @@
 namespace webignition\BasilParser\Tests\Factory;
 
 use webignition\BasilParser\Factory\AssertionFactory;
+use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\Model\Value\Value;
@@ -266,5 +267,18 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
+    }
+
+    public function testCreateFromEmptyAssertionString()
+    {
+        $assertionString = '';
+
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
+
+        $this->assertInstanceOf(AssertionInterface::class, $assertion);
+        $this->assertSame($assertionString, $assertion->getAssertionString());
+        $this->assertNull($assertion->getIdentifier());
+        $this->assertSame('', $assertion->getComparison());
+        $this->assertNull($assertion->getValue());
     }
 }

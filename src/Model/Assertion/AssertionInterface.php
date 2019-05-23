@@ -8,7 +8,7 @@ use webignition\BasilParser\Model\Value\ValueInterface;
 interface AssertionInterface
 {
     public function getAssertionString(): string;
-    public function getIdentifier(): IdentifierInterface;
-    public function getComparison(): string;
+    public function getIdentifier(): ?IdentifierInterface;
+    public function getComparison(): ?string;
     public function getValue(): ?ValueInterface;
 }
