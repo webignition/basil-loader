@@ -11,12 +11,9 @@ class ImportCollectionTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createDataProvider
      */
-    public function testCreate(
-        array $pageImportPaths,
-        array $stepImportPaths,
-        ImportCollectionInterface $expectedImportCollection
-    ) {
-        $importCollection = new ImportCollection($pageImportPaths, $stepImportPaths);
+    public function testCreate(array $importPaths, ImportCollectionInterface $expectedImportCollection)
+    {
+        $importCollection = new ImportCollection($importPaths);
 
         $this->assertEquals($expectedImportCollection, $importCollection);
     }
@@ -24,39 +21,28 @@ class ImportCollectionTest extends \PHPUnit\Framework\TestCase
     public function createDataProvider(): array
     {
         return [
-            'no page imports, no step imports' => [
-                'pageImportPaths' => [],
-                'stepImportPaths' => [],
-                'expectedImportCollection' => new ImportCollection([], []),
+            'no imports' => [
+                'importPaths' => [],
+                'expectedImportCollection' => new ImportCollection([]),
             ],
-            'invalid page imports, invalid step imports' => [
-                'pageImportPaths' => [
+            'invalid imports' => [
+                'importPaths' => [
                     1,
                     2,
-                ],
-                'stepImportPaths' => [
                     true,
                     false,
                 ],
-                'expectedImportCollection' => new ImportCollection([], []),
+                'expectedImportCollection' => new ImportCollection([]),
             ],
-            'valid and invalid page imports, valid and invalid step imports' => [
-                'pageImportPaths' => [
+            'valid and invalid imports' => [
+                'importPaths' => [
                     'invalid1' => 1,
                     'invalid2' => 2,
                     'page' => '../page/example.com.yml',
                 ],
-                'stepImportPaths' => [
-                    'invalid1' => true,
-                    'invalid2' => false,
-                    'step' => '../step/verify.yml',
-                ],
                 'expectedImportCollection' => new ImportCollection(
                     [
                         'page' => '../page/example.com.yml',
-                    ],
-                    [
-                        'step' => '../step/verify.yml',
                     ]
                 ),
             ],
