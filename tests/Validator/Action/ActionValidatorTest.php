@@ -118,6 +118,12 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                     ''
                 ),
             ],
+            'empty action' => [
+                'action' => new UnrecognisedAction(
+                    '',
+                    ''
+                ),
+            ],
         ];
     }
 
