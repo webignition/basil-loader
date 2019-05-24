@@ -7,6 +7,7 @@ use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
+use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
 
 class StepBuilder
@@ -46,6 +47,7 @@ class StepBuilder
      * @throws YamlLoaderException
      * @throws UnknownPageImportException
      * @throws UnknownPageElementException
+     * @throws InvalidPageElementReferenceException
      */
     public function build(
         string $stepName,
@@ -90,8 +92,15 @@ class StepBuilder
         if (null !== $elementUses) {
             $elementIdentifiers = [];
 
-            foreach ($elementUses as $elementName => $pageModelElementReference) {
-                list($importName, $elementName) = $this->findPageImportNameAndElementName($pageModelElementReference);
+            foreach ($elementUses as $elementName => $pageModelElementReferenceString) {
+                $pageModelElementReference = new PageElementReference($pageModelElementReferenceString);
+
+                if (!$pageModelElementReference->isValid()) {
+                    throw new InvalidPageElementReferenceException($stepName, $pageModelElementReferenceString);
+                }
+
+                $importName = $pageModelElementReference->getImportName();
+                $elementName = $pageModelElementReference->getElementName();
 
                 $importPath = $pageImportPaths[$importName] ?? null;
 
@@ -118,15 +127,5 @@ class StepBuilder
         }
 
         return $step;
-    }
-
-    private function findPageImportNameAndElementName(string $pageModelElementReference)
-    {
-        $parts = explode('.', $pageModelElementReference);
-
-        return [
-            $parts[0],
-            $parts[2],
-        ];
     }
 }

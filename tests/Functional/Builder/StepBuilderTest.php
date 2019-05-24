@@ -5,6 +5,7 @@
 namespace webignition\BasilParser\Tests\Functional\Builder;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
+use webignition\BasilParser\Builder\InvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\UnknownDataProviderImportException;
 use webignition\BasilParser\Builder\UnknownPageElementException;
@@ -384,6 +385,31 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 StepBuilder::KEY_USE => 'step_import_name',
                 StepBuilder::KEY_ELEMENTS => [
                     'not-heading' => 'page_import_name.elements.not-heading',
+                ],
+            ],
+            [
+                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+            ],
+            [],
+            [
+                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+            ]
+        );
+    }
+
+    public function testBuildUseInvalidPageElementReference()
+    {
+        $this->expectException(InvalidPageElementReferenceException::class);
+        $this->expectExceptionMessage(
+            'Invalid page element reference "page_import_name.foo.heading" in step "Step Name"'
+        );
+
+        $this->stepBuilder->build(
+            'Step Name',
+            [
+                StepBuilder::KEY_USE => 'step_import_name',
+                StepBuilder::KEY_ELEMENTS => [
+                    'heading' => 'page_import_name.foo.heading',
                 ],
             ],
             [
