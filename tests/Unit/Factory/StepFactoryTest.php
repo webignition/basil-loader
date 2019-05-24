@@ -133,8 +133,11 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
-            'page model element reference' => [
+            'page model element references' => [
                 'stepData' => [
+                    StepFactory::KEY_ACTIONS => [
+                        'click page_import_name.elements.element_name'
+                    ],
                     StepFactory::KEY_ASSERTIONS => [
                         'page_import_name.elements.element_name exists'
                     ],
@@ -152,6 +155,14 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedStep' => new Step(
                     [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            'page_import_name.elements.element_name'
+                        )
                     ],
                     [
                         new Assertion(
