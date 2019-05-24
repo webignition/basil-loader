@@ -76,7 +76,7 @@ class IdentifierFactory
      * @throws UnknownPageException
      * @throws UnknownPageElementException
      */
-    public function create(string $identifierString, array $pages = [], ?string $name = null): ?IdentifierInterface
+    public function create(string $identifierString, array $pages, ?string $name = null): ?IdentifierInterface
     {
         $identifierString = trim($identifierString);
 

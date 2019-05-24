@@ -349,8 +349,8 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateEmpty()
     {
-        $this->assertNull($this->factory->create(''));
-        $this->assertNull($this->factory->create(' '));
+        $this->assertNull($this->factory->create('', []));
+        $this->assertNull($this->factory->create(' ', []));
     }
 
     public function testCreateWithElementReferenceEmpty()
@@ -364,7 +364,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         $this->expectException(InvalidPageElementReferenceException::class);
         $this->expectExceptionMessage('Invalid page element reference "invalid-page-model-element-reference"');
 
-        $this->factory->create('invalid-page-model-element-reference');
+        $this->factory->create('invalid-page-model-element-reference', []);
     }
 
     public function testCreateForPageElementReferenceForUnknownPage()
@@ -372,7 +372,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownPageException::class);
         $this->expectExceptionMessage('Unknown page "import_name"');
 
-        $this->factory->create('import_name.elements.element_name');
+        $this->factory->create('import_name.elements.element_name', []);
     }
 
     public function testCreateForPageElementReferenceForUnknownElement()
