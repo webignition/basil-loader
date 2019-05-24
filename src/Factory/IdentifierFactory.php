@@ -2,9 +2,16 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\PageElementReference\PageElementReference;
+use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class IdentifierFactory
 {
@@ -21,6 +28,18 @@ class IdentifierFactory
     const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
     const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
 
+    /**
+     * @param string $identifierString
+     * @param string|null $elementName
+     * @param IdentifierInterface[] $existingIdentifiers
+     *
+     * @return IdentifierInterface|null
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws NonRetrievablePageException
+     */
     public function createWithElementReference(
         string $identifierString,
         ?string $elementName,
@@ -40,7 +59,7 @@ class IdentifierFactory
         }
 
         $parentIdentifier = $existingIdentifiers[$parentIdentifierName] ?? null;
-        $identifier = $this->create($identifierString, $elementName);
+        $identifier = $this->create($identifierString, new EmptyPageCollection(), $elementName);
 
         if ($identifier instanceof IdentifierInterface && $parentIdentifier) {
             return $identifier->withParentIdentifier($parentIdentifier);
@@ -49,8 +68,23 @@ class IdentifierFactory
         return $identifier;
     }
 
-    public function create(string $identifierString, ?string $name = null): ?IdentifierInterface
-    {
+    /**
+     * @param string $identifierString
+     * @param PageCollectionInterface $pages
+     * @param string|null $name
+     *
+     * @return IdentifierInterface|null
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageException
+     * @throws UnknownPageElementException
+     * @throws NonRetrievablePageException
+     */
+    public function create(
+        string $identifierString,
+        PageCollectionInterface $pages,
+        ?string $name = null
+    ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
 
         if (empty($identifierString)) {
@@ -64,6 +98,26 @@ class IdentifierFactory
             $value = trim($value, '"');
 
             return new Identifier($type, $value, $position, $name);
+        }
+
+        if (IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE === $type) {
+            $pageElementReference = new PageElementReference($identifierString);
+
+            if (!$pageElementReference->isValid()) {
+                throw new MalformedPageElementReferenceException($pageElementReference);
+            }
+
+            $importName = $pageElementReference->getImportName();
+
+            $page = $pages->findPage($importName);
+            $elementName = $pageElementReference->getElementName();
+            $pageElementIdentifier = $page->getElementIdentifier($elementName);
+
+            if (null === $pageElementIdentifier) {
+                throw new UnknownPageElementException($importName, $elementName);
+            }
+
+            return $pageElementIdentifier;
         }
 
         return new Identifier($type, $identifierString, 1, $name);

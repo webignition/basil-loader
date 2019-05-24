@@ -2,9 +2,14 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class StepFactory
 {
@@ -27,7 +32,18 @@ class StepFactory
         $this->assertionFactory = new AssertionFactory();
     }
 
-    public function createFromStepData(array $stepData): StepInterface
+    /**
+     * @param array $stepData
+     * @param PageCollectionInterface $pages
+     *
+     * @return StepInterface
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws NonRetrievablePageException
+     */
+    public function createFromStepData(array $stepData, PageCollectionInterface $pages): StepInterface
     {
         $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
         $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
@@ -41,7 +57,7 @@ class StepFactory
                 $actionString = trim($actionString);
 
                 if ('' !== $actionString) {
-                    $actions[] = $this->actionFactory->createFromActionString($actionString);
+                    $actions[] = $this->actionFactory->createFromActionString($actionString, $pages);
                 }
             }
         }
@@ -52,7 +68,7 @@ class StepFactory
                 $assertionString = trim($assertionString);
 
                 if ('' !== $assertionString) {
-                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
+                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString, $pages);
                 }
             }
         }

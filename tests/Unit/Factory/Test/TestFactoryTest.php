@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
@@ -9,6 +10,7 @@ use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
@@ -16,6 +18,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
+use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Step\Step;
@@ -47,9 +50,11 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         $pageFactory = new PageFactory();
         $pageLoader = new PageLoader($yamlLoader, $pageFactory);
 
-        $stepBuilder = new StepBuilder($stepFactory, $pageLoader, $stepLoader, $yamlLoader);
+        $dataSetLoader = new DataSetLoader($yamlLoader);
 
-        $this->testFactory = new TestFactory($configurationFactory, $stepBuilder);
+        $stepBuilder = new StepBuilder($stepFactory, $stepLoader, $dataSetLoader);
+
+        $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder);
     }
 
     /**
@@ -100,7 +105,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     'invalid' => new Step([], []),
                 ]),
             ],
-            'inline steps only' => [
+            'inline step, scalar values' => [
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'verify page is open' => [
@@ -154,6 +159,56 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                                 new Value(
                                     ValueTypes::STRING,
                                     'example - Example Domain'
+                                )
+                            ),
+                        ]
+                    ),
+                ]),
+            ],
+            'inline step, page element references' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => FixturePathFinder::find('Page/example.com.button.heading.yml'),
+                        ],
+                    ],
+                    'query "example"' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.button',
+                        ],
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.heading is "example"',
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test($expectedConfiguration, [
+                    'query "example"' => new Step(
+                        [
+                            new InteractionAction(
+                                ActionTypes::CLICK,
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    '.button',
+                                    null,
+                                    'button'
+                                ),
+                                'page_import_name.elements.button'
+                            ),
+                        ],
+                        [
+                            new Assertion(
+                                'page_import_name.elements.heading is "example"',
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    '.heading',
+                                    null,
+                                    'heading'
+                                ),
+                                AssertionComparisons::IS,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    'example'
                                 )
                             ),
                         ]
@@ -234,6 +289,173 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                                 ),
                             ]
                         ),
+                    ]
+                ),
+            ],
+            'step import, inline data' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'data' => [
+                            'data_set_1' => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                        ]
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes $data.expected_title',
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::DATA_PARAMETER,
+                                        '$data.expected_title'
+                                    )
+                                ),
+                            ]
+                        ))->withDataSets([
+                            'data_set_1' => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                        ]),
+                    ]
+                ),
+            ],
+            'step import, imported data' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                            'data_provider_import_name' =>
+                                FixturePathFinder::find('DataProvider/expected-title-only.yml')
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'data' => 'data_provider_import_name',
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes $data.expected_title',
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::DATA_PARAMETER,
+                                        '$data.expected_title'
+                                    )
+                                ),
+                            ]
+                        ))->withDataSets([
+                            0 => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                            1 => new DataSet([
+                                'expected_title' => 'Bar',
+                            ]),
+                        ]),
+                    ]
+                ),
+            ],
+            'step import, uses page imported page elements' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' =>
+                                FixturePathFinder::find('Page/example.com.heading.yml')
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'elements' => [
+                            'heading' => 'page_import_name.elements.heading'
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '$elements.heading includes "Hello World"',
+                                    new Identifier(
+                                        IdentifierTypes::ELEMENT_PARAMETER,
+                                        '$elements.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        'Hello World'
+                                    )
+                                ),
+                            ]
+                        ))->withElementIdentifiers([
+                            'heading' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading',
+                                null,
+                                'heading'
+                            ),
+                        ]),
                     ]
                 ),
             ],

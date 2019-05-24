@@ -2,12 +2,17 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class InputActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -31,15 +36,30 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
-    {
+    /**
+     * @param string $type
+     * @param string $arguments
+     * @param PageCollectionInterface $pages
+     *
+     * @return ActionInterface
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws NonRetrievablePageException
+     */
+    protected function doCreateFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {
             return new InputAction(null, null, $arguments);
         }
 
-        $identifier = $this->identifierFactory->create($identifierString);
+        $identifier = $this->identifierFactory->create($identifierString, $pages);
 
         $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';

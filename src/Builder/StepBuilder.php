@@ -2,13 +2,17 @@
 
 namespace webignition\BasilParser\Builder;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Loader\PageLoader;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class StepBuilder
 {
@@ -17,20 +21,14 @@ class StepBuilder
     const KEY_ELEMENTS = 'elements';
 
     private $stepFactory;
-    private $pageLoader;
     private $stepLoader;
-    private $yamlLoader;
+    private $dataSetLoader;
 
-    public function __construct(
-        StepFactory $stepFactory,
-        PageLoader $pageLoader,
-        StepLoader $stepLoader,
-        YamlLoader $yamlLoader
-    ) {
+    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader, DataSetLoader $dataSetLoader)
+    {
         $this->stepFactory = $stepFactory;
-        $this->pageLoader = $pageLoader;
         $this->stepLoader = $stepLoader;
-        $this->yamlLoader = $yamlLoader;
+        $this->dataSetLoader = $dataSetLoader;
     }
 
     /**
@@ -38,48 +36,55 @@ class StepBuilder
      * @param array $stepData
      * @param string[] $stepImportPaths
      * @param string[] $dataProviderImportPaths
-     * @param string[] $pageImportPaths
+     * @param PageCollectionInterface $pages
      *
      * @return StepInterface
      *
-     * @throws UnknownDataProviderImportException
-     * @throws UnknownStepImportException
+     * @throws StepBuilderInvalidPageElementReferenceException
+     * @throws StepBuilderUnknownDataProviderImportException
+     * @throws StepBuilderUnknownPageElementException
+     * @throws StepBuilderUnknownStepImportException
      * @throws YamlLoaderException
-     * @throws UnknownPageImportException
+     * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
-     * @throws InvalidPageElementReferenceException
+     * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
     public function build(
         string $stepName,
         array $stepData,
         array $stepImportPaths,
         array $dataProviderImportPaths,
-        array $pageImportPaths
+        PageCollectionInterface $pages
     ) {
-        $importName = $stepData[self::KEY_USE] ?? null;
-        if (null === $importName) {
-            $step = $this->stepFactory->createFromStepData($stepData);
+        $stepImportName = $stepData[self::KEY_USE] ?? null;
+        if (null === $stepImportName) {
+            $step = $this->stepFactory->createFromStepData($stepData, $pages);
         } else {
-            $importPath = $stepImportPaths[$importName] ?? null;
+            $stepImportPath = $stepImportPaths[$stepImportName] ?? null;
 
-            if (null === $importPath) {
-                throw new UnknownStepImportException($stepName, $importName, $stepImportPaths);
+            if (null === $stepImportPath) {
+                throw new StepBuilderUnknownStepImportException($stepName, $stepImportName, $stepImportPaths);
             }
 
-            $step = $this->stepLoader->load($importPath);
+            $step = $this->stepLoader->load($stepImportPath);
         }
 
         $data = $stepData[self::KEY_DATA] ?? null;
         if (null !== $data) {
             if (is_string($data)) {
-                $importName = $data;
-                $importPath = $dataProviderImportPaths[$importName] ?? null;
+                $dataProviderImportName = $data;
+                $dataProviderImportPath = $dataProviderImportPaths[$dataProviderImportName] ?? null;
 
-                if (null === $importPath) {
-                    throw new UnknownDataProviderImportException($stepName, $importName, $dataProviderImportPaths);
+                if (null === $dataProviderImportPath) {
+                    throw new StepBuilderUnknownDataProviderImportException(
+                        $stepName,
+                        $dataProviderImportName,
+                        $dataProviderImportPaths
+                    );
                 }
 
-                $data = $this->yamlLoader->loadArray($importPath);
+                $data = $this->dataSetLoader->load($dataProviderImportPath);
             }
 
             if (is_array($data)) {
@@ -96,25 +101,23 @@ class StepBuilder
                 $pageModelElementReference = new PageElementReference($pageModelElementReferenceString);
 
                 if (!$pageModelElementReference->isValid()) {
-                    throw new InvalidPageElementReferenceException($stepName, $pageModelElementReferenceString);
+                    throw new StepBuilderInvalidPageElementReferenceException(
+                        $stepName,
+                        $pageModelElementReferenceString
+                    );
                 }
 
-                $importName = $pageModelElementReference->getImportName();
+                $pageImportName = $pageModelElementReference->getImportName();
                 $elementName = $pageModelElementReference->getElementName();
 
-                $importPath = $pageImportPaths[$importName] ?? null;
+                $page = $pages->findPage($pageImportName);
 
-                if (null === $importPath) {
-                    throw new UnknownPageImportException($stepName, $importName, $pageImportPaths);
-                }
-
-                $page = $this->pageLoader->load($importPath);
                 $elementIdentifier = $page->getElementIdentifier($elementName);
 
                 if (null === $elementIdentifier) {
-                    throw new UnknownPageElementException(
+                    throw new StepBuilderUnknownPageElementException(
                         $stepName,
-                        $importName,
+                        $pageImportName,
                         $elementName,
                         $page->getElementNames()
                     );

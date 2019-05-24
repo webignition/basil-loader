@@ -3,6 +3,11 @@
 namespace webignition\BasilParser\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Page\PageInterface;
 
@@ -21,6 +26,16 @@ class PageFactory
         $this->identifierFactory = new IdentifierFactory();
     }
 
+    /**
+     * @param array $pageData
+     *
+     * @return PageInterface
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
     public function createFromPageData(array $pageData): PageInterface
     {
         $uriString = $pageData[self::KEY_URL] ?? '';
@@ -28,6 +43,7 @@ class PageFactory
         $elementsData = is_array($elementsData) ? $elementsData : [];
 
         $uri = new Uri($uriString);
+
         $elementIdentifiers = [];
 
         foreach ($elementsData as $elementName => $identifierString) {
@@ -36,7 +52,10 @@ class PageFactory
                 $elementName,
                 $elementIdentifiers
             );
-            $elementIdentifiers[$elementName] = $identifier;
+
+            if ($identifier instanceof IdentifierInterface) {
+                $elementIdentifiers[$elementName] = $identifier;
+            }
         }
 
         return new Page($uri, $elementIdentifiers);

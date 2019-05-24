@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Builder;
 
-class UnknownPageImportException extends \Exception
+class StepBuilderUnknownPageImportException extends \Exception
 {
     private $stepName;
     private $importName;
