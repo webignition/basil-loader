@@ -70,7 +70,7 @@ class IdentifierFactory
 
     /**
      * @param string $identifierString
-     * @param PageCollectionInterface $pageCollection
+     * @param PageCollectionInterface $pages
      * @param string|null $name
      *
      * @return IdentifierInterface|null
@@ -82,7 +82,7 @@ class IdentifierFactory
      */
     public function create(
         string $identifierString,
-        PageCollectionInterface $pageCollection,
+        PageCollectionInterface $pages,
         ?string $name = null
     ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
@@ -109,7 +109,7 @@ class IdentifierFactory
 
             $importName = $pageElementReference->getImportName();
 
-            $page = $pageCollection->findPage($importName);
+            $page = $pages->findPage($importName);
             $elementName = $pageElementReference->getElementName();
             $pageElementIdentifier = $page->getElementIdentifier($elementName);
 

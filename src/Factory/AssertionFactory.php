@@ -27,7 +27,7 @@ class AssertionFactory
 
     /**
      * @param string $assertionString
-     * @param PageCollectionInterface $pageCollection
+     * @param PageCollectionInterface $pages
      *
      * @return AssertionInterface
      *
@@ -38,11 +38,11 @@ class AssertionFactory
      */
     public function createFromAssertionString(
         string $assertionString,
-        PageCollectionInterface $pageCollection
+        PageCollectionInterface $pages
     ): AssertionInterface {
         $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
-        $identifier = $this->identifierFactory->create($identifierString, $pageCollection);
+        $identifier = $this->identifierFactory->create($identifierString, $pages);
         $value = null;
 
         $comparisonAndValue = trim(mb_substr($assertionString, mb_strlen($identifierString)));
