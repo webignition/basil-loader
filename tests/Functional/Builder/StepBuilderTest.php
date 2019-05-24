@@ -1,9 +1,9 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Functional\Builder;
 
-use Nyholm\Psr7\Uri;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\UnknownDataProviderImportException;
