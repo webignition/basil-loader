@@ -17,6 +17,7 @@ use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
+use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
@@ -140,6 +141,48 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             new Value(
                                 ValueTypes::STRING,
                                 'Example'
+                            )
+                        )
+                    ]
+                ),
+            ],
+            'no imports, inline step with page model element references' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [
+                        'set page_import_name.elements.element_name to "example"',
+                    ],
+                    StepFactory::KEY_ASSERTIONS => [
+                        'page_import_name.elements.element_name is "example"',
+                    ],
+                ],
+                'stepImportPaths' => [],
+                'dataProviderImportPaths' => [],
+                'pages' => [],
+                'expectedStep' => new Step(
+                    [
+                        new InputAction(
+                            new Identifier(
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                                'page_import_name.elements.element_name'
+                            ),
+                            new Value(
+                                ValueTypes::STRING,
+                                'example'
+                            ),
+                            'page_import_name.elements.element_name to "example"'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            'page_import_name.elements.element_name is "example"',
+                            new Identifier(
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                                'page_import_name.elements.element_name'
+                            ),
+                            AssertionComparisons::IS,
+                            new Value(
+                                ValueTypes::STRING,
+                                'example'
                             )
                         )
                     ]
