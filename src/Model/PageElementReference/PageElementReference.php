@@ -47,4 +47,9 @@ class PageElementReference implements PageElementReferenceInterface
     {
         return $this->isValid;
     }
+
+    public function __toString(): string
+    {
+        return $this->reference;
+    }
 }
