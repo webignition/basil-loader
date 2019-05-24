@@ -4,16 +4,15 @@
 
 namespace webignition\BasilParser\Tests\Unit\Builder;
 
+use Nyholm\Psr7\Uri;
 use Symfony\Component\Yaml\Parser as YamlParser;
-use webignition\BasilParser\Builder\InvalidPageElementReferenceException;
+use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Builder\UnknownDataProviderImportException;
-use webignition\BasilParser\Builder\UnknownPageElementException;
-use webignition\BasilParser\Builder\UnknownPageImportException;
-use webignition\BasilParser\Builder\UnknownStepImportException;
-use webignition\BasilParser\Factory\PageFactory;
+use webignition\BasilParser\Builder\StepBuilderUnknownDataProviderImportException;
+use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
+use webignition\BasilParser\Builder\StepBuilderUnknownPageImportException;
+use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -23,6 +22,7 @@ use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
@@ -41,14 +41,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $stepFactory = new StepFactory();
-        $pageFactory = new PageFactory();
 
         $yamlParser = new YamlParser();
         $yamlLoader = new YamlLoader($yamlParser);
-        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $this->stepBuilder = new StepBuilder($stepFactory, $pageLoader, $stepLoader, $yamlLoader);
+        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
     }
 
     /**
@@ -157,13 +155,23 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
                 'stepImportPaths' => [],
                 'dataProviderImportPaths' => [],
-                'pages' => [],
+                'pages' => [
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'element_name' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            )
+                        ]
+                    )
+                ],
                 'expectedStep' => new Step(
                     [
                         new InputAction(
                             new Identifier(
-                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                                'page_import_name.elements.element_name'
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
                             ),
                             new Value(
                                 ValueTypes::STRING,
@@ -176,8 +184,8 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new Assertion(
                             'page_import_name.elements.element_name is "example"',
                             new Identifier(
-                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                                'page_import_name.elements.element_name'
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
                             ),
                             AssertionComparisons::IS,
                             new Value(
@@ -318,8 +326,18 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                 ],
                 'dataProviderImportPaths' => [],
-                'pagesImportPaths' => [
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'pages' => [
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'heading' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading',
+                                null,
+                                'heading'
+                            ),
+                        ]
+                    ),
                 ],
                 'expectedStep' =>
                     (new Step(
@@ -361,7 +379,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseUnknownStepImport()
     {
-        $this->expectException(UnknownStepImportException::class);
+        $this->expectException(StepBuilderUnknownStepImportException::class);
         $this->expectExceptionMessage('Unknown step import "unknown_step_import_name" in step "Step Name"');
 
         $this->stepBuilder->build(
@@ -377,7 +395,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseUnknownDataProviderImport()
     {
-        $this->expectException(UnknownDataProviderImportException::class);
+        $this->expectException(StepBuilderUnknownDataProviderImportException::class);
         $this->expectExceptionMessage('Unknown data provider import "unknown_data_provider_name" in step "Step Name"');
 
         $this->stepBuilder->build(
@@ -396,7 +414,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseUnknownPageImport()
     {
-        $this->expectException(UnknownPageImportException::class);
+        $this->expectException(StepBuilderUnknownPageImportException::class);
         $this->expectExceptionMessage('Unknown page import "page_import_name" in step "Step Name"');
 
         $this->stepBuilder->build(
@@ -417,7 +435,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseUnknownPageElement()
     {
-        $this->expectException(UnknownPageElementException::class);
+        $this->expectException(StepBuilderUnknownPageElementException::class);
         $this->expectExceptionMessage(
             'Unknown page element "not-heading" in page "page_import_name" in step "Step Name"'
         );
@@ -435,14 +453,24 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             ],
             [],
             [
-                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'page_import_name' => new Page(
+                    new Uri('http://example.com'),
+                    [
+                        'heading' => new Identifier(
+                            IdentifierTypes::CSS_SELECTOR,
+                            '.heading',
+                            null,
+                            'heading'
+                        )
+                    ]
+                ),
             ]
         );
     }
 
     public function testBuildUseInvalidPageElementReference()
     {
-        $this->expectException(InvalidPageElementReferenceException::class);
+        $this->expectException(StepBuilderInvalidPageElementReferenceException::class);
         $this->expectExceptionMessage(
             'Invalid page element reference "page_import_name.foo.heading" in step "Step Name"'
         );
@@ -459,9 +487,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
             [],
-            [
-                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
-            ]
+            []
         );
     }
 }

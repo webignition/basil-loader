@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Builder;
 
-class InvalidPageElementReferenceException extends \Exception
+class StepBuilderInvalidPageElementReferenceException extends \Exception
 {
     private $stepName;
     private $pageElementReference;
