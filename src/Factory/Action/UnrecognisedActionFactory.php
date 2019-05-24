@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\UnrecognisedAction;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class UnrecognisedActionFactory implements ActionFactoryInterface
 {
@@ -12,15 +13,18 @@ class UnrecognisedActionFactory implements ActionFactoryInterface
         return true;
     }
 
-    public function createFromActionString(string $actionString, array $pages): ActionInterface
+    public function createFromActionString(string $actionString, PageCollectionInterface $pages): ActionInterface
     {
         list($type, $arguments) = explode(' ', $actionString, 2);
 
         return $this->createFromTypeAndArguments($type, $arguments, $pages);
     }
 
-    public function createFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
-    {
+    public function createFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface {
         return new UnrecognisedAction($type, $arguments);
     }
 }

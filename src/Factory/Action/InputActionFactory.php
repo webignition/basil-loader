@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
@@ -11,7 +12,7 @@ use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
-use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class InputActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -38,16 +39,20 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return ActionInterface
      *
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
-    {
+    protected function doCreateFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {

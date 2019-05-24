@@ -19,6 +19,9 @@ use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageCollection\PopulatedPageCollection;
 
 class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -41,7 +44,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForInteractionAction(
         string $actionString,
-        array $pages,
+        PageCollectionInterface $pages,
         InteractionAction $expectedAction
     ) {
         $action = $this->actionFactory->createFromActionString($actionString, $pages);
@@ -54,7 +57,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'click css selector with null position double-quoted' => [
                 'actionString' => 'click ".sign-in-form .submit-button"',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -66,7 +69,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click css selector with position double-quoted' => [
                 'actionString' => 'click ".sign-in-form .submit-button":3',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -79,7 +82,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click page model reference' => [
                 'actionString' => 'click page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         [
@@ -89,7 +92,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ),
-                ],
+                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -101,7 +104,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click element parameter reference' => [
                 'actionString' => 'click $elements.name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -113,7 +116,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click with no arguments' => [
                 'actionString' => 'click',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     null,
@@ -128,7 +131,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'submit css selector with null position double-quoted' => [
                 'actionString' => 'submit ".sign-in-form"',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -140,7 +143,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit css selector with position double-quoted' => [
                 'actionString' => 'submit ".sign-in-form":3',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -153,7 +156,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit page model reference' => [
                 'actionString' => 'submit page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         [
@@ -163,7 +166,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ),
-                ],
+                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -175,7 +178,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit element parameter reference' => [
                 'actionString' => 'submit $elements.name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -187,7 +190,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit no arguments' => [
                 'actionString' => 'submit',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     null,
@@ -202,7 +205,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'wait-for css selector with null position double-quoted' => [
                 'actionString' => 'wait-for ".sign-in-form .submit-button"',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -214,7 +217,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for css selector with position double-quoted' => [
                 'actionString' => 'wait-for ".sign-in-form .submit-button":3',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -227,7 +230,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for page model reference' => [
                 'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         [
@@ -237,7 +240,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ),
-                ],
+                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -249,7 +252,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for element parameter reference' => [
                 'actionString' => 'wait-for $elements.name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -261,7 +264,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for no arguments' => [
                 'actionString' => 'wait-for',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     null,
@@ -276,7 +279,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForWaitAction(string $actionString, WaitAction $expectedAction)
     {
-        $action = $this->actionFactory->createFromActionString($actionString);
+        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageCollection());
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -310,7 +313,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         string $actionString,
         NoArgumentsAction $expectedAction
     ) {
-        $action = $this->actionFactory->createFromActionString($actionString);
+        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageCollection());
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -338,7 +341,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForInputAction(string $actionString, InputAction $expectedAction)
     {
-        $action = $this->actionFactory->createFromActionString($actionString);
+        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageCollection());
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -509,7 +512,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $actionString = 'foo ".selector" to "value';
 
-        $action = $this->actionFactory->createFromActionString($actionString);
+        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageCollection());
 
         $this->assertInstanceOf(UnrecognisedAction::class, $action);
         $this->assertSame('foo', $action->getType());
@@ -520,7 +523,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $actionString = '';
 
-        $action = $this->actionFactory->createFromActionString($actionString);
+        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageCollection());
 
         $this->assertInstanceOf(UnrecognisedAction::class, $action);
         $this->assertSame('', $action->getType());
@@ -532,7 +535,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringThrowsPageElementException(
         string $actionString,
-        array $pages,
+        PageCollectionInterface $pages,
         string $expectedException,
         string $expectedExceptionMessage
     ) {
@@ -547,99 +550,99 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'click malformed page element reference' => [
                 'actionString' => 'click invalid-page-element-reference',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
             ],
             'click action unknown page' => [
                 'actionString' => 'click page_import_name.elements.element_name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name',
             ],
             'click action unknown page element' => [
                 'actionString' => 'click page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'set malformed page element reference' => [
                 'actionString' => 'set invalid-page-element-reference to "value"',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
             ],
             'set action unknown page' => [
                 'actionString' => 'set page_import_name.elements.element_name to "value"',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name',
             ],
             'set action unknown page element' => [
                 'actionString' => 'set page_import_name.elements.element_name to "value"',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'submit malformed page element reference' => [
                 'actionString' => 'submit invalid-page-element-reference',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
             ],
             'submit action unknown page' => [
                 'actionString' => 'submit page_import_name.elements.element_name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name',
             ],
             'submit action unknown page element' => [
                 'actionString' => 'submit page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'wait-for malformed page element reference' => [
                 'actionString' => 'wait-for invalid-page-element-reference',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
             ],
             'wait-for action unknown page' => [
                 'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name',
             ],
             'wait-for action unknown page element' => [
                 'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'click css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'click .sign-in-form .submit-button',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form .submit-button"',
             ],
             'submit css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'submit .sign-in-form',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form"',
             ],
             'wait-for css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'wait-for .sign-in-form .submit-button',
-                'pages' => [],
+                'pages' => new EmptyPageCollection(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form .submit-button"',
             ],

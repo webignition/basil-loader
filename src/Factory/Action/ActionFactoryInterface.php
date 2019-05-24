@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 interface ActionFactoryInterface
 {
@@ -11,18 +11,22 @@ interface ActionFactoryInterface
 
     /**
      * @param string $actionString
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return ActionInterface
      */
-    public function createFromActionString(string $actionString, array $pages): ActionInterface;
+    public function createFromActionString(string $actionString, PageCollectionInterface $pages): ActionInterface;
 
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return ActionInterface
      */
-    public function createFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface;
+    public function createFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface;
 }

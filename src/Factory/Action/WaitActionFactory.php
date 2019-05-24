@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\WaitAction;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class WaitActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -15,8 +16,11 @@ class WaitActionFactory extends AbstractActionFactory implements ActionFactoryIn
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
-    {
+    protected function doCreateFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface {
         return new WaitAction($arguments);
     }
 }

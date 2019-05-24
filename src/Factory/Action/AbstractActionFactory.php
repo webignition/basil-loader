@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 abstract class AbstractActionFactory implements ActionFactoryInterface
 {
@@ -20,17 +20,17 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return ActionInterface
      */
     abstract protected function doCreateFromTypeAndArguments(
         string $type,
         string $arguments,
-        array $pages
+        PageCollectionInterface $pages
     ): ActionInterface;
 
-    public function createFromActionString(string $actionString, array $pages): ActionInterface
+    public function createFromActionString(string $actionString, PageCollectionInterface $pages): ActionInterface
     {
         $actionString = trim($actionString);
 
@@ -44,8 +44,11 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
         return $this->createFromTypeAndArguments($type, $arguments, $pages);
     }
 
-    public function createFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
-    {
+    public function createFromTypeAndArguments(
+        string $type,
+        string $arguments,
+        PageCollectionInterface $pages
+    ): ActionInterface {
         if (!$this->handles($type)) {
             throw new \RuntimeException('Invalid action type');
         }
