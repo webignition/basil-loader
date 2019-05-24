@@ -1,7 +1,7 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Factory\Test;
+namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilder;

@@ -1,7 +1,7 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Factory\Test;
+namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Model\Test\Configuration;

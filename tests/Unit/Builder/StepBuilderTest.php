@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Functional\Builder;
+namespace webignition\BasilParser\Tests\Unit\Builder;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\InvalidPageElementReferenceException;
