@@ -86,6 +86,7 @@ class StepBuilder
         }
 
         $elementUses = $stepData[self::KEY_ELEMENTS] ?? null;
+
         if (null !== $elementUses) {
             $elementIdentifiers = [];
 

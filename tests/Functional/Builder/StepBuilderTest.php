@@ -7,6 +7,8 @@ use Nyholm\Psr7\Uri;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\UnknownDataProviderImportException;
+use webignition\BasilParser\Builder\UnknownPageElementException;
+use webignition\BasilParser\Builder\UnknownPageImportException;
 use webignition\BasilParser\Builder\UnknownStepImportException;
 use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
@@ -338,7 +340,27 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
-                StepBuilder::KEY_DATA => 'unknown_data_provider_name',
+            ],
+            [
+                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+            ],
+            [],
+            []
+        );
+    }
+
+    public function testBuildUseUnknownPageImport()
+    {
+        $this->expectException(UnknownPageImportException::class);
+        $this->expectExceptionMessage('Unknown page import "page_import_name" in step "Step Name"');
+
+        $this->stepBuilder->build(
+            'Step Name',
+            [
+                StepBuilder::KEY_USE => 'step_import_name',
+                StepBuilder::KEY_ELEMENTS => [
+                    'heading' => 'page_import_name.elements.heading',
+                ],
             ],
             [
                 'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
@@ -348,6 +370,28 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    // test for unknown page import exception
-    // test for unknown page element exception
+    public function testBuildUseUnknownPageElement()
+    {
+        $this->expectException(UnknownPageElementException::class);
+        $this->expectExceptionMessage(
+            'Unknown page element "not-heading" in page "page_import_name" in step "Step Name"'
+        );
+
+        $this->stepBuilder->build(
+            'Step Name',
+            [
+                StepBuilder::KEY_USE => 'step_import_name',
+                StepBuilder::KEY_ELEMENTS => [
+                    'not-heading' => 'page_import_name.elements.not-heading',
+                ],
+            ],
+            [
+                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+            ],
+            [],
+            [
+                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+            ]
+        );
+    }
 }
