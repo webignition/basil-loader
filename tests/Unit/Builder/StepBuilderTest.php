@@ -13,6 +13,7 @@ use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -20,6 +21,7 @@ use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
+use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
@@ -49,7 +51,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $yamlLoader = new YamlLoader($yamlParser);
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
+        $dataSetLoader = new DataSetLoader($yamlLoader);
+
+        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $dataSetLoader);
     }
 
     /**
@@ -291,7 +295,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'data_provider_name' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
                 ],
                 'pages' => new EmptyPageCollection(),
-                'expectedStep' => new Step(
+                'expectedStep' => (new Step(
                     [
                         new InteractionAction(
                             ActionTypes::CLICK,
@@ -316,7 +320,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             )
                         ),
                     ]
-                ),
+                ))->withDataSets([
+                    new DataSet([
+                        'expected_title' => 'Foo',
+                    ]),
+                    new DataSet([
+                        'expected_title' => 'Bar',
+                    ]),
+                ]),
             ],
             'element parameters' => [
                 'stepData' => [

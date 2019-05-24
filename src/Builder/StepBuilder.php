@@ -7,8 +7,8 @@ use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
@@ -22,13 +22,13 @@ class StepBuilder
 
     private $stepFactory;
     private $stepLoader;
-    private $yamlLoader;
+    private $dataSetLoader;
 
-    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader, YamlLoader $yamlLoader)
+    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader, DataSetLoader $dataSetLoader)
     {
         $this->stepFactory = $stepFactory;
         $this->stepLoader = $stepLoader;
-        $this->yamlLoader = $yamlLoader;
+        $this->dataSetLoader = $dataSetLoader;
     }
 
     /**
@@ -84,7 +84,7 @@ class StepBuilder
                     );
                 }
 
-                $data = $this->yamlLoader->loadArray($dataProviderImportPath);
+                $data = $this->dataSetLoader->load($dataProviderImportPath);
             }
 
             if (is_array($data)) {
