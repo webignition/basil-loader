@@ -1,8 +1,10 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
+use Nyholm\Psr7\Uri;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
@@ -11,6 +13,7 @@ use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
@@ -33,9 +36,9 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromStepDataDataProvider
      */
-    public function testCreateFromStepData(array $stepData, StepInterface $expectedStep)
+    public function testCreateFromStepData(array $stepData, array $pages, StepInterface $expectedStep)
     {
-        $step = $this->stepFactory->createFromStepData($stepData);
+        $step = $this->stepFactory->createFromStepData($stepData, $pages);
 
         $this->assertEquals($expectedStep, $step);
     }
@@ -45,6 +48,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'empty step data' => [
                 'stepData' => [],
+                'pages' => [],
                 'expectedStep' => new Step([], []),
             ],
             'empty actions and empty assertions' => [
@@ -58,6 +62,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         ' ',
                     ],
                 ],
+                'pages' => [],
                 'expectedStep' => new Step([], []),
             ],
             'actions only' => [
@@ -67,6 +72,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'set ".input" to "value"',
                     ],
                 ],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -99,6 +105,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         '".input" exists'
                     ],
                 ],
+                'pages' => [],
                 'expectedStep' => new Step(
                     [
                     ],
@@ -120,6 +127,38 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 '.input'
+                            ),
+                            AssertionComparisons::EXISTS
+                        ),
+                    ]
+                ),
+            ],
+            'page model element reference' => [
+                'stepData' => [
+                    StepFactory::KEY_ASSERTIONS => [
+                        'page_import_name.elements.element_name exists'
+                    ],
+                ],
+                'pages' => [
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'element_name' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                        ]
+                    )
+                ],
+                'expectedStep' => new Step(
+                    [
+                    ],
+                    [
+                        new Assertion(
+                            'page_import_name.elements.element_name exists',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
                             ),
                             AssertionComparisons::EXISTS
                         ),

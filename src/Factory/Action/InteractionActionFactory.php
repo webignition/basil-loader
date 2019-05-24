@@ -42,7 +42,7 @@ class InteractionActionFactory extends AbstractActionFactory implements ActionFa
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
     {
         return new InteractionAction($type, $this->identifierFactory->create($arguments, $pages), $arguments);
     }

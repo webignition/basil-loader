@@ -15,7 +15,7 @@ class WaitActionFactory extends AbstractActionFactory implements ActionFactoryIn
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
     {
         return new WaitAction($arguments);
     }

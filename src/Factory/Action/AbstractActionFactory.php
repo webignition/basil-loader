@@ -27,10 +27,10 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
     abstract protected function doCreateFromTypeAndArguments(
         string $type,
         string $arguments,
-        array $pages = []
+        array $pages
     ): ActionInterface;
 
-    public function createFromActionString(string $actionString, array $pages = []): ActionInterface
+    public function createFromActionString(string $actionString, array $pages): ActionInterface
     {
         $actionString = trim($actionString);
 
@@ -44,7 +44,7 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
         return $this->createFromTypeAndArguments($type, $arguments, $pages);
     }
 
-    public function createFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
+    public function createFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
     {
         if (!$this->handles($type)) {
             throw new \RuntimeException('Invalid action type');

@@ -15,7 +15,7 @@ interface ActionFactoryInterface
      *
      * @return ActionInterface
      */
-    public function createFromActionString(string $actionString, array $pages = []): ActionInterface;
+    public function createFromActionString(string $actionString, array $pages): ActionInterface;
 
     /**
      * @param string $type
@@ -24,5 +24,5 @@ interface ActionFactoryInterface
      *
      * @return ActionInterface
      */
-    public function createFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface;
+    public function createFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface;
 }

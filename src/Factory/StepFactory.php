@@ -2,7 +2,11 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
+use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 
@@ -27,7 +31,17 @@ class StepFactory
         $this->assertionFactory = new AssertionFactory();
     }
 
-    public function createFromStepData(array $stepData): StepInterface
+    /**
+     * @param array $stepData
+     * @param PageInterface[] $pages
+     *
+     * @return StepInterface
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    public function createFromStepData(array $stepData, array $pages): StepInterface
     {
         $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
         $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
@@ -41,7 +55,7 @@ class StepFactory
                 $actionString = trim($actionString);
 
                 if ('' !== $actionString) {
-                    $actions[] = $this->actionFactory->createFromActionString($actionString);
+                    $actions[] = $this->actionFactory->createFromActionString($actionString, $pages);
                 }
             }
         }
@@ -52,7 +66,7 @@ class StepFactory
                 $assertionString = trim($assertionString);
 
                 if ('' !== $assertionString) {
-                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
+                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString, $pages);
                 }
             }
         }

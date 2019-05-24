@@ -46,7 +46,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages): ActionInterface
     {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
