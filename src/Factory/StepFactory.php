@@ -3,12 +3,13 @@
 namespace webignition\BasilParser\Factory;
 
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class StepFactory
 {
@@ -33,15 +34,16 @@ class StepFactory
 
     /**
      * @param array $stepData
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return StepInterface
      *
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
-    public function createFromStepData(array $stepData, array $pages): StepInterface
+    public function createFromStepData(array $stepData, PageCollectionInterface $pages): StepInterface
     {
         $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
         $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
