@@ -2,10 +2,14 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\Exception\InvalidPageElementReferenceException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
+use webignition\BasilParser\Model\Page\PageInterface;
 
 class AssertionFactory
 {
@@ -20,11 +24,21 @@ class AssertionFactory
         $this->identifierStringExtractor = new IdentifierStringExtractor();
     }
 
-    public function createFromAssertionString(string $assertionString): AssertionInterface
+    /**
+     * @param string $assertionString
+     * @param PageInterface[] $pages
+     *
+     * @return AssertionInterface
+     *
+     * @throws InvalidPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    public function createFromAssertionString(string $assertionString, array $pages): AssertionInterface
     {
         $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
-        $identifier = $this->identifierFactory->create($identifierString);
+        $identifier = $this->identifierFactory->create($identifierString, $pages);
         $value = null;
 
         $comparisonAndValue = trim(mb_substr($assertionString, mb_strlen($identifierString)));
