@@ -15,6 +15,9 @@ use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
+use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageCollection\PopulatedPageCollection;
 
 class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,12 +38,12 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromAssertionString(
         string $assertionString,
-        array $pages,
+        PageCollectionInterface $pageCollection,
         IdentifierInterface $expectedIdentifier,
         string $expectedComparison,
         ?ValueInterface $expectedValue
     ) {
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, $pages);
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, $pageCollection);
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
         $this->assertSame($assertionString, $assertion->getAssertionString());
@@ -54,7 +57,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'simple css selector, is, scalar value' => [
                 'assertionString' => '".selector" is "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -67,7 +70,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector with element reference, is, scalar value' => [
                 'assertionString' => '"{{ reference }} .selector" is "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '{{ reference }} .selector'
@@ -80,7 +83,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, data parameter value' => [
                 'assertionString' => '".selector" is $data.name',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -93,7 +96,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, element parameter value' => [
                 'actionString' => '".selector" is $elements.name',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -106,7 +109,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, escaped quotes scalar value' => [
                 'assertionString' => '".selector" is "\"value\""',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -119,7 +122,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, lacking value' => [
                 'assertionString' => '".selector" is',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -129,7 +132,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is-not, scalar value' => [
                 'assertionString' => '".selector" is-not "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -142,7 +145,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is-not, lacking value' => [
                 'assertionString' => '".selector" is-not',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -152,7 +155,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, no value' => [
                 'assertionString' => '".selector" exists',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -162,7 +165,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, scalar value is ignored' => [
                 'assertionString' => '".selector" exists "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -172,7 +175,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, data parameter value is ignored' => [
                 'assertionString' => '".selector" exists $data.name"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -182,7 +185,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, includes, scalar value' => [
                 'assertionString' => '".selector" includes "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -195,7 +198,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, includes, lacking value' => [
                 'assertionString' => '".selector" includes',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -205,7 +208,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, excludes, scalar value' => [
                 'assertionString' => '".selector" excludes "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -218,7 +221,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, excludes, lacking value' => [
                 'assertionString' => '".selector" excludes',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -228,7 +231,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, matches, scalar value' => [
                 'assertionString' => '".selector" matches "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -241,7 +244,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, matches, lacking value' => [
                 'assertionString' => '".selector" matches',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -251,7 +254,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'comparison-including css selector, is, scalar value' => [
                 'assertionString' => '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector is is-not exists not-exists includes excludes matches foo'
@@ -264,7 +267,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple xpath expression, is, scalar value' => [
                 'assertionString' => '"//foo" is "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     '//foo'
@@ -278,7 +281,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             'comparison-including non-simple xpath expression, is, scalar value' => [
                 'assertionString' =>
                     '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
-                'pages' => [],
+                'pageCollection' => new EmptyPageCollection(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     '//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]'
@@ -291,7 +294,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'page model element reference' => [
                 'assertionString' => 'page_import_name.elements.element_name is "value"',
-                'pages' => [
+                'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         [
@@ -301,7 +304,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     )
-                ],
+                ]),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     '.selector'
@@ -319,7 +322,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $assertionString = '';
 
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, []);
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, new EmptyPageCollection());
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
         $this->assertSame($assertionString, $assertion->getAssertionString());
