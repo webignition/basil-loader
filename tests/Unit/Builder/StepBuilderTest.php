@@ -76,76 +76,76 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     public function buildSuccessDataProvider(): array
     {
         return [
-//            'no imports, no actions, no assertions' => [
-//                'stepData' => [],
-//                'stepImportPaths' => [],
-//                'dataProviderImportPaths' => [],
-//                'pages' => [],
-//                'expectedStep' => new Step([], []),
-//            ],
-//            'no imports, empty actions, empty assertions' => [
-//                'stepData' => [
-//                    StepFactory::KEY_ACTIONS => [],
-//                    StepFactory::KEY_ASSERTIONS => [],
-//                ],
-//                'stepImportPaths' => [],
-//                'dataProviderImportPaths' => [],
-//                'pages' => [],
-//                'expectedStep' => new Step([], []),
-//            ],
-//            'unused invalid imports, empty actions, empty assertions' => [
-//                'stepData' => [
-//                    StepFactory::KEY_ACTIONS => [],
-//                    StepFactory::KEY_ASSERTIONS => [],
-//                ],
-//                'stepImportPaths' => [
-//                    'invalid' => 'invalid.yml',
-//                ],
-//                'dataProviderImportPaths' => [
-//                    'invalid' => 'invalid.yml',
-//                ],
-//                'pages' => [],
-//                'expectedStep' => new Step([], []),
-//            ],
-//            'no imports, has actions, has assertions' => [
-//                'stepData' => [
-//                    StepFactory::KEY_ACTIONS => [
-//                        'click ".selector"',
-//                    ],
-//                    StepFactory::KEY_ASSERTIONS => [
-//                        '$page.title is "Example"',
-//                    ],
-//                ],
-//                'stepImportPaths' => [],
-//                'dataProviderImportPaths' => [],
-//                'pages' => [],
-//                'expectedStep' => new Step(
-//                    [
-//                        new InteractionAction(
-//                            ActionTypes::CLICK,
-//                            new Identifier(
-//                                IdentifierTypes::CSS_SELECTOR,
-//                                '.selector'
-//                            ),
-//                            '".selector"'
-//                        )
-//                    ],
-//                    [
-//                        new Assertion(
-//                            '$page.title is "Example"',
-//                            new Identifier(
-//                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
-//                                '$page.title'
-//                            ),
-//                            AssertionComparisons::IS,
-//                            new Value(
-//                                ValueTypes::STRING,
-//                                'Example'
-//                            )
-//                        )
-//                    ]
-//                ),
-//            ],
+            'no imports, no actions, no assertions' => [
+                'stepData' => [],
+                'stepImportPaths' => [],
+                'dataProviderImportPaths' => [],
+                'pages' => [],
+                'expectedStep' => new Step([], []),
+            ],
+            'no imports, empty actions, empty assertions' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [],
+                    StepFactory::KEY_ASSERTIONS => [],
+                ],
+                'stepImportPaths' => [],
+                'dataProviderImportPaths' => [],
+                'pages' => [],
+                'expectedStep' => new Step([], []),
+            ],
+            'unused invalid imports, empty actions, empty assertions' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [],
+                    StepFactory::KEY_ASSERTIONS => [],
+                ],
+                'stepImportPaths' => [
+                    'invalid' => 'invalid.yml',
+                ],
+                'dataProviderImportPaths' => [
+                    'invalid' => 'invalid.yml',
+                ],
+                'pages' => [],
+                'expectedStep' => new Step([], []),
+            ],
+            'no imports, has actions, has assertions' => [
+                'stepData' => [
+                    StepFactory::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepFactory::KEY_ASSERTIONS => [
+                        '$page.title is "Example"',
+                    ],
+                ],
+                'stepImportPaths' => [],
+                'dataProviderImportPaths' => [],
+                'pages' => [],
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.selector'
+                            ),
+                            '".selector"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '$page.title is "Example"',
+                            new Identifier(
+                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                                '$page.title'
+                            ),
+                            AssertionComparisons::IS,
+                            new Value(
+                                ValueTypes::STRING,
+                                'Example'
+                            )
+                        )
+                    ]
+                ),
+            ],
             'no imports, inline step with page model element references' => [
                 'stepData' => [
                     StepFactory::KEY_ACTIONS => [
