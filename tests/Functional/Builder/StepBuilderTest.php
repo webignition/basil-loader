@@ -340,9 +340,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
+                StepBuilder::KEY_DATA => 'unknown_data_provider_name',
             ],
             [
-                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
             ],
             [],
             []
@@ -363,7 +364,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             [
-                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
             [],
             []
@@ -386,7 +387,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             [
-                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
             [],
             [
