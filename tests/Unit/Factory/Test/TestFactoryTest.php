@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
@@ -47,9 +48,9 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         $pageFactory = new PageFactory();
         $pageLoader = new PageLoader($yamlLoader, $pageFactory);
 
-        $stepBuilder = new StepBuilder($stepFactory, $pageLoader, $stepLoader, $yamlLoader);
+        $stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
 
-        $this->testFactory = new TestFactory($configurationFactory, $stepBuilder);
+        $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder);
     }
 
     /**

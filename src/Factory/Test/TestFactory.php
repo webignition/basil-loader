@@ -3,6 +3,16 @@
 namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
+use webignition\BasilParser\Builder\StepBuilderUnknownDataProviderImportException;
+use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
+use webignition\BasilParser\Builder\StepBuilderUnknownPageImportException;
+use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Loader\PageLoader;
+use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
 
 class TestFactory
@@ -16,14 +26,32 @@ class TestFactory
     const KEY_TEST_DATA = 'data';
 
     private $configurationFactory;
+    private $pageLoader;
     private $stepBuilder;
 
-    public function __construct(ConfigurationFactory $configurationFactory, StepBuilder $stepBuilder)
-    {
+    public function __construct(
+        ConfigurationFactory $configurationFactory,
+        PageLoader $pageLoader,
+        StepBuilder $stepBuilder
+    ) {
         $this->configurationFactory = $configurationFactory;
+        $this->pageLoader = $pageLoader;
         $this->stepBuilder = $stepBuilder;
     }
 
+    /**
+     * @param array $testData
+     * @return Test
+     * @throws StepBuilderInvalidPageElementReferenceException
+     * @throws StepBuilderUnknownDataProviderImportException
+     * @throws StepBuilderUnknownPageElementException
+     * @throws StepBuilderUnknownPageImportException
+     * @throws StepBuilderUnknownStepImportException
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws YamlLoaderException
+     */
     public function createFromTestData(array $testData)
     {
         $configurationData = $testData[self::KEY_CONFIGURATION] ?? [];
