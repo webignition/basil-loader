@@ -11,14 +11,14 @@ use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Page\PageInterface;
-use webignition\BasilParser\PageCollection\PageCollection;
+use webignition\BasilParser\PageCollection\DeferredPageCollection;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
-class PageCollectionTest extends \PHPUnit\Framework\TestCase
+class DeferredPageCollectionTest extends \PHPUnit\Framework\TestCase
 {
     public function testFindPageSuccess()
     {
-        $pageCollection = new PageCollection($this->createPageLoader(), [
+        $pageCollection = new DeferredPageCollection($this->createPageLoader(), [
             'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
         ]);
 
@@ -32,7 +32,7 @@ class PageCollectionTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownPageException::class);
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
-        $pageCollection = new PageCollection($this->createPageLoader(), []);
+        $pageCollection = new DeferredPageCollection($this->createPageLoader(), []);
 
         $pageCollection->findPage('page_import_name');
     }
@@ -42,7 +42,7 @@ class PageCollectionTest extends \PHPUnit\Framework\TestCase
         $this->expectException(NonRetrievablePageException::class);
         $this->expectExceptionMessage('Cannot retrieve page "page_import_name" from "non-existent-file.yml"');
 
-        $pageCollection = new PageCollection($this->createPageLoader(), [
+        $pageCollection = new DeferredPageCollection($this->createPageLoader(), [
             'page_import_name' => 'non-existent-file.yml',
         ]);
 

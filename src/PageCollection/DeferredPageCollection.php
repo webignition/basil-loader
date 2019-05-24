@@ -8,7 +8,7 @@ use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Page\PageInterface;
 
-class PageCollection implements PageCollectionInterface
+class DeferredPageCollection implements PageCollectionInterface
 {
     private $pageLoader;
     private $importPaths;
