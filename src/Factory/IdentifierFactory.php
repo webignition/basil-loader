@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\Exception\InvalidPageElementReferenceException;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Identifier\Identifier;
@@ -33,7 +33,7 @@ class IdentifierFactory
      *
      * @return IdentifierInterface|null
      *
-     * @throws InvalidPageElementReferenceException
+     * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
@@ -72,7 +72,7 @@ class IdentifierFactory
      *
      * @return IdentifierInterface|null
      *
-     * @throws InvalidPageElementReferenceException
+     * @throws MalformedPageElementReferenceException
      * @throws UnknownPageException
      * @throws UnknownPageElementException
      */
@@ -97,7 +97,7 @@ class IdentifierFactory
             $pageElementReference = new PageElementReference($identifierString);
 
             if (!$pageElementReference->isValid()) {
-                throw new InvalidPageElementReferenceException($pageElementReference);
+                throw new MalformedPageElementReferenceException($pageElementReference);
             }
 
             $importName = $pageElementReference->getImportName();

@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\Exception\InvalidPageElementReferenceException;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
@@ -30,7 +30,7 @@ class AssertionFactory
      *
      * @return AssertionInterface
      *
-     * @throws InvalidPageElementReferenceException
+     * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */

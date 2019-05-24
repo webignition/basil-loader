@@ -12,14 +12,14 @@ class UnrecognisedActionFactory implements ActionFactoryInterface
         return true;
     }
 
-    public function createFromActionString(string $actionString): ActionInterface
+    public function createFromActionString(string $actionString, array $pages = []): ActionInterface
     {
         list($type, $arguments) = explode(' ', $actionString, 2);
 
-        return $this->createFromTypeAndArguments($type, $arguments);
+        return $this->createFromTypeAndArguments($type, $arguments, $pages);
     }
 
-    public function createFromTypeAndArguments(string $type, string $arguments): ActionInterface
+    public function createFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
     {
         return new UnrecognisedAction($type, $arguments);
     }

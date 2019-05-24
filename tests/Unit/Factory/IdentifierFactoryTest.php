@@ -5,7 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilParser\Exception\InvalidPageElementReferenceException;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
@@ -361,8 +361,8 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateForInvalidPageElementReference()
     {
-        $this->expectException(InvalidPageElementReferenceException::class);
-        $this->expectExceptionMessage('Invalid page element reference "invalid-page-model-element-reference"');
+        $this->expectException(MalformedPageElementReferenceException::class);
+        $this->expectExceptionMessage('Malformed page element reference "invalid-page-model-element-reference"');
 
         $this->factory->create('invalid-page-model-element-reference', []);
     }

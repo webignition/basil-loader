@@ -37,9 +37,9 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
         return ActionTypes::ALL;
     }
 
-    protected function doCreateFromTypeAndArguments(string $type, string $arguments): ActionInterface
+    protected function doCreateFromTypeAndArguments(string $type, string $arguments, array $pages = []): ActionInterface
     {
-        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments($type, $arguments);
+        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments($type, $arguments, $pages);
     }
 
     private function findTypeSpecificActionFactory(string $type): ActionFactoryInterface
