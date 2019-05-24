@@ -3,15 +3,16 @@
 namespace webignition\BasilParser\Builder;
 
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
-use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class StepBuilder
 {
@@ -35,26 +36,26 @@ class StepBuilder
      * @param array $stepData
      * @param string[] $stepImportPaths
      * @param string[] $dataProviderImportPaths
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pages
      *
      * @return StepInterface
      *
      * @throws StepBuilderInvalidPageElementReferenceException
      * @throws StepBuilderUnknownDataProviderImportException
      * @throws StepBuilderUnknownPageElementException
-     * @throws StepBuilderUnknownPageImportException
      * @throws StepBuilderUnknownStepImportException
      * @throws YamlLoaderException
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
     public function build(
         string $stepName,
         array $stepData,
         array $stepImportPaths,
         array $dataProviderImportPaths,
-        array $pages
+        PageCollectionInterface $pages
     ) {
         $stepImportName = $stepData[self::KEY_USE] ?? null;
         if (null === $stepImportName) {
@@ -109,11 +110,7 @@ class StepBuilder
                 $pageImportName = $pageModelElementReference->getImportName();
                 $elementName = $pageModelElementReference->getElementName();
 
-                $page = $pages[$pageImportName] ?? null;
-
-                if (null === $page) {
-                    throw new StepBuilderUnknownPageImportException($stepName, $pageImportName, $pages);
-                }
+                $page = $pages->findPage($pageImportName);
 
                 $elementIdentifier = $page->getElementIdentifier($elementName);
 
