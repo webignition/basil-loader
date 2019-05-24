@@ -6,14 +6,15 @@ use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilderUnknownDataProviderImportException;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
-use webignition\BasilParser\Builder\StepBuilderUnknownPageImportException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
+use webignition\BasilParser\PageCollection\DeferredPageCollection;
 
 class TestFactory
 {
@@ -45,12 +46,12 @@ class TestFactory
      * @throws StepBuilderInvalidPageElementReferenceException
      * @throws StepBuilderUnknownDataProviderImportException
      * @throws StepBuilderUnknownPageElementException
-     * @throws StepBuilderUnknownPageImportException
      * @throws StepBuilderUnknownStepImportException
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws YamlLoaderException
+     * @throws NonRetrievablePageException
      */
     public function createFromTestData(array $testData)
     {
@@ -69,6 +70,8 @@ class TestFactory
         $configuration = $this->configurationFactory->createFromConfigurationData($configurationData);
         $steps = [];
 
+        $pages = new DeferredPageCollection($this->pageLoader, $pageImportPaths);
+
         foreach ($stepNames as $stepName) {
             $stepData = $testData[$stepName];
 
@@ -76,8 +79,8 @@ class TestFactory
                 $stepName,
                 $stepData,
                 $stepImportPaths,
-                $pageImportPaths,
-                $dataProviderImportPaths
+                $dataProviderImportPaths,
+                $pages
             );
 
             $steps[$stepName] = $step;

@@ -101,7 +101,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     'invalid' => new Step([], []),
                 ]),
             ],
-            'inline steps only' => [
+            'inline step, scalar values' => [
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'verify page is open' => [
@@ -155,6 +155,56 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                                 new Value(
                                     ValueTypes::STRING,
                                     'example - Example Domain'
+                                )
+                            ),
+                        ]
+                    ),
+                ]),
+            ],
+            'inline step, page element references' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => FixturePathFinder::find('Page/example.com.button.heading.yml'),
+                        ],
+                    ],
+                    'query "example"' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.button',
+                        ],
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.heading is "example"',
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test($expectedConfiguration, [
+                    'query "example"' => new Step(
+                        [
+                            new InteractionAction(
+                                ActionTypes::CLICK,
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    '.button',
+                                    null,
+                                    'button'
+                                ),
+                                'page_import_name.elements.button'
+                            ),
+                        ],
+                        [
+                            new Assertion(
+                                'page_import_name.elements.heading is "example"',
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    '.heading',
+                                    null,
+                                    'heading'
+                                ),
+                                AssertionComparisons::IS,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    'example'
                                 )
                             ),
                         ]
