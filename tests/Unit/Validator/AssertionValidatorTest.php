@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Unit\Validator;
@@ -31,7 +32,7 @@ class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidate(string $assertionString, bool $expectedIsValid)
     {
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, []);
 
         $this->assertSame($expectedIsValid, $this->assertionValidator->validate($assertion));
     }
