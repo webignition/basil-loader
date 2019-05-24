@@ -10,6 +10,7 @@ use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
@@ -49,7 +50,9 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         $pageFactory = new PageFactory();
         $pageLoader = new PageLoader($yamlLoader, $pageFactory);
 
-        $stepBuilder = new StepBuilder($stepFactory, $stepLoader, $yamlLoader);
+        $dataSetLoader = new DataSetLoader($yamlLoader);
+
+        $stepBuilder = new StepBuilder($stepFactory, $stepLoader, $dataSetLoader);
 
         $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder);
     }
@@ -337,6 +340,62 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ))->withDataSets([
                             'data_set_1' => new DataSet([
                                 'expected_title' => 'Foo',
+                            ]),
+                        ]),
+                    ]
+                ),
+            ],
+            'step import, imported data' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                            'data_provider_import_name' =>
+                                FixturePathFinder::find('DataProvider/expected-title-only.yml')
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'data' => 'data_provider_import_name',
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes $data.expected_title',
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::DATA_PARAMETER,
+                                        '$data.expected_title'
+                                    )
+                                ),
+                            ]
+                        ))->withDataSets([
+                            0 => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                            1 => new DataSet([
+                                'expected_title' => 'Bar',
                             ]),
                         ]),
                     ]
