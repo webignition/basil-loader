@@ -17,6 +17,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
+use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Step\Step;
@@ -285,6 +286,59 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                                 ),
                             ]
                         ),
+                    ]
+                ),
+            ],
+            'step import, inline data' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'data' => [
+                            'data_set_1' => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                        ]
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes $data.expected_title',
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::DATA_PARAMETER,
+                                        '$data.expected_title'
+                                    )
+                                ),
+                            ]
+                        ))->withDataSets([
+                            'data_set_1' => new DataSet([
+                                'expected_title' => 'Foo',
+                            ]),
+                        ]),
                     ]
                 ),
             ],
