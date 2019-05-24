@@ -401,6 +401,64 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'step import, uses page imported page elements' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' =>
+                                FixturePathFinder::find('Page/example.com.heading.yml')
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                        'elements' => [
+                            'heading' => 'page_import_name.elements.heading'
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => (new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '$elements.heading includes "Hello World"',
+                                    new Identifier(
+                                        IdentifierTypes::ELEMENT_PARAMETER,
+                                        '$elements.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        'Hello World'
+                                    )
+                                ),
+                            ]
+                        ))->withElementIdentifiers([
+                            'heading' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                '.heading',
+                                null,
+                                'heading'
+                            ),
+                        ]),
+                    ]
+                ),
+            ],
         ];
     }
 }
