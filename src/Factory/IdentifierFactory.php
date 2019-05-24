@@ -3,13 +3,15 @@
 namespace webignition\BasilParser\Factory;
 
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
+use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageCollection\PageCollectionInterface;
 
 class IdentifierFactory
 {
@@ -36,6 +38,7 @@ class IdentifierFactory
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
     public function createWithElementReference(
         string $identifierString,
@@ -56,7 +59,7 @@ class IdentifierFactory
         }
 
         $parentIdentifier = $existingIdentifiers[$parentIdentifierName] ?? null;
-        $identifier = $this->create($identifierString, [], $elementName);
+        $identifier = $this->create($identifierString, new EmptyPageCollection(), $elementName);
 
         if ($identifier instanceof IdentifierInterface && $parentIdentifier) {
             return $identifier->withParentIdentifier($parentIdentifier);
@@ -67,7 +70,7 @@ class IdentifierFactory
 
     /**
      * @param string $identifierString
-     * @param PageInterface[] $pages
+     * @param PageCollectionInterface $pageCollection
      * @param string|null $name
      *
      * @return IdentifierInterface|null
@@ -75,9 +78,13 @@ class IdentifierFactory
      * @throws MalformedPageElementReferenceException
      * @throws UnknownPageException
      * @throws UnknownPageElementException
+     * @throws NonRetrievablePageException
      */
-    public function create(string $identifierString, array $pages, ?string $name = null): ?IdentifierInterface
-    {
+    public function create(
+        string $identifierString,
+        PageCollectionInterface $pageCollection,
+        ?string $name = null
+    ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
 
         if (empty($identifierString)) {
@@ -102,11 +109,7 @@ class IdentifierFactory
 
             $importName = $pageElementReference->getImportName();
 
-            $page = $pages[$importName] ?? null;
-            if (null === $page) {
-                throw new UnknownPageException($importName);
-            }
-
+            $page = $pageCollection->findPage($importName);
             $elementName = $pageElementReference->getElementName();
             $pageElementIdentifier = $page->getElementIdentifier($elementName);
 
