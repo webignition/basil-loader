@@ -1,7 +1,7 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Model\PagElementReference;
+namespace webignition\BasilParser\Tests\Unit\Model\PageElementReference;
 
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 
