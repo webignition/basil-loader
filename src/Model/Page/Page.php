@@ -30,4 +30,18 @@ class Page implements PageInterface
     {
         return $this->elements[$name] ?? null;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getElementNames(): array
+    {
+        $keys = [];
+
+        foreach (array_keys($this->elements) as $key) {
+            $keys[] = (string) $key;
+        }
+
+        return $keys;
+    }
 }

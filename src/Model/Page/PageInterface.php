@@ -9,4 +9,9 @@ interface PageInterface
 {
     public function getUri(): UriInterface;
     public function getElementIdentifier(string $name): ?IdentifierInterface;
+
+    /**
+     * @return string[]
+     */
+    public function getElementNames(): array;
 }
