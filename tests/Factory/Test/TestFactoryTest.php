@@ -3,11 +3,16 @@
 
 namespace webignition\BasilParser\Tests\Factory\Test;
 
+use Symfony\Component\Yaml\Parser as YamlParser;
+use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
+use webignition\BasilParser\Loader\PageLoader;
+use webignition\BasilParser\Loader\StepLoader;
+use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
@@ -31,7 +36,19 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->testFactory = new TestFactory();
+        $configurationFactory = new ConfigurationFactory();
+        $stepFactory = new StepFactory();
+
+        $yamlParser = new YamlParser();
+        $yamlLoader = new YamlLoader($yamlParser);
+        $stepLoader = new StepLoader($yamlLoader, $stepFactory);
+
+        $pageFactory = new PageFactory();
+        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
+
+        $stepBuilder = new StepBuilder($stepFactory, $pageLoader, $stepLoader, $yamlLoader);
+
+        $this->testFactory = new TestFactory($configurationFactory, $stepBuilder);
     }
 
     /**
@@ -142,6 +159,53 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ),
                 ]),
             ],
+            'invalid page import path for unused import' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'invalid' => '../page/file-does-not-exist.yml',
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test($expectedConfiguration, []),
+            ],
+            'invalid step import path for unused import' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'invalid' => '../step/file-does-not-exist.yml',
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test($expectedConfiguration, []),
+            ],
+            'invalid data provider import path for unused import' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                            'invalid' => '../data-provider/file-does-not-exist.yml',
+                        ],
+                    ],
+                ],
+                'expectedTest' => new Test($expectedConfiguration, []),
+            ],
+//            'step import' => [
+//                'testData' => [
+//                    TestFactory::KEY_CONFIGURATION => $configurationData,
+//                    TestFactory::KEY_IMPORTS => [
+//                        TestFactory::KEY_IMPORTS_STEPS => [
+//                            'step_import_name' => '../step/step.yml',
+//                        ],
+//                    ],
+//                    'step_name' => [
+//                        'use' => 'step_import_name',
+//                    ],
+//                ],
+//                'expectedTest' => new Test($expectedConfiguration, []),
+//            ],
         ];
     }
 }

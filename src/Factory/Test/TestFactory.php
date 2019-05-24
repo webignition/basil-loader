@@ -2,32 +2,39 @@
 
 namespace webignition\BasilParser\Factory\Test;
 
-use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Model\Test\Test;
 
 class TestFactory
 {
     const KEY_CONFIGURATION = 'config';
     const KEY_IMPORTS = 'imports';
+    const KEY_IMPORTS_STEPS = 'steps';
+    const KEY_IMPORTS_PAGES = 'pages';
+    const KEY_IMPORTS_DATA_PROVIDERS = 'data_providers';
+    const KEY_TEST_USE = 'use';
+    const KEY_TEST_DATA = 'data';
 
-    private $importCollectionFactory;
     private $configurationFactory;
-    private $stepFactory;
+    private $stepBuilder;
 
-    public function __construct()
+    public function __construct(ConfigurationFactory $configurationFactory, StepBuilder $stepBuilder)
     {
-        $this->importCollectionFactory = new ImportCollectionFactory();
-        $this->configurationFactory = new ConfigurationFactory();
-        $this->stepFactory = new StepFactory();
+        $this->configurationFactory = $configurationFactory;
+        $this->stepBuilder = $stepBuilder;
     }
 
     public function createFromTestData(array $testData)
     {
         $configurationData = $testData[self::KEY_CONFIGURATION] ?? [];
-        $importsData = $testData[self::KEY_IMPORTS] ?? [];
+        $importPaths = $testData[self::KEY_IMPORTS] ?? [];
 
         $configurationData = is_array($configurationData) ? $configurationData : [];
-        $importsData = is_array($importsData) ? $importsData : [];
+        $importPaths = is_array($importPaths) ? $importPaths : [];
+
+        $stepImportPaths = $importPaths[self::KEY_IMPORTS_STEPS] ?? [];
+        $pageImportPaths = $importPaths[self::KEY_IMPORTS_PAGES] ?? [];
+        $dataProviderImportPaths = $importPaths[self::KEY_IMPORTS_DATA_PROVIDERS] ?? [];
 
         $stepNames = array_diff(array_keys($testData), [self::KEY_CONFIGURATION, self::KEY_IMPORTS]);
 
@@ -35,7 +42,15 @@ class TestFactory
         $steps = [];
 
         foreach ($stepNames as $stepName) {
-            $step = $this->stepFactory->createFromStepData($testData[$stepName]);
+            $stepData = $testData[$stepName];
+
+            $step = $this->stepBuilder->build(
+                $stepName,
+                $stepData,
+                $stepImportPaths,
+                $pageImportPaths,
+                $dataProviderImportPaths
+            );
 
             $steps[$stepName] = $step;
         }
