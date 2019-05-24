@@ -24,6 +24,7 @@ use webignition\BasilParser\Model\Test\Test;
 use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class TestFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -192,20 +193,50 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedTest' => new Test($expectedConfiguration, []),
             ],
-//            'step import' => [
-//                'testData' => [
-//                    TestFactory::KEY_CONFIGURATION => $configurationData,
-//                    TestFactory::KEY_IMPORTS => [
-//                        TestFactory::KEY_IMPORTS_STEPS => [
-//                            'step_import_name' => '../step/step.yml',
-//                        ],
-//                    ],
-//                    'step_name' => [
-//                        'use' => 'step_import_name',
-//                    ],
-//                ],
-//                'expectedTest' => new Test($expectedConfiguration, []),
-//            ],
+            'step import, no parameters' => [
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
+                        ],
+                    ],
+                    'step_name' => [
+                        'use' => 'step_import_name',
+                    ],
+                ],
+                'expectedTest' => new Test(
+                    $expectedConfiguration,
+                    [
+                        'step_name' => new Step(
+                            [
+                                new InteractionAction(
+                                    ActionTypes::CLICK,
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.button'
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes "Hello World"',
+                                    new Identifier(
+                                        IdentifierTypes::CSS_SELECTOR,
+                                        '.heading'
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        'Hello World'
+                                    )
+                                ),
+                            ]
+                        ),
+                    ]
+                ),
+            ],
         ];
     }
 }
