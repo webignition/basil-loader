@@ -10,7 +10,7 @@ use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class AssertionFactory
 {
@@ -27,7 +27,7 @@ class AssertionFactory
 
     /**
      * @param string $assertionString
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      *
      * @return AssertionInterface
      *
@@ -38,11 +38,11 @@ class AssertionFactory
      */
     public function createFromAssertionString(
         string $assertionString,
-        PageCollectionInterface $pages
+        PageProviderInterface $pageProvider
     ): AssertionInterface {
         $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
-        $identifier = $this->identifierFactory->create($identifierString, $pages);
+        $identifier = $this->identifierFactory->create($identifierString, $pageProvider);
         $value = null;
 
         $comparisonAndValue = trim(mb_substr($assertionString, mb_strlen($identifierString)));

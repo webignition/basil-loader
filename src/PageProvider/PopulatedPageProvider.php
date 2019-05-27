@@ -1,11 +1,11 @@
 <?php
 
-namespace webignition\BasilParser\PageCollection;
+namespace webignition\BasilParser\PageProvider;
 
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Page\PageInterface;
 
-class PopulatedPageCollection implements PageCollectionInterface
+class PopulatedPageProvider implements PageProviderInterface
 {
     private $pages = [];
 

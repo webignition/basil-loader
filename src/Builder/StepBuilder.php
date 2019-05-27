@@ -14,7 +14,7 @@ use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class StepBuilder
 {
@@ -36,7 +36,7 @@ class StepBuilder
      * @param array $stepData
      * @param string[] $stepImportPaths
      * @param DataSetProviderInterface $dataSetProvider
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
@@ -56,11 +56,11 @@ class StepBuilder
         array $stepData,
         array $stepImportPaths,
         DataSetProviderInterface $dataSetProvider,
-        PageCollectionInterface $pages
+        PageProviderInterface $pageProvider
     ) {
         $stepImportName = $stepData[self::KEY_USE] ?? null;
         if (null === $stepImportName) {
-            $step = $this->stepFactory->createFromStepData($stepData, $pages);
+            $step = $this->stepFactory->createFromStepData($stepData, $pageProvider);
         } else {
             $stepImportPath = $stepImportPaths[$stepImportName] ?? null;
 
@@ -101,7 +101,7 @@ class StepBuilder
                 $pageImportName = $pageModelElementReference->getImportName();
                 $elementName = $pageModelElementReference->getElementName();
 
-                $page = $pages->findPage($pageImportName);
+                $page = $pageProvider->findPage($pageImportName);
 
                 $elementIdentifier = $page->getElementIdentifier($elementName);
 

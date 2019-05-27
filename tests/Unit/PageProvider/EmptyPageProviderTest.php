@@ -2,20 +2,20 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\PageCollection;
+namespace webignition\BasilParser\Tests\Unit\PageProvider;
 
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageProvider\EmptyPageProvider;
 
-class EmptyPageCollectionTest extends \PHPUnit\Framework\TestCase
+class EmptyPageProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testFindPageThrowsUnknownPageException()
     {
         $this->expectException(UnknownPageException::class);
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
-        $pageCollection = new EmptyPageCollection();
+        $pageProvider = new EmptyPageProvider();
 
-        $pageCollection->findPage('page_import_name');
+        $pageProvider->findPage('page_import_name');
     }
 }

@@ -12,7 +12,7 @@ use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class InputActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -39,7 +39,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      *
      * @return ActionInterface
      *
@@ -51,7 +51,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
     protected function doCreateFromTypeAndArguments(
         string $type,
         string $arguments,
-        PageCollectionInterface $pages
+        PageProviderInterface $pageProvider
     ): ActionInterface {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
@@ -59,7 +59,7 @@ class InputActionFactory extends AbstractActionFactory implements ActionFactoryI
             return new InputAction(null, null, $arguments);
         }
 
-        $identifier = $this->identifierFactory->create($identifierString, $pages);
+        $identifier = $this->identifierFactory->create($identifierString, $pageProvider);
 
         $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';

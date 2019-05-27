@@ -10,7 +10,7 @@ use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class InteractionActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -35,7 +35,7 @@ class InteractionActionFactory extends AbstractActionFactory implements ActionFa
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      *
      * @return ActionInterface
      *
@@ -47,8 +47,8 @@ class InteractionActionFactory extends AbstractActionFactory implements ActionFa
     protected function doCreateFromTypeAndArguments(
         string $type,
         string $arguments,
-        PageCollectionInterface $pages
+        PageProviderInterface $pageProvider
     ): ActionInterface {
-        return new InteractionAction($type, $this->identifierFactory->create($arguments, $pages), $arguments);
+        return new InteractionAction($type, $this->identifierFactory->create($arguments, $pageProvider), $arguments);
     }
 }

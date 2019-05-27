@@ -5,7 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Validator;
 
 use webignition\BasilParser\Factory\AssertionFactory;
-use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageProvider\EmptyPageProvider;
 use webignition\BasilParser\Validator\AssertionValidator;
 
 class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
@@ -33,7 +33,7 @@ class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidate(string $assertionString, bool $expectedIsValid)
     {
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, new EmptyPageCollection());
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, new EmptyPageProvider());
 
         $this->assertSame($expectedIsValid, $this->assertionValidator->validate($assertion));
     }

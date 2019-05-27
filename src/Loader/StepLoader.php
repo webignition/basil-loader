@@ -8,7 +8,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageCollection\EmptyPageCollection;
+use webignition\BasilParser\PageProvider\EmptyPageProvider;
 
 class StepLoader
 {
@@ -36,6 +36,6 @@ class StepLoader
     {
         $data = $this->yamlLoader->loadArray($path);
 
-        return $this->stepFactory->createFromStepData($data, new EmptyPageCollection());
+        return $this->stepFactory->createFromStepData($data, new EmptyPageProvider());
     }
 }

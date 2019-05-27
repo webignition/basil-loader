@@ -17,7 +17,7 @@ use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\PageCollection\DeferredPageCollection;
+use webignition\BasilParser\PageProvider\DeferredPageProvider;
 
 class TestFactory
 {
@@ -77,7 +77,7 @@ class TestFactory
         $configuration = $this->configurationFactory->createFromConfigurationData($configurationData);
         $steps = [];
 
-        $pages = new DeferredPageCollection($this->pageLoader, $pageImportPaths);
+        $pages = new DeferredPageProvider($this->pageLoader, $pageImportPaths);
         $dataSetProvider = new DeferredDataSetProvider($this->dataSetLoader, $dataProviderImportPaths);
 
         foreach ($stepNames as $stepName) {

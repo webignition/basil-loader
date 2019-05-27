@@ -10,8 +10,8 @@ use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
-use webignition\BasilParser\PageCollection\EmptyPageCollection;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\EmptyPageProvider;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class IdentifierFactory
 {
@@ -59,7 +59,7 @@ class IdentifierFactory
         }
 
         $parentIdentifier = $existingIdentifiers[$parentIdentifierName] ?? null;
-        $identifier = $this->create($identifierString, new EmptyPageCollection(), $elementName);
+        $identifier = $this->create($identifierString, new EmptyPageProvider(), $elementName);
 
         if ($identifier instanceof IdentifierInterface && $parentIdentifier) {
             return $identifier->withParentIdentifier($parentIdentifier);
@@ -70,7 +70,7 @@ class IdentifierFactory
 
     /**
      * @param string $identifierString
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      * @param string|null $name
      *
      * @return IdentifierInterface|null
@@ -82,7 +82,7 @@ class IdentifierFactory
      */
     public function create(
         string $identifierString,
-        PageCollectionInterface $pages,
+        PageProviderInterface $pageProvider,
         ?string $name = null
     ): ?IdentifierInterface {
         $identifierString = trim($identifierString);
@@ -109,7 +109,7 @@ class IdentifierFactory
 
             $importName = $pageElementReference->getImportName();
 
-            $page = $pages->findPage($importName);
+            $page = $pageProvider->findPage($importName);
             $elementName = $pageElementReference->getElementName();
             $pageElementIdentifier = $page->getElementIdentifier($elementName);
 

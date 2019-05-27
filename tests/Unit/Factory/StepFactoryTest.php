@@ -18,9 +18,9 @@ use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\PageCollection\EmptyPageCollection;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
-use webignition\BasilParser\PageCollection\PopulatedPageCollection;
+use webignition\BasilParser\PageProvider\EmptyPageProvider;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\PageProvider\PopulatedPageProvider;
 
 class StepFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -39,9 +39,12 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromStepDataDataProvider
      */
-    public function testCreateFromStepData(array $stepData, PageCollectionInterface $pages, StepInterface $expectedStep)
-    {
-        $step = $this->stepFactory->createFromStepData($stepData, $pages);
+    public function testCreateFromStepData(
+        array $stepData,
+        PageProviderInterface $pageProvider,
+        StepInterface $expectedStep
+    ) {
+        $step = $this->stepFactory->createFromStepData($stepData, $pageProvider);
 
         $this->assertEquals($expectedStep, $step);
     }
@@ -51,7 +54,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'empty step data' => [
                 'stepData' => [],
-                'pages' => new EmptyPageCollection(),
+                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'empty actions and empty assertions' => [
@@ -65,7 +68,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         ' ',
                     ],
                 ],
-                'pages' => new EmptyPageCollection(),
+                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'actions only' => [
@@ -75,7 +78,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'set ".input" to "value"',
                     ],
                 ],
-                'pages' => new EmptyPageCollection(),
+                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -108,7 +111,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         '".input" exists'
                     ],
                 ],
-                'pages' => new EmptyPageCollection(),
+                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                     ],
@@ -145,7 +148,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'page_import_name.elements.element_name exists'
                     ],
                 ],
-                'pages' => new PopulatedPageCollection([
+                'pages' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         [
