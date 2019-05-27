@@ -50,11 +50,10 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         $pageFactory = new PageFactory();
         $pageLoader = new PageLoader($yamlLoader, $pageFactory);
 
+        $stepBuilder = new StepBuilder($stepFactory, $stepLoader);
         $dataSetLoader = new DataSetLoader($yamlLoader);
 
-        $stepBuilder = new StepBuilder($stepFactory, $stepLoader, $dataSetLoader);
-
-        $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder);
+        $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder, $dataSetLoader);
     }
 
     /**

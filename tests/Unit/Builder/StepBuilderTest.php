@@ -8,12 +8,14 @@ use Nyholm\Psr7\Uri;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Builder\StepBuilderUnknownDataProviderImportException;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
+use webignition\BasilParser\DataSetProvider\DataSetProviderInterface;
+use webignition\BasilParser\DataSetProvider\EmptyDataSetProvider;
+use webignition\BasilParser\DataSetProvider\PopulatedDataSetProvider;
+use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -51,9 +53,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $yamlLoader = new YamlLoader($yamlParser);
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $dataSetLoader = new DataSetLoader($yamlLoader);
-
-        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader, $dataSetLoader);
+        $this->stepBuilder = new StepBuilder($stepFactory, $stepLoader);
     }
 
     /**
@@ -62,7 +62,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     public function testBuildSuccess(
         array $stepData,
         array $stepImportPaths,
-        array $dataProviderImportPaths,
+        DataSetProviderInterface $dataSetProvider,
         PageCollectionInterface $pages,
         StepInterface $expectedStep
     ) {
@@ -70,7 +70,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             'Step Name',
             $stepData,
             $stepImportPaths,
-            $dataProviderImportPaths,
+            $dataSetProvider,
             $pages
         );
 
@@ -84,7 +84,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             'no imports, no actions, no assertions' => [
                 'stepData' => [],
                 'stepImportPaths' => [],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step([], []),
             ],
@@ -94,7 +94,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     StepFactory::KEY_ASSERTIONS => [],
                 ],
                 'stepImportPaths' => [],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step([], []),
             ],
@@ -106,9 +106,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepImportPaths' => [
                     'invalid' => 'invalid.yml',
                 ],
-                'dataProviderImportPaths' => [
-                    'invalid' => 'invalid.yml',
-                ],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step([], []),
             ],
@@ -122,7 +120,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'stepImportPaths' => [],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step(
                     [
@@ -161,7 +159,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'stepImportPaths' => [],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
@@ -210,7 +208,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepImportPaths' => [
                     'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
                 ],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step(
                     [
@@ -254,7 +252,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepImportPaths' => [
                     'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                 ],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => new Step(
                     [
@@ -291,9 +289,16 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepImportPaths' => [
                     'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                 ],
-                'dataProviderImportPaths' => [
-                    'data_provider_name' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
-                ],
+                'dataSetProvider' => new PopulatedDataSetProvider([
+                    'data_provider_name' => [
+                        new DataSet([
+                            'expected_title' => 'Foo',
+                        ]),
+                        new DataSet([
+                            'expected_title' => 'Bar',
+                        ]),
+                    ],
+                ]),
                 'pages' => new EmptyPageCollection(),
                 'expectedStep' => (new Step(
                     [
@@ -339,7 +344,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepImportPaths' => [
                     'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                 ],
-                'dataProviderImportPaths' => [],
+                'dataSetProvider' => new EmptyDataSetProvider(),
                 'pages' => new PopulatedPageCollection([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
@@ -402,15 +407,15 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 StepBuilder::KEY_USE => 'unknown_step_import_name',
             ],
             [],
-            [],
+            new EmptyDataSetProvider(),
             new EmptyPageCollection()
         );
     }
 
     public function testBuildUseUnknownDataProviderImport()
     {
-        $this->expectException(StepBuilderUnknownDataProviderImportException::class);
-        $this->expectExceptionMessage('Unknown data provider import "unknown_data_provider_name" in step "Step Name"');
+        $this->expectException(UnknownDataProviderException::class);
+        $this->expectExceptionMessage('Unknown data provider "unknown_data_provider_name"');
 
         $this->stepBuilder->build(
             'Step Name',
@@ -421,7 +426,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
             ],
-            [],
+            new EmptyDataSetProvider(),
             new EmptyPageCollection()
         );
     }
@@ -442,7 +447,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
-            [],
+            new EmptyDataSetProvider(),
             new EmptyPageCollection()
         );
     }
@@ -465,7 +470,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
-            [],
+            new EmptyDataSetProvider(),
             new PopulatedPageCollection([
                 'page_import_name' => new Page(
                     new Uri('http://example.com'),
@@ -500,7 +505,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             [
                 'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
             ],
-            [],
+            new EmptyDataSetProvider(),
             new EmptyPageCollection()
         );
     }
