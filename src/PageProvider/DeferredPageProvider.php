@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\PageCollection;
+namespace webignition\BasilParser\PageProvider;
 
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -8,7 +8,7 @@ use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Page\PageInterface;
 
-class DeferredPageCollection implements PageCollectionInterface
+class DeferredPageProvider implements PageProviderInterface
 {
     private $pageLoader;
     private $importPaths;

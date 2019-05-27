@@ -1,11 +1,12 @@
 <?php
 
-namespace webignition\BasilParser\PageCollection;
+namespace webignition\BasilParser\PageProvider;
 
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Page\PageInterface;
 
-class EmptyPageCollection implements PageCollectionInterface
+interface PageProviderInterface
 {
     /**
      * @param string $importName
@@ -13,9 +14,7 @@ class EmptyPageCollection implements PageCollectionInterface
      * @return PageInterface
      *
      * @throws UnknownPageException
+     * @throws NonRetrievablePageException
      */
-    public function findPage(string $importName): PageInterface
-    {
-        throw new UnknownPageException($importName);
-    }
+    public function findPage(string $importName): PageInterface;
 }

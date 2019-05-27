@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class ActionFactory extends AbstractActionFactory implements ActionFactoryInterface
 {
@@ -41,9 +41,13 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
     protected function doCreateFromTypeAndArguments(
         string $type,
         string $arguments,
-        PageCollectionInterface $pages
+        PageProviderInterface $pageProvider
     ): ActionInterface {
-        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments($type, $arguments, $pages);
+        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments(
+            $type,
+            $arguments,
+            $pageProvider
+        );
     }
 
     private function findTypeSpecificActionFactory(string $type): ActionFactoryInterface

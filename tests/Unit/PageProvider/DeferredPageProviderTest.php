@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\PageCollection;
+namespace webignition\BasilParser\Tests\Unit\PageProvider;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -11,18 +11,18 @@ use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Page\PageInterface;
-use webignition\BasilParser\PageCollection\DeferredPageCollection;
+use webignition\BasilParser\PageProvider\DeferredPageProvider;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
-class DeferredPageCollectionTest extends \PHPUnit\Framework\TestCase
+class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testFindPageSuccess()
     {
-        $pageCollection = new DeferredPageCollection($this->createPageLoader(), [
+        $pageProvider = new DeferredPageProvider($this->createPageLoader(), [
             'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
         ]);
 
-        $page = $pageCollection->findPage('page_import_name');
+        $page = $pageProvider->findPage('page_import_name');
 
         $this->assertInstanceOf(PageInterface::class, $page);
     }
@@ -32,9 +32,9 @@ class DeferredPageCollectionTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownPageException::class);
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
-        $pageCollection = new DeferredPageCollection($this->createPageLoader(), []);
+        $pageProvider = new DeferredPageProvider($this->createPageLoader(), []);
 
-        $pageCollection->findPage('page_import_name');
+        $pageProvider->findPage('page_import_name');
     }
 
     public function testFindPageThrowsYamlLoaderException()
@@ -42,11 +42,11 @@ class DeferredPageCollectionTest extends \PHPUnit\Framework\TestCase
         $this->expectException(NonRetrievablePageException::class);
         $this->expectExceptionMessage('Cannot retrieve page "page_import_name" from "non-existent-file.yml"');
 
-        $pageCollection = new DeferredPageCollection($this->createPageLoader(), [
+        $pageProvider = new DeferredPageProvider($this->createPageLoader(), [
             'page_import_name' => 'non-existent-file.yml',
         ]);
 
-        $pageCollection->findPage('page_import_name');
+        $pageProvider->findPage('page_import_name');
     }
 
     private function createPageLoader()

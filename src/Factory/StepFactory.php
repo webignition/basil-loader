@@ -9,7 +9,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageCollection\PageCollectionInterface;
+use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class StepFactory
 {
@@ -34,7 +34,7 @@ class StepFactory
 
     /**
      * @param array $stepData
-     * @param PageCollectionInterface $pages
+     * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
@@ -43,7 +43,7 @@ class StepFactory
      * @throws UnknownPageException
      * @throws NonRetrievablePageException
      */
-    public function createFromStepData(array $stepData, PageCollectionInterface $pages): StepInterface
+    public function createFromStepData(array $stepData, PageProviderInterface $pageProvider): StepInterface
     {
         $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
         $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
@@ -57,7 +57,7 @@ class StepFactory
                 $actionString = trim($actionString);
 
                 if ('' !== $actionString) {
-                    $actions[] = $this->actionFactory->createFromActionString($actionString, $pages);
+                    $actions[] = $this->actionFactory->createFromActionString($actionString, $pageProvider);
                 }
             }
         }
@@ -68,7 +68,7 @@ class StepFactory
                 $assertionString = trim($assertionString);
 
                 if ('' !== $assertionString) {
-                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString, $pages);
+                    $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString, $pageProvider);
                 }
             }
         }
