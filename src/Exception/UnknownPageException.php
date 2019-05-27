@@ -2,19 +2,10 @@
 
 namespace webignition\BasilParser\Exception;
 
-class UnknownPageException extends \Exception
+class UnknownPageException extends AbstractUnknownImportException
 {
-    private $importName;
-
     public function __construct(string $importName)
     {
-        parent::__construct('Unknown page "' . $importName . '"');
-
-        $this->importName = $importName;
-    }
-
-    public function getImportName(): string
-    {
-        return $this->importName;
+        parent::__construct($importName, 'Unknown page "' . $importName . '"');
     }
 }
