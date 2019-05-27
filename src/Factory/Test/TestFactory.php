@@ -74,11 +74,11 @@ class TestFactory
 
         $stepNames = array_diff(array_keys($testData), [self::KEY_CONFIGURATION, self::KEY_IMPORTS]);
 
-        $configuration = $this->configurationFactory->createFromConfigurationData($configurationData);
-        $steps = [];
-
-        $pages = new DeferredPageProvider($this->pageLoader, $pageImportPaths);
+        $pageProvider = new DeferredPageProvider($this->pageLoader, $pageImportPaths);
         $dataSetProvider = new DeferredDataSetProvider($this->dataSetLoader, $dataProviderImportPaths);
+
+        $configuration = $this->configurationFactory->createFromConfigurationData($configurationData, $pageProvider);
+        $steps = [];
 
         foreach ($stepNames as $stepName) {
             $stepData = $testData[$stepName];
@@ -88,7 +88,7 @@ class TestFactory
                 $stepData,
                 $stepImportPaths,
                 $dataSetProvider,
-                $pages
+                $pageProvider
             );
 
             $steps[$stepName] = $step;
