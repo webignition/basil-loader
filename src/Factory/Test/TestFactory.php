@@ -4,13 +4,16 @@ namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
-use webignition\BasilParser\Builder\StepBuilderUnknownDataProviderImportException;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
+use webignition\BasilParser\DataSetProvider\DeferredDataSetProvider;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
@@ -29,29 +32,33 @@ class TestFactory
     private $configurationFactory;
     private $pageLoader;
     private $stepBuilder;
+    private $dataSetLoader;
 
     public function __construct(
         ConfigurationFactory $configurationFactory,
         PageLoader $pageLoader,
-        StepBuilder $stepBuilder
+        StepBuilder $stepBuilder,
+        DataSetLoader $dataSetLoader
     ) {
         $this->configurationFactory = $configurationFactory;
         $this->pageLoader = $pageLoader;
         $this->stepBuilder = $stepBuilder;
+        $this->dataSetLoader = $dataSetLoader;
     }
 
     /**
      * @param array $testData
      * @return Test
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
      * @throws StepBuilderInvalidPageElementReferenceException
-     * @throws StepBuilderUnknownDataProviderImportException
      * @throws StepBuilderUnknownPageElementException
      * @throws StepBuilderUnknownStepImportException
-     * @throws MalformedPageElementReferenceException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws YamlLoaderException
-     * @throws NonRetrievablePageException
+     * @throws NonRetrievableDataProviderException
+     * @throws UnknownDataProviderException
      */
     public function createFromTestData(array $testData)
     {
@@ -71,6 +78,7 @@ class TestFactory
         $steps = [];
 
         $pages = new DeferredPageCollection($this->pageLoader, $pageImportPaths);
+        $dataSetProvider = new DeferredDataSetProvider($this->dataSetLoader, $dataProviderImportPaths);
 
         foreach ($stepNames as $stepName) {
             $stepData = $testData[$stepName];
@@ -79,7 +87,7 @@ class TestFactory
                 $stepName,
                 $stepData,
                 $stepImportPaths,
-                $dataProviderImportPaths,
+                $dataSetProvider,
                 $pages
             );
 
