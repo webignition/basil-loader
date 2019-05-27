@@ -1,11 +1,11 @@
 <?php
 
-namespace webignition\BasilParser\DataSetCollection;
+namespace webignition\BasilParser\DataSetProvider;
 
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
-class EmptyDataSetCollection implements DataSetCollectionInterface
+class EmptyDataSetProvider implements DataSetProviderInterface
 {
     /**
      * @param string $importName

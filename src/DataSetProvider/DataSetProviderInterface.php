@@ -1,12 +1,12 @@
 <?php
 
-namespace webignition\BasilParser\DataSetCollection;
+namespace webignition\BasilParser\DataSetProvider;
 
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
-interface DataSetCollectionInterface
+interface DataSetProviderInterface
 {
     /**
      * @param string $importName

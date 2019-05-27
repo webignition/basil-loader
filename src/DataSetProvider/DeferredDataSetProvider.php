@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\DataSetCollection;
+namespace webignition\BasilParser\DataSetProvider;
 
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
@@ -8,7 +8,7 @@ use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
-class DeferredDataSetCollection implements DataSetCollectionInterface
+class DeferredDataSetProvider implements DataSetProviderInterface
 {
     private $dataSetLoader;
     private $importPaths;
