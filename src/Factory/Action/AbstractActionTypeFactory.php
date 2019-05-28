@@ -24,13 +24,13 @@ abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
      *
      * @return ActionInterface
      */
-    abstract protected function doCreateFromTypeAndArguments(
+    abstract protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider
     ): ActionInterface;
 
-    public function createFromTypeAndArguments(
+    public function createForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider
@@ -39,6 +39,6 @@ abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
             throw new \RuntimeException('Invalid action type');
         }
 
-        return $this->doCreateFromTypeAndArguments($type, $arguments, $pageProvider);
+        return $this->doCreateForActionType($type, $arguments, $pageProvider);
     }
 }

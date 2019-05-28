@@ -13,7 +13,7 @@ class UnrecognisedActionTypeFactory implements ActionTypeFactoryInterface
         return true;
     }
 
-    public function createFromTypeAndArguments(
+    public function createForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

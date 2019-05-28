@@ -18,7 +18,7 @@ class NoArgumentsActionTypeFactory extends AbstractActionTypeFactory implements 
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

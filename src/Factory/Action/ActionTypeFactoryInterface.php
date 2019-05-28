@@ -16,7 +16,7 @@ interface ActionTypeFactoryInterface
      *
      * @return ActionInterface
      */
-    public function createFromTypeAndArguments(
+    public function createForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

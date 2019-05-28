@@ -16,7 +16,7 @@ class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionT
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

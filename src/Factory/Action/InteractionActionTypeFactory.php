@@ -44,7 +44,7 @@ class InteractionActionTypeFactory extends AbstractActionTypeFactory implements 
      * @throws UnknownPageException
      * @throws NonRetrievablePageException
      */
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

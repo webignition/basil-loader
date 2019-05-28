@@ -38,7 +38,7 @@ class ActionFactory
             list($type, $arguments) = explode(' ', $actionString, 2);
         }
 
-        return $this->findActionTypeFactory($type)->createFromTypeAndArguments(
+        return $this->findActionTypeFactory($type)->createForActionType(
             $type,
             $arguments,
             $pageProvider
