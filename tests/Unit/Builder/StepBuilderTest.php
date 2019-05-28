@@ -5,12 +5,10 @@
 namespace webignition\BasilParser\Tests\Unit\Builder;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
-use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
@@ -37,11 +35,9 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Provider\Step\DeferredStepProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\DataSetLoaderFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 use webignition\BasilParser\Tests\Services\PageLoaderFactory;
 use webignition\BasilParser\Tests\Services\StepBuilderFactory;
 use webignition\BasilParser\Tests\Services\StepLoaderFactory;
@@ -71,7 +67,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         StepInterface $expectedStep
     ) {
         $step = $this->stepBuilder->build(
-            'Step Name',
             $stepData,
             $stepProvider,
             $dataSetProvider,
@@ -431,7 +426,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown step "unknown_step_import_name"');
 
         $this->stepBuilder->build(
-            'Step Name',
             [
                 StepBuilder::KEY_USE => 'unknown_step_import_name',
             ],
@@ -447,7 +441,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown data provider "unknown_data_provider_name"');
 
         $this->stepBuilder->build(
-            'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
                 StepBuilder::KEY_DATA => 'unknown_data_provider_name',
@@ -469,7 +462,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
         $this->stepBuilder->build(
-            'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
                 StepBuilder::KEY_ELEMENTS => [
@@ -489,13 +481,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseUnknownPageElement()
     {
-        $this->expectException(StepBuilderUnknownPageElementException::class);
-        $this->expectExceptionMessage(
-            'Unknown page element "not-heading" in page "page_import_name" in step "Step Name"'
-        );
+        $this->expectException(UnknownPageElementException::class);
+        $this->expectExceptionMessage('Unknown page element "not-heading" in page "page_import_name"');
 
         $this->stepBuilder->build(
-            'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
                 StepBuilder::KEY_ELEMENTS => [
@@ -527,13 +516,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildUseInvalidPageElementReference()
     {
-        $this->expectException(StepBuilderInvalidPageElementReferenceException::class);
-        $this->expectExceptionMessage(
-            'Invalid page element reference "page_import_name.foo.heading" in step "Step Name"'
-        );
+        $this->expectException(MalformedPageElementReferenceException::class);
+        $this->expectExceptionMessage('Malformed page element reference "page_import_name.foo.heading"');
 
         $this->stepBuilder->build(
-            'Step Name',
             [
                 StepBuilder::KEY_USE => 'step_import_name',
                 StepBuilder::KEY_ELEMENTS => [
