@@ -10,14 +10,6 @@ interface ActionTypeFactoryInterface
     public function handles(string $type): bool;
 
     /**
-     * @param string $actionString
-     * @param PageProviderInterface $pageProvider
-     *
-     * @return ActionInterface
-     */
-    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface;
-
-    /**
      * @param string $type
      * @param string $arguments
      * @param PageProviderInterface $pageProvider
