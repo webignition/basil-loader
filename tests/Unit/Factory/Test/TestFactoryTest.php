@@ -4,16 +4,9 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
-use Symfony\Component\Yaml\Parser as YamlParser;
-use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
-use webignition\BasilParser\Loader\DataSetLoader;
-use webignition\BasilParser\Loader\PageLoader;
-use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
@@ -28,8 +21,7 @@ use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PageFactoryFactory;
-use webignition\BasilParser\Tests\Services\StepFactoryFactory;
+use webignition\BasilParser\Tests\Services\TestFactoryFactory;
 
 class TestFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -42,20 +34,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $configurationFactory = new ConfigurationFactory();
-        $stepFactory = StepFactoryFactory::create();
-
-        $yamlParser = new YamlParser();
-        $yamlLoader = new YamlLoader($yamlParser);
-        $stepLoader = new StepLoader($yamlLoader, $stepFactory);
-
-        $pageFactory = PageFactoryFactory::create();
-        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
-
-        $stepBuilder = new StepBuilder($stepFactory, $stepLoader);
-        $dataSetLoader = new DataSetLoader($yamlLoader);
-
-        $this->testFactory = new TestFactory($configurationFactory, $pageLoader, $stepBuilder, $dataSetLoader);
+        $this->testFactory = TestFactoryFactory::create();
     }
 
     /**

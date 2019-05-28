@@ -2,6 +2,8 @@
 
 namespace webignition\BasilParser\Builder;
 
+use webignition\BasilParser\Exception\NonRetrievableStepException;
+use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -10,11 +12,10 @@ use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class StepBuilder
 {
@@ -23,53 +24,43 @@ class StepBuilder
     const KEY_ELEMENTS = 'elements';
 
     private $stepFactory;
-    private $stepLoader;
 
-    public function __construct(StepFactory $stepFactory, StepLoader $stepLoader)
+    public function __construct(StepFactory $stepFactory)
     {
         $this->stepFactory = $stepFactory;
-        $this->stepLoader = $stepLoader;
     }
 
     /**
      * @param string $stepName
      * @param array $stepData
-     * @param string[] $stepImportPaths
+     * @param StepProviderInterface $stepProvider
      * @param DataSetProviderInterface $dataSetProvider
      * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
      * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws StepBuilderInvalidPageElementReferenceException
      * @throws StepBuilderUnknownPageElementException
-     * @throws StepBuilderUnknownStepImportException
+     * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
-     * @throws YamlLoaderException
-     * @throws NonRetrievableDataProviderException
-     * @throws UnknownDataProviderException
+     * @throws NonRetrievableStepException
+     * @throws UnknownStepException
      */
     public function build(
         string $stepName,
         array $stepData,
-        array $stepImportPaths,
+        StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
         PageProviderInterface $pageProvider
     ) {
         $stepImportName = $stepData[self::KEY_USE] ?? null;
-        if (null === $stepImportName) {
-            $step = $this->stepFactory->createFromStepData($stepData, $pageProvider);
-        } else {
-            $stepImportPath = $stepImportPaths[$stepImportName] ?? null;
-
-            if (null === $stepImportPath) {
-                throw new StepBuilderUnknownStepImportException($stepName, $stepImportName, $stepImportPaths);
-            }
-
-            $step = $this->stepLoader->load($stepImportPath);
-        }
+        $step = null === $stepImportName
+            ? $this->stepFactory->createFromStepData($stepData, $pageProvider)
+            : $stepProvider->findStep($stepImportName);
 
         $data = $stepData[self::KEY_DATA] ?? null;
         if (null !== $data) {
