@@ -10,7 +10,7 @@ class ActionFactory
     /**
      * @var ActionTypeFactoryInterface[]
      */
-    private $actionTypeFactories;
+    private $actionTypeFactories = [];
 
     /**
      * @var UnrecognisedActionTypeFactory
@@ -19,12 +19,12 @@ class ActionFactory
 
     public function __construct()
     {
-        $this->actionTypeFactories[] = new InteractionActionTypeFactory();
-        $this->actionTypeFactories[] = new WaitActionTypeFactory();
-        $this->actionTypeFactories[] = new NoArgumentsActionTypeFactory();
-        $this->actionTypeFactories[] = new InputActionTypeFactory();
-
         $this->unrecognisedActionFactory = new UnrecognisedActionTypeFactory();
+    }
+
+    public function addActionTypeFactory(ActionTypeFactoryInterface $actionTypeFactory)
+    {
+        $this->actionTypeFactories[] = $actionTypeFactory;
     }
 
     public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface

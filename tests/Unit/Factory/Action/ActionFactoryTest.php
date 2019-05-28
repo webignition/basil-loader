@@ -8,6 +8,10 @@ use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
+use webignition\BasilParser\Factory\Action\InputActionTypeFactory;
+use webignition\BasilParser\Factory\Action\InteractionActionTypeFactory;
+use webignition\BasilParser\Factory\Action\NoArgumentsActionTypeFactory;
+use webignition\BasilParser\Factory\Action\WaitActionTypeFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
@@ -35,6 +39,11 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->actionFactory = new ActionFactory();
+
+        $this->actionFactory->addActionTypeFactory(new InteractionActionTypeFactory());
+        $this->actionFactory->addActionTypeFactory(new WaitActionTypeFactory());
+        $this->actionFactory->addActionTypeFactory(new NoArgumentsActionTypeFactory());
+        $this->actionFactory->addActionTypeFactory(new InputActionTypeFactory());
     }
 
     /**
