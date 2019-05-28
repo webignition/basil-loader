@@ -7,12 +7,12 @@ namespace webignition\BasilParser\Tests\Unit\PageProvider;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\PageProvider\DeferredPageProvider;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 
 class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
 {
@@ -54,7 +54,7 @@ class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
         $yamlParser = new YamlParser();
 
         $yamlLoader = new YamlLoader($yamlParser);
-        $pageFactory = new PageFactory();
+        $pageFactory = PageFactoryFactory::create();
 
         return new PageLoader($yamlLoader, $pageFactory);
     }
