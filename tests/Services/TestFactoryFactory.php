@@ -14,7 +14,7 @@ class TestFactoryFactory
             PageLoaderFactory::create(),
             StepBuilderFactory::create(),
             DataSetLoaderFactory::create(),
-            StepLoaderFactory::create()
+            StepProviderFactoryFactory::create()
         );
     }
 }

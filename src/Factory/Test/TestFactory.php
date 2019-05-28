@@ -20,7 +20,7 @@ use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Model\Test\Test;
 use webignition\BasilParser\Provider\Page\DeferredPageProvider;
-use webignition\BasilParser\Provider\Step\DeferredStepProvider;
+use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestFactory
 {
@@ -36,20 +36,20 @@ class TestFactory
     private $pageLoader;
     private $stepBuilder;
     private $dataSetLoader;
-    private $stepLoader;
+    private $stepProviderFactory;
 
     public function __construct(
         ConfigurationFactory $configurationFactory,
         PageLoader $pageLoader,
         StepBuilder $stepBuilder,
         DataSetLoader $dataSetLoader,
-        StepLoader $stepLoader
+        StepProviderFactory $stepProviderFactory
     ) {
         $this->configurationFactory = $configurationFactory;
         $this->pageLoader = $pageLoader;
         $this->stepBuilder = $stepBuilder;
         $this->dataSetLoader = $dataSetLoader;
-        $this->stepLoader = $stepLoader;
+        $this->stepProviderFactory = $stepProviderFactory;
     }
 
     /**
@@ -82,7 +82,7 @@ class TestFactory
 
         $stepNames = array_diff(array_keys($testData), [self::KEY_CONFIGURATION, self::KEY_IMPORTS]);
 
-        $stepProvider = new DeferredStepProvider($this->stepLoader, $stepImportPaths);
+        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($stepImportPaths);
         $pageProvider = new DeferredPageProvider($this->pageLoader, $pageImportPaths);
         $dataSetProvider = new DeferredDataSetProvider($this->dataSetLoader, $dataProviderImportPaths);
 
