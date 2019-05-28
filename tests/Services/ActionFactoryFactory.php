@@ -9,7 +9,6 @@ use webignition\BasilParser\Factory\Action\NoArgumentsActionTypeFactory;
 use webignition\BasilParser\Factory\Action\WaitActionTypeFactory;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 
 class ActionFactoryFactory
 {
@@ -18,12 +17,11 @@ class ActionFactoryFactory
         $actionFactory = new ActionFactory();
 
         $identifierFactory = new IdentifierFactory();
-        $identifierStringExtractor = new IdentifierStringExtractor();
         $valueFactory = new ValueFactory();
 
         $inputActionTypeFactory = new InputActionTypeFactory(
             $identifierFactory,
-            $identifierStringExtractor,
+            IdentifierStringExtractorFactory::create(),
             $valueFactory
         );
 
