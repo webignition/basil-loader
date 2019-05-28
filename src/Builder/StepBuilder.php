@@ -31,7 +31,6 @@ class StepBuilder
     }
 
     /**
-     * @param string $stepName
      * @param array $stepData
      * @param StepProviderInterface $stepProvider
      * @param DataSetProviderInterface $dataSetProvider
@@ -42,8 +41,6 @@ class StepBuilder
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
-     * @throws StepBuilderInvalidPageElementReferenceException
-     * @throws StepBuilderUnknownPageElementException
      * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -51,7 +48,6 @@ class StepBuilder
      * @throws UnknownStepException
      */
     public function build(
-        string $stepName,
         array $stepData,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
@@ -80,29 +76,21 @@ class StepBuilder
             $elementIdentifiers = [];
 
             foreach ($elementUses as $elementName => $pageModelElementReferenceString) {
-                $pageModelElementReference = new PageElementReference($pageModelElementReferenceString);
+                $pageElementReference = new PageElementReference($pageModelElementReferenceString);
 
-                if (!$pageModelElementReference->isValid()) {
-                    throw new StepBuilderInvalidPageElementReferenceException(
-                        $stepName,
-                        $pageModelElementReferenceString
-                    );
+                if (!$pageElementReference->isValid()) {
+                    throw new MalformedPageElementReferenceException($pageElementReference);
                 }
 
-                $pageImportName = $pageModelElementReference->getImportName();
-                $elementName = $pageModelElementReference->getElementName();
+                $pageImportName = $pageElementReference->getImportName();
+                $elementName = $pageElementReference->getElementName();
 
                 $page = $pageProvider->findPage($pageImportName);
 
                 $elementIdentifier = $page->getElementIdentifier($elementName);
 
                 if (null === $elementIdentifier) {
-                    throw new StepBuilderUnknownPageElementException(
-                        $stepName,
-                        $pageImportName,
-                        $elementName,
-                        $page->getElementNames()
-                    );
+                    throw new UnknownPageElementException($pageImportName, $elementName);
                 }
 
                 $elementIdentifiers[$elementName] = $elementIdentifier;

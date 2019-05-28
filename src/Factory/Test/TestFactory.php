@@ -3,8 +3,6 @@
 namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
-use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Loader\StepLoader;
@@ -60,8 +58,6 @@ class TestFactory
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
-     * @throws StepBuilderInvalidPageElementReferenceException
-     * @throws StepBuilderUnknownPageElementException
      * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -93,7 +89,6 @@ class TestFactory
             $stepData = $testData[$stepName];
 
             $step = $this->stepBuilder->build(
-                $stepName,
                 $stepData,
                 $stepProvider,
                 $dataSetProvider,
