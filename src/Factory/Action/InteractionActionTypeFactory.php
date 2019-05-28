@@ -16,10 +16,8 @@ class InteractionActionTypeFactory extends AbstractActionTypeFactory implements 
 {
     private $identifierFactory;
 
-    public function __construct(?IdentifierFactory $identifierFactory = null)
+    public function __construct(IdentifierFactory $identifierFactory)
     {
-        $identifierFactory = $identifierFactory ?? new IdentifierFactory();
-
         $this->identifierFactory = $identifierFactory;
     }
 

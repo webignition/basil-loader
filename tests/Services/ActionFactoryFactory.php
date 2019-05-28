@@ -28,7 +28,9 @@ class ActionFactoryFactory
             $valueFactory
         );
 
-        $actionFactory->addActionTypeFactory(new InteractionActionTypeFactory());
+        $interactionActionTypeFactory = new InteractionActionTypeFactory($identifierFactory);
+
+        $actionFactory->addActionTypeFactory($interactionActionTypeFactory);
         $actionFactory->addActionTypeFactory(new WaitActionTypeFactory());
         $actionFactory->addActionTypeFactory(new NoArgumentsActionTypeFactory());
         $actionFactory->addActionTypeFactory($inputActionTypeFactory);
