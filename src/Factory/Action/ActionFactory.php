@@ -3,10 +3,9 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class ActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class ActionFactory
 {
     /**
      * @var ActionFactoryInterface[]
@@ -28,29 +27,25 @@ class ActionFactory extends AbstractActionFactory implements ActionFactoryInterf
         $this->unrecognisedActionFactory = new UnrecognisedActionFactory();
     }
 
-    public function handles(string $type): bool
+    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface
     {
-        return true;
-    }
+        $actionString = trim($actionString);
 
-    protected function getHandledActionTypes(): array
-    {
-        return ActionTypes::ALL;
-    }
+        $type = $actionString;
+        $arguments = '';
 
-    protected function doCreateFromTypeAndArguments(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
-        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments(
+        if (mb_substr_count($actionString, ' ') > 0) {
+            list($type, $arguments) = explode(' ', $actionString, 2);
+        }
+
+        return $this->findActionTypeFactory($type)->createFromTypeAndArguments(
             $type,
             $arguments,
             $pageProvider
         );
     }
 
-    private function findTypeSpecificActionFactory(string $type): ActionFactoryInterface
+    private function findActionTypeFactory(string $type): ActionFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {
