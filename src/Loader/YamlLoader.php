@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Loader;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
+use webignition\BasilParser\Exception\YamlLoaderException;
 
 class YamlLoader
 {

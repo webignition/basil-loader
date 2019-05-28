@@ -6,6 +6,7 @@ use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
