@@ -2,10 +2,10 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\PageProvider;
+namespace webignition\BasilParser\Tests\Unit\Provider\Page;
 
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 
 class EmptyPageProviderTest extends \PHPUnit\Framework\TestCase
 {

@@ -10,7 +10,7 @@ use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Assertion\AssertionInterface;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionFactory
 {

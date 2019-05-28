@@ -6,7 +6,7 @@ use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
-use webignition\BasilParser\DataSetProvider\DeferredDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -17,7 +17,7 @@ use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\PageProvider\DeferredPageProvider;
+use webignition\BasilParser\Provider\Page\DeferredPageProvider;
 
 class TestFactory
 {

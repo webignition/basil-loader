@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Builder;
 
-use webignition\BasilParser\DataSetProvider\DataSetProviderInterface;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -14,7 +14,7 @@ use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\PageElementReference\PageElementReference;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepBuilder
 {

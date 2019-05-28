@@ -10,7 +10,7 @@ use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class InteractionActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {

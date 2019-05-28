@@ -12,7 +12,7 @@ use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class InputActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {

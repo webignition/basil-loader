@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\PageProvider;
+namespace webignition\BasilParser\Provider\Page;
 
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\Page\PageInterface;

@@ -9,7 +9,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
 use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepFactory
 {

@@ -10,9 +10,9 @@ use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceExcept
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
-use webignition\BasilParser\DataSetProvider\DataSetProviderInterface;
-use webignition\BasilParser\DataSetProvider\EmptyDataSetProvider;
-use webignition\BasilParser\DataSetProvider\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
@@ -31,9 +31,9 @@ use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
-use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\StepFactoryFactory;
 

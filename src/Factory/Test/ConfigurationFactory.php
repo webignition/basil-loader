@@ -7,7 +7,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\PageUrlReference\PageUrlReference;
 use webignition\BasilParser\Model\Test\Configuration;
 use webignition\BasilParser\Model\Test\ConfigurationInterface;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ConfigurationFactory
 {

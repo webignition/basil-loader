@@ -13,9 +13,9 @@ use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierInterface;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
-use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 
 class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 {

@@ -9,9 +9,9 @@ use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Test\Configuration;
 use webignition\BasilParser\Model\Test\ConfigurationInterface;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
-use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 
 class ConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
 {

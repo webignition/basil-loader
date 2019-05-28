@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\WaitAction;
-use webignition\BasilParser\PageProvider\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
