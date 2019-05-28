@@ -4,8 +4,8 @@ namespace webignition\BasilParser\Provider\Page;
 
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\PageLoader;
-use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Page\PageInterface;
 
 class DeferredPageProvider implements PageProviderInterface

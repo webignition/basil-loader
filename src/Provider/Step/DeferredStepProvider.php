@@ -8,8 +8,8 @@ use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Step\StepInterface;
 
 class DeferredStepProvider implements StepProviderInterface

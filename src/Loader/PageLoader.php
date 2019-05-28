@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Model\Page\PageInterface;
 

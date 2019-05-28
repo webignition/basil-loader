@@ -6,8 +6,8 @@ namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
+use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\YamlLoader;
-use webignition\BasilParser\Loader\YamlLoaderException;
 
 class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 {

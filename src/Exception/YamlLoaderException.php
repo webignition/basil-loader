@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilParser\Exception;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 
