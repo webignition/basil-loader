@@ -13,9 +13,9 @@ class TestTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createDataProvider
      */
-    public function testCreate(Configuration $configuration, array $steps, TestInterface $expectedTest)
+    public function testCreate(string $name, Configuration $configuration, array $steps, TestInterface $expectedTest)
     {
-        $test = new Test($configuration, $steps);
+        $test = new Test($name, $configuration, $steps);
 
         $this->assertEquals($expectedTest, $test);
     }
@@ -24,30 +24,36 @@ class TestTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no steps' => [
+                'name' => 'no steps',
                 'configuration' => new Configuration('chrome', 'http://example.com'),
                 'steps' => [],
                 'expectedTest' => new Test(
+                    'no steps',
                     new Configuration('chrome', 'http://example.com'),
                     []
                 ),
             ],
             'invalid steps' => [
+                'name' => 'invalid steps',
                 'configuration' => new Configuration('chrome', 'http://example.com'),
                 'steps' => [
                     1,
                     'foo',
                 ],
                 'expectedTest' => new Test(
+                    'invalid steps',
                     new Configuration('chrome', 'http://example.com'),
                     []
                 ),
             ],
             'has steps' => [
+                'name' => 'has steps',
                 'configuration' => new Configuration('chrome', 'http://example.com'),
                 'steps' => [
                     new Step([], []),
                 ],
                 'expectedTest' => new Test(
+                    'has steps',
                     new Configuration('chrome', 'http://example.com'),
                     [
                         new Step([], []),

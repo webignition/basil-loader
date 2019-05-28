@@ -6,6 +6,7 @@ use webignition\BasilParser\Model\Step\StepInterface;
 
 interface TestInterface
 {
+    public function getName(): string;
     public function getConfiguration(): ConfigurationInterface;
 
     /**
