@@ -22,11 +22,14 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
     private $identifierStringExtractor;
     private $valueFactory;
 
-    public function __construct()
-    {
-        $this->identifierFactory = new IdentifierFactory();
-        $this->identifierStringExtractor = new IdentifierStringExtractor();
-        $this->valueFactory = new ValueFactory();
+    public function __construct(
+        IdentifierFactory $identifierFactory,
+        IdentifierStringExtractor $identifierStringExtractor,
+        ValueFactory $valueFactory
+    ) {
+        $this->identifierFactory = $identifierFactory;
+        $this->identifierStringExtractor = $identifierStringExtractor;
+        $this->valueFactory = $valueFactory;
     }
 
     protected function getHandledActionTypes(): array

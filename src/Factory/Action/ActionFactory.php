@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
+use webignition\BasilParser\Model\Action\UnrecognisedAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
 class ActionFactory
@@ -11,16 +12,6 @@ class ActionFactory
      * @var ActionTypeFactoryInterface[]
      */
     private $actionTypeFactories = [];
-
-    /**
-     * @var UnrecognisedActionTypeFactory
-     */
-    private $unrecognisedActionFactory;
-
-    public function __construct()
-    {
-        $this->unrecognisedActionFactory = new UnrecognisedActionTypeFactory();
-    }
 
     public function addActionTypeFactory(ActionTypeFactoryInterface $actionTypeFactory)
     {
@@ -38,14 +29,16 @@ class ActionFactory
             list($type, $arguments) = explode(' ', $actionString, 2);
         }
 
-        return $this->findActionTypeFactory($type)->createForActionType(
-            $type,
-            $arguments,
-            $pageProvider
-        );
+        $actionTypeFactory = $this->findActionTypeFactory($type);
+
+        if ($actionTypeFactory instanceof ActionTypeFactoryInterface) {
+            return $actionTypeFactory->createForActionType($type, $arguments, $pageProvider);
+        }
+
+        return new UnrecognisedAction($type, $arguments);
     }
 
-    private function findActionTypeFactory(string $type): ActionTypeFactoryInterface
+    private function findActionTypeFactory(string $type): ?ActionTypeFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {
@@ -53,6 +46,6 @@ class ActionFactory
             }
         }
 
-        return $this->unrecognisedActionFactory;
+        return null;
     }
 }
