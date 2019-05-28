@@ -6,7 +6,7 @@ use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\WaitActionInterface;
 
-class WaitActionValidator implements ActionValidatorInterface
+class WaitActionValidator implements ActionTypeValidatorInterface
 {
     public function handles(string $type): bool
     {

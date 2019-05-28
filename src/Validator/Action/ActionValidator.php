@@ -4,24 +4,16 @@ namespace webignition\BasilParser\Validator\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
 
-class ActionValidator implements ActionValidatorInterface
+class ActionValidator
 {
     /**
-     * @var ActionValidatorInterface[]
+     * @var ActionTypeValidatorInterface[]
      */
-    private $typeSpecificActionValidators;
+    private $actionTypeValidators = [];
 
-    public function __construct()
+    public function addActionTypeValidator(ActionTypeValidatorInterface $actionTypeValidator)
     {
-        $this->typeSpecificActionValidators[] = new InputActionValidator();
-        $this->typeSpecificActionValidators[] = new InteractionActionValidator();
-        $this->typeSpecificActionValidators[] = new NoArgumentsActionValidator();
-        $this->typeSpecificActionValidators[] = new WaitActionValidator();
-    }
-
-    public function handles(string $type): bool
-    {
-        return true;
+        $this->actionTypeValidators[] = $actionTypeValidator;
     }
 
     public function validate(ActionInterface $action): bool
@@ -33,9 +25,9 @@ class ActionValidator implements ActionValidatorInterface
             : $typeSpecificActionValidator->validate($action);
     }
 
-    private function findTypeSpecificActionValidator(string $type): ?ActionValidatorInterface
+    private function findTypeSpecificActionValidator(string $type): ?ActionTypeValidatorInterface
     {
-        foreach ($this->typeSpecificActionValidators as $typeSpecificActionValidator) {
+        foreach ($this->actionTypeValidators as $typeSpecificActionValidator) {
             if ($typeSpecificActionValidator->handles($type)) {
                 return $typeSpecificActionValidator;
             }
