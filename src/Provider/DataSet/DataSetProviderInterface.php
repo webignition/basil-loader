@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\DataSetProvider;
+namespace webignition\BasilParser\Provider\DataSet;
 
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;

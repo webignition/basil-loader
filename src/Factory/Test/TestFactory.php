@@ -6,7 +6,7 @@ use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
-use webignition\BasilParser\DataSetProvider\DeferredDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;

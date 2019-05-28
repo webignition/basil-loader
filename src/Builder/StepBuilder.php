@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Builder;
 
-use webignition\BasilParser\DataSetProvider\DataSetProviderInterface;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;

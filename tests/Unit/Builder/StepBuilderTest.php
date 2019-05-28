@@ -10,9 +10,9 @@ use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceExcept
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Builder\StepBuilderUnknownStepImportException;
-use webignition\BasilParser\DataSetProvider\DataSetProviderInterface;
-use webignition\BasilParser\DataSetProvider\EmptyDataSetProvider;
-use webignition\BasilParser\DataSetProvider\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
