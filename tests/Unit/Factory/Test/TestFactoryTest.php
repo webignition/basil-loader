@@ -40,9 +40,9 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromTestDataDataProvider
      */
-    public function testCreateFromTestData(array $testData, TestInterface $expectedTest)
+    public function testCreateFromTestData(string $name, array $testData, TestInterface $expectedTest)
     {
-        $test = $this->testFactory->createFromTestData($testData);
+        $test = $this->testFactory->createFromTestData($name, $testData);
 
         $this->assertEquals($expectedTest, $test);
     }
@@ -58,19 +58,23 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
 
         return [
             'empty' => [
+                'name' => '',
                 'testData' => [],
                 'expectedTest' => new Test(
+                    '',
                     new Configuration('', ''),
                     []
                 ),
             ],
             'configuration only' => [
+                'name' => 'configuration only',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                 ],
-                'expectedTest' => new Test($expectedConfiguration, []),
+                'expectedTest' => new Test('configuration only', $expectedConfiguration, []),
             ],
             'invalid inline steps only' => [
+                'name' => 'invalid inline steps only',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'invalid' => [
@@ -81,11 +85,12 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, [
+                'expectedTest' => new Test('invalid inline steps only', $expectedConfiguration, [
                     'invalid' => new Step([], []),
                 ]),
             ],
             'inline step, scalar values' => [
+                'name' => 'inline step, scalar values',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'verify page is open' => [
@@ -102,7 +107,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, [
+                'expectedTest' => new Test('inline step, scalar values', $expectedConfiguration, [
                     'verify page is open' => new Step([], [
                         new Assertion(
                             '$page.url is "http://example.com"',
@@ -146,6 +151,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ]),
             ],
             'inline step, page element references' => [
+                'name' => 'inline step, page element references',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -162,7 +168,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, [
+                'expectedTest' => new Test('inline step, page element references', $expectedConfiguration, [
                     'query "example"' => new Step(
                         [
                             new InteractionAction(
@@ -195,7 +201,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ),
                 ]),
             ],
-            'invalid page import path for unused import' => [
+            'invalid page import path, unused' => [
+                'name' => 'invalid page import path, unused',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -204,9 +211,10 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, []),
+                'expectedTest' => new Test('invalid page import path, unused', $expectedConfiguration, []),
             ],
-            'invalid step import path for unused import' => [
+            'invalid step import path, unused' => [
+                'name' => 'invalid step import path, unused',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -215,9 +223,10 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, []),
+                'expectedTest' => new Test('invalid step import path, unused', $expectedConfiguration, []),
             ],
-            'invalid data provider import path for unused import' => [
+            'invalid data provider import path, unused' => [
+                'name' => 'invalid data provider import path, unused',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -226,9 +235,10 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                 ],
-                'expectedTest' => new Test($expectedConfiguration, []),
+                'expectedTest' => new Test('invalid data provider import path, unused', $expectedConfiguration, []),
             ],
             'step import, no parameters' => [
+                'name' => 'step import, no parameters',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -241,6 +251,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'expectedTest' => new Test(
+                    'step import, no parameters',
                     $expectedConfiguration,
                     [
                         'step_name' => new Step(
@@ -273,6 +284,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'step import, inline data' => [
+                'name' => 'step import, inline data',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -290,6 +302,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'expectedTest' => new Test(
+                    'step import, inline data',
                     $expectedConfiguration,
                     [
                         'step_name' => (new Step(
@@ -326,6 +339,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'step import, imported data' => [
+                'name' => 'step import, imported data',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -343,6 +357,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'expectedTest' => new Test(
+                    'step import, imported data',
                     $expectedConfiguration,
                     [
                         'step_name' => (new Step(
@@ -382,6 +397,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'step import, uses page imported page elements' => [
+                'name' => 'step import, uses page imported page elements',
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     TestFactory::KEY_IMPORTS => [
@@ -401,6 +417,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'expectedTest' => new Test(
+                    'step import, uses page imported page elements',
                     $expectedConfiguration,
                     [
                         'step_name' => (new Step(

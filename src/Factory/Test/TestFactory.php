@@ -48,6 +48,7 @@ class TestFactory
     }
 
     /**
+     * @param string $name
      * @param array $testData
      *
      * @return TestInterface
@@ -55,13 +56,13 @@ class TestFactory
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
-     * @throws NonRetrievableStepException
      * @throws UnknownStepException
      */
-    public function createFromTestData(array $testData)
+    public function createFromTestData(string $name, array $testData)
     {
         $configurationData = $testData[self::KEY_CONFIGURATION] ?? [];
         $importPaths = $testData[self::KEY_IMPORTS] ?? [];
@@ -95,6 +96,6 @@ class TestFactory
             $steps[$stepName] = $step;
         }
 
-        return new Test($configuration, $steps);
+        return new Test($name, $configuration, $steps);
     }
 }

@@ -6,11 +6,13 @@ use webignition\BasilParser\Model\Step\StepInterface;
 
 class Test implements TestInterface
 {
+    private $name;
     private $configuration;
     private $steps;
 
-    public function __construct(ConfigurationInterface $configuration, array $steps)
+    public function __construct(string $name, ConfigurationInterface $configuration, array $steps)
     {
+        $this->name = $name;
         $this->configuration = $configuration;
 
         foreach ($steps as $stepName => $step) {
@@ -18,6 +20,11 @@ class Test implements TestInterface
                 $this->steps[$stepName] = $step;
             }
         }
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getConfiguration(): ConfigurationInterface
