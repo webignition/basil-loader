@@ -12,9 +12,9 @@ class TestFactoryFactory
         return new TestFactory(
             new ConfigurationFactory(),
             StepBuilderFactory::create(),
-            DataSetLoaderFactory::create(),
             StepProviderFactoryFactory::create(),
-            PageProviderFactoryFactory::create()
+            PageProviderFactoryFactory::create(),
+            DataSetProviderFactoryFactory::create()
         );
     }
 }
