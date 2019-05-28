@@ -27,8 +27,8 @@ use webignition\BasilParser\Model\Test\Test;
 use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\StepFactoryFactory;
 
 class TestFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -41,10 +41,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $actionFactory = ActionFactoryFactory::create();
-
         $configurationFactory = new ConfigurationFactory();
-        $stepFactory = new StepFactory($actionFactory);
+        $stepFactory = StepFactoryFactory::create();
 
         $yamlParser = new YamlParser();
         $yamlLoader = new YamlLoader($yamlParser);

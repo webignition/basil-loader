@@ -26,10 +26,10 @@ class StepFactory
      */
     private $assertionFactory;
 
-    public function __construct(ActionFactory $actionFactory)
+    public function __construct(ActionFactory $actionFactory, AssertionFactory $assertionFactory)
     {
         $this->actionFactory = $actionFactory;
-        $this->assertionFactory = new AssertionFactory();
+        $this->assertionFactory = $assertionFactory;
     }
 
     /**
