@@ -18,11 +18,14 @@ class AssertionFactory
     private $valueFactory;
     private $identifierStringExtractor;
 
-    public function __construct()
-    {
-        $this->identifierFactory = new IdentifierFactory();
-        $this->valueFactory = new ValueFactory();
-        $this->identifierStringExtractor = new IdentifierStringExtractor();
+    public function __construct(
+        IdentifierFactory $identifierFactory,
+        ValueFactory $valueFactory,
+        IdentifierStringExtractor $identifierStringExtractor
+    ) {
+        $this->identifierFactory = $identifierFactory;
+        $this->valueFactory = $valueFactory;
+        $this->identifierStringExtractor = $identifierStringExtractor;
     }
 
     /**

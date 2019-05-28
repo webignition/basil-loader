@@ -18,6 +18,7 @@ use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\PageProvider\EmptyPageProvider;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
 
 class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -30,7 +31,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->assertionFactory = new AssertionFactory();
+        $this->assertionFactory = AssertionFactoryFactory::create();
     }
 
     /**

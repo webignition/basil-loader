@@ -18,7 +18,7 @@ use webignition\BasilParser\Model\Step\Step;
 use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
+use webignition\BasilParser\Tests\Services\StepFactoryFactory;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,8 +27,6 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoad(array $yamlLoaderReturnValue, StepInterface $expectedStep)
     {
-        $actionFactory = ActionFactoryFactory::create();
-
         $path = 'step.yml';
 
         $yamlLoader = \Mockery::mock(YamlLoader::class);
@@ -37,7 +35,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
             ->with($path)
             ->andReturn($yamlLoaderReturnValue);
 
-        $stepLoader = new StepLoader($yamlLoader, new StepFactory($actionFactory));
+        $stepFactory = StepFactoryFactory::create();
+
+        $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
         $page = $stepLoader->load($path);
 
