@@ -11,10 +11,10 @@ class TestFactoryFactory
     {
         return new TestFactory(
             new ConfigurationFactory(),
-            PageLoaderFactory::create(),
             StepBuilderFactory::create(),
-            DataSetLoaderFactory::create(),
-            StepLoaderFactory::create()
+            StepProviderFactoryFactory::create(),
+            PageProviderFactoryFactory::create(),
+            DataSetProviderFactoryFactory::create()
         );
     }
 }

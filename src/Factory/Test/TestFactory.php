@@ -7,20 +7,17 @@ use webignition\BasilParser\Builder\StepBuilderInvalidPageElementReferenceExcept
 use webignition\BasilParser\Builder\StepBuilderUnknownPageElementException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Model\Test\TestInterface;
-use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Loader\DataSetLoader;
-use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\Provider\Page\DeferredPageProvider;
-use webignition\BasilParser\Provider\Step\DeferredStepProvider;
+use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
+use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
+use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestFactory
 {
@@ -33,23 +30,23 @@ class TestFactory
     const KEY_TEST_DATA = 'data';
 
     private $configurationFactory;
-    private $pageLoader;
     private $stepBuilder;
-    private $dataSetLoader;
-    private $stepLoader;
+    private $stepProviderFactory;
+    private $pageProviderFactory;
+    private $dataSetProviderFactory;
 
     public function __construct(
         ConfigurationFactory $configurationFactory,
-        PageLoader $pageLoader,
         StepBuilder $stepBuilder,
-        DataSetLoader $dataSetLoader,
-        StepLoader $stepLoader
+        StepProviderFactory $stepProviderFactory,
+        PageProviderFactory $pageProviderFactory,
+        DataSetProviderFactory $dataSetProviderFactory
     ) {
         $this->configurationFactory = $configurationFactory;
-        $this->pageLoader = $pageLoader;
         $this->stepBuilder = $stepBuilder;
-        $this->dataSetLoader = $dataSetLoader;
-        $this->stepLoader = $stepLoader;
+        $this->stepProviderFactory = $stepProviderFactory;
+        $this->pageProviderFactory = $pageProviderFactory;
+        $this->dataSetProviderFactory = $dataSetProviderFactory;
     }
 
     /**
@@ -82,9 +79,9 @@ class TestFactory
 
         $stepNames = array_diff(array_keys($testData), [self::KEY_CONFIGURATION, self::KEY_IMPORTS]);
 
-        $stepProvider = new DeferredStepProvider($this->stepLoader, $stepImportPaths);
-        $pageProvider = new DeferredPageProvider($this->pageLoader, $pageImportPaths);
-        $dataSetProvider = new DeferredDataSetProvider($this->dataSetLoader, $dataProviderImportPaths);
+        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($stepImportPaths);
+        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($pageImportPaths);
+        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($dataProviderImportPaths);
 
         $configuration = $this->configurationFactory->createFromConfigurationData($configurationData, $pageProvider);
         $steps = [];
