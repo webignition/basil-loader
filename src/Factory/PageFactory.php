@@ -21,9 +21,9 @@ class PageFactory
      */
     private $identifierFactory;
 
-    public function __construct()
+    public function __construct(IdentifierFactory $identifierFactory)
     {
-        $this->identifierFactory = new IdentifierFactory();
+        $this->identifierFactory = $identifierFactory;
     }
 
     /**

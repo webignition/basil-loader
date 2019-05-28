@@ -12,6 +12,7 @@ use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,7 +29,9 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
             ->with($path)
             ->andReturn($yamlLoaderReturnValue);
 
-        $pageLoader = new PageLoader($yamlLoader, new PageFactory());
+        $pageFactory = PageFactoryFactory::create();
+
+        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
 
         $page = $pageLoader->load($path);
 

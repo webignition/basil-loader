@@ -9,6 +9,7 @@ use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 
 class PageFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +22,7 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->pageFactory = new PageFactory();
+        $this->pageFactory = PageFactoryFactory::create();
     }
 
     /**
