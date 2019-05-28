@@ -6,7 +6,7 @@ use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\UnrecognisedAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class UnrecognisedActionFactory implements ActionFactoryInterface
+class UnrecognisedActionTypeFactory implements ActionTypeFactoryInterface
 {
     public function handles(string $type): bool
     {

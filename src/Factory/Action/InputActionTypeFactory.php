@@ -14,7 +14,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class InputActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class InputActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     const IDENTIFIER_STOP_WORD = ' to ';
 

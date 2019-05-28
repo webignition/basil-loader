@@ -8,23 +8,23 @@ use webignition\BasilParser\PageProvider\PageProviderInterface;
 class ActionFactory
 {
     /**
-     * @var ActionFactoryInterface[]
+     * @var ActionTypeFactoryInterface[]
      */
     private $actionTypeFactories;
 
     /**
-     * @var UnrecognisedActionFactory
+     * @var UnrecognisedActionTypeFactory
      */
     private $unrecognisedActionFactory;
 
     public function __construct()
     {
-        $this->actionTypeFactories[] = new InteractionActionFactory();
-        $this->actionTypeFactories[] = new WaitActionFactory();
-        $this->actionTypeFactories[] = new NoArgumentsActionFactory();
-        $this->actionTypeFactories[] = new InputActionFactory();
+        $this->actionTypeFactories[] = new InteractionActionTypeFactory();
+        $this->actionTypeFactories[] = new WaitActionTypeFactory();
+        $this->actionTypeFactories[] = new NoArgumentsActionTypeFactory();
+        $this->actionTypeFactories[] = new InputActionTypeFactory();
 
-        $this->unrecognisedActionFactory = new UnrecognisedActionFactory();
+        $this->unrecognisedActionFactory = new UnrecognisedActionTypeFactory();
     }
 
     public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface
@@ -45,7 +45,7 @@ class ActionFactory
         );
     }
 
-    private function findActionTypeFactory(string $type): ActionFactoryInterface
+    private function findActionTypeFactory(string $type): ActionTypeFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {

@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-abstract class AbstractActionFactory implements ActionFactoryInterface
+abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     public function handles(string $type): bool
     {

@@ -2,17 +2,19 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
+use webignition\BasilParser\Model\Action\NoArgumentsAction;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class WaitActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class NoArgumentsActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     protected function getHandledActionTypes(): array
     {
         return [
-            ActionTypes::WAIT,
+            ActionTypes::RELOAD,
+            ActionTypes::BACK,
+            ActionTypes::FORWARD,
         ];
     }
 
@@ -21,6 +23,6 @@ class WaitActionFactory extends AbstractActionFactory implements ActionFactoryIn
         string $arguments,
         PageProviderInterface $pageProvider
     ): ActionInterface {
-        return new WaitAction($arguments);
+        return new NoArgumentsAction($type, $arguments);
     }
 }

@@ -12,7 +12,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class InteractionActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class InteractionActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     private $identifierFactory;
 
