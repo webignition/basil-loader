@@ -17,7 +17,7 @@ use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoaderException;
 use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\PageProvider\DeferredPageProvider;
+use webignition\BasilParser\Provider\Page\DeferredPageProvider;
 
 class TestFactory
 {

@@ -8,7 +8,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 
 class StepLoader
 {

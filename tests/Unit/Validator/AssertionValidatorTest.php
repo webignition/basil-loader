@@ -5,7 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Validator;
 
 use webignition\BasilParser\Factory\AssertionFactory;
-use webignition\BasilParser\PageProvider\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
 use webignition\BasilParser\Validator\AssertionValidator;
 

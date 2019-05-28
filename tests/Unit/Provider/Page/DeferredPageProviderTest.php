@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\PageProvider;
+namespace webignition\BasilParser\Tests\Unit\Provider\Page;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -10,7 +10,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Page\PageInterface;
-use webignition\BasilParser\PageProvider\DeferredPageProvider;
+use webignition\BasilParser\Provider\Page\DeferredPageProvider;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 
