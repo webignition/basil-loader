@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\IdentifierStringExtractor;
 
-class LiteralParameterIdentifierStringExtractor implements IdentifierStringExtractorInterface
+class LiteralParameterIdentifierStringExtractor implements IdentifierStringTypeExtractorInterface
 {
     const VARIABLE_START_CHARACTER = '$';
 

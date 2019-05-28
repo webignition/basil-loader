@@ -4,11 +4,12 @@
 namespace webignition\BasilParser\Tests\Unit\IdentifierStringExtractor;
 
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
+use webignition\BasilParser\Tests\Services\IdentifierStringExtractorFactory;
 
 class IdentifierStringExtractorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor
+     * @var IdentifierStringExtractor
      */
     private $identifierStringExtractor;
 
@@ -16,7 +17,7 @@ class IdentifierStringExtractorTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->identifierStringExtractor = new IdentifierStringExtractor();
+        $this->identifierStringExtractor = IdentifierStringExtractorFactory::create();
     }
 
     /**
