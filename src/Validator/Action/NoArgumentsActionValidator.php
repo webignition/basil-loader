@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Validator\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 
-class NoArgumentsActionValidator implements ActionValidatorInterface
+class NoArgumentsActionValidator implements ActionTypeValidatorInterface
 {
     public function handles(string $type): bool
     {

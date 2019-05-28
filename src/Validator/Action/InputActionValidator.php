@@ -6,7 +6,7 @@ use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputActionInterface;
 
-class InputActionValidator implements ActionValidatorInterface
+class InputActionValidator implements ActionTypeValidatorInterface
 {
     const IDENTIFIER_STOP_WORD = ' to ';
 

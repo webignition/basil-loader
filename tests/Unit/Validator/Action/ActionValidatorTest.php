@@ -14,6 +14,7 @@ use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilParser\Tests\Services\ActionValidatorFactory;
 use webignition\BasilParser\Validator\Action\ActionValidator;
 
 class ActionValidatorTest extends \PHPUnit\Framework\TestCase
@@ -27,7 +28,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->actionValidator = new ActionValidator();
+        $this->actionValidator = ActionValidatorFactory::create();
     }
 
     /**
