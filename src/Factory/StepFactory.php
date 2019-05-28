@@ -26,9 +26,9 @@ class StepFactory
      */
     private $assertionFactory;
 
-    public function __construct()
+    public function __construct(ActionFactory $actionFactory)
     {
-        $this->actionFactory = new ActionFactory();
+        $this->actionFactory = $actionFactory;
         $this->assertionFactory = new AssertionFactory();
     }
 

@@ -21,6 +21,7 @@ use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\PageProvider\EmptyPageProvider;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
 
 class StepFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -33,7 +34,9 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->stepFactory = new StepFactory();
+        $actionFactory = ActionFactoryFactory::create();
+
+        $this->stepFactory = new StepFactory($actionFactory);
     }
 
     /**

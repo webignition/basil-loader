@@ -26,6 +26,7 @@ use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\PageProvider\EmptyPageProvider;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
 
 class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -38,12 +39,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->actionFactory = new ActionFactory();
-
-        $this->actionFactory->addActionTypeFactory(new InteractionActionTypeFactory());
-        $this->actionFactory->addActionTypeFactory(new WaitActionTypeFactory());
-        $this->actionFactory->addActionTypeFactory(new NoArgumentsActionTypeFactory());
-        $this->actionFactory->addActionTypeFactory(new InputActionTypeFactory());
+        $this->actionFactory = ActionFactoryFactory::create();
     }
 
     /**
