@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\IdentifierStringExtractor;
 
-class QuotedIdentifierStringExtractor implements IdentifierStringExtractorInterface
+class QuotedIdentifierStringExtractor implements IdentifierStringTypeExtractorInterface
 {
     const DELIMITER = '"';
     const ESCAPED_DELIMITER = '\"';

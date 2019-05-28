@@ -5,31 +5,30 @@ namespace webignition\BasilParser\IdentifierStringExtractor;
 class IdentifierStringExtractor
 {
     /**
-     * @var IdentifierStringExtractorInterface[]
+     * @var IdentifierStringTypeExtractorInterface[]
      */
-    private $typeSpecificIdentifierStringExtractors = [];
+    private $identifierStringTypeExtractors = [];
 
-    public function __construct()
-    {
-        $this->typeSpecificIdentifierStringExtractors[] = new QuotedIdentifierStringExtractor();
-        $this->typeSpecificIdentifierStringExtractors[] = new VariableParameterIdentifierStringExtractor();
-        $this->typeSpecificIdentifierStringExtractors[] = new LiteralParameterIdentifierStringExtractor();
+    public function addIdentifierStringTypeExtractor(
+        IdentifierStringTypeExtractorInterface $identifierStringTypeExtractor
+    ) {
+        $this->identifierStringTypeExtractors[] = $identifierStringTypeExtractor;
     }
 
     public function extractFromStart(string $string): string
     {
         $typeSpecificIdentifierStringExtractor = $this->findTypeSpecificIdentifierStringExtractor($string);
 
-        if ($typeSpecificIdentifierStringExtractor instanceof IdentifierStringExtractorInterface) {
+        if ($typeSpecificIdentifierStringExtractor instanceof IdentifierStringTypeExtractorInterface) {
             return (string) $typeSpecificIdentifierStringExtractor->extractFromStart($string);
         }
 
         return '';
     }
 
-    private function findTypeSpecificIdentifierStringExtractor(string $string): ?IdentifierStringExtractorInterface
+    private function findTypeSpecificIdentifierStringExtractor(string $string): ?IdentifierStringTypeExtractorInterface
     {
-        foreach ($this->typeSpecificIdentifierStringExtractors as $typeSpecificIdentifierStringExtractor) {
+        foreach ($this->identifierStringTypeExtractors as $typeSpecificIdentifierStringExtractor) {
             if ($typeSpecificIdentifierStringExtractor->handles($string)) {
                 return $typeSpecificIdentifierStringExtractor;
             }

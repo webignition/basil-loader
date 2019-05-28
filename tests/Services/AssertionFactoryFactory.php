@@ -5,7 +5,6 @@ namespace webignition\BasilParser\Tests\Services;
 use webignition\BasilParser\Factory\AssertionFactory;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 
 class AssertionFactoryFactory
 {
@@ -13,8 +12,11 @@ class AssertionFactoryFactory
     {
         $identifierFactory = new IdentifierFactory();
         $valueFactory = new ValueFactory();
-        $identifierStringExtractor = new IdentifierStringExtractor();
 
-        return new AssertionFactory($identifierFactory, $valueFactory, $identifierStringExtractor);
+        return new AssertionFactory(
+            $identifierFactory,
+            $valueFactory,
+            IdentifierStringExtractorFactory::create()
+        );
     }
 }
