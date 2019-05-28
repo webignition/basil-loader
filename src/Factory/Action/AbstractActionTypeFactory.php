@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-abstract class AbstractActionFactory implements ActionFactoryInterface
+abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     public function handles(string $type): bool
     {
@@ -24,27 +24,13 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
      *
      * @return ActionInterface
      */
-    abstract protected function doCreateFromTypeAndArguments(
+    abstract protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider
     ): ActionInterface;
 
-    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface
-    {
-        $actionString = trim($actionString);
-
-        $type = $actionString;
-        $arguments = '';
-
-        if (mb_substr_count($actionString, ' ') > 0) {
-            list($type, $arguments) = explode(' ', $actionString, 2);
-        }
-
-        return $this->createFromTypeAndArguments($type, $arguments, $pageProvider);
-    }
-
-    public function createFromTypeAndArguments(
+    public function createForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider
@@ -53,6 +39,6 @@ abstract class AbstractActionFactory implements ActionFactoryInterface
             throw new \RuntimeException('Invalid action type');
         }
 
-        return $this->doCreateFromTypeAndArguments($type, $arguments, $pageProvider);
+        return $this->doCreateForActionType($type, $arguments, $pageProvider);
     }
 }

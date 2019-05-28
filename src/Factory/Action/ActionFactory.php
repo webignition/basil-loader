@@ -3,54 +3,49 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class ActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class ActionFactory
 {
     /**
-     * @var ActionFactoryInterface[]
+     * @var ActionTypeFactoryInterface[]
      */
-    private $actionTypeFactories;
+    private $actionTypeFactories = [];
 
     /**
-     * @var UnrecognisedActionFactory
+     * @var UnrecognisedActionTypeFactory
      */
     private $unrecognisedActionFactory;
 
     public function __construct()
     {
-        $this->actionTypeFactories[] = new InteractionActionFactory();
-        $this->actionTypeFactories[] = new WaitActionFactory();
-        $this->actionTypeFactories[] = new NoArgumentsActionFactory();
-        $this->actionTypeFactories[] = new InputActionFactory();
-
-        $this->unrecognisedActionFactory = new UnrecognisedActionFactory();
+        $this->unrecognisedActionFactory = new UnrecognisedActionTypeFactory();
     }
 
-    public function handles(string $type): bool
+    public function addActionTypeFactory(ActionTypeFactoryInterface $actionTypeFactory)
     {
-        return true;
+        $this->actionTypeFactories[] = $actionTypeFactory;
     }
 
-    protected function getHandledActionTypes(): array
+    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface
     {
-        return ActionTypes::ALL;
-    }
+        $actionString = trim($actionString);
 
-    protected function doCreateFromTypeAndArguments(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
-        return $this->findTypeSpecificActionFactory($type)->createFromTypeAndArguments(
+        $type = $actionString;
+        $arguments = '';
+
+        if (mb_substr_count($actionString, ' ') > 0) {
+            list($type, $arguments) = explode(' ', $actionString, 2);
+        }
+
+        return $this->findActionTypeFactory($type)->createForActionType(
             $type,
             $arguments,
             $pageProvider
         );
     }
 
-    private function findTypeSpecificActionFactory(string $type): ActionFactoryInterface
+    private function findActionTypeFactory(string $type): ActionTypeFactoryInterface
     {
         foreach ($this->actionTypeFactories as $typeParser) {
             if ($typeParser->handles($type)) {

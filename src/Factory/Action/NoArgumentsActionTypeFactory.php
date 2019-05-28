@@ -7,7 +7,7 @@ use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class NoArgumentsActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class NoArgumentsActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     protected function getHandledActionTypes(): array
     {
@@ -18,7 +18,7 @@ class NoArgumentsActionFactory extends AbstractActionFactory implements ActionFa
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

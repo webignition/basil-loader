@@ -34,6 +34,7 @@ use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\PageProvider\EmptyPageProvider;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 use webignition\BasilParser\PageProvider\PopulatedPageProvider;
+use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class StepBuilderTest extends \PHPUnit\Framework\TestCase
@@ -47,7 +48,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $stepFactory = new StepFactory();
+        $actionFactory = ActionFactoryFactory::create();
+
+        $stepFactory = new StepFactory($actionFactory);
 
         $yamlParser = new YamlParser();
         $yamlLoader = new YamlLoader($yamlParser);

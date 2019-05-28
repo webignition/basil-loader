@@ -5,17 +5,9 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilParser\Model\Action\ActionInterface;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-interface ActionFactoryInterface
+interface ActionTypeFactoryInterface
 {
     public function handles(string $type): bool;
-
-    /**
-     * @param string $actionString
-     * @param PageProviderInterface $pageProvider
-     *
-     * @return ActionInterface
-     */
-    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface;
 
     /**
      * @param string $type
@@ -24,7 +16,7 @@ interface ActionFactoryInterface
      *
      * @return ActionInterface
      */
-    public function createFromTypeAndArguments(
+    public function createForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

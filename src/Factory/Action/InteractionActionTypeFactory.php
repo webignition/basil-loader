@@ -12,7 +12,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class InteractionActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class InteractionActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     private $identifierFactory;
 
@@ -44,7 +44,7 @@ class InteractionActionFactory extends AbstractActionFactory implements ActionFa
      * @throws UnknownPageException
      * @throws NonRetrievablePageException
      */
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider

@@ -7,7 +7,7 @@ use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\WaitAction;
 use webignition\BasilParser\PageProvider\PageProviderInterface;
 
-class WaitActionFactory extends AbstractActionFactory implements ActionFactoryInterface
+class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
     protected function getHandledActionTypes(): array
     {
@@ -16,7 +16,7 @@ class WaitActionFactory extends AbstractActionFactory implements ActionFactoryIn
         ];
     }
 
-    protected function doCreateFromTypeAndArguments(
+    protected function doCreateForActionType(
         string $type,
         string $arguments,
         PageProviderInterface $pageProvider
