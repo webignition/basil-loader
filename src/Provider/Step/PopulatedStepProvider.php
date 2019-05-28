@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Provider\Page;
+namespace webignition\BasilParser\Provider\Step;
 
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Model\Step\StepInterface;
