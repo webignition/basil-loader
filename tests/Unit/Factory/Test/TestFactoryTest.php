@@ -7,6 +7,7 @@ namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -35,11 +36,14 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     private $testFactory;
 
+    private $invalidYamlPath = '';
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->testFactory = TestFactoryFactory::create();
+        $this->invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
     }
 
     /**
@@ -467,6 +471,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider
+     * @dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
@@ -597,7 +602,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     'step one' => [
                         'use' => 'step_import_name',
                         'elements' => [
-                            'heading' => 'invalid_page_element_reference'
+                            'heading' => 'invalid_page_element_reference',
                         ],
                     ],
                 ],
@@ -629,7 +634,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     'step two' => [
                         'use' => 'step_import_name',
                         'elements' => [
-                            'heading' => 'malformed_page_element_reference'
+                            'heading' => 'malformed_page_element_reference',
                         ],
                     ],
                 ],
@@ -696,7 +701,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                             'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                         ],
                         TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
-                            'data_provider_name' => FixturePathFinder::find('invalid-yaml.yml'),
+                            'data_provider_name' => $this->invalidYamlPath,
                         ],
                     ],
                     'step name' => [
@@ -705,8 +710,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ],
                 'expectedException' => NonRetrievableDataProviderException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve data provider "data_provider_name" from "'
-                    . FixturePathFinder::find('invalid-yaml.yml') . '"',
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve data provider "data_provider_name" from "' . $this->invalidYamlPath . '"',
                 'expectedExceptionContext' =>  new ExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
@@ -715,7 +720,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromTestDataThrowsExceptionDataProvider(): array
+    public function createFromTestDataThrowsNonRetrievablePageExceptionDataProvider(): array
     {
         // NonRetrievablePageException
         //   thrown when trying to load a page that does not exist or which is not valid yaml
@@ -734,6 +739,283 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         //   - StepFactory calling ActionFactory::createFromActionString()
         //   - StepFactory calling AssertionFactory::createFromAssertionString()
 
+        return [
+            'NonRetrievablePageException: config.url references page that does not exist' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => 'Page/non-existent.yml',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                ])
+            ],
+            'NonRetrievablePageException: config.url references page that contains invalid yaml' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                ])
+            ],
+            'NonRetrievablePageException: assertion string references page that does not exist (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => 'Page/non-existent.yml',
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.element_name exists',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'NonRetrievablePageException: assertion string references page that does not exist (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => 'Page/non-existent.yml',
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            '".header" exists',
+                        ],
+                    ],
+                    'step two' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.element_name exists',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step two',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'NonRetrievablePageException: assertion string references page that contains invalid yaml (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.element_name exists',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'NonRetrievablePageException: assertion string references page that contains invalid yaml (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            '".header" exists',
+                        ],
+                    ],
+                    'step two' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.element_name exists'
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step two',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'NonRetrievablePageException: action string references page that does not exist (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => 'Page/non-existent.yml',
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.element_name',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'NonRetrievablePageException: action string references page that does not exist (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => 'Page/non-existent.yml',
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click ".heading"',
+                        ],
+                    ],
+                    'step two' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.element_name',
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step two',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'NonRetrievablePageException: action string references page that contains invalid yaml (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.element_name'
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'NonRetrievablePageException: action string references page that contains invalid yaml (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click ".header"'
+                        ],
+                    ],
+                    'step two' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.element_name'
+                        ],
+                    ],
+                ],
+                'expectedException' => NonRetrievablePageException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step two',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+        ];
+    }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
         // NonRetrievableStepException
         //   thrown when trying to load a step that does not exist or which is not valid yaml
         //
