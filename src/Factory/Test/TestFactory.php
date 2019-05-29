@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Factory\Test;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -83,17 +84,26 @@ class TestFactory
         $configuration = $this->configurationFactory->createFromConfigurationData($configurationData, $pageProvider);
         $steps = [];
 
-        foreach ($stepNames as $stepName) {
-            $stepData = $testData[$stepName];
+        try {
+            foreach ($stepNames as $stepName) {
+                $stepData = $testData[$stepName];
 
-            $step = $this->stepBuilder->build(
-                $stepData,
-                $stepProvider,
-                $dataSetProvider,
-                $pageProvider
-            );
+                $step = $this->stepBuilder->build(
+                    $stepData,
+                    $stepProvider,
+                    $dataSetProvider,
+                    $pageProvider
+                );
 
-            $steps[$stepName] = $step;
+                $steps[$stepName] = $step;
+            }
+        } catch (MalformedPageElementReferenceException $malformedPageElementReferenceException) {
+            $malformedPageElementReferenceException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $name,
+                ExceptionContextInterface::KEY_STEP_NAME => isset($stepName) ? $stepName : '',
+            ]);
+
+            throw $malformedPageElementReferenceException;
         }
 
         return new Test($name, $configuration, $steps);

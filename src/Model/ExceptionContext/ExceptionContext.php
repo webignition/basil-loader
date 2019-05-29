@@ -8,9 +8,9 @@ class ExceptionContext implements ExceptionContextInterface
     private $stepName;
     private $content;
 
-    public function setTestName(string $testName)
+    public function __construct(array $values = [])
     {
-        $this->testName = $testName;
+        $this->apply($values);
     }
 
     public function getTestName(): ?string
@@ -18,23 +18,32 @@ class ExceptionContext implements ExceptionContextInterface
         return $this->testName;
     }
 
-    public function setStepName(string $stepName)
-    {
-        $this->stepName = $stepName;
-    }
-
     public function getStepName(): ?string
     {
         return $this->stepName;
     }
 
-    public function setContent(string $content)
-    {
-        $this->content = $content;
-    }
-
     public function getContent(): ?string
     {
         return $this->content;
+    }
+
+    public function apply(array $values)
+    {
+        $testName = $values[self::KEY_TEST_NAME] ?? null;
+        $stepName = $values[self::KEY_STEP_NAME] ?? null;
+        $content = $values[self::KEY_CONTENT] ?? null;
+
+        if ($testName) {
+            $this->testName = $testName;
+        }
+
+        if ($stepName) {
+            $this->stepName = $stepName;
+        }
+
+        if ($content) {
+            $this->content = $content;
+        }
     }
 }
