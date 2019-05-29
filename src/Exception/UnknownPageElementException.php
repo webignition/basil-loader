@@ -2,8 +2,12 @@
 
 namespace webignition\BasilParser\Exception;
 
-class UnknownPageElementException extends \Exception
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
+
+class UnknownPageElementException extends \Exception implements ContextAwareExceptionInterface
 {
+    use ContextAwareExceptionTrait;
+
     private $importName;
     private $elementName;
 
@@ -13,6 +17,7 @@ class UnknownPageElementException extends \Exception
 
         $this->importName = $importName;
         $this->elementName = $elementName;
+        $this->exceptionContext = new ExceptionContext();
     }
 
     public function getImportName(): string

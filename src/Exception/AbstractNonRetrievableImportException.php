@@ -2,10 +2,15 @@
 
 namespace webignition\BasilParser\Exception;
 
-abstract class AbstractNonRetrievableImportException extends \Exception
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
+
+abstract class AbstractNonRetrievableImportException extends \Exception implements ContextAwareExceptionInterface
 {
+    use ContextAwareExceptionTrait;
+
     private $importName;
     private $importPath;
+    private $exceptionContext;
 
     public function __construct(string $importName, string $importPath, string $message, \Throwable $previous)
     {
@@ -13,6 +18,7 @@ abstract class AbstractNonRetrievableImportException extends \Exception
 
         $this->importName = $importName;
         $this->importPath = $importPath;
+        $this->exceptionContext = new ExceptionContext();
     }
 
     public function getImportName(): string

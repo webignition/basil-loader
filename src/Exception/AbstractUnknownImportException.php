@@ -2,8 +2,12 @@
 
 namespace webignition\BasilParser\Exception;
 
-abstract class AbstractUnknownImportException extends \Exception
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
+
+abstract class AbstractUnknownImportException extends \Exception implements ContextAwareExceptionInterface
 {
+    use ContextAwareExceptionTrait;
+
     private $importName;
 
     public function __construct(string $importName, string $message)
@@ -11,6 +15,7 @@ abstract class AbstractUnknownImportException extends \Exception
         parent::__construct($message);
 
         $this->importName = $importName;
+        $this->exceptionContext = new ExceptionContext();
     }
 
     public function getImportName(): string

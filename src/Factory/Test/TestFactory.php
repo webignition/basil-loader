@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Factory\Test;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -80,18 +81,47 @@ class TestFactory
         $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($pageImportPaths);
         $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($dataProviderImportPaths);
 
-        $configuration = $this->configurationFactory->createFromConfigurationData($configurationData, $pageProvider);
+        try {
+            $configuration = $this->configurationFactory->createFromConfigurationData(
+                $configurationData,
+                $pageProvider
+            );
+        } catch (NonRetrievablePageException | UnknownPageException $nonRetrievablePageException) {
+            $nonRetrievablePageException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $name,
+            ]);
+
+            throw $nonRetrievablePageException;
+        }
+
         $steps = [];
 
         foreach ($stepNames as $stepName) {
             $stepData = $testData[$stepName];
 
-            $step = $this->stepBuilder->build(
-                $stepData,
-                $stepProvider,
-                $dataSetProvider,
-                $pageProvider
-            );
+            try {
+                $step =  $this->stepBuilder->build(
+                    $stepData,
+                    $stepProvider,
+                    $dataSetProvider,
+                    $pageProvider
+                );
+            } catch (MalformedPageElementReferenceException |
+                NonRetrievableDataProviderException |
+                NonRetrievablePageException |
+                NonRetrievableStepException |
+                UnknownDataProviderException |
+                UnknownPageElementException |
+                UnknownPageException |
+                UnknownStepException $contextAwareException
+            ) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => $name,
+                    ExceptionContextInterface::KEY_STEP_NAME => $stepName,
+                ]);
+
+                throw $contextAwareException;
+            }
 
             $steps[$stepName] = $step;
         }
