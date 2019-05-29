@@ -2,7 +2,9 @@
 
 namespace webignition\BasilParser\Factory\Test;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Model\PageUrlReference\PageUrlReference;
 use webignition\BasilParser\Model\Test\Configuration;
@@ -22,6 +24,8 @@ class ConfigurationFactory
      *
      * @throws NonRetrievablePageException
      * @throws UnknownPageException
+     * @throws MalformedPageElementReferenceException
+     * @throws UnknownPageElementException
      */
     public function createFromConfigurationData(
         array $configurationData,

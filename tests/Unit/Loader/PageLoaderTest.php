@@ -5,7 +5,6 @@
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Identifier\Identifier;
