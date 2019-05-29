@@ -109,7 +109,8 @@ class TestFactory
             } catch (MalformedPageElementReferenceException |
                 NonRetrievableDataProviderException |
                 NonRetrievablePageException |
-                NonRetrievableStepException $contextAwareException
+                NonRetrievableStepException |
+                UnknownDataProviderException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $name,
