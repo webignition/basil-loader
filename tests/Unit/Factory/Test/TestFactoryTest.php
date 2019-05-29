@@ -465,6 +465,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
+     * @dataProvider createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
@@ -639,6 +640,21 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                 ])
             ],
         ];
+    }
+
+    public function createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider(): array
+    {
+        // NonRetrievableDataProviderException
+        //   thrown when trying to load a data provider that does not exist or which is not valid yaml
+        //
+        //   cases:
+        //   - test.data references data provider that cannot be loaded
+        //   - test.data.references data provider containing invalid yaml
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+
+        return [];
     }
 
     public function createFromTestDataThrowsExceptionDataProvider(): array
