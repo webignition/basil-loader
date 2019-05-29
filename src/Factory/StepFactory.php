@@ -81,12 +81,12 @@ class StepFactory
                     }
                 }
             }
-        } catch (MalformedPageElementReferenceException $malformedPageElementReferenceException) {
-            $malformedPageElementReferenceException->applyExceptionContext([
+        } catch (MalformedPageElementReferenceException | NonRetrievablePageException $contextAwareException) {
+            $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $assertionString !== '' ? $assertionString : $actionString,
             ]);
 
-            throw $malformedPageElementReferenceException;
+            throw $contextAwareException;
         }
 
         return new Step($actions, $assertions);

@@ -81,36 +81,44 @@ class TestFactory
         $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($pageImportPaths);
         $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($dataProviderImportPaths);
 
-        $configuration = $this->configurationFactory->createFromConfigurationData($configurationData, $pageProvider);
+        try {
+            $configuration = $this->configurationFactory->createFromConfigurationData(
+                $configurationData,
+                $pageProvider
+            );
+        } catch (NonRetrievablePageException $nonRetrievablePageException) {
+            $nonRetrievablePageException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $name,
+            ]);
+
+            throw $nonRetrievablePageException;
+        }
+
         $steps = [];
 
-        try {
-            foreach ($stepNames as $stepName) {
-                $stepData = $testData[$stepName];
+        foreach ($stepNames as $stepName) {
+            $stepData = $testData[$stepName];
 
-                $step = $this->stepBuilder->build(
+            try {
+                $step =  $this->stepBuilder->build(
                     $stepData,
                     $stepProvider,
                     $dataSetProvider,
                     $pageProvider
                 );
+            } catch (MalformedPageElementReferenceException |
+                NonRetrievableDataProviderException |
+                NonRetrievablePageException $contextAwareException
+            ) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => $name,
+                    ExceptionContextInterface::KEY_STEP_NAME => $stepName,
+                ]);
 
-                $steps[$stepName] = $step;
+                throw $contextAwareException;
             }
-        } catch (MalformedPageElementReferenceException $malformedPageElementReferenceException) {
-            $malformedPageElementReferenceException->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $name,
-                ExceptionContextInterface::KEY_STEP_NAME => isset($stepName) ? $stepName : '',
-            ]);
 
-            throw $malformedPageElementReferenceException;
-        } catch (NonRetrievableDataProviderException $nonRetrievableDataProviderException) {
-            $nonRetrievableDataProviderException->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $name,
-                ExceptionContextInterface::KEY_STEP_NAME => isset($stepName) ? $stepName : '',
-            ]);
-
-            throw $nonRetrievableDataProviderException;
+            $steps[$stepName] = $step;
         }
 
         return new Test($name, $configuration, $steps);
