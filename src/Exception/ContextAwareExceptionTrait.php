@@ -16,18 +16,8 @@ trait ContextAwareExceptionTrait
         return $this->exceptionContext;
     }
 
-    public function applyExceptionContext(string $testName = null, string $stepName = null, string $content = null)
+    public function applyExceptionContext(array $values)
     {
-        if (null !== $testName) {
-            $this->exceptionContext->setTestName($testName);
-        }
-
-        if (null !== $stepName) {
-            $this->exceptionContext->setStepName($stepName);
-        }
-
-        if (null !== $content) {
-            $this->exceptionContext->setContent($content);
-        }
+        $this->exceptionContext->apply($values);
     }
 }

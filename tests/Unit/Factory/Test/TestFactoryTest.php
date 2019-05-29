@@ -4,6 +4,8 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
+use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -12,6 +14,8 @@ use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\DataSet\DataSet;
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
+use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Step\Step;
@@ -459,7 +463,26 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromTestDataThrowsExceptionDataProvider(): array
+    /**
+     * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
+     */
+    public function testCreateFromTestDataThrowsException(
+        string $name,
+        array $testData,
+        string $expectedException,
+        string $expectedExceptionMessage,
+        ExceptionContext $expectedExceptionContext
+    ) {
+        try {
+            $this->testFactory->createFromTestData($name, $testData);
+        } catch (ContextAwareExceptionInterface $contextAwareException) {
+            $this->assertInstanceOf($expectedException, $contextAwareException);
+            $this->assertEquals($expectedExceptionMessage, $contextAwareException->getMessage());
+            $this->assertEquals($expectedExceptionContext, $contextAwareException->getExceptionContext());
+        }
+    }
+
+    public function createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider(): array
     {
         // MalformedPageElementReferenceException
         //   thrown when trying to uses a page element reference that is not of the correct form
@@ -467,13 +490,159 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         //   cases:
         //   - assertion string contains malformed reference
         //   - action string contains malformed reference
-        //   - test uses elements contains malformed reference
-        //
-        //   context to be applied in:
-        //   - StepFactory calling ActionFactory::createFromActionString()
-        //   - StepFactory calling AssertionFactory::createFromAssertionString()
-        //   - TestFactory calling StepBuilder::build()
+        //   - test.elements contains malformed reference
 
+        return [
+            'MalformedPageElementReferenceException: assertion string contains malformed reference (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'malformed_reference is "assertion one value"',
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "malformed_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'malformed_reference is "assertion one value"',
+                ]),
+            ],
+            'MalformedPageElementReferenceException: assertion string contains malformed reference (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            '".heading" is "assertion one value"',
+                            'malformed_reference is "assertion two value"',
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "malformed_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'malformed_reference is "assertion two value"',
+                ]),
+            ],
+            'MalformedPageElementReferenceException: action string contains malformed reference (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click action_one_element_reference',
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "action_one_element_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click action_one_element_reference',
+                ]),
+            ],
+            'MalformedPageElementReferenceException: action string contains malformed reference (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click ".heading"',
+                            'click action_two_element_reference',
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "action_two_element_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click action_two_element_reference',
+                ]),
+            ],
+            'MalformedPageElementReferenceException: test.elements contains malformed reference (1)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_PAGES => [],
+                    ],
+                    'step one' => [
+                        'use' => 'step_import_name',
+                        'elements' => [
+                            'heading' => 'invalid_page_element_reference'
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "invalid_page_element_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                ]),
+            ],
+            'MalformedPageElementReferenceException: test.elements contains malformed reference (2)' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                        ],
+                        TestFactory::KEY_IMPORTS_PAGES => [],
+                    ],
+                    'step one' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            '$page.url is "http://example.com"',
+                        ],
+                    ],
+                    'step two' => [
+                        'use' => 'step_import_name',
+                        'elements' => [
+                            'heading' => 'malformed_page_element_reference'
+                        ],
+                    ],
+                ],
+                'expectedException' => MalformedPageElementReferenceException::class,
+                'expectedExceptionMessage' => 'Malformed page element reference "malformed_page_element_reference"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step two',
+                ])
+            ],
+        ];
+    }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
         // NonRetrievableDataProviderException
         //   thrown when trying to load a data provider that does not exist or which is not valid yaml
         //

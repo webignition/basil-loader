@@ -4,10 +4,12 @@ namespace webignition\BasilParser\Model\ExceptionContext;
 
 interface ExceptionContextInterface
 {
-    public function setTestName(string $testName);
+    const KEY_TEST_NAME = 'test-name';
+    const KEY_STEP_NAME = 'step-name';
+    const KEY_CONTENT  = 'content';
+
     public function getTestName(): ?string;
-    public function setStepName(string $stepName);
     public function getStepName(): ?string;
-    public function setContent(string $content);
     public function getContent(): ?string;
+    public function apply(array $values);
 }
