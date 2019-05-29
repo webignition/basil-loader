@@ -3,12 +3,12 @@
 namespace webignition\BasilParser\Exception;
 
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 
 abstract class AbstractUnknownImportException extends \Exception implements ContextAwareExceptionInterface
 {
+    use ContextAwareExceptionTrait;
+
     private $importName;
-    private $exceptionContext;
 
     public function __construct(string $importName, string $message)
     {
@@ -21,15 +21,5 @@ abstract class AbstractUnknownImportException extends \Exception implements Cont
     public function getImportName(): string
     {
         return $this->importName;
-    }
-
-    public function setExceptionContext(ExceptionContextInterface $exceptionContext)
-    {
-        $this->exceptionContext = $exceptionContext;
-    }
-
-    public function getExceptionContext(): ExceptionContextInterface
-    {
-        return $this->exceptionContext;
     }
 }
