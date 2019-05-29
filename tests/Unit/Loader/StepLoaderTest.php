@@ -39,9 +39,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
 
         $stepLoader = new StepLoader($yamlLoader, $stepFactory);
 
-        $page = $stepLoader->load($path);
+        $step = $stepLoader->load($path);
 
-        $this->assertEquals($expectedStep, $page);
+        $this->assertEquals($expectedStep, $step);
     }
 
     public function loadDataProvider(): array
