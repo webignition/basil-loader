@@ -112,7 +112,8 @@ class TestFactory
                 NonRetrievableStepException |
                 UnknownDataProviderException |
                 UnknownPageElementException |
-                UnknownPageException $contextAwareException
+                UnknownPageException |
+                UnknownStepException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $name,
