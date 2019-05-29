@@ -2,6 +2,10 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Model\Page\PageInterface;
@@ -23,6 +27,10 @@ class PageLoader
      * @return PageInterface
      *
      * @throws YamlLoaderException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
      */
     public function load(string $path): PageInterface
     {
