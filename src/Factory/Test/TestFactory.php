@@ -104,6 +104,13 @@ class TestFactory
             ]);
 
             throw $malformedPageElementReferenceException;
+        } catch (NonRetrievableDataProviderException $nonRetrievableDataProviderException) {
+            $nonRetrievableDataProviderException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $name,
+                ExceptionContextInterface::KEY_STEP_NAME => isset($stepName) ? $stepName : '',
+            ]);
+
+            throw $nonRetrievableDataProviderException;
         }
 
         return new Test($name, $configuration, $steps);
