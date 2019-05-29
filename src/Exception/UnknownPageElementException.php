@@ -3,13 +3,13 @@
 namespace webignition\BasilParser\Exception;
 
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 
 class UnknownPageElementException extends \Exception implements ContextAwareExceptionInterface
 {
+    use ContextAwareExceptionTrait;
+
     private $importName;
     private $elementName;
-    private $exceptionContext;
 
     public function __construct(string $importName, string $elementName)
     {
@@ -28,15 +28,5 @@ class UnknownPageElementException extends \Exception implements ContextAwareExce
     public function getElementName(): string
     {
         return $this->elementName;
-    }
-
-    public function setExceptionContext(ExceptionContextInterface $exceptionContext)
-    {
-        $this->exceptionContext = $exceptionContext;
-    }
-
-    public function getExceptionContext(): ExceptionContextInterface
-    {
-        return $this->exceptionContext;
     }
 }
