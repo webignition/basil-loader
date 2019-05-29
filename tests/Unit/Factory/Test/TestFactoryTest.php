@@ -4,12 +4,14 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
+use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -258,7 +260,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     'step_name' => [
-                        'use' => 'step_import_name',
+                        StepBuilder::KEY_USE => 'step_import_name',
                     ],
                 ],
                 'expectedTest' => new Test(
@@ -304,8 +306,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     'step_name' => [
-                        'use' => 'step_import_name',
-                        'data' => [
+                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepBuilder::KEY_DATA => [
                             'data_set_1' => new DataSet([
                                 'expected_title' => 'Foo',
                             ]),
@@ -363,8 +365,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     'step_name' => [
-                        'use' => 'step_import_name',
-                        'data' => 'data_provider_import_name',
+                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepBuilder::KEY_DATA => 'data_provider_import_name',
                     ],
                 ],
                 'expectedTest' => new Test(
@@ -421,8 +423,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     'step_name' => [
-                        'use' => 'step_import_name',
-                        'elements' => [
+                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepBuilder::KEY_ELEMENTS => [
                             'heading' => 'page_import_name.elements.heading'
                         ],
                     ],
@@ -476,6 +478,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievableStepExceptionDataProvider
      * @dataProvider createFromTestDataThrowsUnknownDataProviderExceptionDataProvider
+     * @dataProvider createFromTestDataThrowsUnknownPageElementExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
@@ -604,8 +607,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         TestFactory::KEY_IMPORTS_PAGES => [],
                     ],
                     'step one' => [
-                        'use' => 'step_import_name',
-                        'elements' => [
+                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepBuilder::KEY_ELEMENTS => [
                             'heading' => 'invalid_page_element_reference',
                         ],
                     ],
@@ -636,8 +639,8 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     'step two' => [
-                        'use' => 'step_import_name',
-                        'elements' => [
+                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepBuilder::KEY_ELEMENTS => [
                             'heading' => 'malformed_page_element_reference',
                         ],
                     ],
@@ -1120,21 +1123,104 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromTestDataThrowsExceptionDataProvider(): array
+    public function createFromTestDataThrowsUnknownPageElementExceptionDataProvider(): array
     {
         // UnknownPageElementException
         //   thrown when trying to reference a page element not defined within a page
         //
         //   cases:
-        //   - element.uses references page element that does not exist within a page
-        //   - assertion string references page element that does not exist within a page
-        //   - action string reference page element that does not exist within a page
+        //   - test.elements references element that does not exist within a page
+        //   - assertion string references element that does not exist within a page
+        //   - action string reference element that does not exist within a page
         //
         //   context to be applied in:
         //   - TestFactory calling StepBuilder::build()
         //   - StepFactory calling ActionFactory::createFromActionString()
         //   - StepFactory calling AssertionFactory::createFromAssertionString()
 
+        return [
+            'UnknownPageElementException: test.elements references element that does not exist within a page' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                        ],
+                    ],
+                    'step name' => [
+                        StepBuilder::KEY_ELEMENTS => [
+                            'page_import_name.elements.non_existent'
+                        ],
+                    ],
+                ],
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'UnknownPageElementException: assertion string references element that does not exist within a page' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                        ],
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.non_existent exists'
+                        ],
+                    ],
+                ],
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.non_existent exists',
+                ])
+            ],
+            'UnknownPageElementException: action string references element that does not exist within a page' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_PAGES => [
+                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                        ],
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.non_existent'
+                        ],
+                    ],
+                ],
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.non_existent',
+                ])
+            ],
+        ];
+    }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
         // UnknownPageException
         //   thrown when trying to reference a page not defined within a collection
         //

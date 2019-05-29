@@ -81,7 +81,10 @@ class StepFactory
                     }
                 }
             }
-        } catch (MalformedPageElementReferenceException | NonRetrievablePageException $contextAwareException) {
+        } catch (MalformedPageElementReferenceException |
+            NonRetrievablePageException |
+            UnknownPageElementException $contextAwareException
+        ) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $assertionString !== '' ? $assertionString : $actionString,
             ]);
