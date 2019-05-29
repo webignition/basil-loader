@@ -458,4 +458,104 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
+        // MalformedPageElementReferenceException
+        //   thrown when trying to uses a page element reference that is not of the correct form
+        //
+        //   cases:
+        //   - assertion string contains malformed reference
+        //   - action string contains malformed reference
+        //   - test uses elements contains malformed reference
+        //
+        //   context to be applied in:
+        //   - StepFactory calling ActionFactory::createFromActionString()
+        //   - StepFactory calling AssertionFactory::createFromAssertionString()
+        //   - TestFactory calling StepBuilder::build()
+
+        // NonRetrievableDataProviderException
+        //   thrown when trying to load a data provider that does not exist or which is not valid yaml
+        //
+        //   cases:
+        //   - test.data references data provider that cannot be loaded
+        //   - test.data.references data provider containing invalid yaml
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+
+        // NonRetrievablePageException
+        //   thrown when trying to load a page that does not exist or which is not valid yaml
+        //
+        //   cases:
+        //   - config.url references page that does not exist
+        //   - config.url references page that contains invalid yaml
+        //   - assertion string references page that does not exist
+        //   - assertion string references page that contains invalid yaml
+        //   - action string reference page that does not exist
+        //   - action string references page that contains invalid yaml
+        //
+        //   context to be applied in:
+        //   - TestFactory calling ConfigurationFactory::createFromConfigurationData()
+        //   - TestFactory calling StepBuilder::build()
+        //   - StepFactory calling ActionFactory::createFromActionString()
+        //   - StepFactory calling AssertionFactory::createFromAssertionString()
+
+        // NonRetrievableStepException
+        //   thrown when trying to load a step that does not exist or which is not valid yaml
+        //
+        //   cases:
+        //   - step.use references step that does not exist
+        //   - step.use references step that contains invalid yaml
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+
+        // UnknownDataProviderException
+        //   thrown when trying to access a data provider not defined within a collection
+        //
+        //   cases:
+        //   - test.data references a data provider that has not been defined
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+
+        // UnknownPageElementException
+        //   thrown when trying to reference a page element not defined within a page
+        //
+        //   cases:
+        //   - element.uses references page element that does not exist within a page
+        //   - assertion string references page element that does not exist within a page
+        //   - action string reference page element that does not exist within a page
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+        //   - StepFactory calling ActionFactory::createFromActionString()
+        //   - StepFactory calling AssertionFactory::createFromAssertionString()
+
+        // UnknownPageException
+        //   thrown when trying to reference a page not defined within a collection
+        //
+        //   cases:
+        //   - config.url references page not defined within a collection
+        //   - assertion string references page not defined within a collection
+        //   - action string reference page not defined within a collection
+        //
+        //   context to be applied in:
+        //   - TestFactory calling ConfigurationFactory::createFromConfigurationData()
+        //   - TestFactory calling StepBuilder::build()
+        //   - StepFactory calling ActionFactory::createFromActionString()
+        //   - StepFactory calling AssertionFactory::createFromAssertionString()
+
+        // UnknownStepException
+        //   thrown when trying to reference a step not defined within a collection
+        //
+        //   cases:
+        //   - step.use references step not defined within a collection
+        //
+        //   context to be applied in:
+        //   - TestFactory calling StepBuilder::build()
+
+        return [];
+    }
 }
