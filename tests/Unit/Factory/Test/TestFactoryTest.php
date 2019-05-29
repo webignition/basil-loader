@@ -12,6 +12,7 @@ use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -479,6 +480,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromTestDataThrowsNonRetrievableStepExceptionDataProvider
      * @dataProvider createFromTestDataThrowsUnknownDataProviderExceptionDataProvider
      * @dataProvider createFromTestDataThrowsUnknownPageElementExceptionDataProvider
+     * @dataProvider createFromTestDataThrowsUnknownPageExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
@@ -1219,7 +1221,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromTestDataThrowsExceptionDataProvider(): array
+    public function createFromTestDataThrowsUnknownPageExceptionDataProvider(): array
     {
         // UnknownPageException
         //   thrown when trying to reference a page not defined within a collection
@@ -1235,6 +1237,68 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         //   - StepFactory calling ActionFactory::createFromActionString()
         //   - StepFactory calling AssertionFactory::createFromAssertionString()
 
+        return [
+            'UnknownPageException: config.url references page not defined within a collection' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                    ],
+                ],
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                ])
+            ],
+            'UnknownPageException: assertion string references page not defined within a collection' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ASSERTIONS => [
+                            'page_import_name.elements.element_name exists'
+                        ],
+                    ],
+                ],
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'UnknownPageException: action string references page not defined within a collection' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    'step name' => [
+                        StepFactory::KEY_ACTIONS => [
+                            'click page_import_name.elements.element_name'
+                        ],
+                    ],
+                ],
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+        ];
+    }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
         // UnknownStepException
         //   thrown when trying to reference a step not defined within a collection
         //

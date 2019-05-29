@@ -83,7 +83,8 @@ class StepFactory
             }
         } catch (MalformedPageElementReferenceException |
             NonRetrievablePageException |
-            UnknownPageElementException $contextAwareException
+            UnknownPageElementException |
+            UnknownPageException $contextAwareException
         ) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $assertionString !== '' ? $assertionString : $actionString,

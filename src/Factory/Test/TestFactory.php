@@ -86,7 +86,7 @@ class TestFactory
                 $configurationData,
                 $pageProvider
             );
-        } catch (NonRetrievablePageException $nonRetrievablePageException) {
+        } catch (NonRetrievablePageException | UnknownPageException $nonRetrievablePageException) {
             $nonRetrievablePageException->applyExceptionContext([
                 ExceptionContextInterface::KEY_TEST_NAME => $name,
             ]);
@@ -111,7 +111,8 @@ class TestFactory
                 NonRetrievablePageException |
                 NonRetrievableStepException |
                 UnknownDataProviderException |
-                UnknownPageElementException $contextAwareException
+                UnknownPageElementException |
+                UnknownPageException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $name,
