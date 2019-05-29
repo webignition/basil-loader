@@ -18,13 +18,11 @@ use webignition\BasilParser\Model\Test\TestInterface;
 class DeferredTestProvider implements TestProviderInterface
 {
     private $testLoader;
-    private $importPaths;
     private $tests = [];
 
-    public function __construct(TestLoader $testLoader, array $importPaths)
+    public function __construct(TestLoader $testLoader)
     {
         $this->testLoader = $testLoader;
-        $this->importPaths = $importPaths;
     }
 
     /**
@@ -52,6 +50,34 @@ class DeferredTestProvider implements TestProviderInterface
         }
 
         return $test;
+    }
+
+    /**
+     * @param string[] $paths
+     *
+     * @return TestInterface[]
+     *
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
+     * @throws NonRetrievableTestException
+     * @throws UnknownDataProviderException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws UnknownStepException
+     */
+    public function findCollection(array $paths): array
+    {
+        $tests = [];
+
+        foreach ($paths as $path) {
+            if (is_string($path)) {
+                $tests[] = $this->findTest($path);
+            }
+        }
+
+        return $tests;
     }
 
     /**
