@@ -8,6 +8,7 @@ use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -472,6 +473,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
+     * @dataProvider createFromTestDataThrowsNonRetrievableStepExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
@@ -1014,7 +1016,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function createFromTestDataThrowsExceptionDataProvider(): array
+    public function createFromTestDataThrowsNonRetrievableStepExceptionDataProvider(): array
     {
         // NonRetrievableStepException
         //   thrown when trying to load a step that does not exist or which is not valid yaml
@@ -1026,6 +1028,59 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
         //   context to be applied in:
         //   - TestFactory calling StepBuilder::build()
 
+        return [
+            'NonRetrievableStepException: step.uses references step that does not exist' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => 'Step/non-existent.yml',
+                        ],
+                    ],
+                    'step one' => [
+                        TestFactory::KEY_TEST_USE => 'step_import_name',
+                    ],
+                ],
+                'expectedException' => NonRetrievableStepException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                ])
+            ],
+            'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
+                'name' => 'test name',
+                'testData' => [
+                    TestFactory::KEY_CONFIGURATION => [
+                        ConfigurationFactory::KEY_BROWSER => 'chrome',
+                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                    ],
+                    TestFactory::KEY_IMPORTS => [
+                        TestFactory::KEY_IMPORTS_STEPS => [
+                            'step_import_name' => $this->invalidYamlPath,
+                        ],
+                    ],
+                    'step one' => [
+                        TestFactory::KEY_TEST_USE => 'step_import_name',
+                    ],
+                ],
+                'expectedException' => NonRetrievableStepException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve step "step_import_name" from "' . $this->invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step one',
+                ])
+            ],
+        ];
+    }
+
+    public function createFromTestDataThrowsExceptionDataProvider(): array
+    {
         // UnknownDataProviderException
         //   thrown when trying to access a data provider not defined within a collection
         //
