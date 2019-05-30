@@ -2,4 +2,4 @@ actions:
   - click ".button"
 
 assertions:
-  - $elements.heading includes "Hello World"
+  - '$elements.heading includes "Hello World"'

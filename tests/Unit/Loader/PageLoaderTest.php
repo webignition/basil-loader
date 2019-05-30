@@ -6,31 +6,22 @@ namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use Nyholm\Psr7\Uri;
 use webignition\BasilParser\Loader\PageLoader;
-use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\PageFactoryFactory;
+use webignition\BasilParser\Tests\Services\YamlLoaderFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(array $yamlLoaderReturnValue, PageInterface $expectedPage)
+    public function testLoad(string $path, PageInterface $expectedPage)
     {
-        $path = 'page.yml';
-
-        $yamlLoader = \Mockery::mock(YamlLoader::class);
-        $yamlLoader
-            ->shouldReceive('loadArray')
-            ->with($path)
-            ->andReturn($yamlLoaderReturnValue);
-
-        $pageFactory = PageFactoryFactory::create();
-
-        $pageLoader = new PageLoader($yamlLoader, $pageFactory);
+        $pageLoader = new PageLoader(YamlLoaderFactory::create(), PageFactoryFactory::create());
 
         $page = $pageLoader->load($path);
 
@@ -48,25 +39,17 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
 
         return [
             'empty' => [
-                'yamlLoaderReturnValue' => [],
+                'path' => FixturePathFinder::find('Empty/empty.yml'),
                 'expectedPage' => new Page(new Uri(''), []),
             ],
             'url only' => [
-                'yamlLoaderReturnValue' => [
-                    'url' => 'http://example.com',
-                ],
-                'expectedPage' => new Page(new Uri('http://example.com'), []),
+                'path' => FixturePathFinder::find('Page/example.com.url-only.yml'),
+                'expectedPage' => new Page(new Uri('https://example.com'), []),
             ],
             'url and element references' => [
-                'yamlLoaderReturnValue' => [
-                    'url' => 'http://example.com',
-                    'elements' => [
-                        'form' => '".form"',
-                        'input' => '"{{ form}} .input"',
-                    ],
-                ],
+                'path' => FixturePathFinder::find('Page/example.com.form.yml'),
                 'expectedPage' => new Page(
-                    new Uri('http://example.com'),
+                    new Uri('https://example.com'),
                     [
                         'form' => $parentIdentifier,
                         'input' =>
@@ -80,12 +63,5 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        \Mockery::close();
     }
 }
