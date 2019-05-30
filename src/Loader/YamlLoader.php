@@ -30,6 +30,14 @@ class YamlLoader
             throw YamlLoaderException::fromYamlParseException($parseException);
         }
 
+        if (is_string($data) && '' === trim($data)) {
+            $data = null;
+        }
+
+        if (null === $data) {
+            $data = [];
+        }
+
         if (!is_array($data)) {
             throw YamlLoaderException::createDataIsNotAnArrayException();
         }

@@ -2,4 +2,4 @@ actions:
   - click ".button"
 
 assertions:
-  - "\".heading\" includes \"Hello World\""
+  - '".heading" includes "Hello World"'

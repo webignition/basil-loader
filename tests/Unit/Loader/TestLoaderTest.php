@@ -4,13 +4,6 @@
 
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
-use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Factory\Test\TestFactory;
-use webignition\BasilParser\Loader\TestLoader;
-use webignition\BasilParser\Loader\YamlLoader;
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
 use webignition\BasilParser\Model\Assertion\AssertionComparisons;
 use webignition\BasilParser\Model\Identifier\Identifier;
@@ -21,24 +14,17 @@ use webignition\BasilParser\Model\Test\Test;
 use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Model\Value\Value;
 use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\Tests\Services\TestFactoryFactory;
+use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\TestLoaderFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, array $yamlLoaderReturnValue, TestInterface $expectedTest)
+    public function testLoad(string $path, TestInterface $expectedTest)
     {
-        $yamlLoader = \Mockery::mock(YamlLoader::class);
-        $yamlLoader
-            ->shouldReceive('loadArray')
-            ->with($path)
-            ->andReturn($yamlLoaderReturnValue);
-
-        $testFactory = TestFactoryFactory::create();
-
-        $testLoader = new TestLoader($yamlLoader, $testFactory);
+        $testLoader = TestLoaderFactory::create();
 
         $test = $testLoader->load($path);
 
@@ -49,56 +35,32 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty' => [
-                'path' => 'empty-test.yml',
-                'yamlLoaderReturnValue' => [],
+                'path' => FixturePathFinder::find('Empty/empty.yml'),
                 'expectedTest' => new Test(
-                    'empty-test.yml',
+                    FixturePathFinder::find('Empty/empty.yml'),
                     new Configuration('', ''),
                     []
                 ),
             ],
             'non-empty' => [
-                'path' => 'non-empty-test.yml',
-                'yamlLoaderReturnValue' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepFactory::KEY_ACTIONS => [
-                            'click ".selector"',
-                        ],
-                        StepFactory::KEY_ASSERTIONS => [
-                            '$page.title is $data.expected_title',
-                        ],
-                    ],
-                ],
+                'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                 'expectedTest' => new Test(
-                    'non-empty-test.yml',
-                    new Configuration('chrome', 'http://example.com'),
+                    FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
+                    new Configuration('chrome', 'https://example.com'),
                     [
-                        'step name' => new Step(
-                            [
-                                new InteractionAction(
-                                    ActionTypes::CLICK,
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        '.selector'
-                                    ),
-                                    '".selector"'
-                                ),
-                            ],
+                        'verify page is open' => new Step(
+                            [],
                             [
                                 new Assertion(
-                                    '$page.title is $data.expected_title',
+                                    '$page.url is "https://example.com"',
                                     new Identifier(
                                         IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                        '$page.title'
+                                        '$page.url'
                                     ),
                                     AssertionComparisons::IS,
                                     new Value(
-                                        ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title'
+                                        ValueTypes::STRING,
+                                        'https://example.com'
                                     )
                                 ),
                             ]
@@ -107,12 +69,5 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        \Mockery::close();
     }
 }
