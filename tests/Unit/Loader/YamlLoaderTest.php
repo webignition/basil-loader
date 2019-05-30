@@ -8,6 +8,8 @@ use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\YamlLoader;
+use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\YamlLoaderFactory;
 
 class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -36,8 +38,6 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
     {
         $path = 'file.yml';
 
-
-
         $yamlParser = \Mockery::mock(YamlParser::class);
         $yamlParser
             ->shouldReceive('parseFile')
@@ -51,6 +51,36 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionCode(YamlLoaderException::CODE_DATA_IS_NOT_AN_ARRAY);
 
         $yamlLoader->loadArray($path);
+    }
+
+    /**
+     * @dataProvider loadArrayWithEmptyContentDataProvider
+     */
+    public function testLoadArrayWithEmptyContent(string $path)
+    {
+        $yamlLoader = YamlLoaderFactory::create();
+
+        $data = $yamlLoader->loadArray($path);
+
+        $this->assertSame([], $data);
+    }
+
+    public function loadArrayWithEmptyContentDataProvider(): array
+    {
+        return [
+            'empty' => [
+                'path' => FixturePathFinder::find('Empty/empty.yml'),
+            ],
+            'whitespace' => [
+                'path' => FixturePathFinder::find('Empty/whitespace.yml'),
+            ],
+            'null, canonical' => [
+                'path' => FixturePathFinder::find('Empty/null-canonical.yml'),
+            ],
+            'null, non-canonical' => [
+                'path' => FixturePathFinder::find('Empty/null-non-canonical.yml'),
+            ],
+        ];
     }
 
     protected function tearDown(): void
