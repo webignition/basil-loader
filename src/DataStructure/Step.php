@@ -10,12 +10,12 @@ class Step extends AbstractDataStructure
     const KEY_DATA = 'data';
     const KEY_ELEMENTS = 'elements';
 
-    public function getActionStrings(): array
+    public function getActions(): array
     {
         return $this->getArray(self::KEY_ACTIONS);
     }
 
-    public function getAssertionStrings(): array
+    public function getAssertions(): array
     {
         return $this->getArray(self::KEY_ASSERTIONS);
     }
@@ -35,7 +35,7 @@ class Step extends AbstractDataStructure
         return $this->getString(self::KEY_DATA);
     }
 
-    public function getElementStrings(): array
+    public function getElements(): array
     {
         return $this->getArray(self::KEY_ELEMENTS);
     }

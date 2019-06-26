@@ -8,14 +8,14 @@ use webignition\BasilParser\DataStructure\Page;
 class PageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider getUrlStringDataProvider
+     * @dataProvider getUrlDataProvider
      */
-    public function testGetUrlString(Page $pageDataStructure, string $expectedUrlString)
+    public function testGetUrl(Page $pageDataStructure, string $expectedUrlString)
     {
-        $this->assertSame($expectedUrlString, $pageDataStructure->getUrlString());
+        $this->assertSame($expectedUrlString, $pageDataStructure->getUrl());
     }
 
-    public function getUrlStringDataProvider(): array
+    public function getUrlDataProvider(): array
     {
         return [
             'not present' => [
@@ -56,14 +56,14 @@ class PageTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider getElementDataDataProvider
+     * @dataProvider getElementsDataProvider
      */
-    public function testGetElementData(Page $pageDataStructure, array $expectedElementData)
+    public function testGetElements(Page $pageDataStructure, array $expectedElementData)
     {
-        $this->assertSame($expectedElementData, $pageDataStructure->getElementData());
+        $this->assertSame($expectedElementData, $pageDataStructure->getElements());
     }
 
-    public function getElementDataDataProvider(): array
+    public function getElementsDataProvider(): array
     {
         return [
             'not present' => [

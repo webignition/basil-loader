@@ -44,8 +44,8 @@ class StepFactory
      */
     public function createFromStepData(StepData $stepData, PageProviderInterface $pageProvider): StepInterface
     {
-        $actionStrings = $stepData->getActionStrings();
-        $assertionStrings = $stepData->getAssertionStrings();
+        $actionStrings = $stepData->getActions();
+        $assertionStrings = $stepData->getAssertions();
 
         $actions = [];
         $assertions = [];
