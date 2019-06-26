@@ -2,9 +2,8 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
-use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
@@ -32,7 +31,7 @@ trait MalformedPageElementReferenceDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'malformed_reference is "assertion one value"',
                         ],
                     ],
@@ -53,7 +52,7 @@ trait MalformedPageElementReferenceDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '".heading" is "assertion one value"',
                             'malformed_reference is "assertion two value"',
                         ],
@@ -75,7 +74,7 @@ trait MalformedPageElementReferenceDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click action_one_element_reference',
                         ],
                     ],
@@ -96,7 +95,7 @@ trait MalformedPageElementReferenceDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click ".heading"',
                             'click action_two_element_reference',
                         ],
@@ -124,8 +123,8 @@ trait MalformedPageElementReferenceDataProviderTrait
                         TestFactory::KEY_IMPORTS_PAGES => [],
                     ],
                     'step one' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
-                        StepBuilder::KEY_ELEMENTS => [
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_ELEMENTS => [
                             'heading' => 'invalid_page_element_reference',
                         ],
                     ],
@@ -151,13 +150,13 @@ trait MalformedPageElementReferenceDataProviderTrait
                         TestFactory::KEY_IMPORTS_PAGES => [],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '$page.url is "http://example.com"',
                         ],
                     ],
                     'step two' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
-                        StepBuilder::KEY_ELEMENTS => [
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_ELEMENTS => [
                             'heading' => 'malformed_page_element_reference',
                         ],
                     ],

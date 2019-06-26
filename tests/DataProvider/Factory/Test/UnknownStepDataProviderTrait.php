@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
-use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -31,7 +31,7 @@ trait UnknownStepDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepBuilder::KEY_USE => 'step_name',
+                        StepData::KEY_USE => 'step_name',
                     ],
                 ],
                 'expectedException' => UnknownStepException::class,

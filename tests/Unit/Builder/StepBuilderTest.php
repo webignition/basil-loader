@@ -6,6 +6,7 @@ namespace webignition\BasilParser\Tests\Unit\Builder;
 
 use Nyholm\Psr7\Uri;
 use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownStepException;
@@ -15,7 +16,6 @@ use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Model\Action\InteractionAction;
@@ -60,7 +60,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
      * @dataProvider buildSuccessDataProvider
      */
     public function testBuildSuccess(
-        array $stepData,
+        StepData $stepData,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
         PageProviderInterface $pageProvider,
@@ -81,27 +81,27 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no imports, no actions, no assertions' => [
-                'stepData' => [],
+                'stepData' => new StepData([]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'no imports, empty actions, empty assertions' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [],
-                    StepFactory::KEY_ASSERTIONS => [],
-                ],
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [],
+                    StepData::KEY_ASSERTIONS => [],
+                ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'unused invalid imports, empty actions, empty assertions' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [],
-                    StepFactory::KEY_ASSERTIONS => [],
-                ],
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [],
+                    StepData::KEY_ASSERTIONS => [],
+                ]),
                 'stepProvider' => new DeferredStepProvider(
                     StepLoaderFactory::create(),
                     [
@@ -123,14 +123,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step([], []),
             ],
             'no imports, has actions, has assertions' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
                         'click ".selector"',
                     ],
-                    StepFactory::KEY_ASSERTIONS => [
+                    StepData::KEY_ASSERTIONS => [
                         '$page.title is "Example"',
                     ],
-                ],
+                ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'pageProvider' => new EmptyPageProvider(),
@@ -162,14 +162,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'no imports, inline step with page model element references' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
                         'set page_import_name.elements.element_name to "example"',
                     ],
-                    StepFactory::KEY_ASSERTIONS => [
+                    StepData::KEY_ASSERTIONS => [
                         'page_import_name.elements.element_name is "example"',
                     ],
-                ],
+                ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'pageProvider' => new PopulatedPageProvider([
@@ -214,9 +214,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'import step' => [
-                'stepData' => [
-                    StepBuilder::KEY_USE => 'step_import_name',
-                ],
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'step_import_name',
+                ]),
                 'stepProvider' => new DeferredStepProvider(
                     StepLoaderFactory::create(),
                     [
@@ -253,9 +253,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'inline data' => [
-                'stepData' => [
-                    StepBuilder::KEY_USE => 'step_import_name',
-                    StepBuilder::KEY_DATA => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'step_import_name',
+                    StepData::KEY_DATA => [
                         [
                             'expected_title' => 'Foo',
                         ],
@@ -263,7 +263,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             'expected_title' => 'Bar',
                         ],
                     ],
-                ],
+                ]),
                 'stepProvider' => new DeferredStepProvider(
                     StepLoaderFactory::create(),
                     [
@@ -272,7 +272,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step(
+                'expectedStep' => (new Step(
                     [
                         new InteractionAction(
                             ActionTypes::CLICK,
@@ -297,13 +297,20 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             )
                         ),
                     ]
-                ),
+                ))->withDataSets([
+                    new DataSet([
+                        'expected_title' => 'Foo',
+                    ]),
+                    new DataSet([
+                        'expected_title' => 'Bar',
+                    ]),
+                ]),
             ],
             'imported data' => [
-                'stepData' => [
-                    StepBuilder::KEY_USE => 'step_import_name',
-                    StepBuilder::KEY_DATA => 'data_provider_name',
-                ],
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'step_import_name',
+                    StepData::KEY_DATA => 'data_provider_name',
+                ]),
                 'stepProvider' => new DeferredStepProvider(
                     StepLoaderFactory::create(),
                     [
@@ -356,12 +363,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ]),
             ],
             'element parameters' => [
-                'stepData' => [
-                    StepBuilder::KEY_USE => 'step_import_name',
-                    StepBuilder::KEY_ELEMENTS => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'step_import_name',
+                    StepData::KEY_ELEMENTS => [
                         'heading' => 'page_import_name.elements.heading',
                     ],
-                ],
+                ]),
                 'stepProvider' => new DeferredStepProvider(
                     StepLoaderFactory::create(),
                     [
@@ -426,9 +433,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown step "unknown_step_import_name"');
 
         $this->stepBuilder->build(
-            [
-                StepBuilder::KEY_USE => 'unknown_step_import_name',
-            ],
+            new StepData([
+                StepData::KEY_USE => 'unknown_step_import_name',
+            ]),
             new EmptyStepProvider(),
             new EmptyDataSetProvider(),
             new EmptyPageProvider()
@@ -441,10 +448,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown data provider "unknown_data_provider_name"');
 
         $this->stepBuilder->build(
-            [
-                StepBuilder::KEY_USE => 'step_import_name',
-                StepBuilder::KEY_DATA => 'unknown_data_provider_name',
-            ],
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_DATA => 'unknown_data_provider_name',
+            ]),
             new DeferredStepProvider(
                 StepLoaderFactory::create(),
                 [
@@ -462,12 +469,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
         $this->stepBuilder->build(
-            [
-                StepBuilder::KEY_USE => 'step_import_name',
-                StepBuilder::KEY_ELEMENTS => [
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
                     'heading' => 'page_import_name.elements.heading',
                 ],
-            ],
+            ]),
             new DeferredStepProvider(
                 StepLoaderFactory::create(),
                 [
@@ -485,12 +492,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown page element "not-heading" in page "page_import_name"');
 
         $this->stepBuilder->build(
-            [
-                StepBuilder::KEY_USE => 'step_import_name',
-                StepBuilder::KEY_ELEMENTS => [
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
                     'not-heading' => 'page_import_name.elements.not-heading',
                 ],
-            ],
+            ]),
             new DeferredStepProvider(
                 StepLoaderFactory::create(),
                 [
@@ -520,12 +527,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Malformed page element reference "page_import_name.foo.heading"');
 
         $this->stepBuilder->build(
-            [
-                StepBuilder::KEY_USE => 'step_import_name',
-                StepBuilder::KEY_ELEMENTS => [
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
                     'heading' => 'page_import_name.foo.heading',
                 ],
-            ],
+            ]),
             new DeferredStepProvider(
                 StepLoaderFactory::create(),
                 [

@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
@@ -50,7 +51,7 @@ trait UnknownPageDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists'
                         ],
                     ],
@@ -71,7 +72,7 @@ trait UnknownPageDataProviderTrait
                         ConfigurationFactory::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name'
                         ],
                     ],

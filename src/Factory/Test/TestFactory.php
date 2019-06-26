@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
@@ -97,7 +98,7 @@ class TestFactory
         $steps = [];
 
         foreach ($stepNames as $stepName) {
-            $stepData = $testData[$stepName];
+            $stepData = new StepData($testData[$stepName]);
 
             try {
                 $step =  $this->stepBuilder->build(

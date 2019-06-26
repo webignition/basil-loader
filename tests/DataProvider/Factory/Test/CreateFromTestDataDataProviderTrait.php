@@ -2,8 +2,7 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
-use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\Factory\StepFactory;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
@@ -53,8 +52,8 @@ trait CreateFromTestDataDataProviderTrait
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'invalid' => [
-                        StepFactory::KEY_ACTIONS => true,
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ACTIONS => true,
+                        StepData::KEY_ASSERTIONS => [
                             '',
                             false,
                         ],
@@ -69,15 +68,15 @@ trait CreateFromTestDataDataProviderTrait
                 'testData' => [
                     TestFactory::KEY_CONFIGURATION => $configurationData,
                     'verify page is open' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '$page.url is "http://example.com"',
                         ],
                     ],
                     'query "example"' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click ".form .submit"',
                         ],
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '$page.title is "example - Example Domain"',
                         ],
                     ],
@@ -135,10 +134,10 @@ trait CreateFromTestDataDataProviderTrait
                         ],
                     ],
                     'query "example"' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.button',
                         ],
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.heading is "example"',
                         ],
                     ],
@@ -222,7 +221,7 @@ trait CreateFromTestDataDataProviderTrait
                         ],
                     ],
                     'step_name' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
+                        StepData::KEY_USE => 'step_import_name',
                     ],
                 ],
                 'expectedTest' => new Test(
@@ -268,11 +267,11 @@ trait CreateFromTestDataDataProviderTrait
                         ],
                     ],
                     'step_name' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
-                        StepBuilder::KEY_DATA => [
-                            'data_set_1' => new DataSet([
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_DATA => [
+                            'data_set_1' => [
                                 'expected_title' => 'Foo',
-                            ]),
+                            ],
                         ]
                     ],
                 ],
@@ -327,8 +326,8 @@ trait CreateFromTestDataDataProviderTrait
                         ],
                     ],
                     'step_name' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
-                        StepBuilder::KEY_DATA => 'data_provider_import_name',
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_DATA => 'data_provider_import_name',
                     ],
                 ],
                 'expectedTest' => new Test(
@@ -385,8 +384,8 @@ trait CreateFromTestDataDataProviderTrait
                         ],
                     ],
                     'step_name' => [
-                        StepBuilder::KEY_USE => 'step_import_name',
-                        StepBuilder::KEY_ELEMENTS => [
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_ELEMENTS => [
                             'heading' => 'page_import_name.elements.heading'
                         ],
                     ],

@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
@@ -42,7 +43,7 @@ trait UnknownPageElementDataProviderTrait
                         ],
                     ],
                     'step name' => [
-                        StepBuilder::KEY_ELEMENTS => [
+                        StepData::KEY_ELEMENTS => [
                             'page_import_name.elements.non_existent'
                         ],
                     ],
@@ -67,7 +68,7 @@ trait UnknownPageElementDataProviderTrait
                         ],
                     ],
                     'step name' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.non_existent exists'
                         ],
                     ],
@@ -93,7 +94,7 @@ trait UnknownPageElementDataProviderTrait
                         ],
                     ],
                     'step name' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.non_existent'
                         ],
                     ],

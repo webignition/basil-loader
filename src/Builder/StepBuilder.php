@@ -2,8 +2,10 @@
 
 namespace webignition\BasilParser\Builder;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -19,10 +21,6 @@ use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class StepBuilder
 {
-    const KEY_USE = 'use';
-    const KEY_DATA = 'data';
-    const KEY_ELEMENTS = 'elements';
-
     private $stepFactory;
 
     public function __construct(StepFactory $stepFactory)
@@ -31,7 +29,7 @@ class StepBuilder
     }
 
     /**
-     * @param array $stepData
+     * @param StepData $stepData
      * @param StepProviderInterface $stepProvider
      * @param DataSetProviderInterface $dataSetProvider
      * @param PageProviderInterface $pageProvider
@@ -48,31 +46,38 @@ class StepBuilder
      * @throws UnknownStepException
      */
     public function build(
-        array $stepData,
+        StepData $stepData,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
         PageProviderInterface $pageProvider
     ) {
-        $stepImportName = $stepData[self::KEY_USE] ?? null;
-        $step = null === $stepImportName
+        $stepImportName = $stepData->getImportName();
+
+        $step = ('' === $stepImportName)
             ? $this->stepFactory->createFromStepData($stepData, $pageProvider)
             : $stepProvider->findStep($stepImportName);
 
-        $data = $stepData[self::KEY_DATA] ?? null;
-        if (null !== $data) {
-            if (is_string($data)) {
-                $dataProviderImportName = $data;
-                $data = $dataSetProvider->findDataSetCollection($dataProviderImportName);
-            }
+        $data = [];
 
-            if (is_array($data)) {
-                $step = $step->withDataSets($data);
+        $dataProviderImportName = $stepData->getDataImportName();
+        if ('' !== $dataProviderImportName) {
+            $data = $dataSetProvider->findDataSetCollection($dataProviderImportName);
+        }
+
+        $dataArray = $stepData->getDataArray();
+        if (!empty($dataArray)) {
+            foreach ($dataArray as $key => $dataSetData) {
+                $data[$key] = new DataSet($dataSetData);
             }
         }
 
-        $elementUses = $stepData[self::KEY_ELEMENTS] ?? null;
+        if (!empty($data)) {
+            $step = $step->withDataSets($data);
+        }
 
-        if (null !== $elementUses) {
+        $elementUses = $stepData->getElementStrings();
+
+        if (!empty($elementUses)) {
             $elementIdentifiers = [];
 
             foreach ($elementUses as $elementName => $pageModelElementReferenceString) {
