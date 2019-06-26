@@ -3,9 +3,9 @@
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
@@ -31,12 +31,12 @@ trait UnknownPageDataProviderTrait
         return [
             'UnknownPageException: config.url references page not defined within a collection' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'page_import_name.url',
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -45,17 +45,17 @@ trait UnknownPageDataProviderTrait
             ],
             'UnknownPageException: assertion string references page not defined within a collection' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
                         StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -66,17 +66,17 @@ trait UnknownPageDataProviderTrait
             ],
             'UnknownPageException: action string references page not defined within a collection' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
                     'step name' => [
                         StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageException::class,
                 'expectedExceptionMessage' => 'Unknown page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([

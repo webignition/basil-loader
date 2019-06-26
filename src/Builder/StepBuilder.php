@@ -75,7 +75,7 @@ class StepBuilder
             $step = $step->withDataSets($data);
         }
 
-        $elementUses = $stepData->getElementStrings();
+        $elementUses = $stepData->getElements();
 
         if (!empty($elementUses)) {
             $elementIdentifiers = [];

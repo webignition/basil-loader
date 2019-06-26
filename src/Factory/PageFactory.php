@@ -36,8 +36,8 @@ class PageFactory
      */
     public function createFromPageData(PageData $pageData): PageInterface
     {
-        $uriString = $pageData->getUrlString();
-        $elementData = $pageData->getElementData();
+        $uriString = $pageData->getUrl();
+        $elementData = $pageData->getElements();
 
         $uri = new Uri($uriString);
 

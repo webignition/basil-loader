@@ -3,7 +3,8 @@
 namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Step;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
@@ -21,14 +22,6 @@ use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestFactory
 {
-    const KEY_CONFIGURATION = 'config';
-    const KEY_IMPORTS = 'imports';
-    const KEY_IMPORTS_STEPS = 'steps';
-    const KEY_IMPORTS_PAGES = 'pages';
-    const KEY_IMPORTS_DATA_PROVIDERS = 'data_providers';
-    const KEY_TEST_USE = 'use';
-    const KEY_TEST_DATA = 'data';
-
     private $configurationFactory;
     private $stepBuilder;
     private $stepProviderFactory;
@@ -51,7 +44,7 @@ class TestFactory
 
     /**
      * @param string $name
-     * @param array $testData
+     * @param TestData $testData
      *
      * @return TestInterface
      *
@@ -64,27 +57,17 @@ class TestFactory
      * @throws UnknownPageException
      * @throws UnknownStepException
      */
-    public function createFromTestData(string $name, array $testData)
+    public function createFromTestData(string $name, TestData $testData)
     {
-        $configurationData = $testData[self::KEY_CONFIGURATION] ?? [];
-        $importPaths = $testData[self::KEY_IMPORTS] ?? [];
+        $imports = $testData->getImports();
 
-        $configurationData = is_array($configurationData) ? $configurationData : [];
-        $importPaths = is_array($importPaths) ? $importPaths : [];
-
-        $stepImportPaths = $importPaths[self::KEY_IMPORTS_STEPS] ?? [];
-        $pageImportPaths = $importPaths[self::KEY_IMPORTS_PAGES] ?? [];
-        $dataProviderImportPaths = $importPaths[self::KEY_IMPORTS_DATA_PROVIDERS] ?? [];
-
-        $stepNames = array_diff(array_keys($testData), [self::KEY_CONFIGURATION, self::KEY_IMPORTS]);
-
-        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($stepImportPaths);
-        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($pageImportPaths);
-        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($dataProviderImportPaths);
+        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getSteps());
+        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPages());
+        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($imports->getDataProviders());
 
         try {
             $configuration = $this->configurationFactory->createFromConfigurationData(
-                $configurationData,
+                $testData->getConfiguration(),
                 $pageProvider
             );
         } catch (NonRetrievablePageException | UnknownPageException $nonRetrievablePageException) {
@@ -97,9 +80,8 @@ class TestFactory
 
         $steps = [];
 
-        foreach ($stepNames as $stepName) {
-            $stepData = new StepData($testData[$stepName]);
-
+        /* @var Step $stepData */
+        foreach ($testData->getSteps() as $stepName => $stepData) {
             try {
                 $step =  $this->stepBuilder->build(
                     $stepData,

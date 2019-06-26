@@ -4,6 +4,7 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
@@ -50,7 +51,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromTestDataDataProvider
      */
-    public function testCreateFromTestData(string $name, array $testData, TestInterface $expectedTest)
+    public function testCreateFromTestData(string $name, TestData $testData, TestInterface $expectedTest)
     {
         $test = $this->testFactory->createFromTestData($name, $testData);
 
@@ -69,7 +70,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromTestDataThrowsException(
         string $name,
-        array $testData,
+        TestData $testData,
         string $expectedException,
         string $expectedExceptionMessage,
         ExceptionContext $expectedExceptionContext

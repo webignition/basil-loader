@@ -3,8 +3,9 @@
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
 use webignition\BasilParser\DataStructure\Step as StepData;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Factory\Test\TestFactory;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InteractionAction;
 use webignition\BasilParser\Model\Assertion\Assertion;
@@ -24,8 +25,8 @@ trait CreateFromTestDataDataProviderTrait
     public function createFromTestDataDataProvider(): array
     {
         $configurationData = [
-            ConfigurationFactory::KEY_BROWSER => 'chrome',
-            ConfigurationFactory::KEY_URL => 'http://example.com',
+            ConfigurationData::KEY_BROWSER => 'chrome',
+            ConfigurationData::KEY_URL => 'http://example.com',
         ];
 
         $expectedConfiguration = new Configuration('chrome', 'http://example.com');
@@ -33,7 +34,7 @@ trait CreateFromTestDataDataProviderTrait
         return [
             'empty' => [
                 'name' => '',
-                'testData' => [],
+                'testData' => new TestData([]),
                 'expectedTest' => new Test(
                     '',
                     new Configuration('', ''),
@@ -42,15 +43,15 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'configuration only' => [
                 'name' => 'configuration only',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                ],
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                ]),
                 'expectedTest' => new Test('configuration only', $expectedConfiguration, []),
             ],
             'invalid inline steps only' => [
                 'name' => 'invalid inline steps only',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
                     'invalid' => [
                         StepData::KEY_ACTIONS => true,
                         StepData::KEY_ASSERTIONS => [
@@ -58,15 +59,15 @@ trait CreateFromTestDataDataProviderTrait
                             false,
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('invalid inline steps only', $expectedConfiguration, [
                     'invalid' => new Step([], []),
                 ]),
             ],
             'inline step, scalar values' => [
                 'name' => 'inline step, scalar values',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
                     'verify page is open' => [
                         StepData::KEY_ASSERTIONS => [
                             '$page.url is "http://example.com"',
@@ -80,7 +81,7 @@ trait CreateFromTestDataDataProviderTrait
                             '$page.title is "example - Example Domain"',
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('inline step, scalar values', $expectedConfiguration, [
                     'verify page is open' => new Step([], [
                         new Assertion(
@@ -126,10 +127,10 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'inline step, page element references' => [
                 'name' => 'inline step, page element references',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => FixturePathFinder::find('Page/example.com.button.heading.yml'),
                         ],
                     ],
@@ -141,7 +142,7 @@ trait CreateFromTestDataDataProviderTrait
                             'page_import_name.elements.heading is "example"',
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('inline step, page element references', $expectedConfiguration, [
                     'query "example"' => new Step(
                         [
@@ -177,53 +178,53 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'invalid page import path, unused' => [
                 'name' => 'invalid page import path, unused',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'invalid' => '../page/file-does-not-exist.yml',
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('invalid page import path, unused', $expectedConfiguration, []),
             ],
             'invalid step import path, unused' => [
                 'name' => 'invalid step import path, unused',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'invalid' => '../step/file-does-not-exist.yml',
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('invalid step import path, unused', $expectedConfiguration, []),
             ],
             'invalid data provider import path, unused' => [
                 'name' => 'invalid data provider import path, unused',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_DATA_PROVIDERS => [
                             'invalid' => '../data-provider/file-does-not-exist.yml',
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test('invalid data provider import path, unused', $expectedConfiguration, []),
             ],
             'step import, no parameters' => [
                 'name' => 'step import, no parameters',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
                         ],
                     ],
                     'step_name' => [
                         StepData::KEY_USE => 'step_import_name',
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test(
                     'step import, no parameters',
                     $expectedConfiguration,
@@ -259,10 +260,10 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, inline data' => [
                 'name' => 'step import, inline data',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                         ],
                     ],
@@ -274,7 +275,7 @@ trait CreateFromTestDataDataProviderTrait
                             ],
                         ]
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test(
                     'step import, inline data',
                     $expectedConfiguration,
@@ -314,13 +315,13 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, imported data' => [
                 'name' => 'step import, imported data',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                         ],
-                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                        ImportsData::KEY_DATA_PROVIDERS => [
                             'data_provider_import_name' =>
                                 FixturePathFinder::find('DataProvider/expected-title-only.yml')
                         ],
@@ -329,7 +330,7 @@ trait CreateFromTestDataDataProviderTrait
                         StepData::KEY_USE => 'step_import_name',
                         StepData::KEY_DATA => 'data_provider_import_name',
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test(
                     'step import, imported data',
                     $expectedConfiguration,
@@ -372,13 +373,13 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, uses page imported page elements' => [
                 'name' => 'step import, uses page imported page elements',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => $configurationData,
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => $configurationData,
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                         ],
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' =>
                                 FixturePathFinder::find('Page/example.com.heading.yml')
                         ],
@@ -389,7 +390,7 @@ trait CreateFromTestDataDataProviderTrait
                             'heading' => 'page_import_name.elements.heading'
                         ],
                     ],
-                ],
+                ]),
                 'expectedTest' => new Test(
                     'step import, uses page imported page elements',
                     $expectedConfiguration,

@@ -3,10 +3,10 @@
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 
@@ -34,17 +34,17 @@ trait NonRetrievablePageDataProviderTrait
         return [
             'NonRetrievablePageException: config.url references page that does not exist' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'page_import_name.url',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => 'Page/non-existent.yml',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -53,17 +53,17 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: config.url references page that contains invalid yaml' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'page_import_name.url',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'page_import_name.url',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => $this->invalidYamlPath,
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
@@ -73,13 +73,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: assertion string references page that does not exist (1)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => 'Page/non-existent.yml',
                         ],
                     ],
@@ -88,7 +88,7 @@ trait NonRetrievablePageDataProviderTrait
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -99,13 +99,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: assertion string references page that does not exist (2)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => 'Page/non-existent.yml',
                         ],
                     ],
@@ -119,7 +119,7 @@ trait NonRetrievablePageDataProviderTrait
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -130,13 +130,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: assertion string references page that contains invalid yaml (1)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => $this->invalidYamlPath,
                         ],
                     ],
@@ -145,7 +145,7 @@ trait NonRetrievablePageDataProviderTrait
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
@@ -157,13 +157,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: assertion string references page that contains invalid yaml (2)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => $this->invalidYamlPath,
                         ],
                     ],
@@ -177,7 +177,7 @@ trait NonRetrievablePageDataProviderTrait
                             'page_import_name.elements.element_name exists'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
@@ -189,13 +189,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: action string references page that does not exist (1)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => 'Page/non-existent.yml',
                         ],
                     ],
@@ -204,7 +204,7 @@ trait NonRetrievablePageDataProviderTrait
                             'click page_import_name.elements.element_name',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -215,13 +215,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: action string references page that does not exist (2)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => 'Page/non-existent.yml',
                         ],
                     ],
@@ -235,7 +235,7 @@ trait NonRetrievablePageDataProviderTrait
                             'click page_import_name.elements.element_name',
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -246,13 +246,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: action string references page that contains invalid yaml (1)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => $this->invalidYamlPath,
                         ],
                     ],
@@ -261,7 +261,7 @@ trait NonRetrievablePageDataProviderTrait
                             'click page_import_name.elements.element_name'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',
@@ -273,13 +273,13 @@ trait NonRetrievablePageDataProviderTrait
             ],
             'NonRetrievablePageException: action string references page that contains invalid yaml (2)' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => $this->invalidYamlPath,
                         ],
                     ],
@@ -293,7 +293,7 @@ trait NonRetrievablePageDataProviderTrait
                             'click page_import_name.elements.element_name'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievablePageException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve page "page_import_name" from "' . $this->invalidYamlPath . '"',

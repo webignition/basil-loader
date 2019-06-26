@@ -8,14 +8,14 @@ use webignition\BasilParser\DataStructure\Step;
 class StepTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider getActionStringsDataProvider
+     * @dataProvider getActionsDataProvider
      */
-    public function testGetActionStrings(Step $stepDataStructure, array $expectedActionStrings)
+    public function testGetActions(Step $stepDataStructure, array $expectedActionStrings)
     {
-        $this->assertSame($expectedActionStrings, $stepDataStructure->getActionStrings());
+        $this->assertSame($expectedActionStrings, $stepDataStructure->getActions());
     }
 
-    public function getActionStringsDataProvider(): array
+    public function getActionsDataProvider(): array
     {
         return [
             'not present' => [
@@ -50,14 +50,14 @@ class StepTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider getAssertionStringsDataProvider
+     * @dataProvider getAssertionsDataProvider
      */
-    public function testGetAssertionStrings(Step $stepDataStructure, array $expectedAssertionStrings)
+    public function testGetAssertions(Step $stepDataStructure, array $expectedAssertionStrings)
     {
-        $this->assertSame($expectedAssertionStrings, $stepDataStructure->getAssertionStrings());
+        $this->assertSame($expectedAssertionStrings, $stepDataStructure->getAssertions());
     }
 
-    public function getAssertionStringsDataProvider(): array
+    public function getAssertionsDataProvider(): array
     {
         return [
             'not present' => [
@@ -108,7 +108,7 @@ class StepTest extends \PHPUnit\Framework\TestCase
                 'stepDataStructure' => new Step([
                     Step::KEY_USE => 123,
                 ]),
-                'expectedImportName' => '',
+                'expectedImportName' => '123',
             ],
             'is a string' => [
                 'stepDataStructure' => new Step([
@@ -192,14 +192,14 @@ class StepTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider getElementStringsDataProvider
+     * @dataProvider getElementsDataProvider
      */
-    public function testGetElementStrings(Step $stepDataStructure, array $expectedElementStrings)
+    public function testGetElements(Step $stepDataStructure, array $expectedElementStrings)
     {
-        $this->assertSame($expectedElementStrings, $stepDataStructure->getElementStrings());
+        $this->assertSame($expectedElementStrings, $stepDataStructure->getElements());
     }
 
-    public function getElementStringsDataProvider(): array
+    public function getElementsDataProvider(): array
     {
         return [
             'not present' => [

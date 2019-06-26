@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -43,7 +44,8 @@ class TestLoader
     public function load(string $path): TestInterface
     {
         $data = $this->yamlLoader->loadArray($path);
+        $testData = new TestData($data);
 
-        return $this->testFactory->createFromTestData($path, $data);
+        return $this->testFactory->createFromTestData($path, $testData);
     }
 }
