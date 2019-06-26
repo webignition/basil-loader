@@ -3,16 +3,12 @@
 namespace webignition\BasilParser\DataStructure\Test;
 
 use webignition\BasilParser\DataStructure\AbstractDataStructure;
+use webignition\BasilParser\DataStructure\Step;
 
 class Test extends AbstractDataStructure
 {
     const KEY_CONFIGURATION = 'config';
     const KEY_IMPORTS = 'imports';
-//    const KEY_IMPORTS_STEPS = 'steps';
-//    const KEY_IMPORTS_PAGES = 'pages';
-//    const KEY_IMPORTS_DATA_PROVIDERS = 'data_providers';
-//    const KEY_TEST_USE = 'use';
-//    const KEY_TEST_DATA = 'data';
 
     public function getConfiguration(): Configuration
     {
@@ -31,7 +27,7 @@ class Test extends AbstractDataStructure
         $steps = [];
 
         foreach ($stepNames as $stepName) {
-            $steps[$stepName] = $this->data[$stepName];
+            $steps[$stepName] = new Step($this->data[$stepName]);
         }
 
         return $steps;

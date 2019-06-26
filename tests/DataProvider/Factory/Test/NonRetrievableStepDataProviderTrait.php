@@ -2,8 +2,11 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
@@ -25,20 +28,20 @@ trait NonRetrievableStepDataProviderTrait
         return [
             'NonRetrievableStepException: step.uses references step that does not exist' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => 'Step/non-existent.yml',
                         ],
                     ],
                     'step one' => [
-                        TestFactory::KEY_TEST_USE => 'step_import_name',
+                        StepData::KEY_USE => 'step_import_name',
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievableStepException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -48,20 +51,20 @@ trait NonRetrievableStepDataProviderTrait
             ],
             'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => $this->invalidYamlPath,
                         ],
                     ],
                     'step one' => [
-                        TestFactory::KEY_TEST_USE => 'step_import_name',
+                        StepData::KEY_USE => 'step_import_name',
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievableStepException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve step "step_import_name" from "' . $this->invalidYamlPath . '"',

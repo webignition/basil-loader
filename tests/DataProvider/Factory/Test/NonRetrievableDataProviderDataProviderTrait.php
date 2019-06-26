@@ -2,9 +2,11 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
@@ -26,24 +28,24 @@ trait NonRetrievableDataProviderDataProviderTrait
         return [
             'NonRetrievableDataProviderException: test.data references data provider that cannot be loaded' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                         ],
-                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                        ImportsData::KEY_DATA_PROVIDERS => [
                             'data_provider_name' => 'DataProvider/non-existent.yml'
                         ],
                     ],
                     'step name' => [
-                        TestFactory::KEY_TEST_USE => 'step_import_name',
-                        TestFactory::KEY_TEST_DATA => 'data_provider_name',
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_DATA => 'data_provider_name',
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievableDataProviderException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve data provider "data_provider_name" from "DataProvider/non-existent.yml"',
@@ -54,24 +56,24 @@ trait NonRetrievableDataProviderDataProviderTrait
             ],
             'NonRetrievableDataProviderException: test.data references data provider containing invalid yaml' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_STEPS => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_STEPS => [
                             'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                         ],
-                        TestFactory::KEY_IMPORTS_DATA_PROVIDERS => [
+                        ImportsData::KEY_DATA_PROVIDERS => [
                             'data_provider_name' => $this->invalidYamlPath,
                         ],
                     ],
                     'step name' => [
-                        TestFactory::KEY_TEST_USE => 'step_import_name',
-                        TestFactory::KEY_TEST_DATA => 'data_provider_name',
+                        StepData::KEY_USE => 'step_import_name',
+                        StepData::KEY_DATA => 'data_provider_name',
                     ],
-                ],
+                ]),
                 'expectedException' => NonRetrievableDataProviderException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve data provider "data_provider_name" from "' . $this->invalidYamlPath . '"',

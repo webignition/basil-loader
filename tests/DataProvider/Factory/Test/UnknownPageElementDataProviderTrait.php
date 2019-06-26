@@ -2,12 +2,11 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
-use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
 use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
@@ -32,13 +31,13 @@ trait UnknownPageElementDataProviderTrait
         return [
             'UnknownPageElementException: test.elements references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
                         ],
                     ],
@@ -47,7 +46,7 @@ trait UnknownPageElementDataProviderTrait
                             'page_import_name.elements.non_existent'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -57,13 +56,13 @@ trait UnknownPageElementDataProviderTrait
             ],
             'UnknownPageElementException: assertion string references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
                         ],
                     ],
@@ -72,7 +71,7 @@ trait UnknownPageElementDataProviderTrait
                             'page_import_name.elements.non_existent exists'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -83,13 +82,13 @@ trait UnknownPageElementDataProviderTrait
             ],
             'UnknownPageElementException: action string references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => [
-                    TestFactory::KEY_CONFIGURATION => [
-                        ConfigurationFactory::KEY_BROWSER => 'chrome',
-                        ConfigurationFactory::KEY_URL => 'http://example.com',
+                'testData' => new TestData([
+                    TestData::KEY_CONFIGURATION => [
+                        ConfigurationData::KEY_BROWSER => 'chrome',
+                        ConfigurationData::KEY_URL => 'http://example.com',
                     ],
-                    TestFactory::KEY_IMPORTS => [
-                        TestFactory::KEY_IMPORTS_PAGES => [
+                    TestData::KEY_IMPORTS => [
+                        ImportsData::KEY_PAGES => [
                             'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
                         ],
                     ],
@@ -98,7 +97,7 @@ trait UnknownPageElementDataProviderTrait
                             'click page_import_name.elements.non_existent'
                         ],
                     ],
-                ],
+                ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([

@@ -5,6 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 use webignition\BasilParser\Model\Page\Page;
 use webignition\BasilParser\Model\Test\Configuration;
@@ -31,7 +32,7 @@ class ConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromConfigurationDataDataProvider
      */
     public function testCreateFromConfigurationData(
-        array $configurationData,
+        ConfigurationData $configurationData,
         PageProviderInterface $pageProvider,
         ConfigurationInterface $expectedConfiguration
     ) {
@@ -44,31 +45,31 @@ class ConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty' => [
-                'configurationData' => [],
+                'configurationData' => new ConfigurationData([]),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedConfiguration' => new Configuration('', ''),
             ],
             'non-string values' => [
-                'configurationData' => [
-                    ConfigurationFactory::KEY_BROWSER => true,
-                    ConfigurationFactory::KEY_URL => 3
-                ],
+                'configurationData' => new ConfigurationData([
+                    ConfigurationData::KEY_BROWSER => true,
+                    ConfigurationData::KEY_URL => 3
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedConfiguration' => new Configuration('', ''),
+                'expectedConfiguration' => new Configuration('1', '3'),
             ],
             'string values' => [
-                'configurationData' => [
-                    ConfigurationFactory::KEY_BROWSER => 'chrome',
-                    ConfigurationFactory::KEY_URL => 'http://example.com',
-                ],
+                'configurationData' => new ConfigurationData([
+                    ConfigurationData::KEY_BROWSER => 'chrome',
+                    ConfigurationData::KEY_URL => 'http://example.com',
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedConfiguration' => new Configuration('chrome', 'http://example.com'),
             ],
             'page url reference' => [
-                'configurationData' => [
-                    ConfigurationFactory::KEY_BROWSER => 'chrome',
-                    ConfigurationFactory::KEY_URL => 'page_import_name.url',
-                ],
+                'configurationData' => new ConfigurationData([
+                    ConfigurationData::KEY_BROWSER => 'chrome',
+                    ConfigurationData::KEY_URL => 'page_import_name.url',
+                ]),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(new Uri('http://example.com'), []),
                 ]),

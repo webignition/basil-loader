@@ -29,7 +29,7 @@ class TestTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetSteps(Test $testDataStructure, array $expectedSteps)
     {
-        $this->assertSame($expectedSteps, $testDataStructure->getSteps());
+        $this->assertEquals($expectedSteps, $testDataStructure->getSteps());
     }
 
     public function getStepsDataProvider(): array
@@ -60,14 +60,14 @@ class TestTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'expectedSteps' => [
-                    'step 1' => [
+                    'step 1' => new Step([
                         Step::KEY_ACTIONS => [
                             'click ".foo"',
                         ],
                         Step::KEY_ASSERTIONS => [
                             '".foo" exists',
                         ],
-                    ],
+                    ]),
                 ],
             ],
         ];

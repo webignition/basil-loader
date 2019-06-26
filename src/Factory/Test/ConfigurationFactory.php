@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -13,11 +14,8 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ConfigurationFactory
 {
-    const KEY_BROWSER = 'browser';
-    const KEY_URL = 'url';
-
     /**
-     * @param array $configurationData
+     * @param ConfigurationData $configurationData
      * @param PageProviderInterface $pageProvider
      *
      * @return ConfigurationInterface
@@ -28,14 +26,10 @@ class ConfigurationFactory
      * @throws UnknownPageElementException
      */
     public function createFromConfigurationData(
-        array $configurationData,
+        ConfigurationData $configurationData,
         PageProviderInterface $pageProvider
     ): ConfigurationInterface {
-        $browser = $configurationData[self::KEY_BROWSER] ?? '';
-        $url = $configurationData[self::KEY_URL] ?? '';
-
-        $browser = is_string($browser) ? $browser : '';
-        $url = is_string($url) ? $url : '';
+        $url = $configurationData->getUrl();
 
         $pageUrlReference = new PageUrlReference($url);
         if ($pageUrlReference->isValid()) {
@@ -45,6 +39,6 @@ class ConfigurationFactory
             $url = (string) $page->getUri();
         }
 
-        return new Configuration($browser, $url);
+        return new Configuration($configurationData->getBrowser(), $url);
     }
 }
