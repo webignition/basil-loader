@@ -8,14 +8,14 @@ use webignition\BasilParser\DataStructure\Test\Imports;
 class ImportsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider getStepsDataProvider
+     * @dataProvider getStepPathsDataProvider
      */
-    public function testGetSteps(Imports $importsDataStructure, array $expectedSteps)
+    public function testGetStepPaths(Imports $importsDataStructure, array $expectedSteps)
     {
-        $this->assertSame($expectedSteps, $importsDataStructure->getSteps());
+        $this->assertSame($expectedSteps, $importsDataStructure->getStepPaths());
     }
 
-    public function getStepsDataProvider(): array
+    public function getStepPathsDataProvider(): array
     {
         return [
             'not present' => [
@@ -48,14 +48,14 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider getPagesDataProvider
+     * @dataProvider getPagePathsDataProvider
      */
-    public function testGetPages(Imports $importsDataStructure, array $expectedPages)
+    public function testGetPagePaths(Imports $importsDataStructure, array $expectedPages)
     {
-        $this->assertSame($expectedPages, $importsDataStructure->getPages());
+        $this->assertSame($expectedPages, $importsDataStructure->getPagePaths());
     }
 
-    public function getPagesDataProvider(): array
+    public function getPagePathsDataProvider(): array
     {
         return [
             'not present' => [
@@ -88,14 +88,14 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider getDataProvidersDataProvider
+     * @dataProvider getDataProviderPathsDataProvider
      */
-    public function testGetDataProviders(Imports $importsDataStructure, array $expectedPages)
+    public function testGetDataProviderPaths(Imports $importsDataStructure, array $expectedPages)
     {
-        $this->assertSame($expectedPages, $importsDataStructure->getDataProviders());
+        $this->assertSame($expectedPages, $importsDataStructure->getDataProviderPaths());
     }
 
-    public function getDataProvidersDataProvider(): array
+    public function getDataProviderPathsDataProvider(): array
     {
         return [
             'not present' => [

@@ -61,9 +61,11 @@ class TestFactory
     {
         $imports = $testData->getImports();
 
-        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getSteps());
-        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPages());
-        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider($imports->getDataProviders());
+        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getStepPaths());
+        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPagePaths());
+        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider(
+            $imports->getDataProviderPaths()
+        );
 
         try {
             $configuration = $this->configurationFactory->createFromConfigurationData(
