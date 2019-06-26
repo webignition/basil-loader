@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -13,9 +14,6 @@ use webignition\BasilParser\Model\Page\PageInterface;
 
 class PageFactory
 {
-    const KEY_URL = 'url';
-    const KEY_ELEMENTS = 'elements';
-
     /**
      * @var IdentifierFactory
      */
@@ -27,7 +25,7 @@ class PageFactory
     }
 
     /**
-     * @param array $pageData
+     * @param PageData $pageData
      *
      * @return PageInterface
      *
@@ -36,17 +34,16 @@ class PageFactory
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function createFromPageData(array $pageData): PageInterface
+    public function createFromPageData(PageData $pageData): PageInterface
     {
-        $uriString = $pageData[self::KEY_URL] ?? '';
-        $elementsData = $pageData[self::KEY_ELEMENTS] ?? [];
-        $elementsData = is_array($elementsData) ? $elementsData : [];
+        $uriString = $pageData->getUrlString();
+        $elementData = $pageData->getElementData();
 
         $uri = new Uri($uriString);
 
         $elementIdentifiers = [];
 
-        foreach ($elementsData as $elementName => $identifierString) {
+        foreach ($elementData as $elementName => $identifierString) {
             $identifier = $this->identifierFactory->createWithElementReference(
                 $identifierString,
                 $elementName,

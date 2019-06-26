@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -14,9 +15,6 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepFactory
 {
-    const KEY_ACTIONS = 'actions';
-    const KEY_ASSERTIONS = 'assertions';
-
     /**
      * @var ActionFactory
      */
@@ -34,7 +32,7 @@ class StepFactory
     }
 
     /**
-     * @param array $stepData
+     * @param StepData $stepData
      * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
@@ -44,13 +42,10 @@ class StepFactory
      * @throws UnknownPageException
      * @throws NonRetrievablePageException
      */
-    public function createFromStepData(array $stepData, PageProviderInterface $pageProvider): StepInterface
+    public function createFromStepData(StepData $stepData, PageProviderInterface $pageProvider): StepInterface
     {
-        $actionStrings = $stepData[self::KEY_ACTIONS] ?? [];
-        $assertionStrings = $stepData[self::KEY_ASSERTIONS] ?? [];
-
-        $actionStrings = is_array($actionStrings) ? $actionStrings : [];
-        $assertionStrings = is_array($assertionStrings) ? $assertionStrings : [];
+        $actionStrings = $stepData->getActionStrings();
+        $assertionStrings = $stepData->getAssertionStrings();
 
         $actions = [];
         $assertions = [];

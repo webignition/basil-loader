@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -36,7 +37,8 @@ class StepLoader
     public function load(string $path): StepInterface
     {
         $data = $this->yamlLoader->loadArray($path);
+        $stepData = new StepData($data);
 
-        return $this->stepFactory->createFromStepData($data, new EmptyPageProvider());
+        return $this->stepFactory->createFromStepData($stepData, new EmptyPageProvider());
     }
 }

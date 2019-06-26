@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
@@ -83,7 +84,7 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
@@ -109,12 +110,12 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '".header" exists',
                         ],
                     ],
                     'step two' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
@@ -140,7 +141,7 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists',
                         ],
                     ],
@@ -167,12 +168,12 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             '".header" exists',
                         ],
                     ],
                     'step two' => [
-                        StepFactory::KEY_ASSERTIONS => [
+                        StepData::KEY_ASSERTIONS => [
                             'page_import_name.elements.element_name exists'
                         ],
                     ],
@@ -199,7 +200,7 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name',
                         ],
                     ],
@@ -225,12 +226,12 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click ".heading"',
                         ],
                     ],
                     'step two' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name',
                         ],
                     ],
@@ -256,7 +257,7 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name'
                         ],
                     ],
@@ -283,12 +284,12 @@ trait NonRetrievablePageDataProviderTrait
                         ],
                     ],
                     'step one' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click ".header"'
                         ],
                     ],
                     'step two' => [
-                        StepFactory::KEY_ACTIONS => [
+                        StepData::KEY_ACTIONS => [
                             'click page_import_name.elements.element_name'
                         ],
                     ],

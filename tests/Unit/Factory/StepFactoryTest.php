@@ -5,6 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Model\Action\ActionTypes;
 use webignition\BasilParser\Model\Action\InputAction;
@@ -41,7 +42,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromStepDataDataProvider
      */
     public function testCreateFromStepData(
-        array $stepData,
+        StepData $stepData,
         PageProviderInterface $pageProvider,
         StepInterface $expectedStep
     ) {
@@ -54,31 +55,31 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty step data' => [
-                'stepData' => [],
+                'stepData' => new StepData([]),
                 'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'empty actions and empty assertions' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
                         '',
                         ' ',
                     ],
-                    StepFactory::KEY_ASSERTIONS => [
+                    StepData::KEY_ASSERTIONS => [
                         '',
                         ' ',
                     ],
-                ],
+                ]),
                 'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'actions only' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
                         'click ".selector"',
                         'set ".input" to "value"',
                     ],
-                ],
+                ]),
                 'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
@@ -106,12 +107,12 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'assertions only' => [
-                'stepData' => [
-                    StepFactory::KEY_ASSERTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ASSERTIONS => [
                         '".selector" is "value"',
                         '".input" exists'
                     ],
-                ],
+                ]),
                 'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
@@ -141,14 +142,14 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'page model element references' => [
-                'stepData' => [
-                    StepFactory::KEY_ACTIONS => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
                         'click page_import_name.elements.element_name'
                     ],
-                    StepFactory::KEY_ASSERTIONS => [
+                    StepData::KEY_ASSERTIONS => [
                         'page_import_name.elements.element_name exists'
                     ],
-                ],
+                ]),
                 'pages' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
