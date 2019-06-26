@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -35,7 +36,8 @@ class PageLoader
     public function load(string $path): PageInterface
     {
         $data = $this->yamlLoader->loadArray($path);
+        $pageData = new PageData($data);
 
-        return $this->pageFactory->createFromPageData($data);
+        return $this->pageFactory->createFromPageData($pageData);
     }
 }

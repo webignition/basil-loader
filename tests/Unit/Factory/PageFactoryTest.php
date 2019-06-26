@@ -1,9 +1,11 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Model\Identifier\Identifier;
 use webignition\BasilParser\Model\Identifier\IdentifierTypes;
@@ -28,7 +30,7 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromPageDataDataProvider
      */
-    public function testCreateFromPageData(array $pageData, PageInterface $expectedPage)
+    public function testCreateFromPageData(PageData $pageData, PageInterface $expectedPage)
     {
         $page = $this->pageFactory->createFromPageData($pageData);
 
@@ -47,29 +49,22 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
 
         return [
             'empty page data' => [
-                'pageData' => [],
+                'pageData' => new PageData([]),
                 'expectedPage' => new Page(new Uri(''), []),
             ],
             'has url, empty elements data' => [
-                'pageData' => [
-                    PageFactory::KEY_URL => new Uri('http://example.com/'),
-                ],
+                'pageData' => new PageData([
+                    PageData::KEY_URL => 'http://example.com/',
+                ]),
                 'expectedPage' => new Page(new Uri('http://example.com/'), []),
             ],
-            'elements is not an array' => [
-                'pageData' => [
-                    PageFactory::KEY_URL => new Uri('http://example.com/'),
-                    PageFactory::KEY_ELEMENTS => true,
-                ],
-                'expectedPage' => new Page(new Uri('http://example.com/'), [])
-            ],
             'single element identifier' => [
-                'pageData' => [
-                    PageFactory::KEY_URL => new Uri('http://example.com/'),
-                    PageFactory::KEY_ELEMENTS => [
+                'pageData' => new PageData([
+                    PageData::KEY_URL => 'http://example.com/',
+                    PageData::KEY_ELEMENTS => [
                         'css-selector' => '".selector"',
                     ],
-                ],
+                ]),
                 'expectedPage' => new Page(
                     new Uri('http://example.com/'),
                     [
@@ -83,13 +78,13 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'referenced element identifier' => [
-                'pageData' => [
-                    PageFactory::KEY_URL => new Uri('http://example.com/'),
-                    PageFactory::KEY_ELEMENTS => [
+                'pageData' => new PageData([
+                    PageData::KEY_URL => 'http://example.com/',
+                    PageData::KEY_ELEMENTS => [
                         'form' => '".form"',
                         'form_field' => '"{{ form }} .field"',
                     ],
-                ],
+                ]),
                 'expectedPage' => new Page(
                     new Uri('http://example.com/'),
                     [
