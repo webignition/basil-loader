@@ -108,7 +108,7 @@ class StepTest extends \PHPUnit\Framework\TestCase
                 'stepDataStructure' => new Step([
                     Step::KEY_USE => 123,
                 ]),
-                'expectedImportName' => '',
+                'expectedImportName' => '123',
             ],
             'is a string' => [
                 'stepDataStructure' => new Step([
