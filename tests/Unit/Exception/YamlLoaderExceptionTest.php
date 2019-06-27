@@ -16,9 +16,12 @@ class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
     public function testGetPathForFileDoesNotExistException(string $path)
     {
         $parseException = $this->createFileDoesNotExistParseException($path);
-        $yamlLoaderException = YamlLoaderException::fromYamlParseException($parseException);
 
-        $this->assertSame($path, $yamlLoaderException->getPath());
+        if ($parseException instanceof ParseException) {
+            $yamlLoaderException = YamlLoaderException::fromYamlParseException($parseException);
+
+            $this->assertSame($path, $yamlLoaderException->getPath());
+        }
     }
 
     public function getPathForFileDoesNotExistExceptionDataProvider(): array
