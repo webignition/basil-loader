@@ -10,6 +10,15 @@ class Test extends AbstractDataStructure
     const KEY_CONFIGURATION = 'config';
     const KEY_IMPORTS = 'imports';
 
+    private $path = '';
+
+    public function __construct(array $data, string $path = '')
+    {
+        parent::__construct($data);
+
+        $this->path = $path;
+    }
+
     public function getConfiguration(): Configuration
     {
         return new Configuration($this->data[self::KEY_CONFIGURATION] ?? []);
@@ -17,7 +26,9 @@ class Test extends AbstractDataStructure
 
     public function getImports(): Imports
     {
-        return new Imports($this->data[self::KEY_IMPORTS] ?? []);
+        $basePath = dirname($this->path) . DIRECTORY_SEPARATOR;
+
+        return new Imports($this->data[self::KEY_IMPORTS] ?? [], $basePath);
     }
 
     public function getSteps(): array

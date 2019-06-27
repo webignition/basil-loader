@@ -7,121 +7,107 @@ use webignition\BasilParser\DataStructure\Test\Imports;
 
 class ImportsTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider getStepsDataProvider
-     */
-    public function testGetSteps(Imports $importsDataStructure, array $expectedSteps)
+    public function testEmptyImports()
     {
-        $this->assertSame($expectedSteps, $importsDataStructure->getSteps());
+        $importsDataStructure = new Imports([], '');
+
+        $this->assertSame([], $importsDataStructure->getStepPaths());
+        $this->assertSame([], $importsDataStructure->getPagePaths());
+        $this->assertSame([], $importsDataStructure->getDataProviderPaths());
     }
 
-    public function getStepsDataProvider(): array
+    /**
+     * @dataProvider pathsDataProvider
+     */
+    public function testGetStepPaths($paths, string $basePath, array $expectedPaths)
+    {
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_STEPS => $paths,
+            ],
+            $basePath
+        );
+
+        $this->assertSame($expectedPaths, $importsDataStructure->getStepPaths());
+    }
+
+    /**
+     * @dataProvider pathsDataProvider
+     */
+    public function testGetPagePaths($paths, string $basePath, array $expectedPaths)
+    {
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_PAGES => $paths,
+            ],
+            $basePath
+        );
+
+        $this->assertSame($expectedPaths, $importsDataStructure->getPagePaths());
+    }
+
+    /**
+     * @dataProvider pathsDataProvider
+     */
+    public function testGetDataProviderPaths($paths, string $basePath, array $expectedPaths)
+    {
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_DATA_PROVIDERS => $paths,
+            ],
+            $basePath
+        );
+
+        $this->assertSame($expectedPaths, $importsDataStructure->getDataProviderPaths());
+    }
+
+    public function pathsDataProvider(): array
     {
         return [
-            'not present' => [
-                'importsDataStructure' => new Imports([]),
-                'expectedSteps' => [],
-            ],
             'not an array' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_STEPS => 'steps',
-                ]),
-                'expectedSteps' => [],
+                'paths' => 'not an array',
+                'basePath' => '',
+                'expectedPaths' => [],
             ],
             'empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_STEPS => [],
-                ]),
-                'expectedSteps' => [],
+                'paths' => [],
+                'basePath' => '',
+                'expectedPaths' => [],
             ],
-            'non-empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_STEPS => [
-                        'foo' => 'bar',
-                    ],
-                ]),
-                'expectedSteps' => [
-                    'foo' => 'bar',
+            'relative import path, no base path' => [
+                'paths' => [
+                    'foo' => '../Relative/foo.yml',
+                ],
+                'basePath' => '',
+                'expectedPaths' => [
+                    'foo' => '../Relative/foo.yml',
                 ],
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider getPagesDataProvider
-     */
-    public function testGetPages(Imports $importsDataStructure, array $expectedPages)
-    {
-        $this->assertSame($expectedPages, $importsDataStructure->getPages());
-    }
-
-    public function getPagesDataProvider(): array
-    {
-        return [
-            'not present' => [
-                'importsDataStructure' => new Imports([]),
-                'expectedPages' => [],
-            ],
-            'not an array' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_PAGES => 'pages',
-                ]),
-                'expectedPages' => [],
-            ],
-            'empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_PAGES => [],
-                ]),
-                'expectedPages' => [],
-            ],
-            'non-empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_PAGES => [
-                        'foo' => 'bar',
-                    ],
-                ]),
-                'expectedPages' => [
-                    'foo' => 'bar',
+            'relative import path, has base path; previous directory' => [
+                'paths' => [
+                    'foo' => '../Relative/foo.yml',
+                ],
+                'basePath' => '/basil/Test/',
+                'expectedPaths' => [
+                    'foo' => '/basil/Relative/foo.yml',
                 ],
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider getDataProvidersDataProvider
-     */
-    public function testGetDataProviders(Imports $importsDataStructure, array $expectedPages)
-    {
-        $this->assertSame($expectedPages, $importsDataStructure->getDataProviders());
-    }
-
-    public function getDataProvidersDataProvider(): array
-    {
-        return [
-            'not present' => [
-                'importsDataStructure' => new Imports([]),
-                'expectedDataProviders' => [],
+            'relative import path, has base path; current directory' => [
+                'paths' => [
+                    'foo' => './Relative/foo.yml',
+                ],
+                'basePath' => '/basil/Test/',
+                'expectedPaths' => [
+                    'foo' => '/basil/Test/Relative/foo.yml',
+                ],
             ],
-            'not an array' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_DATA_PROVIDERS => 'data providers',
-                ]),
-                'expectedDataProviders' => [],
-            ],
-            'empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_DATA_PROVIDERS => [],
-                ]),
-                'expectedDataProviders' => [],
-            ],
-            'non-empty' => [
-                'importsDataStructure' => new Imports([
-                    Imports::KEY_DATA_PROVIDERS => [
-                        'foo' => 'bar',
-                    ],
-                ]),
-                'expectedDataProviders' => [
-                    'foo' => 'bar',
+            'absolute import path, no base path' => [
+                'paths' => [
+                    'foo' => './Relative/foo.yml',
+                ],
+                'basePath' => '/basil/Test/',
+                'expectedPaths' => [
+                    'foo' => '/basil/Test/Relative/foo.yml',
                 ],
             ],
         ];

@@ -68,6 +68,32 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'import step verify open literal' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
+                'expectedTest' => new Test(
+                    FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
+                    new Configuration('chrome', 'https://example.com'),
+                    [
+                        'verify page is open' => new Step(
+                            [],
+                            [
+                                new Assertion(
+                                    '$page.url is "https://example.com"',
+                                    new Identifier(
+                                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                                        '$page.url'
+                                    ),
+                                    AssertionComparisons::IS,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        'https://example.com'
+                                    )
+                                ),
+                            ]
+                        )
+                    ]
+                ),
+            ],
         ];
     }
 }
