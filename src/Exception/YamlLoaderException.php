@@ -54,4 +54,18 @@ class YamlLoaderException extends \Exception
             $this->isDataIsNotAnArrayException()
         );
     }
+
+    public function getPath(): ?string
+    {
+        if ($this->isFileDoesNotExistException() || $this->isFileCannotBeReadException()) {
+            $matches = [];
+            preg_match('/".+"/', $this->getMessage(), $matches);
+
+            if (count($matches)) {
+                return trim($matches[0], '""');
+            }
+        }
+
+        return null;
+    }
 }
