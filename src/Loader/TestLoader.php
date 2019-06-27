@@ -44,7 +44,7 @@ class TestLoader
     public function load(string $path): TestInterface
     {
         $data = $this->yamlLoader->loadArray($path);
-        $testData = new TestData($data);
+        $testData = new TestData($data, $path);
 
         return $this->testFactory->createFromTestData($path, $testData);
     }
