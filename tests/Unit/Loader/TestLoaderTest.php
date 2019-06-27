@@ -4,16 +4,16 @@
 
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
-use webignition\BasilParser\Model\Assertion\Assertion;
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Step\Step;
-use webignition\BasilParser\Model\Test\Configuration;
-use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\Model\Test\TestInterface;
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilModel\Assertion\Assertion;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Step\Step;
+use webignition\BasilModel\Test\Configuration;
+use webignition\BasilModel\Test\Test;
+use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\TestLoaderFactory;
 

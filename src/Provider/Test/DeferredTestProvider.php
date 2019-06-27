@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Provider\Test;
 
+use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -13,7 +14,6 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\TestLoader;
-use webignition\BasilParser\Model\Test\TestInterface;
 
 class DeferredTestProvider implements TestProviderInterface
 {

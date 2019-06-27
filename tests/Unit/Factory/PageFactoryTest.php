@@ -5,12 +5,12 @@
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Factory\PageFactory;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\Model\Page\PageInterface;
 use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 
 class PageFactoryTest extends \PHPUnit\Framework\TestCase

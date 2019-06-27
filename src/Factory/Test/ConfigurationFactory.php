@@ -2,14 +2,14 @@
 
 namespace webignition\BasilParser\Factory\Test;
 
+use webignition\BasilModel\PageUrlReference\PageUrlReference;
+use webignition\BasilModel\Test\Configuration;
+use webignition\BasilModel\Test\ConfigurationInterface;
 use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Model\PageUrlReference\PageUrlReference;
-use webignition\BasilParser\Model\Test\Configuration;
-use webignition\BasilParser\Model\Test\ConfigurationInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ConfigurationFactory

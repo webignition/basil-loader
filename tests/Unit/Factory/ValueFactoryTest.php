@@ -3,9 +3,9 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
+use webignition\BasilModel\Value\ValueInterface;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Factory\ValueFactory;
-use webignition\BasilParser\Model\Value\ValueInterface;
-use webignition\BasilParser\Model\Value\ValueTypes;
 
 class ValueFactoryTest extends \PHPUnit\Framework\TestCase
 {

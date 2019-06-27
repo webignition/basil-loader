@@ -2,14 +2,13 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContext;
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Factory\Test\TestFactory;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
 
 trait NonRetrievableStepDataProviderTrait
 {

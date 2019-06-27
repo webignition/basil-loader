@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Provider\DataSet;
 
+use webignition\BasilModel\DataSet\DataSetInterface;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
 class PopulatedDataSetProvider implements DataSetProviderInterface
 {

@@ -3,17 +3,17 @@
 
 namespace webignition\BasilParser\Tests\Unit\Validator\Action;
 
-use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InputAction;
-use webignition\BasilParser\Model\Action\InteractionAction;
-use webignition\BasilParser\Model\Action\NoArgumentsAction;
-use webignition\BasilParser\Model\Action\UnrecognisedAction;
-use webignition\BasilParser\Model\Action\WaitAction;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InputAction;
+use webignition\BasilModel\Action\InteractionAction;
+use webignition\BasilModel\Action\NoArgumentsAction;
+use webignition\BasilModel\Action\UnrecognisedAction;
+use webignition\BasilModel\Action\WaitAction;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Tests\Services\ActionValidatorFactory;
 use webignition\BasilParser\Validator\Action\ActionValidator;
 

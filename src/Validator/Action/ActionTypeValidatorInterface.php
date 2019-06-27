@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Validator\Action;
 
-use webignition\BasilParser\Model\Action\ActionInterface;
+use webignition\BasilModel\Action\ActionInterface;
 
 interface ActionTypeValidatorInterface
 {

@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
-use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\UnrecognisedAction;
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Action\UnrecognisedAction;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ActionFactory

@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Provider\Page;
 
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Model\Page\PageInterface;
 
 class PopulatedPageProvider implements PageProviderInterface
 {

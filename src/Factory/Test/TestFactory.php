@@ -2,20 +2,20 @@
 
 namespace webignition\BasilParser\Factory\Test;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModel\Test\Test;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\DataStructure\Step;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
-use webignition\BasilParser\Model\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Model\Test\Test;
 use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;

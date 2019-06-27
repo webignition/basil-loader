@@ -3,14 +3,14 @@
 namespace webignition\BasilParser\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Model\Identifier\IdentifierInterface;
-use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\Model\Page\PageInterface;
 
 class PageFactory
 {

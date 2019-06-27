@@ -5,11 +5,11 @@
 namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Test\Configuration;
+use webignition\BasilModel\Test\ConfigurationInterface;
 use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
-use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\Model\Test\Configuration;
-use webignition\BasilParser\Model\Test\ConfigurationInterface;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;

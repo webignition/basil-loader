@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Exception;
 
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContext;
-use webignition\BasilParser\Model\PageElementReference\PageElementReference;
+use webignition\BasilModel\ExceptionContext\ExceptionContext;
+use webignition\BasilModel\PageElementReference\PageElementReference;
 
 class MalformedPageElementReferenceException extends \Exception implements ContextAwareExceptionInterface
 {

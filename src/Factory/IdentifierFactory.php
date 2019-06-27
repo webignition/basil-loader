@@ -2,14 +2,14 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierInterface;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\PageElementReference\PageElementReference;
+use webignition\BasilModel\PageElementReference\PageElementReference;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 

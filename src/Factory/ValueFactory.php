@@ -2,9 +2,9 @@
 
 namespace webignition\BasilParser\Factory;
 
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueInterface;
-use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueInterface;
+use webignition\BasilModel\Value\ValueTypes;
 
 class ValueFactory
 {

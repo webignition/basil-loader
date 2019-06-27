@@ -2,10 +2,12 @@
 
 namespace webignition\BasilParser\Builder;
 
+use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\PageElementReference\PageElementReference;
+use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Model\DataSet\DataSet;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -14,8 +16,6 @@ use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Model\PageElementReference\PageElementReference;
-use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 

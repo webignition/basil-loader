@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Provider\Step;
 
+use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Model\Step\StepInterface;
 
 class EmptyStepProvider implements StepProviderInterface
 {

@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Validator;
 
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Assertion\AssertionInterface;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Assertion\AssertionInterface;
 
 class AssertionValidator
 {

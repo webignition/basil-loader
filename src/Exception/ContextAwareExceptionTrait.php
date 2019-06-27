@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Exception;
 
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 
 trait ContextAwareExceptionTrait
 {

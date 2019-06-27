@@ -2,14 +2,14 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\Assertion\Assertion;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
-use webignition\BasilParser\Model\Assertion\Assertion;
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionFactory
