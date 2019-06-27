@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
-use webignition\BasilParser\Model\Action\ActionInterface;
+use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface

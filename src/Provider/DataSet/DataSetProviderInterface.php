@@ -2,9 +2,9 @@
 
 namespace webignition\BasilParser\Provider\DataSet;
 
+use webignition\BasilModel\DataSet\DataSetInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Model\DataSet\DataSetInterface;
 
 interface DataSetProviderInterface
 {

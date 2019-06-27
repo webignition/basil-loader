@@ -2,6 +2,9 @@
 
 namespace webignition\BasilParser\Factory\Action;
 
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InputAction;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -9,9 +12,6 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
-use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InputAction;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class InputActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface

@@ -2,9 +2,9 @@
 
 namespace webignition\BasilParser\Validator\Action;
 
-use webignition\BasilParser\Model\Action\ActionInterface;
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\WaitActionInterface;
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\WaitActionInterface;
 
 class WaitActionValidator implements ActionTypeValidatorInterface
 {

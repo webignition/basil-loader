@@ -2,15 +2,15 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Step\Step;
+use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Model\ExceptionContext\ExceptionContextInterface;
-use webignition\BasilParser\Model\Step\Step;
-use webignition\BasilParser\Model\Step\StepInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepFactory

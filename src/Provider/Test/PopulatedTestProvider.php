@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Provider\Test;
 
+use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\UnknownTestException;
-use webignition\BasilParser\Model\Test\TestInterface;
 
 class PopulatedTestProvider implements TestProviderInterface
 {

@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilParser\Exception\YamlLoaderException;
-use webignition\BasilParser\Model\DataSet\DataSet;
 
 class DataSetLoader
 {

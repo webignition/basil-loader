@@ -4,16 +4,16 @@
 
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InteractionAction;
-use webignition\BasilParser\Model\Assertion\Assertion;
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Step\Step;
-use webignition\BasilParser\Model\Step\StepInterface;
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueTypes;
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InteractionAction;
+use webignition\BasilModel\Assertion\Assertion;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Step\Step;
+use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\StepLoaderFactory;
 

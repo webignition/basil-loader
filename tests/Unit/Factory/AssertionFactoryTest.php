@@ -5,16 +5,16 @@
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueInterface;
+use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilParser\Factory\AssertionFactory;
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\Assertion\AssertionInterface;
-use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueInterface;
-use webignition\BasilParser\Model\Value\ValueTypes;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierInterface;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;

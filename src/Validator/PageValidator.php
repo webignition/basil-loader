@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Validator;
 
-use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilModel\Page\PageInterface;
 
 class PageValidator
 {

@@ -2,22 +2,22 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InteractionAction;
+use webignition\BasilModel\Assertion\Assertion;
+use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Step\Step;
+use webignition\BasilModel\Test\Configuration;
+use webignition\BasilModel\Test\Test;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
-use webignition\BasilParser\Model\Action\ActionTypes;
-use webignition\BasilParser\Model\Action\InteractionAction;
-use webignition\BasilParser\Model\Assertion\Assertion;
-use webignition\BasilParser\Model\Assertion\AssertionComparisons;
-use webignition\BasilParser\Model\DataSet\DataSet;
-use webignition\BasilParser\Model\Identifier\Identifier;
-use webignition\BasilParser\Model\Identifier\IdentifierTypes;
-use webignition\BasilParser\Model\Step\Step;
-use webignition\BasilParser\Model\Test\Configuration;
-use webignition\BasilParser\Model\Test\Test;
-use webignition\BasilParser\Model\Value\Value;
-use webignition\BasilParser\Model\Value\ValueTypes;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 trait CreateFromTestDataDataProviderTrait

@@ -4,8 +4,8 @@
 namespace webignition\BasilParser\Tests\Unit\Validator;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilParser\Model\Page\Page;
-use webignition\BasilParser\Model\Page\PageInterface;
+use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\Validator\PageValidator;
 
 class PageValidatorTest extends \PHPUnit\Framework\TestCase
