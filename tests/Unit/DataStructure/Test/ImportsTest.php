@@ -9,7 +9,7 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmptyImports()
     {
-        $importsDataStructure = new Imports([]);
+        $importsDataStructure = new Imports([], '');
 
         $this->assertSame([], $importsDataStructure->getStepPaths());
         $this->assertSame([], $importsDataStructure->getPagePaths());
@@ -21,11 +21,14 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetStepPaths($paths, string $basePath, array $expectedPaths)
     {
-        $importsDataStructure = new Imports([
-            Imports::KEY_STEPS => $paths,
-        ]);
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_STEPS => $paths,
+            ],
+            $basePath
+        );
 
-        $this->assertSame($expectedPaths, $importsDataStructure->getStepPaths($basePath));
+        $this->assertSame($expectedPaths, $importsDataStructure->getStepPaths());
     }
 
     /**
@@ -33,11 +36,14 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetPagePaths($paths, string $basePath, array $expectedPaths)
     {
-        $importsDataStructure = new Imports([
-            Imports::KEY_PAGES => $paths,
-        ]);
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_PAGES => $paths,
+            ],
+            $basePath
+        );
 
-        $this->assertSame($expectedPaths, $importsDataStructure->getPagePaths($basePath));
+        $this->assertSame($expectedPaths, $importsDataStructure->getPagePaths());
     }
 
     /**
@@ -45,11 +51,14 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetDataProviderPaths($paths, string $basePath, array $expectedPaths)
     {
-        $importsDataStructure = new Imports([
-            Imports::KEY_DATA_PROVIDERS => $paths,
-        ]);
+        $importsDataStructure = new Imports(
+            [
+                Imports::KEY_DATA_PROVIDERS => $paths,
+            ],
+            $basePath
+        );
 
-        $this->assertSame($expectedPaths, $importsDataStructure->getDataProviderPaths($basePath));
+        $this->assertSame($expectedPaths, $importsDataStructure->getDataProviderPaths());
     }
 
     public function pathsDataProvider(): array

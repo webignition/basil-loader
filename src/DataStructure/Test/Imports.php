@@ -13,34 +13,43 @@ class Imports extends AbstractDataStructure
     const CURRENT_DIRECTORY = '.';
     const PREVIOUS_DIRECTORY = '..';
 
-    public function getStepPaths(string $basePath = ''): array
+    private $basePath = '';
+
+    public function __construct(array $data, string $basePath)
     {
-        return $this->resolvePaths($this->getArray(self::KEY_STEPS), $basePath);
+        parent::__construct($data);
+
+        $this->basePath = $basePath;
     }
 
-    public function getPagePaths(string $basePath = ''): array
+    public function getStepPaths(): array
     {
-        return $this->resolvePaths($this->getArray(self::KEY_PAGES), $basePath);
+        return $this->resolvePaths($this->getArray(self::KEY_STEPS));
     }
 
-    public function getDataProviderPaths(string $basePath = ''): array
+    public function getPagePaths(): array
     {
-        return $this->resolvePaths($this->getArray(self::KEY_DATA_PROVIDERS), $basePath);
+        return $this->resolvePaths($this->getArray(self::KEY_PAGES));
     }
 
-    private function resolvePaths(array $paths, string $basePath): array
+    public function getDataProviderPaths(): array
+    {
+        return $this->resolvePaths($this->getArray(self::KEY_DATA_PROVIDERS));
+    }
+
+    private function resolvePaths(array $paths): array
     {
         if (empty($paths)) {
             return $paths;
         }
 
-        if (empty($basePath)) {
+        if (empty($this->basePath)) {
             return $paths;
         }
 
         foreach ($paths as $pathIndex => $path) {
             if ($this->isRelativePath($path)) {
-                $paths[$pathIndex] = $this->resolveRelativePath($basePath . $path);
+                $paths[$pathIndex] = $this->resolveRelativePath($this->basePath . $path);
             }
         }
 
