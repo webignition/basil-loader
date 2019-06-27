@@ -7,12 +7,12 @@ use webignition\BasilParser\DataStructure\ImportList;
 
 class ImportListTest extends \PHPUnit\Framework\TestCase
 {
-    public function testEmptyList()
-    {
-        $importList = new ImportList([], '');
-
-        $this->assertSame([], $importList->getPaths());
-    }
+//    public function testEmptyList()
+//    {
+//        $importList = new ImportList([], '');
+//
+//        $this->assertSame([], $importList->getPaths());
+//    }
 
     /**
      * @dataProvider pathsDataProvider
@@ -66,6 +66,15 @@ class ImportListTest extends \PHPUnit\Framework\TestCase
                 'basePath' => '/basil/Test/',
                 'expectedPaths' => [
                     'foo' => '/basil/Test/Relative/foo.yml',
+                ],
+            ],
+            'integer' => [
+                'paths' => [
+                    'foo' => 123,
+                ],
+                'basePath' => '/basil/Test/',
+                'expectedPaths' => [
+                    'foo' => '123',
                 ],
             ],
         ];

@@ -11,7 +11,9 @@ class ImportList extends AbstractDataStructure
 
     public function __construct(array $data, string $basePath)
     {
-        parent::__construct($data);
+        $paths = $this->normalizePaths($data);
+
+        parent::__construct($paths);
 
         $this->basePath = $basePath;
     }
@@ -67,5 +69,14 @@ class ImportList extends AbstractDataStructure
         }
 
         return DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $resolvedPathParts);
+    }
+
+    private function normalizePaths(array $paths): array
+    {
+        foreach ($paths as $pathIndex => $path) {
+            $paths[$pathIndex] = (string) $path;
+        }
+
+        return $paths;
     }
 }
