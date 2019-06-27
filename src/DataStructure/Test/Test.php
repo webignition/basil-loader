@@ -12,7 +12,7 @@ class Test extends AbstractDataStructure
 
     private $path = '';
 
-    public function __construct(array $data, string $path)
+    public function __construct(array $data, string $path = '')
     {
         parent::__construct($data);
 
