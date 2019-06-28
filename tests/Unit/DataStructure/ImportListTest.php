@@ -4,22 +4,23 @@
 namespace webignition\BasilParser\Tests\Unit\DataStructure;
 
 use webignition\BasilParser\DataStructure\ImportList;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 class ImportListTest extends \PHPUnit\Framework\TestCase
 {
-//    public function testEmptyList()
-//    {
-//        $importList = new ImportList([], '');
-//
-//        $this->assertSame([], $importList->getPaths());
-//    }
+    public function testEmptyList()
+    {
+        $importList = new ImportList(PathResolverFactory::create(), '', []);
+
+        $this->assertSame([], $importList->getPaths());
+    }
 
     /**
      * @dataProvider pathsDataProvider
      */
-    public function testGetPaths($paths, string $basePath, array $expectedPaths)
+    public function testGetPaths(string $basePath, array $paths, array $expectedPaths)
     {
-        $importList = new ImportList($paths, $basePath);
+        $importList = new ImportList(PathResolverFactory::create(), $basePath, $paths);
 
         $this->assertSame($expectedPaths, $importList->getPaths());
     }
@@ -28,51 +29,51 @@ class ImportListTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty' => [
-                'paths' => [],
                 'basePath' => '',
+                'paths' => [],
                 'expectedPaths' => [],
             ],
             'relative import path, no base path' => [
+                'basePath' => '',
                 'paths' => [
                     'foo' => '../Relative/foo.yml',
                 ],
-                'basePath' => '',
                 'expectedPaths' => [
                     'foo' => '../Relative/foo.yml',
                 ],
             ],
             'relative import path, has base path; previous directory' => [
+                'basePath' => '/basil/Test/',
                 'paths' => [
                     'foo' => '../Relative/foo.yml',
                 ],
-                'basePath' => '/basil/Test/',
                 'expectedPaths' => [
                     'foo' => '/basil/Relative/foo.yml',
                 ],
             ],
             'relative import path, has base path; current directory' => [
+                'basePath' => '/basil/Test/',
                 'paths' => [
                     'foo' => './Relative/foo.yml',
                 ],
-                'basePath' => '/basil/Test/',
                 'expectedPaths' => [
                     'foo' => '/basil/Test/Relative/foo.yml',
                 ],
             ],
             'absolute import path, no base path' => [
-                'paths' => [
-                    'foo' => './Relative/foo.yml',
-                ],
                 'basePath' => '/basil/Test/',
+                'paths' => [
+                    'foo' => '/Absolute/foo.yml',
+                ],
                 'expectedPaths' => [
-                    'foo' => '/basil/Test/Relative/foo.yml',
+                    'foo' => '/Absolute/foo.yml',
                 ],
             ],
             'integer' => [
+                'basePath' => '/basil/Test/',
                 'paths' => [
                     'foo' => 123,
                 ],
-                'basePath' => '/basil/Test/',
                 'expectedPaths' => [
                     'foo' => '123',
                 ],

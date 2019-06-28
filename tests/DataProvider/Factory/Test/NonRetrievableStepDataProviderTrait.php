@@ -9,6 +9,7 @@ use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationDat
 use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait NonRetrievableStepDataProviderTrait
 {
@@ -27,20 +28,23 @@ trait NonRetrievableStepDataProviderTrait
         return [
             'NonRetrievableStepException: step.uses references step that does not exist' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => 'Step/non-existent.yml',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step one' => [
-                        StepData::KEY_USE => 'step_import_name',
-                    ],
-                ]),
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => 'Step/non-existent.yml',
+                            ],
+                        ],
+                        'step one' => [
+                            StepData::KEY_USE => 'step_import_name',
+                        ],
+                    ]
+                ),
                 'expectedException' => NonRetrievableStepException::class,
                 'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -50,20 +54,23 @@ trait NonRetrievableStepDataProviderTrait
             ],
             'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => $this->invalidYamlPath,
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step one' => [
-                        StepData::KEY_USE => 'step_import_name',
-                    ],
-                ]),
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => $this->invalidYamlPath,
+                            ],
+                        ],
+                        'step one' => [
+                            StepData::KEY_USE => 'step_import_name',
+                        ],
+                    ]
+                ),
                 'expectedException' => NonRetrievableStepException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve step "step_import_name" from "' . $this->invalidYamlPath . '"',

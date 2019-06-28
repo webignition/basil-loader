@@ -19,6 +19,7 @@ use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationDat
 use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait CreateFromTestDataDataProviderTrait
 {
@@ -34,7 +35,7 @@ trait CreateFromTestDataDataProviderTrait
         return [
             'empty' => [
                 'name' => '',
-                'testData' => new TestData([]),
+                'testData' => new TestData(PathResolverFactory::create(), []),
                 'expectedTest' => new Test(
                     '',
                     new Configuration('', ''),
@@ -43,45 +44,54 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'configuration only' => [
                 'name' => 'configuration only',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                ]),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                    ]
+                ),
                 'expectedTest' => new Test('configuration only', $expectedConfiguration, []),
             ],
             'invalid inline steps only' => [
                 'name' => 'invalid inline steps only',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    'invalid' => [
-                        StepData::KEY_ACTIONS => true,
-                        StepData::KEY_ASSERTIONS => [
-                            '',
-                            false,
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        'invalid' => [
+                            StepData::KEY_ACTIONS => true,
+                            StepData::KEY_ASSERTIONS => [
+                                '',
+                                false,
+                            ],
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('invalid inline steps only', $expectedConfiguration, [
                     'invalid' => new Step([], []),
                 ]),
             ],
             'inline step, scalar values' => [
                 'name' => 'inline step, scalar values',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    'verify page is open' => [
-                        StepData::KEY_ASSERTIONS => [
-                            '$page.url is "http://example.com"',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        'verify page is open' => [
+                            StepData::KEY_ASSERTIONS => [
+                                '$page.url is "http://example.com"',
+                            ],
                         ],
-                    ],
-                    'query "example"' => [
-                        StepData::KEY_ACTIONS => [
-                            'click ".form .submit"',
+                        'query "example"' => [
+                            StepData::KEY_ACTIONS => [
+                                'click ".form .submit"',
+                            ],
+                            StepData::KEY_ASSERTIONS => [
+                                '$page.title is "example - Example Domain"',
+                            ],
                         ],
-                        StepData::KEY_ASSERTIONS => [
-                            '$page.title is "example - Example Domain"',
-                        ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('inline step, scalar values', $expectedConfiguration, [
                     'verify page is open' => new Step([], [
                         new Assertion(
@@ -127,22 +137,25 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'inline step, page element references' => [
                 'name' => 'inline step, page element references',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_PAGES => [
-                            'page_import_name' => FixturePathFinder::find('Page/example.com.button.heading.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_PAGES => [
+                                'page_import_name' => FixturePathFinder::find('Page/example.com.button.heading.yml'),
+                            ],
                         ],
-                    ],
-                    'query "example"' => [
-                        StepData::KEY_ACTIONS => [
-                            'click page_import_name.elements.button',
+                        'query "example"' => [
+                            StepData::KEY_ACTIONS => [
+                                'click page_import_name.elements.button',
+                            ],
+                            StepData::KEY_ASSERTIONS => [
+                                'page_import_name.elements.heading is "example"',
+                            ],
                         ],
-                        StepData::KEY_ASSERTIONS => [
-                            'page_import_name.elements.heading is "example"',
-                        ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('inline step, page element references', $expectedConfiguration, [
                     'query "example"' => new Step(
                         [
@@ -178,53 +191,65 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'invalid page import path, unused' => [
                 'name' => 'invalid page import path, unused',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_PAGES => [
-                            'invalid' => '../page/file-does-not-exist.yml',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_PAGES => [
+                                'invalid' => '../page/file-does-not-exist.yml',
+                            ],
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('invalid page import path, unused', $expectedConfiguration, []),
             ],
             'invalid step import path, unused' => [
                 'name' => 'invalid step import path, unused',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'invalid' => '../step/file-does-not-exist.yml',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'invalid' => '../step/file-does-not-exist.yml',
+                            ],
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('invalid step import path, unused', $expectedConfiguration, []),
             ],
             'invalid data provider import path, unused' => [
                 'name' => 'invalid data provider import path, unused',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_DATA_PROVIDERS => [
-                            'invalid' => '../data-provider/file-does-not-exist.yml',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_DATA_PROVIDERS => [
+                                'invalid' => '../data-provider/file-does-not-exist.yml',
+                            ],
                         ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test('invalid data provider import path, unused', $expectedConfiguration, []),
             ],
             'step import, no parameters' => [
                 'name' => 'step import, no parameters',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
+                            ],
                         ],
-                    ],
-                    'step_name' => [
-                        StepData::KEY_USE => 'step_import_name',
-                    ],
-                ]),
+                        'step_name' => [
+                            StepData::KEY_USE => 'step_import_name',
+                        ],
+                    ]
+                ),
                 'expectedTest' => new Test(
                     'step import, no parameters',
                     $expectedConfiguration,
@@ -260,22 +285,25 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, inline data' => [
                 'name' => 'step import, inline data',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
-                        ],
-                    ],
-                    'step_name' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_DATA => [
-                            'data_set_1' => [
-                                'expected_title' => 'Foo',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                             ],
-                        ]
-                    ],
-                ]),
+                        ],
+                        'step_name' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_DATA => [
+                                'data_set_1' => [
+                                    'expected_title' => 'Foo',
+                                ],
+                            ]
+                        ],
+                    ]
+                ),
                 'expectedTest' => new Test(
                     'step import, inline data',
                     $expectedConfiguration,
@@ -315,22 +343,25 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, imported data' => [
                 'name' => 'step import, imported data',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                            ],
+                            ImportsData::KEY_DATA_PROVIDERS => [
+                                'data_provider_import_name' =>
+                                    FixturePathFinder::find('DataProvider/expected-title-only.yml')
+                            ],
                         ],
-                        ImportsData::KEY_DATA_PROVIDERS => [
-                            'data_provider_import_name' =>
-                                FixturePathFinder::find('DataProvider/expected-title-only.yml')
+                        'step_name' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_DATA => 'data_provider_import_name',
                         ],
-                    ],
-                    'step_name' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_DATA => 'data_provider_import_name',
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test(
                     'step import, imported data',
                     $expectedConfiguration,
@@ -373,24 +404,27 @@ trait CreateFromTestDataDataProviderTrait
             ],
             'step import, uses page imported page elements' => [
                 'name' => 'step import, uses page imported page elements',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => $configurationData,
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => $configurationData,
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                            ],
+                            ImportsData::KEY_PAGES => [
+                                'page_import_name' =>
+                                    FixturePathFinder::find('Page/example.com.heading.yml')
+                            ],
                         ],
-                        ImportsData::KEY_PAGES => [
-                            'page_import_name' =>
-                                FixturePathFinder::find('Page/example.com.heading.yml')
+                        'step_name' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_ELEMENTS => [
+                                'heading' => 'page_import_name.elements.heading'
+                            ],
                         ],
-                    ],
-                    'step_name' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_ELEMENTS => [
-                            'heading' => 'page_import_name.elements.heading'
-                        ],
-                    ],
-                ]),
+                    ]
+                ),
                 'expectedTest' => new Test(
                     'step import, uses page imported page elements',
                     $expectedConfiguration,

@@ -10,6 +10,7 @@ use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait UnknownPageElementDataProviderTrait
 {
@@ -31,22 +32,25 @@ trait UnknownPageElementDataProviderTrait
         return [
             'UnknownPageElementException: test.elements references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_PAGES => [
-                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step name' => [
-                        StepData::KEY_ELEMENTS => [
-                            'page_import_name.elements.non_existent'
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_PAGES => [
+                                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                            ],
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ELEMENTS => [
+                                'page_import_name.elements.non_existent'
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -56,22 +60,25 @@ trait UnknownPageElementDataProviderTrait
             ],
             'UnknownPageElementException: assertion string references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_PAGES => [
-                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step name' => [
-                        StepData::KEY_ASSERTIONS => [
-                            'page_import_name.elements.non_existent exists'
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_PAGES => [
+                                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                            ],
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ASSERTIONS => [
+                                'page_import_name.elements.non_existent exists'
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -82,22 +89,25 @@ trait UnknownPageElementDataProviderTrait
             ],
             'UnknownPageElementException: action string references element that does not exist within a page' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_PAGES => [
-                            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step name' => [
-                        StepData::KEY_ACTIONS => [
-                            'click page_import_name.elements.non_existent'
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_PAGES => [
+                                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                            ],
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ACTIONS => [
+                                'click page_import_name.elements.non_existent'
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([

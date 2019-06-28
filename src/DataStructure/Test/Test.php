@@ -4,6 +4,7 @@ namespace webignition\BasilParser\DataStructure\Test;
 
 use webignition\BasilParser\DataStructure\AbstractDataStructure;
 use webignition\BasilParser\DataStructure\Step;
+use webignition\BasilParser\PathResolver\PathResolver;
 
 class Test extends AbstractDataStructure
 {
@@ -11,12 +12,14 @@ class Test extends AbstractDataStructure
     const KEY_IMPORTS = 'imports';
 
     private $path = '';
+    private $pathResolver;
 
-    public function __construct(array $data, string $path = '')
+    public function __construct(PathResolver $pathResolver, array $data, string $path = '')
     {
         parent::__construct($data);
 
         $this->path = $path;
+        $this->pathResolver = $pathResolver;
     }
 
     public function getConfiguration(): Configuration
@@ -28,7 +31,7 @@ class Test extends AbstractDataStructure
     {
         $basePath = dirname($this->path) . DIRECTORY_SEPARATOR;
 
-        return new Imports($this->data[self::KEY_IMPORTS] ?? [], $basePath);
+        return new Imports($this->pathResolver, $basePath, $this->data[self::KEY_IMPORTS] ?? []);
     }
 
     public function getSteps(): array
