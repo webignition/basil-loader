@@ -54,6 +54,8 @@ class TestSuiteLoader
         $tests = [];
 
         foreach ($importList->getPaths() as $testImportIndex => $testImportPath) {
+            $testImportPath = (string) $testImportPath;
+
             try {
                 $tests[] = $this->testLoader->load($testImportPath);
             } catch (YamlLoaderException $yamlLoaderException) {
