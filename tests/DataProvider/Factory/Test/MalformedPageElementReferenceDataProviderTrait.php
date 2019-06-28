@@ -10,6 +10,7 @@ use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait MalformedPageElementReferenceDataProviderTrait
 {
@@ -26,17 +27,20 @@ trait MalformedPageElementReferenceDataProviderTrait
         return [
             'MalformedPageElementReferenceException: assertion string contains malformed reference (1)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepData::KEY_ASSERTIONS => [
-                            'malformed_reference is "assertion one value"',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ASSERTIONS => [
+                                'malformed_reference is "assertion one value"',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "malformed_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -47,18 +51,21 @@ trait MalformedPageElementReferenceDataProviderTrait
             ],
             'MalformedPageElementReferenceException: assertion string contains malformed reference (2)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepData::KEY_ASSERTIONS => [
-                            '".heading" is "assertion one value"',
-                            'malformed_reference is "assertion two value"',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ASSERTIONS => [
+                                '".heading" is "assertion one value"',
+                                'malformed_reference is "assertion two value"',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "malformed_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -69,17 +76,20 @@ trait MalformedPageElementReferenceDataProviderTrait
             ],
             'MalformedPageElementReferenceException: action string contains malformed reference (1)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepData::KEY_ACTIONS => [
-                            'click action_one_element_reference',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ACTIONS => [
+                                'click action_one_element_reference',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "action_one_element_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -90,18 +100,21 @@ trait MalformedPageElementReferenceDataProviderTrait
             ],
             'MalformedPageElementReferenceException: action string contains malformed reference (2)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepData::KEY_ACTIONS => [
-                            'click ".heading"',
-                            'click action_two_element_reference',
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                ]),
+                        'step name' => [
+                            StepData::KEY_ACTIONS => [
+                                'click ".heading"',
+                                'click action_two_element_reference',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "action_two_element_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -112,24 +125,27 @@ trait MalformedPageElementReferenceDataProviderTrait
             ],
             'MalformedPageElementReferenceException: test.elements contains malformed reference (1)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                        ImportsData::KEY_PAGES => [],
-                    ],
-                    'step one' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_ELEMENTS => [
-                            'heading' => 'invalid_page_element_reference',
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                            ],
+                            ImportsData::KEY_PAGES => [],
                         ],
-                    ],
-                ]),
+                        'step one' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_ELEMENTS => [
+                                'heading' => 'invalid_page_element_reference',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid_page_element_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([
@@ -139,29 +155,32 @@ trait MalformedPageElementReferenceDataProviderTrait
             ],
             'MalformedPageElementReferenceException: test.elements contains malformed reference (2)' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                        ImportsData::KEY_PAGES => [],
-                    ],
-                    'step one' => [
-                        StepData::KEY_ASSERTIONS => [
-                            '$page.url is "http://example.com"',
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                            ],
+                            ImportsData::KEY_PAGES => [],
                         ],
-                    ],
-                    'step two' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_ELEMENTS => [
-                            'heading' => 'malformed_page_element_reference',
+                        'step one' => [
+                            StepData::KEY_ASSERTIONS => [
+                                '$page.url is "http://example.com"',
+                            ],
                         ],
-                    ],
-                ]),
+                        'step two' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_ELEMENTS => [
+                                'heading' => 'malformed_page_element_reference',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "malformed_page_element_reference"',
                 'expectedExceptionContext' =>  new ExceptionContext([

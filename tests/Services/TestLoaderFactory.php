@@ -8,6 +8,6 @@ class TestLoaderFactory
 {
     public static function create(): TestLoader
     {
-        return new TestLoader(YamlLoaderFactory::create(), TestFactoryFactory::create());
+        return new TestLoader(YamlLoaderFactory::create(), TestFactoryFactory::create(), PathResolverFactory::create());
     }
 }

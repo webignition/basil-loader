@@ -7,19 +7,21 @@ use webignition\BasilParser\DataStructure\Step;
 use webignition\BasilParser\DataStructure\Test\Configuration;
 use webignition\BasilParser\DataStructure\Test\Imports;
 use webignition\BasilParser\DataStructure\Test\Test;
+use webignition\BasilParser\PathResolver\PathResolver;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 class TestTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetConfiguration()
     {
-        $testDataStructure = new Test([]);
+        $testDataStructure = new Test(PathResolverFactory::create(), []);
 
         $this->assertInstanceOf(Configuration::class, $testDataStructure->getConfiguration());
     }
 
     public function testGetImports()
     {
-        $testDataStructure = new Test([]);
+        $testDataStructure = new Test(PathResolverFactory::create(), []);
 
         $this->assertInstanceOf(Imports::class, $testDataStructure->getImports());
     }
@@ -36,29 +38,32 @@ class TestTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty' => [
-                'testDataStructure' => new Test([]),
+                'testDataStructure' => new Test(PathResolverFactory::create(), []),
                 'expectedSteps' => [],
             ],
             'configuration and imports are excluded' => [
-                'testDataStructure' => new Test([
-                    Test::KEY_CONFIGURATION => [
-                        Configuration::KEY_URL => 'http://example.com',
-                        Configuration::KEY_BROWSER => 'chrome',
-                    ],
-                    Test::KEY_IMPORTS => [
-                        Imports::KEY_STEPS => [],
-                        Imports::KEY_PAGES => [],
-                        Imports::KEY_DATA_PROVIDERS => [],
-                    ],
-                    'step 1' => [
-                        Step::KEY_ACTIONS => [
-                            'click ".foo"',
+                'testDataStructure' => new Test(
+                    PathResolverFactory::create(),
+                    [
+                        Test::KEY_CONFIGURATION => [
+                            Configuration::KEY_URL => 'http://example.com',
+                            Configuration::KEY_BROWSER => 'chrome',
                         ],
-                        Step::KEY_ASSERTIONS => [
-                            '".foo" exists',
+                        Test::KEY_IMPORTS => [
+                            Imports::KEY_STEPS => [],
+                            Imports::KEY_PAGES => [],
+                            Imports::KEY_DATA_PROVIDERS => [],
                         ],
-                    ],
-                ]),
+                        'step 1' => [
+                            Step::KEY_ACTIONS => [
+                                'click ".foo"',
+                            ],
+                            Step::KEY_ASSERTIONS => [
+                                '".foo" exists',
+                            ],
+                        ],
+                    ]
+                ),
                 'expectedSteps' => [
                     'step 1' => new Step([
                         Step::KEY_ACTIONS => [

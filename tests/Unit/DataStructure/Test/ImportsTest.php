@@ -4,12 +4,26 @@
 namespace webignition\BasilParser\Tests\Unit\DataStructure\Test;
 
 use webignition\BasilParser\DataStructure\Test\Imports;
+use webignition\BasilParser\PathResolver\PathResolver;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 class ImportsTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var PathResolver
+     */
+    private $pathResolver;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->pathResolver = PathResolverFactory::create();
+    }
+
     public function testEmptyImports()
     {
-        $importsDataStructure = new Imports([], '');
+        $importsDataStructure = new Imports($this->pathResolver, '', []);
 
         $this->assertSame([], $importsDataStructure->getStepPaths());
         $this->assertSame([], $importsDataStructure->getPagePaths());
@@ -22,10 +36,11 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
     public function testGetStepPaths($paths, string $basePath, array $expectedPaths)
     {
         $importsDataStructure = new Imports(
+            $this->pathResolver,
+            $basePath,
             [
                 Imports::KEY_STEPS => $paths,
-            ],
-            $basePath
+            ]
         );
 
         $this->assertSame($expectedPaths, $importsDataStructure->getStepPaths());
@@ -37,10 +52,11 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
     public function testGetPagePaths($paths, string $basePath, array $expectedPaths)
     {
         $importsDataStructure = new Imports(
+            $this->pathResolver,
+            $basePath,
             [
                 Imports::KEY_PAGES => $paths,
-            ],
-            $basePath
+            ]
         );
 
         $this->assertSame($expectedPaths, $importsDataStructure->getPagePaths());
@@ -52,10 +68,11 @@ class ImportsTest extends \PHPUnit\Framework\TestCase
     public function testGetDataProviderPaths($paths, string $basePath, array $expectedPaths)
     {
         $importsDataStructure = new Imports(
+            $this->pathResolver,
+            $basePath,
             [
                 Imports::KEY_DATA_PROVIDERS => $paths,
-            ],
-            $basePath
+            ]
         );
 
         $this->assertSame($expectedPaths, $importsDataStructure->getDataProviderPaths());

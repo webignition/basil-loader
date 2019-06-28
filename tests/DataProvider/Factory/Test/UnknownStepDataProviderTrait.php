@@ -8,6 +8,7 @@ use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait UnknownStepDataProviderTrait
 {
@@ -25,15 +26,18 @@ trait UnknownStepDataProviderTrait
         return [
             'UnknownStepException: step.use references step not defined within a collection' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    'step name' => [
-                        StepData::KEY_USE => 'step_name',
-                    ],
-                ]),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
+                        ],
+                        'step name' => [
+                            StepData::KEY_USE => 'step_name',
+                        ],
+                    ]
+                ),
                 'expectedException' => UnknownStepException::class,
                 'expectedExceptionMessage' => 'Unknown step "step_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([

@@ -10,6 +10,7 @@ use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait UnknownDataProviderDataProviderTrait
 {
@@ -27,21 +28,24 @@ trait UnknownDataProviderDataProviderTrait
         return [
             'UnknownDataProviderException: test.data references a data provider that has not been defined' => [
                 'name' => 'test name',
-                'testData' => new TestData([
-                    TestData::KEY_CONFIGURATION => [
-                        ConfigurationData::KEY_BROWSER => 'chrome',
-                        ConfigurationData::KEY_URL => 'http://example.com',
-                    ],
-                    TestData::KEY_IMPORTS => [
-                        ImportsData::KEY_STEPS => [
-                            'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                'testData' => new TestData(
+                    PathResolverFactory::create(),
+                    [
+                        TestData::KEY_CONFIGURATION => [
+                            ConfigurationData::KEY_BROWSER => 'chrome',
+                            ConfigurationData::KEY_URL => 'http://example.com',
                         ],
-                    ],
-                    'step name' => [
-                        StepData::KEY_USE => 'step_import_name',
-                        StepData::KEY_DATA => 'data_provider_import_name',
-                    ],
-                ]),
+                        TestData::KEY_IMPORTS => [
+                            ImportsData::KEY_STEPS => [
+                                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+                            ],
+                        ],
+                        'step name' => [
+                            StepData::KEY_USE => 'step_import_name',
+                            StepData::KEY_DATA => 'data_provider_import_name',
+                        ],
+                    ]
+                ),
                 'expectedException' => UnknownDataProviderException::class,
                 'expectedExceptionMessage' => 'Unknown data provider "data_provider_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([

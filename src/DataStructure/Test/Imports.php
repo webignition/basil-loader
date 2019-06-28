@@ -4,6 +4,7 @@ namespace webignition\BasilParser\DataStructure\Test;
 
 use webignition\BasilParser\DataStructure\AbstractDataStructure;
 use webignition\BasilParser\DataStructure\ImportList;
+use webignition\BasilParser\PathResolver\PathResolver;
 
 class Imports extends AbstractDataStructure
 {
@@ -15,13 +16,13 @@ class Imports extends AbstractDataStructure
     private $pagePaths;
     private $dataProviderPaths;
 
-    public function __construct(array $data, string $basePath)
+    public function __construct(PathResolver $pathResolver, string $basePath, array $data)
     {
         parent::__construct($data);
 
-        $this->stepPaths = new ImportList($this->getArray(self::KEY_STEPS), $basePath);
-        $this->pagePaths = new ImportList($this->getArray(self::KEY_PAGES), $basePath);
-        $this->dataProviderPaths = new ImportList($this->getArray(self::KEY_DATA_PROVIDERS), $basePath);
+        $this->stepPaths = new ImportList($pathResolver, $basePath, $this->getArray(self::KEY_STEPS));
+        $this->pagePaths = new ImportList($pathResolver, $basePath, $this->getArray(self::KEY_PAGES));
+        $this->dataProviderPaths = new ImportList($pathResolver, $basePath, $this->getArray(self::KEY_DATA_PROVIDERS));
     }
 
     public function getStepPaths(): array

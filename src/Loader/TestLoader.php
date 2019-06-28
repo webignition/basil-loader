@@ -14,16 +14,19 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\Test\TestFactory;
+use webignition\BasilParser\PathResolver\PathResolver;
 
 class TestLoader
 {
     private $yamlLoader;
     private $testFactory;
+    private $pathResolver;
 
-    public function __construct(YamlLoader $yamlLoader, TestFactory $testFactory)
+    public function __construct(YamlLoader $yamlLoader, TestFactory $testFactory, PathResolver $pathResolver)
     {
         $this->yamlLoader = $yamlLoader;
         $this->testFactory = $testFactory;
+        $this->pathResolver = $pathResolver;
     }
 
     /**
@@ -44,7 +47,7 @@ class TestLoader
     public function load(string $path): TestInterface
     {
         $data = $this->yamlLoader->loadArray($path);
-        $testData = new TestData($data, $path);
+        $testData = new TestData($this->pathResolver, $data, $path);
 
         return $this->testFactory->createFromTestData($path, $testData);
     }
