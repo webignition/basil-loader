@@ -5,12 +5,9 @@ namespace webignition\BasilParser\Provider\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\NonRetrievableTestException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\TestLoader;
@@ -32,12 +29,9 @@ class DeferredTestProvider implements TestProviderInterface
      *
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws NonRetrievableTestException
      * @throws UnknownDataProviderException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      */
     public function findTest(string $path): TestInterface
@@ -59,12 +53,9 @@ class DeferredTestProvider implements TestProviderInterface
      *
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws NonRetrievableTestException
      * @throws UnknownDataProviderException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      */
     public function findCollection(array $paths): array
@@ -86,11 +77,8 @@ class DeferredTestProvider implements TestProviderInterface
      * @return TestInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws NonRetrievableTestException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws NonRetrievableDataProviderException
      * @throws UnknownDataProviderException
