@@ -4,20 +4,15 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
-use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilParser\Factory\AssertionFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
 
 class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
@@ -37,12 +32,9 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromAssertionString
      */
-    public function testCreateFromAssertionString(
-        string $assertionString,
-        PageProviderInterface $pageProvider,
-        AssertionInterface $expectedAssertion
-    ) {
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, $pageProvider);
+    public function testCreateFromAssertionString(string $assertionString, AssertionInterface $expectedAssertion)
+    {
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
         $this->assertEquals($expectedAssertion, $assertion);
@@ -66,7 +58,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'simple css selector, is, scalar value' => [
                 'assertionString' => '".selector" is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is "value"',
                     $simpleCssSelectorIdentifier,
@@ -76,7 +67,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector with element reference, is, scalar value' => [
                 'assertionString' => '"{{ reference }} .selector" is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '"{{ reference }} .selector" is "value"',
                     new Identifier(
@@ -92,7 +82,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, data parameter value' => [
                 'assertionString' => '".selector" is $data.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is $data.name',
                     $simpleCssSelectorIdentifier,
@@ -107,7 +96,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, element parameter value' => [
                 'actionString' => '".selector" is $elements.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is $elements.name',
                     $simpleCssSelectorIdentifier,
@@ -122,7 +110,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, page object value' => [
                 'actionString' => '".selector" is $page.url',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is $page.url',
                     $simpleCssSelectorIdentifier,
@@ -137,7 +124,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, browser object value' => [
                 'actionString' => '".selector" is $browser.size',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is $browser.size',
                     $simpleCssSelectorIdentifier,
@@ -152,7 +138,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, escaped quotes scalar value' => [
                 'assertionString' => '".selector" is "\"value\""',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is "\"value\""',
                     $simpleCssSelectorIdentifier,
@@ -165,7 +150,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is, lacking value' => [
                 'assertionString' => '".selector" is',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is',
                     $simpleCssSelectorIdentifier,
@@ -174,7 +158,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is-not, scalar value' => [
                 'assertionString' => '".selector" is-not "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is-not "value"',
                     $simpleCssSelectorIdentifier,
@@ -184,7 +167,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, is-not, lacking value' => [
                 'assertionString' => '".selector" is-not',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" is-not',
                     $simpleCssSelectorIdentifier,
@@ -193,7 +175,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, no value' => [
                 'assertionString' => '".selector" exists',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" exists',
                     $simpleCssSelectorIdentifier,
@@ -202,7 +183,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, scalar value is ignored' => [
                 'assertionString' => '".selector" exists "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" exists "value"',
                     $simpleCssSelectorIdentifier,
@@ -211,7 +191,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, exists, data parameter value is ignored' => [
                 'assertionString' => '".selector" exists $data.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" exists $data.name',
                     $simpleCssSelectorIdentifier,
@@ -220,7 +199,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, includes, scalar value' => [
                 'assertionString' => '".selector" includes "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" includes "value"',
                     $simpleCssSelectorIdentifier,
@@ -230,7 +208,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, includes, lacking value' => [
                 'assertionString' => '".selector" includes',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" includes',
                     $simpleCssSelectorIdentifier,
@@ -239,7 +216,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, excludes, scalar value' => [
                 'assertionString' => '".selector" excludes "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" excludes "value"',
                     $simpleCssSelectorIdentifier,
@@ -249,7 +225,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, excludes, lacking value' => [
                 'assertionString' => '".selector" excludes',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" excludes',
                     $simpleCssSelectorIdentifier,
@@ -258,7 +233,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, matches, scalar value' => [
                 'assertionString' => '".selector" matches "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" matches "value"',
                     $simpleCssSelectorIdentifier,
@@ -268,7 +242,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple css selector, matches, lacking value' => [
                 'assertionString' => '".selector" matches',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector" matches',
                     $simpleCssSelectorIdentifier,
@@ -277,7 +250,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'comparison-including css selector, is, scalar value' => [
                 'assertionString' => '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
                     new Identifier(
@@ -293,7 +265,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'simple xpath expression, is, scalar value' => [
                 'assertionString' => '"//foo" is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '"//foo" is "value"',
                     new Identifier(
@@ -310,7 +281,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             'comparison-including non-simple xpath expression, is, scalar value' => [
                 'assertionString' =>
                     '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
                     new Identifier(
@@ -326,30 +296,21 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'page model element reference, is, scalar value' => [
                 'assertionString' => 'page_import_name.elements.element_name is "value"',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
-                            )
-                        ]
-                    )
-                ]),
                 'expectedAssertion' => new Assertion(
                     'page_import_name.elements.element_name is "value"',
-                    $simpleCssSelectorIdentifier,
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.element_name'
+                        )
+                    ),
                     AssertionComparisons::IS,
                     $simpleScalarValue
                 ),
             ],
             'element parameter, is, scalar value' => [
                 'actionString' => '$elements.name is "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '$elements.name is "value"',
                     new Identifier(
@@ -367,7 +328,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'page object parameter, is, scalar value' => [
                 'actionString' => '$page.url is "http://example.com/"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '$page.url is "http://example.com/"',
                     new Identifier(
@@ -388,7 +348,6 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'browser object parameter, is, scalar value' => [
                 'actionString' => '$browser.size is 1024,768',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAssertion' => new Assertion(
                     '$browser.size is 1024,768',
                     new Identifier(
@@ -414,7 +373,7 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $assertionString = '';
 
-        $assertion = $this->assertionFactory->createFromAssertionString($assertionString, new EmptyPageProvider());
+        $assertion = $this->assertionFactory->createFromAssertionString($assertionString);
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
         $this->assertSame($assertionString, $assertion->getAssertionString());
