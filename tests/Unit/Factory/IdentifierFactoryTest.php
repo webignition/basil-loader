@@ -4,21 +4,14 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
-use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
-use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Tests\Services\IdentifierFactoryFactory;
 
 class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
@@ -45,22 +38,12 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateSuccess(
         string $identifierString,
-        PageProviderInterface $pageProvider,
         IdentifierInterface $expectedIdentifier
     ) {
-        $identifier = $this->factory->create($identifierString, $pageProvider);
+        $identifier = $this->factory->create($identifierString);
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
-
-        if ($identifier instanceof IdentifierInterface) {
-            $this->assertEquals($expectedIdentifier, $identifier);
-
-//            $this->assertSame($expectedType, $identifier->getType());
-//            $this->assertSame($expectedValue, $identifier->getValue());
-//            $this->assertSame($expectedPosition, $identifier->getPosition());
-//            $this->assertNull($identifier->getName());
-//            $this->assertNull($identifier->getParentIdentifier());
-        }
+        $this->assertEquals($expectedIdentifier, $identifier);
     }
 
     public function createCssSelectorDataProvider(): array
@@ -68,7 +51,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'css id selector' => [
                 'identifierString' => '"#element-id"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -80,7 +62,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector, position: null' => [
                 'identifierString' => '".listed-item"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -92,7 +73,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: 1' => [
                 'identifierString' => '".listed-item":1',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -104,7 +84,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: 3' => [
                 'identifierString' => '".listed-item":3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -116,7 +95,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: -1' => [
                 'identifierString' => '".listed-item":-1',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -128,7 +106,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: -3' => [
                 'identifierString' => '".listed-item":-3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -140,7 +117,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: first' => [
                 'identifierString' => '".listed-item":first',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -152,7 +128,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'css class selector; position: last' => [
                 'identifierString' => '".listed-item":last',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::CSS_SELECTOR,
                     new Value(
@@ -170,7 +145,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'xpath id selector' => [
                 'identifierString' => '"//*[@id="element-id"]"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -182,7 +156,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector, position: null' => [
                 'identifierString' => '"//input[@type="submit"]"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -194,7 +167,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: 1' => [
                 'identifierString' => '"//input[@type="submit"]":1',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -206,7 +178,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: 3' => [
                 'identifierString' => '"//input[@type="submit"]":3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -218,7 +189,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: -1' => [
                 'identifierString' => '"//input[@type="submit"]":-1',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -230,7 +200,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: -3' => [
                 'identifierString' => '"//input[@type="submit"]":-3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -242,7 +211,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: first' => [
                 'identifierString' => '"//input[@type="submit"]":first',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -254,7 +222,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'xpath attribute selector; position: last' => [
                 'identifierString' => '"//input[@type="submit"]":last',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::XPATH_EXPRESSION,
                     new Value(
@@ -272,7 +239,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'element parameter' => [
                 'identifierString' => '$elements.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
                     new ObjectValue(
@@ -291,25 +257,11 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'element parameter' => [
                 'identifierString' => 'page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('https://example.com'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
-                            )
-                        ]
-                    )
-                ]),
                 'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
+                    IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                     new Value(
                         ValueTypes::STRING,
-                        '.selector'
+                        'page_import_name.elements.element_name'
                     )
                 ),
             ],
@@ -321,7 +273,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'page object parameter' => [
                 'identifierString' => '$page.title',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::PAGE_OBJECT_PARAMETER,
                     new ObjectValue(
@@ -340,7 +291,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'browser object parameter' => [
                 'identifierString' => '$browser.size',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedIdentifier' => new Identifier(
                     IdentifierTypes::BROWSER_OBJECT_PARAMETER,
                     new ObjectValue(
@@ -490,8 +440,8 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateEmpty()
     {
-        $this->assertNull($this->factory->create('', new EmptyPageProvider()));
-        $this->assertNull($this->factory->create(' ', new EmptyPageProvider()));
+        $this->assertNull($this->factory->create(''));
+        $this->assertNull($this->factory->create(' '));
     }
 
     public function testCreateWithElementReferenceEmpty()
@@ -505,27 +455,6 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
         $this->expectException(MalformedPageElementReferenceException::class);
         $this->expectExceptionMessage('Malformed page element reference "invalid-page-model-element-reference"');
 
-        $this->factory->create('invalid-page-model-element-reference', new EmptyPageProvider());
-    }
-
-    public function testCreateForPageElementReferenceForUnknownPage()
-    {
-        $this->expectException(UnknownPageException::class);
-        $this->expectExceptionMessage('Unknown page "import_name"');
-
-        $this->factory->create('import_name.elements.element_name', new EmptyPageProvider());
-    }
-
-    public function testCreateForPageElementReferenceForUnknownElement()
-    {
-        $this->expectException(UnknownPageElementException::class);
-        $this->expectExceptionMessage('Unknown page element "element_name" in page "import_name"');
-
-        $this->factory->create(
-            'import_name.elements.element_name',
-            new PopulatedPageProvider([
-                'import_name' => new Page(new Uri('http://example.com'), [])
-            ])
-        );
+        $this->factory->create('invalid-page-model-element-reference');
     }
 }
