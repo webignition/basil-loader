@@ -13,7 +13,6 @@ class TestFactoryFactory
             new ConfigurationFactory(),
             StepBuilderFactory::create(),
             StepProviderFactoryFactory::create(),
-            PageProviderFactoryFactory::create(),
             DataSetProviderFactoryFactory::create()
         );
     }
