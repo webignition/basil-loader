@@ -7,11 +7,7 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepFactory
 {
@@ -33,16 +29,12 @@ class StepFactory
 
     /**
      * @param StepData $stepData
-     * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws NonRetrievablePageException
      */
-    public function createFromStepData(StepData $stepData, PageProviderInterface $pageProvider): StepInterface
+    public function createFromStepData(StepData $stepData): StepInterface
     {
         $actionStrings = $stepData->getActions();
         $assertionStrings = $stepData->getAssertions();
@@ -59,7 +51,7 @@ class StepFactory
                     $actionString = trim($actionString);
 
                     if ('' !== $actionString) {
-                        $actions[] = $this->actionFactory->createFromActionString($actionString, $pageProvider);
+                        $actions[] = $this->actionFactory->createFromActionString($actionString);
                     }
                 }
             }
@@ -69,18 +61,11 @@ class StepFactory
                     $assertionString = trim($assertionString);
 
                     if ('' !== $assertionString) {
-                        $assertions[] = $this->assertionFactory->createFromAssertionString(
-                            $assertionString,
-                            $pageProvider
-                        );
+                        $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
                     }
                 }
             }
-        } catch (MalformedPageElementReferenceException |
-            NonRetrievablePageException |
-            UnknownPageElementException |
-            UnknownPageException $contextAwareException
-        ) {
+        } catch (MalformedPageElementReferenceException $contextAwareException) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $assertionString !== '' ? $assertionString : $actionString,
             ]);
