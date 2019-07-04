@@ -13,6 +13,7 @@ use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownTestException;
@@ -68,7 +69,12 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                             '$page.url is "https://example.com"',
                                             new Identifier(
                                                 IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                '$page.url'
+                                                new ObjectValue(
+                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                    '$page.url',
+                                                    'page',
+                                                    'url'
+                                                )
                                             ),
                                             AssertionComparisons::IS,
                                             new Value(
@@ -99,7 +105,12 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                             '$page.url is "https://example.com"',
                                             new Identifier(
                                                 IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                '$page.url'
+                                                new ObjectValue(
+                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                    '$page.url',
+                                                    'page',
+                                                    'url'
+                                                )
                                             ),
                                             AssertionComparisons::IS,
                                             new Value(
@@ -122,7 +133,12 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                             '$page.url is "https://example.com"',
                                             new Identifier(
                                                 IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                '$page.url'
+                                                new ObjectValue(
+                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                    '$page.url',
+                                                    'page',
+                                                    'url'
+                                                )
                                             ),
                                             AssertionComparisons::IS,
                                             new Value(

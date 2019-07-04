@@ -9,6 +9,8 @@ use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\PageFactoryFactory;
@@ -32,7 +34,10 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
     {
         $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.form',
+            new Value(
+                ValueTypes::STRING,
+                '.form'
+            ),
             null,
             'form'
         );
@@ -55,7 +60,10 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                         'input' =>
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.input',
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.input'
+                                ),
                                 null,
                                 'input'
                             ))->withParentIdentifier($parentIdentifier),
