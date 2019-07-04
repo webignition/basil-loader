@@ -10,12 +10,9 @@ class AssertionFactoryFactory
 {
     public static function create(): AssertionFactory
     {
-        $identifierFactory = new IdentifierFactory();
-        $valueFactory = new ValueFactory();
-
         return new AssertionFactory(
-            $identifierFactory,
-            $valueFactory,
+            IdentifierFactoryFactory::create(),
+            ValueFactoryFactory::create(),
             IdentifierStringExtractorFactory::create()
         );
     }

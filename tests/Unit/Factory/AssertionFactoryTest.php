@@ -5,15 +5,14 @@
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
-use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilParser\Factory\AssertionFactory;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
@@ -41,294 +40,291 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateFromAssertionString(
         string $assertionString,
         PageProviderInterface $pageProvider,
-        IdentifierInterface $expectedIdentifier,
-        string $expectedComparison,
-        ?ValueInterface $expectedValue
+        AssertionInterface $expectedAssertion
     ) {
         $assertion = $this->assertionFactory->createFromAssertionString($assertionString, $pageProvider);
 
         $this->assertInstanceOf(AssertionInterface::class, $assertion);
-        $this->assertSame($assertionString, $assertion->getAssertionString());
-        $this->assertEquals($expectedIdentifier, $assertion->getIdentifier());
-        $this->assertSame($expectedComparison, $assertion->getComparison());
-        $this->assertEquals($expectedValue, $assertion->getValue());
+        $this->assertEquals($expectedAssertion, $assertion);
     }
 
     public function createFromAssertionString(): array
     {
+        $simpleCssSelectorIdentifier = new Identifier(
+            IdentifierTypes::CSS_SELECTOR,
+            new Value(
+                ValueTypes::STRING,
+                '.selector'
+            )
+        );
+
+        $simpleScalarValue = new Value(
+            ValueTypes::STRING,
+            'value'
+        );
+
         return [
             'simple css selector, is, scalar value' => [
                 'assertionString' => '".selector" is "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector with element reference, is, scalar value' => [
                 'assertionString' => '"{{ reference }} .selector" is "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '{{ reference }} .selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '"{{ reference }} .selector" is "value"',
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '{{ reference }} .selector'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector, is, data parameter value' => [
                 'assertionString' => '".selector" is $data.name',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new ObjectValue(
-                    ValueTypes::DATA_PARAMETER,
-                    '$data.name',
-                    'data',
-                    'name'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is $data.name',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    new ObjectValue(
+                        ValueTypes::DATA_PARAMETER,
+                        '$data.name',
+                        'data',
+                        'name'
+                    )
                 ),
             ],
             'simple css selector, is, element parameter value' => [
                 'actionString' => '".selector" is $elements.name',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new ObjectValue(
-                    ValueTypes::ELEMENT_PARAMETER,
-                    '$elements.name',
-                    'elements',
-                    'name'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is $elements.name',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    new ObjectValue(
+                        ValueTypes::ELEMENT_PARAMETER,
+                        '$elements.name',
+                        'elements',
+                        'name'
+                    )
                 ),
             ],
             'simple css selector, is, page object value' => [
                 'actionString' => '".selector" is $page.url',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new ObjectValue(
-                    ValueTypes::PAGE_OBJECT_PROPERTY,
-                    '$page.url',
-                    'page',
-                    'url'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is $page.url',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    new ObjectValue(
+                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                        '$page.url',
+                        'page',
+                        'url'
+                    )
                 ),
             ],
             'simple css selector, is, browser object value' => [
                 'actionString' => '".selector" is $browser.size',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new ObjectValue(
-                    ValueTypes::BROWSER_OBJECT_PROPERTY,
-                    '$browser.size',
-                    'browser',
-                    'size'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is $browser.size',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    new ObjectValue(
+                        ValueTypes::BROWSER_OBJECT_PROPERTY,
+                        '$browser.size',
+                        'browser',
+                        'size'
+                    )
                 ),
             ],
             'simple css selector, is, escaped quotes scalar value' => [
                 'assertionString' => '".selector" is "\"value\""',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    '"value"'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is "\"value\""',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    new Value(
+                        ValueTypes::STRING,
+                        '"value"'
+                    )
                 ),
             ],
             'simple css selector, is, lacking value' => [
                 'assertionString' => '".selector" is',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS
                 ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => null,
             ],
             'simple css selector, is-not, scalar value' => [
                 'assertionString' => '".selector" is-not "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::IS_NOT,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is-not "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS_NOT,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector, is-not, lacking value' => [
                 'assertionString' => '".selector" is-not',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" is-not',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS_NOT
                 ),
-                'expectedComparison' => AssertionComparisons::IS_NOT,
-                'expectedValue' => null,
             ],
             'simple css selector, exists, no value' => [
                 'assertionString' => '".selector" exists',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" exists',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::EXISTS
                 ),
-                'expectedComparison' => AssertionComparisons::EXISTS,
-                'expectedValue' => null,
             ],
             'simple css selector, exists, scalar value is ignored' => [
                 'assertionString' => '".selector" exists "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" exists "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::EXISTS
                 ),
-                'expectedComparison' => AssertionComparisons::EXISTS,
-                'expectedValue' => null,
             ],
             'simple css selector, exists, data parameter value is ignored' => [
-                'assertionString' => '".selector" exists $data.name"',
+                'assertionString' => '".selector" exists $data.name',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" exists $data.name',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::EXISTS
                 ),
-                'expectedComparison' => AssertionComparisons::EXISTS,
-                'expectedValue' => null,
             ],
             'simple css selector, includes, scalar value' => [
                 'assertionString' => '".selector" includes "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::INCLUDES,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector" includes "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::INCLUDES,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector, includes, lacking value' => [
                 'assertionString' => '".selector" includes',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" includes',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::INCLUDES
                 ),
-                'expectedComparison' => AssertionComparisons::INCLUDES,
-                'expectedValue' => null,
             ],
             'simple css selector, excludes, scalar value' => [
                 'assertionString' => '".selector" excludes "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::EXCLUDES,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector" excludes "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::EXCLUDES,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector, excludes, lacking value' => [
                 'assertionString' => '".selector" excludes',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" excludes',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::EXCLUDES
                 ),
-                'expectedComparison' => AssertionComparisons::EXCLUDES,
-                'expectedValue' => null,
             ],
             'simple css selector, matches, scalar value' => [
                 'assertionString' => '".selector" matches "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
-                ),
-                'expectedComparison' => AssertionComparisons::MATCHES,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector" matches "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::MATCHES,
+                    $simpleScalarValue
                 ),
             ],
             'simple css selector, matches, lacking value' => [
                 'assertionString' => '".selector" matches',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    '".selector" matches',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::MATCHES
                 ),
-                'expectedComparison' => AssertionComparisons::MATCHES,
-                'expectedValue' => null,
             ],
             'comparison-including css selector, is, scalar value' => [
                 'assertionString' => '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector is is-not exists not-exists includes excludes matches foo'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '".selector is is-not exists not-exists includes excludes matches foo" is "value"',
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector is is-not exists not-exists includes excludes matches foo'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
             ],
             'simple xpath expression, is, scalar value' => [
                 'assertionString' => '"//foo" is "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::XPATH_EXPRESSION,
-                    '//foo'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '"//foo" is "value"',
+                    new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//foo'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
             ],
             'comparison-including non-simple xpath expression, is, scalar value' => [
                 'assertionString' =>
                     '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::XPATH_EXPRESSION,
-                    '//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]'
-                ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+                'expectedAssertion' => new Assertion(
+                    '"//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]" is "value"',
+                    new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//a[ends-with(@href is exists not-exists matches includes excludes, \".pdf\")]'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
             ],
-            'page model element reference' => [
+            'page model element reference, is, scalar value' => [
                 'assertionString' => 'page_import_name.elements.element_name is "value"',
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
@@ -336,19 +332,79 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                         [
                             'element_name' => new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             )
                         ]
                     )
                 ]),
-                'expectedIdentifier' => new Identifier(
-                    IdentifierTypes::CSS_SELECTOR,
-                    '.selector'
+                'expectedAssertion' => new Assertion(
+                    'page_import_name.elements.element_name is "value"',
+                    $simpleCssSelectorIdentifier,
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
                 ),
-                'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
-                    ValueTypes::STRING,
-                    'value'
+            ],
+            'element parameter, is, scalar value' => [
+                'actionString' => '$elements.name is "value"',
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedAssertion' => new Assertion(
+                    '$elements.name is "value"',
+                    new Identifier(
+                        IdentifierTypes::ELEMENT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::ELEMENT_PARAMETER,
+                            '$elements.name',
+                            'elements',
+                            'name'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    $simpleScalarValue
+                ),
+            ],
+            'page object parameter, is, scalar value' => [
+                'actionString' => '$page.url is "http://example.com/"',
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedAssertion' => new Assertion(
+                    '$page.url is "http://example.com/"',
+                    new Identifier(
+                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::PAGE_OBJECT_PROPERTY,
+                            '$page.url',
+                            'page',
+                            'url'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    new Value(
+                        ValueTypes::STRING,
+                        'http://example.com/'
+                    )
+                ),
+            ],
+            'browser object parameter, is, scalar value' => [
+                'actionString' => '$browser.size is 1024,768',
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedAssertion' => new Assertion(
+                    '$browser.size is 1024,768',
+                    new Identifier(
+                        IdentifierTypes::BROWSER_OBJECT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::BROWSER_OBJECT_PROPERTY,
+                            '$browser.size',
+                            'browser',
+                            'size'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    new Value(
+                        ValueTypes::STRING,
+                        '1024,768'
+                    )
                 ),
             ],
         ];
