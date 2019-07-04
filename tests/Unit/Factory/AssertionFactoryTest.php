@@ -8,6 +8,7 @@ use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
@@ -90,9 +91,11 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
+                'expectedValue' => new ObjectValue(
                     ValueTypes::DATA_PARAMETER,
-                    '$data.name'
+                    '$data.name',
+                    'data',
+                    'name'
                 ),
             ],
             'simple css selector, is, element parameter value' => [
@@ -103,9 +106,41 @@ class AssertionFactoryTest extends \PHPUnit\Framework\TestCase
                     '.selector'
                 ),
                 'expectedComparison' => AssertionComparisons::IS,
-                'expectedValue' => new Value(
+                'expectedValue' => new ObjectValue(
                     ValueTypes::ELEMENT_PARAMETER,
-                    '$elements.name'
+                    '$elements.name',
+                    'elements',
+                    'name'
+                ),
+            ],
+            'simple css selector, is, page object value' => [
+                'actionString' => '".selector" is $page.url',
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new ObjectValue(
+                    ValueTypes::PAGE_OBJECT_PROPERTY,
+                    '$page.url',
+                    'page',
+                    'url'
+                ),
+            ],
+            'simple css selector, is, browser object value' => [
+                'actionString' => '".selector" is $browser.size',
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    '.selector'
+                ),
+                'expectedComparison' => AssertionComparisons::IS,
+                'expectedValue' => new ObjectValue(
+                    ValueTypes::BROWSER_OBJECT_PROPERTY,
+                    '$browser.size',
+                    'browser',
+                    'size'
                 ),
             ],
             'simple css selector, is, escaped quotes scalar value' => [
