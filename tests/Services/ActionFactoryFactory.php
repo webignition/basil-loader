@@ -7,7 +7,6 @@ use webignition\BasilParser\Factory\Action\InputActionTypeFactory;
 use webignition\BasilParser\Factory\Action\InteractionActionTypeFactory;
 use webignition\BasilParser\Factory\Action\NoArgumentsActionTypeFactory;
 use webignition\BasilParser\Factory\Action\WaitActionTypeFactory;
-use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
 
 class ActionFactoryFactory
@@ -16,7 +15,7 @@ class ActionFactoryFactory
     {
         $actionFactory = new ActionFactory();
 
-        $identifierFactory = new IdentifierFactory();
+        $identifierFactory = IdentifierFactoryFactory::create();
         $valueFactory = new ValueFactory();
 
         $inputActionTypeFactory = new InputActionTypeFactory(
