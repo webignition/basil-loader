@@ -59,13 +59,15 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @todo: uncomment data providers in #229
+     *
      * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
+     * @!dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
      * @dataProvider createFromTestDataThrowsNonRetrievableStepExceptionDataProvider
      * @dataProvider createFromTestDataThrowsUnknownDataProviderExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsUnknownPageElementExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsUnknownPageExceptionDataProvider
+     * @!dataProvider createFromTestDataThrowsUnknownPageElementExceptionDataProvider
+     * @!dataProvider createFromTestDataThrowsUnknownPageExceptionDataProvider
      * @dataProvider createFromTestDataThrowsUnknownStepExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
