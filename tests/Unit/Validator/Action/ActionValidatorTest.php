@@ -56,7 +56,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
                     ),
                     null,
                     '".selector" to'
@@ -66,7 +69,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
                     ),
                     new Value(
                         ValueTypes::STRING,
@@ -79,7 +85,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector to value'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector to value'
+                        )
                     ),
                     new Value(
                         ValueTypes::STRING,
@@ -92,7 +101,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
                     ),
                     new Value(
                         ValueTypes::STRING,
@@ -143,7 +155,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
                     ),
                     new Value(
                         ValueTypes::STRING,
@@ -157,7 +172,10 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
-                        '.selector'
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
                     ),
                     '".selector"'
                 ),

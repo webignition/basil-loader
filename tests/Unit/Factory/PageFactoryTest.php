@@ -9,6 +9,8 @@ use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\DataStructure\Page as PageData;
 use webignition\BasilParser\Factory\PageFactory;
 use webignition\BasilParser\Tests\Services\PageFactoryFactory;
@@ -42,7 +44,10 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.form',
+            new Value(
+                ValueTypes::STRING,
+                '.form'
+            ),
             null,
             'form'
         );
@@ -70,7 +75,10 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                     [
                         'css-selector' => new Identifier(
                             IdentifierTypes::CSS_SELECTOR,
-                            '.selector',
+                            new Value(
+                                ValueTypes::STRING,
+                                '.selector'
+                            ),
                             null,
                             'css-selector'
                         ),
@@ -92,7 +100,10 @@ class PageFactoryTest extends \PHPUnit\Framework\TestCase
                         'form_field' =>
                             (new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.field',
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.field'
+                                ),
                                 null,
                                 'form_field'
                             ))->withParentIdentifier($parentIdentifier),

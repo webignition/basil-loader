@@ -9,6 +9,9 @@ use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\ObjectValue;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -16,6 +19,7 @@ use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Tests\Services\IdentifierFactoryFactory;
 
 class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,7 +32,7 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->factory = new IdentifierFactory();
+        $this->factory = IdentifierFactoryFactory::create();
     }
 
     /**
@@ -42,20 +46,20 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateSuccess(
         string $identifierString,
         PageProviderInterface $pageProvider,
-        string $expectedType,
-        string $expectedValue,
-        int $expectedPosition
+        IdentifierInterface $expectedIdentifier
     ) {
         $identifier = $this->factory->create($identifierString, $pageProvider);
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
 
         if ($identifier instanceof IdentifierInterface) {
-            $this->assertSame($expectedType, $identifier->getType());
-            $this->assertSame($expectedValue, $identifier->getValue());
-            $this->assertSame($expectedPosition, $identifier->getPosition());
-            $this->assertNull($identifier->getName());
-            $this->assertNull($identifier->getParentIdentifier());
+            $this->assertEquals($expectedIdentifier, $identifier);
+
+//            $this->assertSame($expectedType, $identifier->getType());
+//            $this->assertSame($expectedValue, $identifier->getValue());
+//            $this->assertSame($expectedPosition, $identifier->getPosition());
+//            $this->assertNull($identifier->getName());
+//            $this->assertNull($identifier->getParentIdentifier());
         }
     }
 
@@ -65,58 +69,98 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             'css id selector' => [
                 'identifierString' => '"#element-id"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '#element-id',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '#element-id'
+                    ),
+                    1
+                ),
             ],
             'css class selector, position: null' => [
                 'identifierString' => '".listed-item"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    1
+                ),
             ],
             'css class selector; position: 1' => [
                 'identifierString' => '".listed-item":1',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    1
+                ),
             ],
             'css class selector; position: 3' => [
                 'identifierString' => '".listed-item":3',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => 3,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    3
+                ),
             ],
             'css class selector; position: -1' => [
                 'identifierString' => '".listed-item":-1',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => -1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    -1
+                ),
             ],
             'css class selector; position: -3' => [
                 'identifierString' => '".listed-item":-3',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => -3,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    -3
+                ),
             ],
             'css class selector; position: first' => [
                 'identifierString' => '".listed-item":first',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    1
+                ),
             ],
             'css class selector; position: last' => [
                 'identifierString' => '".listed-item":last',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.listed-item',
-                'expectedPosition' => -1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.listed-item'
+                    ),
+                    -1
+                ),
             ],
         ];
     }
@@ -127,58 +171,98 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             'xpath id selector' => [
                 'identifierString' => '"//*[@id="element-id"]"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//*[@id="element-id"]',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//*[@id="element-id"]'
+                    ),
+                    1
+                ),
             ],
             'xpath attribute selector, position: null' => [
                 'identifierString' => '"//input[@type="submit"]"',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    1
+                ),
             ],
             'xpath attribute selector; position: 1' => [
                 'identifierString' => '"//input[@type="submit"]":1',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    1
+                ),
             ],
             'xpath attribute selector; position: 3' => [
                 'identifierString' => '"//input[@type="submit"]":3',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => 3,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    3
+                ),
             ],
             'xpath attribute selector; position: -1' => [
                 'identifierString' => '"//input[@type="submit"]":-1',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => -1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    -1
+                ),
             ],
             'xpath attribute selector; position: -3' => [
                 'identifierString' => '"//input[@type="submit"]":-3',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => -3,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    -3
+                ),
             ],
             'xpath attribute selector; position: first' => [
                 'identifierString' => '"//input[@type="submit"]":first',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    1
+                ),
             ],
             'xpath attribute selector; position: last' => [
                 'identifierString' => '"//input[@type="submit"]":last',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//input[@type="submit"]',
-                'expectedPosition' => -1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::XPATH_EXPRESSION,
+                    new Value(
+                        ValueTypes::STRING,
+                        '//input[@type="submit"]'
+                    ),
+                    -1
+                ),
             ],
         ];
     }
@@ -189,9 +273,15 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             'element parameter' => [
                 'identifierString' => '$elements.name',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::ELEMENT_PARAMETER,
-                'expectedValue' => '$elements.name',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::ELEMENT_PARAMETER,
+                    new ObjectValue(
+                        ValueTypes::ELEMENT_PARAMETER,
+                        '$elements.name',
+                        'elements',
+                        'name'
+                    )
+                ),
             ],
         ];
     }
@@ -207,14 +297,21 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
                         [
                             'element_name' => new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             )
                         ]
                     )
                 ]),
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.selector',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.selector'
+                    )
+                ),
             ],
         ];
     }
@@ -225,9 +322,15 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             'page object parameter' => [
                 'identifierString' => '$page.title',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                'expectedValue' => '$page.title',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                    new ObjectValue(
+                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                        '$page.title',
+                        'page',
+                        'title'
+                    )
+                ),
             ],
         ];
     }
@@ -236,11 +339,17 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'browser object parameter' => [
-                'identifierString' => '$browser.url',
+                'identifierString' => '$browser.size',
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedType' => IdentifierTypes::BROWSER_OBJECT_PARAMETER,
-                'expectedValue' => '$browser.url',
-                'expectedPosition' => 1,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::BROWSER_OBJECT_PARAMETER,
+                    new ObjectValue(
+                        ValueTypes::BROWSER_OBJECT_PROPERTY,
+                        '$browser.size',
+                        'browser',
+                        'size'
+                    )
+                ),
             ],
         ];
     }
@@ -251,21 +360,14 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateWithElementReference(
         string $identifierString,
         array $existingIdentifiers,
-        string $expectedType,
-        string $expectedValue,
-        int $expectedPosition,
-        ?IdentifierInterface $expectedParentIdentifier
+        IdentifierInterface $expectedIdentifier
     ) {
         $identifier = $this->factory->createWithElementReference($identifierString, null, $existingIdentifiers);
 
         $this->assertInstanceOf(IdentifierInterface::class, $identifier);
 
         if ($identifier instanceof IdentifierInterface) {
-            $this->assertSame($expectedType, $identifier->getType());
-            $this->assertSame($expectedValue, $identifier->getValue());
-            $this->assertSame($expectedPosition, $identifier->getPosition());
-            $this->assertNull($identifier->getName());
-            $this->assertEquals($expectedParentIdentifier, $identifier->getParentIdentifier());
+            $this->assertEquals($expectedIdentifier, $identifier);
         }
     }
 
@@ -273,7 +375,10 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $parentIdentifier = new Identifier(
             IdentifierTypes::CSS_SELECTOR,
-            '.parent',
+            new Value(
+                ValueTypes::STRING,
+                '.parent'
+            ),
             null,
             'element_name'
         );
@@ -286,66 +391,99 @@ class IdentifierFactoryTest extends \PHPUnit\Framework\TestCase
             'element reference with css selector, position null, parent identifier not passed' => [
                 'identifierString' => '"{{ element_name }} .selector"',
                 'existingIdentifiers' => [],
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.selector',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => null,
+                'expectedIdentifier' => new Identifier(
+                    IdentifierTypes::CSS_SELECTOR,
+                    new Value(
+                        ValueTypes::STRING,
+                        '.selector'
+                    )
+                ),
             ],
             'element reference with css selector, position null' => [
                 'identifierString' => '"{{ element_name }} .selector"',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.selector',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'element reference with css selector, position 1' => [
                 'identifierString' => '"{{ element_name }} .selector":1',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.selector',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'element reference with css selector, position 2' => [
                 'identifierString' => '"{{ element_name }} .selector":2',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '.selector',
-                'expectedPosition' => 2,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        ),
+                        2
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'invalid double element reference with css selector' => [
                 'identifierString' => '"{{ element_name }} {{ another_element_name }} .selector"',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::CSS_SELECTOR,
-                'expectedValue' => '{{ another_element_name }} .selector',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '{{ another_element_name }} .selector'
+                        )
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'element reference with xpath expression, position null' => [
                 'identifierString' => '"{{ element_name }} //foo"',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//foo',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//foo'
+                        )
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'element reference with xpath expression, position 1' => [
                 'identifierString' => '"{{ element_name }} //foo":1',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//foo',
-                'expectedPosition' => 1,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//foo'
+                        )
+                    ))->withParentIdentifier($parentIdentifier),
             ],
             'element reference with xpath expression, position 2' => [
                 'identifierString' => '"{{ element_name }} //foo":2',
                 'existingIdentifiers' => $existingIdentifiers,
-                'expectedType' => IdentifierTypes::XPATH_EXPRESSION,
-                'expectedValue' => '//foo',
-                'expectedPosition' => 2,
-                'expectedParentIdentifier' => $parentIdentifier,
+                'expectedIdentifier' =>
+                    (new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//foo'
+                        ),
+                        2
+                    ))->withParentIdentifier($parentIdentifier),
             ],
         ];
     }

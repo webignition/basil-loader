@@ -46,7 +46,10 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.button'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.button'
+                                )
                             ),
                             '".button"'
                         ),
@@ -56,7 +59,10 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                             '".heading" includes "Hello World"',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.heading'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.heading'
+                                )
                             ),
                             AssertionComparisons::INCLUDES,
                             new Value(

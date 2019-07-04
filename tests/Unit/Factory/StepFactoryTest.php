@@ -87,14 +87,20 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             ),
                             '".selector"'
                         ),
                         new InputAction(
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.input'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.input'
+                                )
                             ),
                             new Value(
                                 ValueTypes::STRING,
@@ -122,7 +128,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             '".selector" is "value"',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             ),
                             AssertionComparisons::IS,
                             new Value(
@@ -134,7 +143,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             '".input" exists',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.input'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.input'
+                                )
                             ),
                             AssertionComparisons::EXISTS
                         ),
@@ -156,7 +168,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         [
                             'element_name' => new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             ),
                         ]
                     )
@@ -167,7 +182,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             ),
                             'page_import_name.elements.element_name'
                         )
@@ -177,7 +195,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             'page_import_name.elements.element_name exists',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.selector'
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
                             ),
                             AssertionComparisons::EXISTS
                         ),
