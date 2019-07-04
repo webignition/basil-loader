@@ -12,6 +12,7 @@ use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\DataStructure\Step as StepData;
@@ -98,7 +99,12 @@ trait CreateFromTestDataDataProviderTrait
                             '$page.url is "http://example.com"',
                             new Identifier(
                                 IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                '$page.url'
+                                new ObjectValue(
+                                    ValueTypes::PAGE_OBJECT_PROPERTY,
+                                    '$page.url',
+                                    'page',
+                                    'url'
+                                )
                             ),
                             AssertionComparisons::IS,
                             new Value(
@@ -113,7 +119,10 @@ trait CreateFromTestDataDataProviderTrait
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,
-                                    '.form .submit'
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.form .submit'
+                                    )
                                 ),
                                 '".form .submit"'
                             ),
@@ -123,7 +132,12 @@ trait CreateFromTestDataDataProviderTrait
                                 '$page.title is "example - Example Domain"',
                                 new Identifier(
                                     IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                    '$page.title'
+                                    new ObjectValue(
+                                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                                        '$page.title',
+                                        'page',
+                                        'title'
+                                    )
                                 ),
                                 AssertionComparisons::IS,
                                 new Value(
@@ -163,7 +177,10 @@ trait CreateFromTestDataDataProviderTrait
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,
-                                    '.button',
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.button'
+                                    ),
                                     null,
                                     'button'
                                 ),
@@ -175,7 +192,10 @@ trait CreateFromTestDataDataProviderTrait
                                 'page_import_name.elements.heading is "example"',
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,
-                                    '.heading',
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.heading'
+                                    ),
                                     null,
                                     'heading'
                                 ),
@@ -260,7 +280,10 @@ trait CreateFromTestDataDataProviderTrait
                                     ActionTypes::CLICK,
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.button'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.button'
+                                        )
                                     ),
                                     '".button"'
                                 )
@@ -270,7 +293,10 @@ trait CreateFromTestDataDataProviderTrait
                                     '".heading" includes "Hello World"',
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.heading'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.heading'
+                                        )
                                     ),
                                     AssertionComparisons::INCLUDES,
                                     new Value(
@@ -314,7 +340,10 @@ trait CreateFromTestDataDataProviderTrait
                                     ActionTypes::CLICK,
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.button'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.button'
+                                        )
                                     ),
                                     '".button"'
                                 )
@@ -324,12 +353,17 @@ trait CreateFromTestDataDataProviderTrait
                                     '".heading" includes $data.expected_title',
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.heading'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.heading'
+                                        )
                                     ),
                                     AssertionComparisons::INCLUDES,
-                                    new Value(
+                                    new ObjectValue(
                                         ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title'
+                                        '$data.expected_title',
+                                        'data',
+                                        'expected_title'
                                     )
                                 ),
                             ]
@@ -372,7 +406,10 @@ trait CreateFromTestDataDataProviderTrait
                                     ActionTypes::CLICK,
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.button'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.button'
+                                        )
                                     ),
                                     '".button"'
                                 )
@@ -382,12 +419,17 @@ trait CreateFromTestDataDataProviderTrait
                                     '".heading" includes $data.expected_title',
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.heading'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.heading'
+                                        )
                                     ),
                                     AssertionComparisons::INCLUDES,
-                                    new Value(
+                                    new ObjectValue(
                                         ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title'
+                                        '$data.expected_title',
+                                        'data',
+                                        'expected_title'
                                     )
                                 ),
                             ]
@@ -435,7 +477,10 @@ trait CreateFromTestDataDataProviderTrait
                                     ActionTypes::CLICK,
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
-                                        '.button'
+                                        new Value(
+                                            ValueTypes::STRING,
+                                            '.button'
+                                        )
                                     ),
                                     '".button"'
                                 )
@@ -445,7 +490,12 @@ trait CreateFromTestDataDataProviderTrait
                                     '$elements.heading includes "Hello World"',
                                     new Identifier(
                                         IdentifierTypes::ELEMENT_PARAMETER,
-                                        '$elements.heading'
+                                        new ObjectValue(
+                                            ValueTypes::ELEMENT_PARAMETER,
+                                            '$elements.heading',
+                                            'elements',
+                                            'heading'
+                                        )
                                     ),
                                     AssertionComparisons::INCLUDES,
                                     new Value(
@@ -457,7 +507,10 @@ trait CreateFromTestDataDataProviderTrait
                         ))->withElementIdentifiers([
                             'heading' => new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
-                                '.heading',
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.heading'
+                                ),
                                 null,
                                 'heading'
                             ),
