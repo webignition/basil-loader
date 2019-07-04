@@ -3,7 +3,6 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory\Action;
 
-use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
@@ -12,17 +11,11 @@ use webignition\BasilModel\Action\UnrecognisedAction;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
-use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
 
 class ActionFactoryTest extends \PHPUnit\Framework\TestCase
@@ -46,10 +39,9 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForInteractionAction(
         string $actionString,
-        PageProviderInterface $pageProvider,
         InteractionAction $expectedAction
     ) {
-        $action = $this->actionFactory->createFromActionString($actionString, $pageProvider);
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -62,7 +54,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'click css selector with null position double-quoted' => [
                 'actionString' => 'click ".selector"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     $simpleCssSelectorIdentifier,
@@ -71,7 +62,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click css selector with position double-quoted' => [
                 'actionString' => 'click ".selector":3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -84,23 +74,20 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click page model reference' => [
                 'actionString' => 'click page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        [
-                            'element_name' => $simpleCssSelectorIdentifier
-                        ]
-                    ),
-                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
-                    $simpleCssSelectorIdentifier,
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.element_name'
+                        )
+                    ),
                     'page_import_name.elements.element_name'
                 ),
             ],
             'click element parameter reference' => [
                 'actionString' => 'click $elements.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
@@ -117,7 +104,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'click with no arguments' => [
                 'actionString' => 'click',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::CLICK,
                     null,
@@ -135,7 +121,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'submit css selector with null position double-quoted' => [
                 'actionString' => 'submit ".selector"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     $simpleCssSelectorIdentifier,
@@ -144,7 +129,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit css selector with position double-quoted' => [
                 'actionString' => 'submit ".selector":3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -157,23 +141,20 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit page model reference' => [
                 'actionString' => 'submit page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        [
-                            'element_name' => $simpleCssSelectorIdentifier
-                        ]
-                    ),
-                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
-                    $simpleCssSelectorIdentifier,
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.element_name'
+                        )
+                    ),
                     'page_import_name.elements.element_name'
                 ),
             ],
             'submit element parameter reference' => [
                 'actionString' => 'submit $elements.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     new Identifier(
@@ -190,7 +171,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'submit no arguments' => [
                 'actionString' => 'submit',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::SUBMIT,
                     null,
@@ -208,7 +188,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'wait-for css selector with null position double-quoted' => [
                 'actionString' => 'wait-for ".selector"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     $simpleCssSelectorIdentifier,
@@ -217,7 +196,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for css selector with position double-quoted' => [
                 'actionString' => 'wait-for ".selector":3',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -230,23 +208,20 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for page model reference' => [
                 'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        [
-                            'element_name' => $simpleCssSelectorIdentifier
-                        ]
-                    ),
-                ]),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
-                    $simpleCssSelectorIdentifier,
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.element_name'
+                        )
+                    ),
                     'page_import_name.elements.element_name'
                 ),
             ],
             'wait-for element parameter reference' => [
                 'actionString' => 'wait-for $elements.name',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     new Identifier(
@@ -263,7 +238,6 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             ],
             'wait-for no arguments' => [
                 'actionString' => 'wait-for',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedAction' => new InteractionAction(
                     ActionTypes::WAIT_FOR,
                     null,
@@ -278,7 +252,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForWaitAction(string $actionString, WaitAction $expectedAction)
     {
-        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageProvider());
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -312,7 +286,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         string $actionString,
         NoArgumentsAction $expectedAction
     ) {
-        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageProvider());
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -340,7 +314,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringForInputAction(string $actionString, InputAction $expectedAction)
     {
-        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageProvider());
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertEquals($expectedAction, $action);
     }
@@ -504,7 +478,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $actionString = 'foo ".selector" to "value';
 
-        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageProvider());
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(UnrecognisedAction::class, $action);
         $this->assertSame('foo', $action->getType());
@@ -515,7 +489,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $actionString = '';
 
-        $action = $this->actionFactory->createFromActionString($actionString, new EmptyPageProvider());
+        $action = $this->actionFactory->createFromActionString($actionString);
 
         $this->assertInstanceOf(UnrecognisedAction::class, $action);
         $this->assertSame('', $action->getType());
@@ -527,14 +501,13 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromActionStringThrowsPageElementException(
         string $actionString,
-        PageProviderInterface $pageProvider,
         string $expectedException,
         string $expectedExceptionMessage
     ) {
         $this->expectException($expectedException);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $this->actionFactory->createFromActionString($actionString, $pageProvider);
+        $this->actionFactory->createFromActionString($actionString);
     }
 
     public function createFromActionStringThrowsPageElementExceptionDataProvider(): array
@@ -542,99 +515,36 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'click malformed page element reference' => [
                 'actionString' => 'click invalid-page-element-reference',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
-            ],
-            'click action unknown page' => [
-                'actionString' => 'click page_import_name.elements.element_name',
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => UnknownPageException::class,
-                'expectedExceptionMessage' => 'Unknown page "page_import_name',
-            ],
-            'click action unknown page element' => [
-                'actionString' => 'click page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ]),
-                'expectedException' => UnknownPageElementException::class,
-                'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'set malformed page element reference' => [
                 'actionString' => 'set invalid-page-element-reference to "value"',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
-            ],
-            'set action unknown page' => [
-                'actionString' => 'set page_import_name.elements.element_name to "value"',
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => UnknownPageException::class,
-                'expectedExceptionMessage' => 'Unknown page "page_import_name',
-            ],
-            'set action unknown page element' => [
-                'actionString' => 'set page_import_name.elements.element_name to "value"',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ]),
-                'expectedException' => UnknownPageElementException::class,
-                'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'submit malformed page element reference' => [
                 'actionString' => 'submit invalid-page-element-reference',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
-            ],
-            'submit action unknown page' => [
-                'actionString' => 'submit page_import_name.elements.element_name',
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => UnknownPageException::class,
-                'expectedExceptionMessage' => 'Unknown page "page_import_name',
-            ],
-            'submit action unknown page element' => [
-                'actionString' => 'submit page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ]),
-                'expectedException' => UnknownPageElementException::class,
-                'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
             ],
             'wait-for malformed page element reference' => [
                 'actionString' => 'wait-for invalid-page-element-reference',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference "invalid-page-element-reference"',
             ],
-            'wait-for action unknown page' => [
-                'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => UnknownPageException::class,
-                'expectedExceptionMessage' => 'Unknown page "page_import_name',
-            ],
-            'wait-for action unknown page element' => [
-                'actionString' => 'wait-for page_import_name.elements.element_name',
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(new Uri('http://example.com'), []),
-                ]),
-                'expectedException' => UnknownPageElementException::class,
-                'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
-            ],
             'click css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'click .sign-in-form .submit-button',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form .submit-button"',
             ],
             'submit css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'submit .sign-in-form',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form"',
             ],
             'wait-for css selector unquoted is treated as page model element reference' => [
                 'actionString' => 'wait-for .sign-in-form .submit-button',
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedException' => MalformedPageElementReferenceException::class,
                 'expectedExceptionMessage' => 'Malformed page element reference ".sign-in-form .submit-button"',
             ],
