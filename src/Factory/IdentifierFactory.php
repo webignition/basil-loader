@@ -5,6 +5,8 @@ namespace webignition\BasilParser\Factory;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -22,11 +24,19 @@ class IdentifierFactory
     const POSITION_REGEX = '/' . self::POSITION_PATTERN . '$/';
     const CSS_SELECTOR_REGEX = '/^"((?!\/).).+("|' . self::POSITION_PATTERN . ')$/';
     const XPATH_EXPRESSION_REGEX = '/^"\/.+("|' . self::POSITION_PATTERN . ')$/';
-    const ELEMENT_PARAMETER_REGEX = '/^\$elements.+/';
-    const PAGE_OBJECT_PARAMETER_REGEX = '/^\$page.+/';
-    const BROWSER_OBJECT_PARAMETER_REGEX = '/^\$browser.+/';
+    const DATA_PARAMETER_REGEX = '/^\$data\.+/';
+    const ELEMENT_PARAMETER_REGEX = '/^\$elements\.+/';
+    const PAGE_OBJECT_PARAMETER_REGEX = '/^\$page\.+/';
+    const BROWSER_OBJECT_PARAMETER_REGEX = '/^\$browser\.+/';
     const REFERENCED_ELEMENT_REGEX = '/^"{{.+/';
     const REFERENCED_ELEMENT_EXTRACTOR_REGEX = '/^".+?(?=(}}))}}/';
+
+    private $valueFactory;
+
+    public function __construct(ValueFactory $valueFactory)
+    {
+        $this->valueFactory = $valueFactory;
+    }
 
     /**
      * @param string $identifierString
@@ -97,7 +107,7 @@ class IdentifierFactory
             list($value, $position) = $this->extractValueAndPosition($identifierString);
             $value = trim($value, '"');
 
-            return new Identifier($type, $value, $position, $name);
+            return new Identifier($type, new Value(ValueTypes::STRING, $value), $position, $name);
         }
 
         if (IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE === $type) {
@@ -120,7 +130,7 @@ class IdentifierFactory
             return $pageElementIdentifier;
         }
 
-        return new Identifier($type, $identifierString, 1, $name);
+        return new Identifier($type, $this->valueFactory->createFromValueString($identifierString), 1, $name);
     }
 
     private function deriveType(string $identifierString): string
