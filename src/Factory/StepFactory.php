@@ -2,7 +2,10 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
@@ -21,10 +24,19 @@ class StepFactory
      */
     private $assertionFactory;
 
-    public function __construct(ActionFactory $actionFactory, AssertionFactory $assertionFactory)
-    {
+    /**
+     * @var IdentifierFactory
+     */
+    private $identifierFactory;
+
+    public function __construct(
+        ActionFactory $actionFactory,
+        AssertionFactory $assertionFactory,
+        IdentifierFactory $identifierFactory
+    ) {
         $this->actionFactory = $actionFactory;
         $this->assertionFactory = $assertionFactory;
+        $this->identifierFactory = $identifierFactory;
     }
 
     /**
@@ -73,6 +85,41 @@ class StepFactory
             throw $contextAwareException;
         }
 
-        return new Step($actions, $assertions);
+        if ($stepData->getImportName() || $stepData->getDataImportName()) {
+            $step = new PendingImportResolutionStep(
+                $actions,
+                $assertions,
+                $stepData->getImportName(),
+                $stepData->getDataImportName()
+            );
+        } else {
+            $step = new Step($actions, $assertions);
+        }
+
+        $dataArray = $stepData->getDataArray();
+        if (!empty($dataArray)) {
+            foreach ($dataArray as $key => $dataSetData) {
+                $data[$key] = new DataSet($dataSetData);
+            }
+        }
+
+        if (!empty($data)) {
+            $step = $step->withDataSets($data);
+        }
+
+        $elementIdentifiers = [];
+        foreach ($stepData->getElements() as $elementName => $elementIdentifierString) {
+            $elementIdentifier = $this->identifierFactory->create($elementIdentifierString, $elementName);
+
+            if ($elementIdentifier instanceof IdentifierInterface) {
+                $elementIdentifiers[] = $elementIdentifier;
+            }
+        }
+
+        if (!empty($elementIdentifiers)) {
+            $step = $step->withElementIdentifiers($elementIdentifiers);
+        }
+
+        return $step;
     }
 }

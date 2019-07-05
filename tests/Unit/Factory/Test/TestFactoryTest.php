@@ -11,13 +11,6 @@ use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Tests\DataProvider\Factory\Test\CreateFromTestDataDataProviderTrait;
 use webignition\BasilParser\Tests\DataProvider\Factory\Test\MalformedPageElementReferenceDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\NonRetrievableDataProviderDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\NonRetrievablePageDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\NonRetrievableStepDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\UnknownDataProviderDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\UnknownPageDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\UnknownPageElementDataProviderTrait;
-use webignition\BasilParser\Tests\DataProvider\Factory\Test\UnknownStepDataProviderTrait;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\TestFactoryFactory;
 
@@ -25,13 +18,6 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
 {
     use CreateFromTestDataDataProviderTrait;
     use MalformedPageElementReferenceDataProviderTrait;
-    use NonRetrievableDataProviderDataProviderTrait;
-    use NonRetrievablePageDataProviderTrait;
-    use NonRetrievableStepDataProviderTrait;
-    use UnknownDataProviderDataProviderTrait;
-    use UnknownPageElementDataProviderTrait;
-    use UnknownPageDataProviderTrait;
-    use UnknownStepDataProviderTrait;
 
     /**
      * @var TestFactory
@@ -51,7 +37,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromTestDataDataProvider
      */
-    public function testCreateFromTestData(string $name, TestData $testData, TestInterface $expectedTest)
+    public function testCreateFromTestDataSuccess(string $name, TestData $testData, TestInterface $expectedTest)
     {
         $test = $this->testFactory->createFromTestData($name, $testData);
 
@@ -59,16 +45,7 @@ class TestFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @todo: uncomment data providers in #229
-     *
      * @dataProvider createFromTestDataThrowsMalformedPageElementReferenceExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsNonRetrievableDataProviderExceptionDataProvider
-     * @!dataProvider createFromTestDataThrowsNonRetrievablePageExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsNonRetrievableStepExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsUnknownDataProviderExceptionDataProvider
-     * @!dataProvider createFromTestDataThrowsUnknownPageElementExceptionDataProvider
-     * @!dataProvider createFromTestDataThrowsUnknownPageExceptionDataProvider
-     * @dataProvider createFromTestDataThrowsUnknownStepExceptionDataProvider
      */
     public function testCreateFromTestDataThrowsException(
         string $name,

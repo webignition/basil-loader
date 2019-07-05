@@ -10,7 +10,8 @@ class StepFactoryFactory
     {
         return new StepFactory(
             ActionFactoryFactory::create(),
-            AssertionFactoryFactory::create()
+            AssertionFactoryFactory::create(),
+            IdentifierFactoryFactory::create()
         );
     }
 }
