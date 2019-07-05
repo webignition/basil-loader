@@ -41,6 +41,8 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoadSuccess(string $path, TestSuiteInterface $expectedTestSuite)
     {
+        $this->markTestSkipped('Fix in #229');
+
         $testSuite = $this->testSuiteLoader->load($path);
 
         $this->assertEquals($expectedTestSuite, $testSuite);
