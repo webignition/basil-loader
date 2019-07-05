@@ -142,6 +142,84 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     '$browser.size to "value"'
                 ),
             ],
+            'interaction action lacking identifier' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    null,
+                    ''
+                ),
+            ],
+            'interaction action with css selector' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    ),
+                    '".selector"'
+                ),
+            ],
+            'interaction action with xpath expression' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::XPATH_EXPRESSION,
+                        new Value(
+                            ValueTypes::STRING,
+                            '//foo'
+                        )
+                    ),
+                    '"//foo"'
+                ),
+            ],
+            'interaction action with element parameter' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::ELEMENT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::ELEMENT_PARAMETER,
+                            '$elements.element_name',
+                            'elements',
+                            'name'
+                        )
+                    ),
+                    '$elements.element_name'
+                ),
+            ],
+            'interaction action with page object parameter' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::PAGE_OBJECT_PROPERTY,
+                            '$page.title',
+                            'page',
+                            'title'
+                        )
+                    ),
+                    '$page.title'
+                ),
+            ],
+            'interaction action with browser object parameter' => [
+                'action' => new InteractionAction(
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::BROWSER_OBJECT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::BROWSER_OBJECT_PROPERTY,
+                            '$browser.size',
+                            'browser',
+                            'size'
+                        )
+                    ),
+                    '$browser.size'
+                ),
+            ],
         ];
     }
 
@@ -153,10 +231,10 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         PageProviderInterface $pageProvider,
         ActionInterface $expectedAction
     ) {
-        $resolvedAction = $this->resolver->resolve($action, $pageProvider);
+        $resolvedIdentifierContainer = $this->resolver->resolve($action, $pageProvider);
 
-        $this->assertNotSame($action, $resolvedAction);
-        $this->assertEquals($expectedAction, $resolvedAction);
+        $this->assertNotSame($action, $resolvedIdentifierContainer);
+        $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
     }
 
     public function resolveCreatesNewActionDataProvider(): array

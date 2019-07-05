@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Resolver;
 
-use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\IdentifierContainerInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -10,7 +10,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
-class ActionResolver
+class AssertionResolver
 {
     /**
      * @var PageModelElementIdentifierResolver
@@ -23,26 +23,26 @@ class ActionResolver
     }
 
     /**
-     * @param ActionInterface $action
+     * @param AssertionInterface $assertion
      * @param PageProviderInterface $pageProvider
      *
-     * @return ActionInterface
+     * @return AssertionInterface
      *
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolve(ActionInterface $action, PageProviderInterface $pageProvider): ActionInterface
+    public function resolve(AssertionInterface $assertion, PageProviderInterface $pageProvider): AssertionInterface
     {
-        if ($action instanceof IdentifierContainerInterface) {
-            $resolvedAction = $this->pageModelElementIdentifierResolver->resolve($action, $pageProvider);
+        if ($assertion instanceof IdentifierContainerInterface) {
+            $resolvedAssertion = $this->pageModelElementIdentifierResolver->resolve($assertion, $pageProvider);
 
-            if ($resolvedAction instanceof ActionInterface) {
-                return $resolvedAction;
+            if ($resolvedAssertion instanceof AssertionInterface) {
+                return $resolvedAssertion;
             }
         }
 
-        return $action;
+        return $assertion;
     }
 }

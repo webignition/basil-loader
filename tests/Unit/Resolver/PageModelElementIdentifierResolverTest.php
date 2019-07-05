@@ -36,9 +36,9 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveLeavesActionUnchangedDataProvider
+     * @dataProvider resolveLeavesIdentifierContainerUnchangedDataProvider
      */
-    public function testResolveLeavesActionUnchanged(IdentifierContainerInterface $identifierContainer)
+    public function testResolveLeavesIdentifierContainerUnchanged(IdentifierContainerInterface $identifierContainer)
     {
         $this->assertSame(
             $identifierContainer,
@@ -46,7 +46,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function resolveLeavesActionUnchangedDataProvider(): array
+    public function resolveLeavesIdentifierContainerUnchangedDataProvider(): array
     {
         return [
             'input action lacking identifier' => [
@@ -227,20 +227,20 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveCreatesNewActionDataProvider
+     * @dataProvider resolveCreatesNewIdentifierContainerDataProvider
      */
-    public function testResolveCreatesNewAction(
+    public function testResolveCreatesNewIdentifierContainer(
         IdentifierContainerInterface $identifierContainer,
         PageProviderInterface $pageProvider,
         IdentifierContainerInterface $expectedIdentifierContainer
     ) {
-        $resolvedAction = $this->resolver->resolve($identifierContainer, $pageProvider);
+        $resolvedIdentifierContainer = $this->resolver->resolve($identifierContainer, $pageProvider);
 
-        $this->assertNotSame($identifierContainer, $resolvedAction);
-        $this->assertEquals($expectedIdentifierContainer, $resolvedAction);
+        $this->assertNotSame($identifierContainer, $resolvedIdentifierContainer);
+        $this->assertEquals($expectedIdentifierContainer, $resolvedIdentifierContainer);
     }
 
-    public function resolveCreatesNewActionDataProvider(): array
+    public function resolveCreatesNewIdentifierContainerDataProvider(): array
     {
         return [
             'input action' => [
@@ -272,7 +272,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'expectedAction' => new InputAction(
+                'expectedIdentifierContainer' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -313,7 +313,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'expectedAction' => new InteractionAction(
+                'expectedIdentifierContainer' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
