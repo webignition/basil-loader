@@ -220,6 +220,30 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ]),
             ],
+            'import name and page imported page elements' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_ELEMENTS => [
+                        'heading' => 'page_import_name.elements.heading'
+                    ],
+                ]),
+                'expectedStep' => (new PendingImportResolutionStep(
+                    [],
+                    [],
+                    'import_name',
+                    ''
+                ))->withElementIdentifiers([
+                    new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.heading'
+                        ),
+                        1,
+                        'heading'
+                    ),
+                ]),
+            ],
             'import name, data provider name, actions and assertions' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'import_name',

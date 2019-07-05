@@ -23,10 +23,19 @@ class StepFactory
      */
     private $assertionFactory;
 
-    public function __construct(ActionFactory $actionFactory, AssertionFactory $assertionFactory)
-    {
+    /**
+     * @var IdentifierFactory
+     */
+    private $identifierFactory;
+
+    public function __construct(
+        ActionFactory $actionFactory,
+        AssertionFactory $assertionFactory,
+        IdentifierFactory $identifierFactory
+    ) {
         $this->actionFactory = $actionFactory;
         $this->assertionFactory = $assertionFactory;
+        $this->identifierFactory = $identifierFactory;
     }
 
     /**
@@ -95,6 +104,15 @@ class StepFactory
 
         if (!empty($data)) {
             $step = $step->withDataSets($data);
+        }
+
+        $elementIdentifiers = [];
+        foreach ($stepData->getElements() as $elementName => $elementIdentifierString) {
+            $elementIdentifiers[] = $this->identifierFactory->create($elementIdentifierString, $elementName);
+        }
+
+        if (!empty($elementIdentifiers)) {
+            $step = $step->withElementIdentifiers($elementIdentifiers);
         }
 
         return $step;
