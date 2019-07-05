@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Factory;
 
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
@@ -71,6 +72,15 @@ class StepFactory
             ]);
 
             throw $contextAwareException;
+        }
+
+        if ($stepData->getImportName() || $stepData->getDataImportName()) {
+            return new PendingImportResolutionStep(
+                $actions,
+                $assertions,
+                $stepData->getImportName(),
+                $stepData->getDataImportName()
+            );
         }
 
         return new Step($actions, $assertions);

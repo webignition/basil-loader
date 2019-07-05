@@ -11,6 +11,7 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\Value;
@@ -177,6 +178,67 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             AssertionComparisons::EXISTS
                         ),
                     ]
+                ),
+            ],
+            'import name only' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep([], [], 'import_name', ''),
+            ],
+            'data provider name only' => [
+                'stepData' => new StepData([
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep([], [], '', 'data_provider_import_name'),
+            ],
+            'import name and data provider name' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep([], [], 'import_name', 'data_provider_import_name'),
+            ],
+            'import name, data provider name, actions and assertions' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                    StepData::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".selector" exists',
+                    ],
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(
+                    [
+                        new InteractionAction(
+                            ActionTypes::CLICK,
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
+                            ),
+                            '".selector"'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            '".selector" exists',
+                            new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.selector'
+                                )
+                            ),
+                            AssertionComparisons::EXISTS
+                        ),
+                    ],
+                    'import_name',
+                    'data_provider_import_name'
                 ),
             ],
         ];
