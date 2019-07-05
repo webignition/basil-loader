@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Factory;
 
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
@@ -108,7 +109,11 @@ class StepFactory
 
         $elementIdentifiers = [];
         foreach ($stepData->getElements() as $elementName => $elementIdentifierString) {
-            $elementIdentifiers[] = $this->identifierFactory->create($elementIdentifierString, $elementName);
+            $elementIdentifier = $this->identifierFactory->create($elementIdentifierString, $elementName);
+
+            if ($elementIdentifier instanceof IdentifierInterface) {
+                $elementIdentifiers[] = $elementIdentifier;
+            }
         }
 
         if (!empty($elementIdentifiers)) {
