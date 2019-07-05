@@ -176,13 +176,12 @@ trait CreateFromTestDataDataProviderTrait
                             new InteractionAction(
                                 ActionTypes::CLICK,
                                 new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
+                                    IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                     new Value(
                                         ValueTypes::STRING,
-                                        '.button'
+                                        'page_import_name.elements.button'
                                     ),
-                                    null,
-                                    'button'
+                                    null
                                 ),
                                 'page_import_name.elements.button'
                             ),
@@ -191,13 +190,12 @@ trait CreateFromTestDataDataProviderTrait
                             new Assertion(
                                 'page_import_name.elements.heading is "example"',
                                 new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
+                                    IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                     new Value(
                                         ValueTypes::STRING,
-                                        '.heading'
+                                        'page_import_name.elements.heading'
                                     ),
-                                    null,
-                                    'heading'
+                                    null
                                 ),
                                 AssertionComparisons::IS,
                                 new Value(
@@ -504,17 +502,7 @@ trait CreateFromTestDataDataProviderTrait
                                     )
                                 ),
                             ]
-                        ))->withElementIdentifiers([
-                            'heading' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.heading'
-                                ),
-                                null,
-                                'heading'
-                            ),
-                        ]),
+                        )),
                     ]
                 ),
             ],

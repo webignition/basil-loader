@@ -3,7 +3,6 @@
 namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilModel\Action\ActionInterface;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
@@ -20,25 +19,19 @@ abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageProviderInterface $pageProvider
      *
      * @return ActionInterface
      */
-    abstract protected function doCreateForActionType(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface;
+    abstract protected function doCreateForActionType(string $type, string $arguments): ActionInterface;
 
     public function createForActionType(
         string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
+        string $arguments
     ): ActionInterface {
         if (!$this->handles($type)) {
             throw new \RuntimeException('Invalid action type');
         }
 
-        return $this->doCreateForActionType($type, $arguments, $pageProvider);
+        return $this->doCreateForActionType($type, $arguments);
     }
 }

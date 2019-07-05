@@ -6,11 +6,8 @@ use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\Test\TestFactory;
@@ -37,11 +34,8 @@ class TestLoader
      * @throws YamlLoaderException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      */
     public function load(string $path): TestInterface

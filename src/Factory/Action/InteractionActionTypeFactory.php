@@ -6,11 +6,7 @@ use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class InteractionActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
@@ -33,20 +29,13 @@ class InteractionActionTypeFactory extends AbstractActionTypeFactory implements 
     /**
      * @param string $type
      * @param string $arguments
-     * @param PageProviderInterface $pageProvider
      *
      * @return ActionInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws NonRetrievablePageException
      */
-    protected function doCreateForActionType(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
-        return new InteractionAction($type, $this->identifierFactory->create($arguments, $pageProvider), $arguments);
+    protected function doCreateForActionType(string $type, string $arguments): ActionInterface
+    {
+        return new InteractionAction($type, $this->identifierFactory->create($arguments), $arguments);
     }
 }

@@ -4,7 +4,6 @@ namespace webignition\BasilParser\Factory\Action;
 
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\UnrecognisedAction;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ActionFactory
 {
@@ -18,7 +17,7 @@ class ActionFactory
         $this->actionTypeFactories[] = $actionTypeFactory;
     }
 
-    public function createFromActionString(string $actionString, PageProviderInterface $pageProvider): ActionInterface
+    public function createFromActionString(string $actionString): ActionInterface
     {
         $actionString = trim($actionString);
 
@@ -32,7 +31,7 @@ class ActionFactory
         $actionTypeFactory = $this->findActionTypeFactory($type);
 
         if ($actionTypeFactory instanceof ActionTypeFactoryInterface) {
-            return $actionTypeFactory->createForActionType($type, $arguments, $pageProvider);
+            return $actionTypeFactory->createForActionType($type, $arguments);
         }
 
         return new UnrecognisedAction($type, $arguments);

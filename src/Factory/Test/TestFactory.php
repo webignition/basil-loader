@@ -12,12 +12,8 @@ use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
-use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestFactory
@@ -25,20 +21,17 @@ class TestFactory
     private $configurationFactory;
     private $stepBuilder;
     private $stepProviderFactory;
-    private $pageProviderFactory;
     private $dataSetProviderFactory;
 
     public function __construct(
         ConfigurationFactory $configurationFactory,
         StepBuilder $stepBuilder,
         StepProviderFactory $stepProviderFactory,
-        PageProviderFactory $pageProviderFactory,
         DataSetProviderFactory $dataSetProviderFactory
     ) {
         $this->configurationFactory = $configurationFactory;
         $this->stepBuilder = $stepBuilder;
         $this->stepProviderFactory = $stepProviderFactory;
-        $this->pageProviderFactory = $pageProviderFactory;
         $this->dataSetProviderFactory = $dataSetProviderFactory;
     }
 
@@ -50,11 +43,8 @@ class TestFactory
      *
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      */
     public function createFromTestData(string $name, TestData $testData)
@@ -62,23 +52,11 @@ class TestFactory
         $imports = $testData->getImports();
 
         $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getStepPaths());
-        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPagePaths());
         $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider(
             $imports->getDataProviderPaths()
         );
 
-        try {
-            $configuration = $this->configurationFactory->createFromConfigurationData(
-                $testData->getConfiguration(),
-                $pageProvider
-            );
-        } catch (NonRetrievablePageException | UnknownPageException $nonRetrievablePageException) {
-            $nonRetrievablePageException->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $name,
-            ]);
-
-            throw $nonRetrievablePageException;
-        }
+        $configuration = $this->configurationFactory->createFromConfigurationData($testData->getConfiguration());
 
         $steps = [];
 
@@ -88,16 +66,12 @@ class TestFactory
                 $step =  $this->stepBuilder->build(
                     $stepData,
                     $stepProvider,
-                    $dataSetProvider,
-                    $pageProvider
+                    $dataSetProvider
                 );
             } catch (MalformedPageElementReferenceException |
                 NonRetrievableDataProviderException |
-                NonRetrievablePageException |
                 NonRetrievableStepException |
                 UnknownDataProviderException |
-                UnknownPageElementException |
-                UnknownPageException |
                 UnknownStepException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([

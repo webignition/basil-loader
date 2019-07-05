@@ -4,10 +4,7 @@ namespace webignition\BasilParser\Provider\Step;
 
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\StepLoader;
@@ -30,10 +27,7 @@ class DeferredStepProvider implements StepProviderInterface
      * @return StepInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      */
     public function findStep(string $importName): StepInterface
@@ -53,12 +47,9 @@ class DeferredStepProvider implements StepProviderInterface
      *
      * @return StepInterface
      *
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
-     * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
      */
     private function retrieveStep(string $importName): StepInterface
     {
