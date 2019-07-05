@@ -5,12 +5,12 @@
 namespace webignition\BasilParser\Tests\Unit\Resolver;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
-use webignition\BasilModel\IdentifierContainerInterface;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
@@ -18,13 +18,13 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
-use webignition\BasilParser\Resolver\PageModelElementIdentifierResolver;
-use webignition\BasilParser\Tests\Services\PageModelElementIdentifierResolverFactory;
+use webignition\BasilParser\Resolver\ActionResolver;
+use webignition\BasilParser\Tests\Services\ActionResolverFactory;
 
-class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
+class ActionResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PageModelElementIdentifierResolver
+     * @var ActionResolver
      */
     private $resolver;
 
@@ -32,25 +32,22 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->resolver = PageModelElementIdentifierResolverFactory::create();
+        $this->resolver = ActionResolverFactory::create();
     }
 
     /**
      * @dataProvider resolveLeavesActionUnchangedDataProvider
      */
-    public function testResolveLeavesActionUnchanged(IdentifierContainerInterface $identifierContainer)
+    public function testResolveLeavesActionUnchanged(ActionInterface $action)
     {
-        $this->assertSame(
-            $identifierContainer,
-            $this->resolver->resolve($identifierContainer, new EmptyPageProvider())
-        );
+        $this->assertSame($action, $this->resolver->resolve($action, new EmptyPageProvider()));
     }
 
     public function resolveLeavesActionUnchangedDataProvider(): array
     {
         return [
             'input action lacking identifier' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     null,
                     new Value(
                         ValueTypes::STRING,
@@ -60,7 +57,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with css selector' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -76,7 +73,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with xpath expression' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::XPATH_EXPRESSION,
                         new Value(
@@ -92,7 +89,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with element parameter' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::ELEMENT_PARAMETER,
                         new ObjectValue(
@@ -110,7 +107,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with page object parameter' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::PAGE_OBJECT_PARAMETER,
                         new ObjectValue(
@@ -128,7 +125,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with browser object parameter' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::BROWSER_OBJECT_PARAMETER,
                         new ObjectValue(
@@ -145,84 +142,6 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                     '$browser.size to "value"'
                 ),
             ],
-            'interaction action lacking identifier' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    null,
-                    ''
-                ),
-            ],
-            'interaction action with css selector' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
-                    ),
-                    '".selector"'
-                ),
-            ],
-            'interaction action with xpath expression' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::XPATH_EXPRESSION,
-                        new Value(
-                            ValueTypes::STRING,
-                            '//foo'
-                        )
-                    ),
-                    '"//foo"'
-                ),
-            ],
-            'interaction action with element parameter' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::ELEMENT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            'elements',
-                            'name'
-                        )
-                    ),
-                    '$elements.element_name'
-                ),
-            ],
-            'interaction action with page object parameter' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::PAGE_OBJECT_PROPERTY,
-                            '$page.title',
-                            'page',
-                            'title'
-                        )
-                    ),
-                    '$page.title'
-                ),
-            ],
-            'interaction action with browser object parameter' => [
-                'identifierContainer' => new InteractionAction(
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::BROWSER_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::BROWSER_OBJECT_PROPERTY,
-                            '$browser.size',
-                            'browser',
-                            'size'
-                        )
-                    ),
-                    '$browser.size'
-                ),
-            ],
         ];
     }
 
@@ -230,21 +149,21 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
      * @dataProvider resolveCreatesNewActionDataProvider
      */
     public function testResolveCreatesNewAction(
-        IdentifierContainerInterface $identifierContainer,
+        ActionInterface $action,
         PageProviderInterface $pageProvider,
-        IdentifierContainerInterface $expectedIdentifierContainer
+        ActionInterface $expectedAction
     ) {
-        $resolvedAction = $this->resolver->resolve($identifierContainer, $pageProvider);
+        $resolvedAction = $this->resolver->resolve($action, $pageProvider);
 
-        $this->assertNotSame($identifierContainer, $resolvedAction);
-        $this->assertEquals($expectedIdentifierContainer, $resolvedAction);
+        $this->assertNotSame($action, $resolvedAction);
+        $this->assertEquals($expectedAction, $resolvedAction);
     }
 
     public function resolveCreatesNewActionDataProvider(): array
     {
         return [
             'input action' => [
-                'identifierContainer' => new InputAction(
+                'action' => new InputAction(
                     new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                         new Value(
@@ -288,7 +207,7 @@ class PageModelElementIdentifierResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'interaction action' => [
-                'identifierContainer' => new InteractionAction(
+                'action' => new InteractionAction(
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
