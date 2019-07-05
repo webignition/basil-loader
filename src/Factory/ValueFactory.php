@@ -39,24 +39,15 @@ class ValueFactory
             return new ObjectValue($objectType, $valueString, $objectName, $propertyName);
         }
 
-        $hasDataParameterPrefix = mb_strpos($valueString, self::DATA_PARAMETER_PREFIX) === 0;
-        $hasElementParameterPrefix = mb_strpos($valueString, self::ELEMENT_PARAMETER_PREFIX) === 0;
-
-        if ($hasDataParameterPrefix) {
-            $type = ValueTypes::DATA_PARAMETER;
-        } elseif ($hasElementParameterPrefix) {
-            $type = ValueTypes::ELEMENT_PARAMETER;
-        } else {
-            if ('"' === $valueString[0]) {
-                $valueString = mb_substr($valueString, 1);
-            }
-
-            if ('"' === $valueString[-1]) {
-                $valueString = mb_substr($valueString, 0, -1);
-            }
-
-            $valueString = str_replace('\\"', '"', $valueString);
+        if ('"' === $valueString[0]) {
+            $valueString = mb_substr($valueString, 1);
         }
+
+        if ('"' === $valueString[-1]) {
+            $valueString = mb_substr($valueString, 0, -1);
+        }
+
+        $valueString = str_replace('\\"', '"', $valueString);
 
         return new Value($type, $valueString);
     }
