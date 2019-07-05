@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
@@ -75,14 +76,27 @@ class StepFactory
         }
 
         if ($stepData->getImportName() || $stepData->getDataImportName()) {
-            return new PendingImportResolutionStep(
+            $step = new PendingImportResolutionStep(
                 $actions,
                 $assertions,
                 $stepData->getImportName(),
                 $stepData->getDataImportName()
             );
+        } else {
+            $step = new Step($actions, $assertions);
         }
 
-        return new Step($actions, $assertions);
+        $dataArray = $stepData->getDataArray();
+        if (!empty($dataArray)) {
+            foreach ($dataArray as $key => $dataSetData) {
+                $data[$key] = new DataSet($dataSetData);
+            }
+        }
+
+        if (!empty($data)) {
+            $step = $step->withDataSets($data);
+        }
+
+        return $step;
     }
 }

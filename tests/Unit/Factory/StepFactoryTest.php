@@ -9,6 +9,7 @@ use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
@@ -198,6 +199,26 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     StepData::KEY_DATA => 'data_provider_import_name',
                 ]),
                 'expectedStep' => new PendingImportResolutionStep([], [], 'import_name', 'data_provider_import_name'),
+            ],
+            'import name and inline data' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => [
+                        'data_set_1' => [
+                            'expected_title' => 'Foo',
+                        ],
+                    ]
+                ]),
+                'expectedStep' => (new PendingImportResolutionStep(
+                    [],
+                    [],
+                    'import_name',
+                    ''
+                ))->withDataSets([
+                    'data_set_1' => new DataSet([
+                        'expected_title' => 'Foo',
+                    ]),
+                ]),
             ],
             'import name, data provider name, actions and assertions' => [
                 'stepData' => new StepData([
