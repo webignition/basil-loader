@@ -13,13 +13,13 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 class AssertionResolver
 {
     /**
-     * @var PageModelElementIdentifierResolver
+     * @var IdentifierContainerIdentifierResolver
      */
-    private $pageModelElementIdentifierResolver;
+    private $identifierContainerIdentifierResolver;
 
-    public function __construct(PageModelElementIdentifierResolver $pageModelElementIdentifierResolver)
+    public function __construct(IdentifierContainerIdentifierResolver $identifierContainerIdentifierResolver)
     {
-        $this->pageModelElementIdentifierResolver = $pageModelElementIdentifierResolver;
+        $this->identifierContainerIdentifierResolver = $identifierContainerIdentifierResolver;
     }
 
     /**
@@ -36,7 +36,7 @@ class AssertionResolver
     public function resolve(AssertionInterface $assertion, PageProviderInterface $pageProvider): AssertionInterface
     {
         if ($assertion instanceof IdentifierContainerInterface) {
-            $resolvedAssertion = $this->pageModelElementIdentifierResolver->resolve($assertion, $pageProvider);
+            $resolvedAssertion = $this->identifierContainerIdentifierResolver->resolve($assertion, $pageProvider);
 
             if ($resolvedAssertion instanceof AssertionInterface) {
                 return $resolvedAssertion;

@@ -9,12 +9,14 @@ use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
+use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -46,6 +48,9 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     public function resolveLeavesActionUnchangedDataProvider(): array
     {
         return [
+            'wait action' => [
+                'action' => new WaitAction('30'),
+            ],
             'input action lacking identifier' => [
                 'action' => new InputAction(
                     null,
@@ -323,5 +328,42 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
+    }
+
+    public function testThrowsUnknownPageElementException()
+    {
+        $action = new InputAction(
+            new Identifier(
+                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                new Value(
+                    ValueTypes::STRING,
+                    'page_import_name.elements.unknown_element_name'
+                )
+            ),
+            new Value(
+                ValueTypes::STRING,
+                'value'
+            ),
+            'page_import_name.elements.unknown_element_name to "value"'
+        );
+
+        $pageProvider = new PopulatedPageProvider([
+            'page_import_name' => new Page(
+                new Uri('http://example.com/'),
+                [
+                    'element_name' => new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    )
+                ]
+            )
+        ]);
+
+        $this->expectException(UnknownPageElementException::class);
+
+        $this->resolver->resolve($action, $pageProvider);
     }
 }

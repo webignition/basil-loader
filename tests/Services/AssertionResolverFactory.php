@@ -9,7 +9,7 @@ class AssertionResolverFactory
     public static function create(): AssertionResolver
     {
         return new AssertionResolver(
-            PageModelElementIdentifierResolverFactory::create()
+            IdentifierContainerIdentifierResolverFactory::create()
         );
     }
 }
