@@ -9,7 +9,7 @@ class ActionResolverFactory
     public static function create(): ActionResolver
     {
         return new ActionResolver(
-            PageModelElementIdentifierResolverFactory::create()
+            IdentifierContainerIdentifierResolverFactory::create()
         );
     }
 }

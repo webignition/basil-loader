@@ -13,13 +13,13 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 class ActionResolver
 {
     /**
-     * @var PageModelElementIdentifierResolver
+     * @var IdentifierContainerIdentifierResolver
      */
-    private $pageModelElementIdentifierResolver;
+    private $identifierContainerIdentifierResolver;
 
-    public function __construct(PageModelElementIdentifierResolver $pageModelElementIdentifierResolver)
+    public function __construct(IdentifierContainerIdentifierResolver $identifierContainerIdentifierResolver)
     {
-        $this->pageModelElementIdentifierResolver = $pageModelElementIdentifierResolver;
+        $this->identifierContainerIdentifierResolver = $identifierContainerIdentifierResolver;
     }
 
     /**
@@ -36,7 +36,7 @@ class ActionResolver
     public function resolve(ActionInterface $action, PageProviderInterface $pageProvider): ActionInterface
     {
         if ($action instanceof IdentifierContainerInterface) {
-            $resolvedAction = $this->pageModelElementIdentifierResolver->resolve($action, $pageProvider);
+            $resolvedAction = $this->identifierContainerIdentifierResolver->resolve($action, $pageProvider);
 
             if ($resolvedAction instanceof ActionInterface) {
                 return $resolvedAction;

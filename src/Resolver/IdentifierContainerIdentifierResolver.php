@@ -3,17 +3,22 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Identifier\IdentifierInterface;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\IdentifierContainerInterface;
-use webignition\BasilModel\PageElementReference\PageElementReference;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
-class PageModelElementIdentifierResolver
+class IdentifierContainerIdentifierResolver
 {
+    private $identifierResolver;
+
+    public function __construct(IdentifierResolver $identifierResolver)
+    {
+        $this->identifierResolver = $identifierResolver;
+    }
+
     /**
      * @param IdentifierContainerInterface $identifierContainer
      * @param PageProviderInterface $pageProvider
@@ -35,17 +40,10 @@ class PageModelElementIdentifierResolver
             return $identifierContainer;
         }
 
-        if (IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE === $identifier->getType()) {
-            $pageElementReference = new PageElementReference($identifier->getValue()->getValue());
+        $resolvedIdentifier = $this->identifierResolver->resolve($identifier, $pageProvider);
 
-            $page = $pageProvider->findPage($pageElementReference->getImportName());
-            $elementIdentifier = $page->getElementIdentifier($pageElementReference->getElementName());
-
-            if ($elementIdentifier instanceof IdentifierInterface) {
-                return $identifierContainer->withIdentifier($elementIdentifier);
-            }
-        }
-
-        return $identifierContainer;
+        return $resolvedIdentifier === $identifier
+            ? $identifierContainer
+            : $identifierContainer->withIdentifier($resolvedIdentifier);
     }
 }

@@ -47,6 +47,9 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     public function resolveLeavesActionUnchangedDataProvider(): array
     {
         return [
+            'assertion not implementing IdentifierContainerInterface' => [
+                'assertion' => \Mockery::mock(AssertionInterface::class),
+            ],
             'assertion lacking identifier' => [
                 'assertion' => new Assertion(
                     '',
