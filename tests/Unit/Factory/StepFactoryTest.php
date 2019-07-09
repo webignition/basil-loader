@@ -185,20 +185,24 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'import_name',
                 ]),
-                'expectedStep' => new PendingImportResolutionStep([], [], 'import_name', ''),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), 'import_name', ''),
             ],
             'data provider name only' => [
                 'stepData' => new StepData([
                     StepData::KEY_DATA => 'data_provider_import_name',
                 ]),
-                'expectedStep' => new PendingImportResolutionStep([], [], '', 'data_provider_import_name'),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
             ],
             'import name and data provider name' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'import_name',
                     StepData::KEY_DATA => 'data_provider_import_name',
                 ]),
-                'expectedStep' => new PendingImportResolutionStep([], [], 'import_name', 'data_provider_import_name'),
+                'expectedStep' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'import_name',
+                    'data_provider_import_name'
+                ),
             ],
             'import name and inline data' => [
                 'stepData' => new StepData([
@@ -210,8 +214,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     ]
                 ]),
                 'expectedStep' => (new PendingImportResolutionStep(
-                    [],
-                    [],
+                    new Step([], []),
                     'import_name',
                     ''
                 ))->withDataSets([
@@ -228,8 +231,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'expectedStep' => (new PendingImportResolutionStep(
-                    [],
-                    [],
+                    new Step([], []),
                     'import_name',
                     ''
                 ))->withElementIdentifiers([
@@ -256,32 +258,34 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'expectedStep' => new PendingImportResolutionStep(
-                    [
-                        new InteractionAction(
-                            ActionTypes::CLICK,
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                    new Step(
+                        [
+                            new InteractionAction(
+                                ActionTypes::CLICK,
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.selector'
+                                    )
+                                ),
+                                '".selector"'
                             ),
-                            '".selector"'
-                        ),
-                    ],
-                    [
-                        new Assertion(
-                            '".selector" exists',
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        ],
+                        [
+                            new Assertion(
+                                '".selector" exists',
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.selector'
+                                    )
+                                ),
+                                AssertionComparisons::EXISTS
                             ),
-                            AssertionComparisons::EXISTS
-                        ),
-                    ],
+                        ]
+                    ),
                     'import_name',
                     'data_provider_import_name'
                 ),
