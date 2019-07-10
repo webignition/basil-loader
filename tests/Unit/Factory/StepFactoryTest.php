@@ -235,7 +235,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     'import_name',
                     ''
                 ))->withElementIdentifiers([
-                    new Identifier(
+                    'heading' => new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                         new Value(
                             ValueTypes::STRING,
