@@ -4,6 +4,7 @@
 
 namespace webignition\BasilParser\Tests\Unit\Builder;
 
+use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
@@ -12,6 +13,7 @@ use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\ObjectValue;
@@ -19,17 +21,25 @@ use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Provider\Page\DeferredPageProvider;
+use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Provider\Step\DeferredStepProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\DataSetLoaderFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\PageLoaderFactory;
 use webignition\BasilParser\Tests\Services\StepBuilderFactory;
 use webignition\BasilParser\Tests\Services\StepLoaderFactory;
 
@@ -54,12 +64,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         StepData $stepData,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
+        PageProviderInterface $pageProvider,
         StepInterface $expectedStep
     ) {
         $step = $this->stepBuilder->build(
             $stepData,
             $stepProvider,
-            $dataSetProvider
+            $dataSetProvider,
+            $pageProvider
         );
 
         $this->assertInstanceOf(StepInterface::class, $step);
@@ -97,6 +109,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepData' => new StepData([]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'no imports, empty actions, empty assertions' => [
@@ -106,6 +119,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'unused invalid imports, empty actions, empty assertions' => [
@@ -125,6 +139,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         'data_provider_name' => 'invalid.yml',
                     ]
                 ),
+                'pageProvider' => new DeferredPageProvider(
+                    PageLoaderFactory::create(),
+                    [
+                        'page_import_name' => 'invalid.yml',
+                    ]
+                ),
                 'expectedStep' => new Step([], []),
             ],
             'no imports, has actions, has assertions' => [
@@ -138,6 +158,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -178,16 +199,18 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'element_name' => $simpleCssSelectorIdentifier
+                        ]
+                    )
+                ]),
                 'expectedStep' => new Step(
                     [
                         new InputAction(
-                            new Identifier(
-                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    'page_import_name.elements.element_name'
-                                )
-                            ),
+                            $simpleCssSelectorIdentifier,
                             new Value(
                                 ValueTypes::STRING,
                                 'example'
@@ -198,13 +221,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             'page_import_name.elements.element_name is "example"',
-                            new Identifier(
-                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    'page_import_name.elements.element_name'
-                                )
-                            ),
+                            $simpleCssSelectorIdentifier,
                             AssertionComparisons::IS,
                             new Value(
                                 ValueTypes::STRING,
@@ -225,6 +242,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
@@ -265,6 +283,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step(
                     [
                         new InteractionAction(
@@ -316,6 +335,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         ]),
                     ],
                 ]),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step(
                     [
                         new InteractionAction(
@@ -360,22 +380,22 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-//                'pageProvider' => new PopulatedPageProvider([
-//                    'page_import_name' => new Page(
-//                        new Uri('http://example.com'),
-//                        [
-//                            'heading' => new Identifier(
-//                                IdentifierTypes::CSS_SELECTOR,
-//                                new Value(
-//                                    ValueTypes::STRING,
-//                                    '.heading'
-//                                ),
-//                                null,
-//                                'heading'
-//                            ),
-//                        ]
-//                    ),
-//                ]),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'heading' => new Identifier(
+                                IdentifierTypes::CSS_SELECTOR,
+                                new Value(
+                                    ValueTypes::STRING,
+                                    '.heading'
+                                ),
+                                null,
+                                'heading'
+                            ),
+                        ]
+                    ),
+                ]),
                 'expectedStep' =>
                     (new Step(
                         [
@@ -404,7 +424,17 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                 )
                             ),
                         ]
-                    )),
+                    ))->withElementIdentifiers([
+                        'heading' => new Identifier(
+                            IdentifierTypes::CSS_SELECTOR,
+                            new Value(
+                                ValueTypes::STRING,
+                                '.heading'
+                            ),
+                            null,
+                            'heading'
+                        ),
+                    ]),
             ],
         ];
     }
@@ -419,7 +449,8 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 StepData::KEY_USE => 'unknown_step_import_name',
             ]),
             new EmptyStepProvider(),
-            new EmptyDataSetProvider()
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
         );
     }
 
@@ -439,7 +470,92 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                 ]
             ),
-            new EmptyDataSetProvider()
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
+        );
+    }
+
+    public function testBuildUseUnknownPageImport()
+    {
+        $this->expectException(UnknownPageException::class);
+        $this->expectExceptionMessage('Unknown page "page_import_name"');
+
+        $this->stepBuilder->build(
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
+                    'heading' => 'page_import_name.elements.heading',
+                ],
+            ]),
+            new DeferredStepProvider(
+                StepLoaderFactory::create(),
+                [
+                    'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                ]
+            ),
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
+        );
+    }
+
+    public function testBuildUseUnknownPageElement()
+    {
+        $this->expectException(UnknownPageElementException::class);
+        $this->expectExceptionMessage('Unknown page element "not-heading" in page "page_import_name"');
+
+        $this->stepBuilder->build(
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
+                    'not-heading' => 'page_import_name.elements.not-heading',
+                ],
+            ]),
+            new DeferredStepProvider(
+                StepLoaderFactory::create(),
+                [
+                    'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                ]
+            ),
+            new EmptyDataSetProvider(),
+            new PopulatedPageProvider([
+                'page_import_name' => new Page(
+                    new Uri('http://example.com'),
+                    [
+                        'heading' => new Identifier(
+                            IdentifierTypes::CSS_SELECTOR,
+                            new Value(
+                                ValueTypes::STRING,
+                                '.heading'
+                            ),
+                            null,
+                            'heading'
+                        )
+                    ]
+                ),
+            ])
+        );
+    }
+
+    public function testBuildUseInvalidPageElementReference()
+    {
+        $this->expectException(MalformedPageElementReferenceException::class);
+        $this->expectExceptionMessage('Malformed page element reference "page_import_name.foo.heading"');
+
+        $this->stepBuilder->build(
+            new StepData([
+                StepData::KEY_USE => 'step_import_name',
+                StepData::KEY_ELEMENTS => [
+                    'heading' => 'page_import_name.foo.heading',
+                ],
+            ]),
+            new DeferredStepProvider(
+                StepLoaderFactory::create(),
+                [
+                    'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
+                ]
+            ),
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
         );
     }
 }
