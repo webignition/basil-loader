@@ -394,7 +394,9 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         new Value(
                             ValueTypes::STRING,
                             'page_import_name.elements.element_name'
-                        )
+                        ),
+                        null,
+                        'identifier_name'
                     ),
                 ]),
                 'pageProvider' => new PopulatedPageProvider([
@@ -417,7 +419,9 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         new Value(
                             ValueTypes::STRING,
                             '.selector'
-                        )
+                        ),
+                        null,
+                        'identifier_name'
                     ),
                 ])
             ],
