@@ -91,8 +91,11 @@ class StepResolver
         $step = $step->withAssertions($resolvedAssertions);
 
         $resolvedElementIdentifiers = [];
-        foreach ($step->getElementIdentifiers() as $elementIdentifier) {
-            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve($elementIdentifier, $pageProvider);
+        foreach ($step->getElementIdentifiers() as $elementName => $elementIdentifier) {
+            $resolvedElementIdentifiers[$elementName] = $this->identifierResolver->resolve(
+                $elementIdentifier,
+                $pageProvider
+            );
         }
 
         $step = $step->withElementIdentifiers($resolvedElementIdentifiers);
