@@ -273,7 +273,7 @@ trait CreateFromTestDataDataProviderTrait
                     'step import, no parameters',
                     $expectedConfiguration,
                     [
-                        'step_name' => new PendingImportResolutionStep([], [], 'step_import_name', ''),
+                        'step_name' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
                     ]
                 ),
             ],
@@ -303,8 +303,7 @@ trait CreateFromTestDataDataProviderTrait
                     $expectedConfiguration,
                     [
                         'step_name' => (new PendingImportResolutionStep(
-                            [],
-                            [],
+                            new Step([], []),
                             'step_import_name',
                             ''
                         ))->withDataSets([
@@ -341,8 +340,7 @@ trait CreateFromTestDataDataProviderTrait
                     $expectedConfiguration,
                     [
                         'step_name' => new PendingImportResolutionStep(
-                            [],
-                            [],
+                            new Step([], []),
                             'step_import_name',
                             'data_provider_import_name'
                         ),
@@ -377,8 +375,7 @@ trait CreateFromTestDataDataProviderTrait
                     $expectedConfiguration,
                     [
                         'step_name' => (new PendingImportResolutionStep(
-                            [],
-                            [],
+                            new Step([], []),
                             'step_import_name',
                             ''
                         ))->withElementIdentifiers([

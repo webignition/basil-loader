@@ -85,15 +85,14 @@ class StepFactory
             throw $contextAwareException;
         }
 
+        $step = new Step($actions, $assertions);
+
         if ($stepData->getImportName() || $stepData->getDataImportName()) {
             $step = new PendingImportResolutionStep(
-                $actions,
-                $assertions,
+                $step,
                 $stepData->getImportName(),
                 $stepData->getDataImportName()
             );
-        } else {
-            $step = new Step($actions, $assertions);
         }
 
         $dataArray = $stepData->getDataArray();
