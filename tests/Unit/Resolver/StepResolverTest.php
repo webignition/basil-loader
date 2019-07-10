@@ -389,7 +389,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'has resolvable element identifiers' => [
                 'step' => (new Step([], []))->withElementIdentifiers([
-                    new Identifier(
+                    'element_name' => new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                         new Value(
                             ValueTypes::STRING,
@@ -414,7 +414,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     )
                 ]),
                 'expectedStep' => (new Step([], []))->withElementIdentifiers([
-                    new Identifier(
+                    'element_name' => new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
                             ValueTypes::STRING,
