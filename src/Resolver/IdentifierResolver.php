@@ -38,7 +38,11 @@ class IdentifierResolver
         $elementIdentifier = $page->getElementIdentifier($pageElementReference->getElementName());
 
         if ($elementIdentifier instanceof IdentifierInterface) {
-            return $elementIdentifier;
+            $identifierName = $identifier->getName();
+
+            return null === $identifierName
+                ? $elementIdentifier
+                : $elementIdentifier->withName($identifierName);
         }
 
         throw new UnknownPageElementException(
