@@ -379,7 +379,7 @@ trait CreateFromTestDataDataProviderTrait
                             'step_import_name',
                             ''
                         ))->withElementIdentifiers([
-                            new Identifier(
+                            'heading' => new Identifier(
                                 IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                 new Value(
                                     ValueTypes::STRING,
