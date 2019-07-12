@@ -75,6 +75,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".selector"',
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
@@ -86,6 +87,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             '".selector"'
                         ),
                         new InputAction(
+                            'set ".input" to "value"',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 new Value(
@@ -155,6 +157,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click page_import_name.elements.element_name',
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -261,6 +264,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                     new Step(
                         [
                             new InteractionAction(
+                                'click ".selector"',
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,

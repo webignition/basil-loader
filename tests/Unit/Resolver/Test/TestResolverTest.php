@@ -142,6 +142,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => new Step(
                         [
                             new InteractionAction(
+                                'click page_import_name.elements.action_element_name',
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -182,6 +183,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => (new Step(
                             [
                                 new InteractionAction(
+                                    'click page_import_name.elements.action_element_name',
                                     ActionTypes::CLICK,
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
