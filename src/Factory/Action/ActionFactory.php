@@ -31,10 +31,10 @@ class ActionFactory
         $actionTypeFactory = $this->findActionTypeFactory($type);
 
         if ($actionTypeFactory instanceof ActionTypeFactoryInterface) {
-            return $actionTypeFactory->createForActionType($type, $arguments);
+            return $actionTypeFactory->createForActionType($actionString, $type, $arguments);
         }
 
-        return new UnrecognisedAction($type, $arguments);
+        return new UnrecognisedAction($actionString, $type, $arguments);
     }
 
     private function findActionTypeFactory(string $type): ?ActionTypeFactoryInterface

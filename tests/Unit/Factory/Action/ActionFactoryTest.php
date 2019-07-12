@@ -55,6 +55,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'click css selector with null position double-quoted' => [
                 'actionString' => 'click ".selector"',
                 'expectedAction' => new InteractionAction(
+                    'click ".selector"',
                     ActionTypes::CLICK,
                     $simpleCssSelectorIdentifier,
                     '".selector"'
@@ -63,6 +64,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'click css selector with position double-quoted' => [
                 'actionString' => 'click ".selector":3',
                 'expectedAction' => new InteractionAction(
+                    'click ".selector":3',
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
@@ -75,6 +77,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'click page model reference' => [
                 'actionString' => 'click page_import_name.elements.element_name',
                 'expectedAction' => new InteractionAction(
+                    'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -89,6 +92,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'click element parameter reference' => [
                 'actionString' => 'click $elements.name',
                 'expectedAction' => new InteractionAction(
+                    'click $elements.name',
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::ELEMENT_PARAMETER,
@@ -105,6 +109,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'click with no arguments' => [
                 'actionString' => 'click',
                 'expectedAction' => new InteractionAction(
+                    'click',
                     ActionTypes::CLICK,
                     null,
                     ''
@@ -122,6 +127,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'submit css selector with null position double-quoted' => [
                 'actionString' => 'submit ".selector"',
                 'expectedAction' => new InteractionAction(
+                    'submit ".selector"',
                     ActionTypes::SUBMIT,
                     $simpleCssSelectorIdentifier,
                     '".selector"'
@@ -130,6 +136,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'submit css selector with position double-quoted' => [
                 'actionString' => 'submit ".selector":3',
                 'expectedAction' => new InteractionAction(
+                    'submit ".selector":3',
                     ActionTypes::SUBMIT,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
@@ -142,6 +149,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'submit page model reference' => [
                 'actionString' => 'submit page_import_name.elements.element_name',
                 'expectedAction' => new InteractionAction(
+                    'submit page_import_name.elements.element_name',
                     ActionTypes::SUBMIT,
                     new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -156,6 +164,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'submit element parameter reference' => [
                 'actionString' => 'submit $elements.name',
                 'expectedAction' => new InteractionAction(
+                    'submit $elements.name',
                     ActionTypes::SUBMIT,
                     new Identifier(
                         IdentifierTypes::ELEMENT_PARAMETER,
@@ -172,6 +181,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'submit no arguments' => [
                 'actionString' => 'submit',
                 'expectedAction' => new InteractionAction(
+                    'submit',
                     ActionTypes::SUBMIT,
                     null,
                     ''
@@ -189,6 +199,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'wait-for css selector with null position double-quoted' => [
                 'actionString' => 'wait-for ".selector"',
                 'expectedAction' => new InteractionAction(
+                    'wait-for ".selector"',
                     ActionTypes::WAIT_FOR,
                     $simpleCssSelectorIdentifier,
                     '".selector"'
@@ -197,6 +208,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'wait-for css selector with position double-quoted' => [
                 'actionString' => 'wait-for ".selector":3',
                 'expectedAction' => new InteractionAction(
+                    'wait-for ".selector":3',
                     ActionTypes::WAIT_FOR,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
@@ -209,6 +221,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'wait-for page model reference' => [
                 'actionString' => 'wait-for page_import_name.elements.element_name',
                 'expectedAction' => new InteractionAction(
+                    'wait-for page_import_name.elements.element_name',
                     ActionTypes::WAIT_FOR,
                     new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
@@ -223,6 +236,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'wait-for element parameter reference' => [
                 'actionString' => 'wait-for $elements.name',
                 'expectedAction' => new InteractionAction(
+                    'wait-for $elements.name',
                     ActionTypes::WAIT_FOR,
                     new Identifier(
                         IdentifierTypes::ELEMENT_PARAMETER,
@@ -239,6 +253,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'wait-for no arguments' => [
                 'actionString' => 'wait-for',
                 'expectedAction' => new InteractionAction(
+                    'wait-for',
                     ActionTypes::WAIT_FOR,
                     null,
                     ''
@@ -262,19 +277,19 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'wait 1' => [
                 'actionString' => 'wait 1',
-                'expectedAction' => new WaitAction('1'),
+                'expectedAction' => new WaitAction('wait 1', '1'),
             ],
             'wait 15' => [
                 'actionString' => 'wait 15',
-                'expectedAction' => new WaitAction('15'),
+                'expectedAction' => new WaitAction('wait 15', '15'),
             ],
             'wait $data.name' => [
                 'actionString' => 'wait $data.name',
-                'expectedAction' => new WaitAction('$data.name'),
+                'expectedAction' => new WaitAction('wait $data.name', '$data.name'),
             ],
             'wait no arguments' => [
                 'actionString' => 'wait',
-                'expectedAction' => new WaitAction(''),
+                'expectedAction' => new WaitAction('wait', ''),
             ],
         ];
     }
@@ -296,15 +311,15 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'reload' => [
                 'actionString' => 'reload',
-                'expectedAction' => new NoArgumentsAction(ActionTypes::RELOAD, ''),
+                'expectedAction' => new NoArgumentsAction('reload', ActionTypes::RELOAD, ''),
             ],
             'back' => [
                 'actionString' => 'back',
-                'expectedAction' => new NoArgumentsAction(ActionTypes::BACK, ''),
+                'expectedAction' => new NoArgumentsAction('back', ActionTypes::BACK, ''),
             ],
             'forward' => [
                 'actionString' => 'forward',
-                'expectedAction' => new NoArgumentsAction(ActionTypes::FORWARD, ''),
+                'expectedAction' => new NoArgumentsAction('forward', ActionTypes::FORWARD, ''),
             ],
         ];
     }
@@ -329,6 +344,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'simple css selector, scalar value' => [
                 'actionString' => 'set ".selector" to "value"',
                 'expectedAction' => new InputAction(
+                    'set ".selector" to "value"',
                     $simpleCssSelectorIdentifier,
                     $simpleScalarValue,
                     '".selector" to "value"'
@@ -337,6 +353,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'simple css selector, data parameter value' => [
                 'actionString' => 'set ".selector" to $data.name',
                 'expectedAction' => new InputAction(
+                    'set ".selector" to $data.name',
                     $simpleCssSelectorIdentifier,
                     new ObjectValue(
                         ValueTypes::DATA_PARAMETER,
@@ -350,6 +367,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'simple css selector, element parameter value' => [
                 'actionString' => 'set ".selector" to $elements.name',
                 'expectedAction' => new InputAction(
+                    'set ".selector" to $elements.name',
                     $simpleCssSelectorIdentifier,
                     new ObjectValue(
                         ValueTypes::ELEMENT_PARAMETER,
@@ -363,6 +381,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'simple css selector, escaped quotes scalar value' => [
                 'actionString' => 'set ".selector" to "\"value\""',
                 'expectedAction' => new InputAction(
+                    'set ".selector" to "\"value\""',
                     $simpleCssSelectorIdentifier,
                     new Value(
                         ValueTypes::STRING,
@@ -374,6 +393,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'css selector includes stop words, scalar value' => [
                 'actionString' => 'set ".selector to value" to "value"',
                 'expectedAction' => new InputAction(
+                    'set ".selector to value" to "value"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -391,6 +411,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'simple xpath expression, scalar value' => [
                 'actionString' => 'set "//foo" to "value"',
                 'expectedAction' => new InputAction(
+                    'set "//foo" to "value"',
                     new Identifier(
                         IdentifierTypes::XPATH_EXPRESSION,
                         new Value(
@@ -408,6 +429,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'xpath expression includes stopwords, scalar value' => [
                 'actionString' => 'set "//a[ends-with(@href to value, \".pdf\")]" to "value"',
                 'expectedAction' => new InputAction(
+                    'set "//a[ends-with(@href to value, \".pdf\")]" to "value"',
                     new Identifier(
                         IdentifierTypes::XPATH_EXPRESSION,
                         new Value(
@@ -425,6 +447,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'no arguments' => [
                 'actionString' => 'set',
                 'expectedAction' => new InputAction(
+                    'set',
                     null,
                     null,
                     ''
@@ -433,6 +456,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             'lacking value' => [
                 'actionString' => 'set ".selector" to',
                 'expectedAction' => new InputAction(
+                    'set ".selector" to',
                     $simpleCssSelectorIdentifier,
                     null,
                     '".selector" to'
@@ -441,6 +465,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             '".selector" lacking "to" keyword' => [
                 'actionString' => 'set ".selector" "value"',
                 'expectedAction' => new InputAction(
+                    'set ".selector" "value"',
                     $simpleCssSelectorIdentifier,
                     $simpleScalarValue,
                     '".selector" "value"'
@@ -449,6 +474,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             '".selector to value" lacking "to" keyword' => [
                 'actionString' => 'set ".selector to value" "value"',
                 'expectedAction' => new InputAction(
+                    'set ".selector to value" "value"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -466,6 +492,7 @@ class ActionFactoryTest extends \PHPUnit\Framework\TestCase
             '".selector" lacking "to" keyword and lacking value' => [
                 'actionString' => 'set ".selector"',
                 'expectedAction' => new InputAction(
+                    'set ".selector"',
                     $simpleCssSelectorIdentifier,
                     null,
                     '".selector"'

@@ -36,6 +36,7 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
     }
 
     /**
+     * @param string $actionString
      * @param string $type
      * @param string $arguments
      *
@@ -43,12 +44,12 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
      *
      * @throws MalformedPageElementReferenceException
      */
-    protected function doCreateForActionType(string $type, string $arguments): ActionInterface
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
     {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {
-            return new InputAction(null, null, $arguments);
+            return new InputAction($actionString, null, null, $arguments);
         }
 
         $identifier = $this->identifierFactory->create($identifierString);
@@ -57,11 +58,11 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
 
         if (preg_match($endsWithStopStringRegex, $arguments) > 0) {
-            return new InputAction($identifier, null, $arguments);
+            return new InputAction($actionString, $identifier, null, $arguments);
         }
 
         if ($arguments === $identifierString) {
-            return new InputAction($identifier, null, $arguments);
+            return new InputAction($actionString, $identifier, null, $arguments);
         }
 
         $keywordAndValueString = mb_substr($arguments, mb_strlen($identifierString));
@@ -78,6 +79,6 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
                 : $this->valueFactory->createFromValueString($keywordAndValueString);
         }
 
-        return new InputAction($identifier, $value, $arguments);
+        return new InputAction($actionString, $identifier, $value, $arguments);
     }
 }

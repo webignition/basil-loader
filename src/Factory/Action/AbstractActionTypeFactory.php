@@ -17,14 +17,20 @@ abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
     abstract protected function getHandledActionTypes(): array;
 
     /**
+     * @param string $actionString
      * @param string $type
      * @param string $arguments
      *
      * @return ActionInterface
      */
-    abstract protected function doCreateForActionType(string $type, string $arguments): ActionInterface;
+    abstract protected function doCreateForActionType(
+        string $actionString,
+        string $type,
+        string $arguments
+    ): ActionInterface;
 
     public function createForActionType(
+        string $actionString,
         string $type,
         string $arguments
     ): ActionInterface {
@@ -32,6 +38,6 @@ abstract class AbstractActionTypeFactory implements ActionTypeFactoryInterface
             throw new \RuntimeException('Invalid action type');
         }
 
-        return $this->doCreateForActionType($type, $arguments);
+        return $this->doCreateForActionType($actionString, $type, $arguments);
     }
 }

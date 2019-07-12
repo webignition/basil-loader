@@ -15,8 +15,8 @@ class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionT
         ];
     }
 
-    protected function doCreateForActionType(string $type, string $arguments): ActionInterface
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
     {
-        return new WaitAction($arguments);
+        return new WaitAction($actionString, $arguments);
     }
 }
