@@ -46,4 +46,9 @@ class Test extends AbstractDataStructure
 
         return $steps;
     }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 }
