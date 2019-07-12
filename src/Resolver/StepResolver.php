@@ -85,7 +85,7 @@ class StepResolver
         foreach ($step->getActions() as $action) {
             try {
                 $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
-            } catch (NonRetrievablePageException $contextAwareException) {
+            } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_CONTENT => $action->getActionString(),
                 ]);
@@ -100,7 +100,7 @@ class StepResolver
         foreach ($step->getAssertions() as $assertion) {
             try {
                 $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
-            } catch (NonRetrievablePageException $contextAwareException) {
+            } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_CONTENT => $assertion->getAssertionString(),
                 ]);

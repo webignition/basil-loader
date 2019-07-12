@@ -31,6 +31,7 @@ use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
@@ -536,30 +537,76 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => new Step([], []),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-//                'name' => 'test name',
-//                'testData' => new TestData(
-//                    PathResolverFactory::create(),
-//                    [
-//                        TestData::KEY_CONFIGURATION => [
-//                            ConfigurationData::KEY_BROWSER => 'chrome',
-//                            ConfigurationData::KEY_URL => 'http://example.com',
-//                        ],
-//                        TestData::KEY_IMPORTS => [
-//                            ImportsData::KEY_STEPS => [
-//                                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
-//                            ],
-//                        ],
-//                        'step name' => [
-//                            StepData::KEY_USE => 'step_import_name',
-//                            StepData::KEY_DATA => 'data_provider_import_name',
-//                        ],
-//                    ]
-//                ),
                 'expectedException' => UnknownDataProviderException::class,
                 'expectedExceptionMessage' => 'Unknown data provider "data_provider_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'UnknownPageException: config.url references page not defined within a collection' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'page_import_name.url'),
+                    []
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                ])
+            ],
+            'UnknownPageException: assertion string references page not defined within a collection' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [],
+                            [
+                                (AssertionFactoryFactory::create())
+                                    ->createFromAssertionString('page_import_name.elements.element_name exists'),
+                            ]
+                        )
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
+                ])
+            ],
+            'UnknownPageException: action string references page not defined within a collection' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [
+                                (ActionFactoryFactory::create())
+                                    ->createFromActionString('click page_import_name.elements.element_name')
+                            ],
+                            []
+                        )
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageException::class,
+                'expectedExceptionMessage' => 'Unknown page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
                 ])
             ],
         ];
