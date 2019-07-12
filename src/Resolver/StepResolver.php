@@ -60,7 +60,11 @@ class StepResolver
             $dataProviderImportName = $step->getDataProviderImportName();
 
             if ('' !== $importName) {
-                $parentStep = $stepProvider->findStep($importName);
+                $parentStep = $stepProvider->findStep($importName, $stepProvider, $dataSetProvider, $pageProvider);
+
+                if ($parentStep instanceof PendingImportResolutionStepInterface) {
+                    $parentStep = $this->resolve($parentStep, $stepProvider, $dataSetProvider, $pageProvider);
+                }
 
                 $step = $step
                     ->withPrependedActions($parentStep->getActions())

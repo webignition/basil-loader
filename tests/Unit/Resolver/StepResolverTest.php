@@ -128,6 +128,26 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     new Assertion('".selector2" exists', null, null),
                 ]),
             ],
+            'deferred' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), 'deferred_step_import_name', ''),
+                'stepProvider' => new PopulatedStepProvider([
+                    'deferred_step_import_name' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'step_import_name',
+                        ''
+                    ),
+                    'step_import_name' => new Step([
+                        new WaitAction('1'),
+                    ], [
+                        new Assertion('".selector" exists', null, null)
+                    ]),
+                ]),
+                'expectedStep' => new Step([
+                    new WaitAction('1'),
+                ], [
+                    new Assertion('".selector" exists', null, null)
+                ]),
+            ],
         ];
     }
 
