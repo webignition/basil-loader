@@ -30,6 +30,7 @@ use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
+use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
@@ -513,6 +514,49 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedException' => NonRetrievableStepException::class,
                 'expectedExceptionMessage' =>
                     'Cannot retrieve step "step_import_name" from "' . $invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'UnknownDataProviderException: test.data references a data provider that has not been defined' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            'data_provider_import_name'
+                        )
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step([], []),
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+//                'name' => 'test name',
+//                'testData' => new TestData(
+//                    PathResolverFactory::create(),
+//                    [
+//                        TestData::KEY_CONFIGURATION => [
+//                            ConfigurationData::KEY_BROWSER => 'chrome',
+//                            ConfigurationData::KEY_URL => 'http://example.com',
+//                        ],
+//                        TestData::KEY_IMPORTS => [
+//                            ImportsData::KEY_STEPS => [
+//                                'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
+//                            ],
+//                        ],
+//                        'step name' => [
+//                            StepData::KEY_USE => 'step_import_name',
+//                            StepData::KEY_DATA => 'data_provider_import_name',
+//                        ],
+//                    ]
+//                ),
+                'expectedException' => UnknownDataProviderException::class,
+                'expectedExceptionMessage' => 'Unknown data provider "data_provider_import_name"',
                 'expectedExceptionContext' =>  new ExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
