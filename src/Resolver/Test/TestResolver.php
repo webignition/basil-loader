@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Resolver\Test;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
@@ -55,12 +56,21 @@ class TestResolver
 
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
-            $resolvedSteps[$stepName] = $this->stepResolver->resolve(
-                $step,
-                $stepProvider,
-                $dataSetProvider,
-                $pageProvider
-            );
+            try {
+                $resolvedSteps[$stepName] = $this->stepResolver->resolve(
+                    $step,
+                    $stepProvider,
+                    $dataSetProvider,
+                    $pageProvider
+                );
+            } catch (NonRetrievableDataProviderException $contextAwareException) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => $test->getName(),
+                    ExceptionContextInterface::KEY_STEP_NAME => $stepName,
+                ]);
+
+                throw $contextAwareException;
+            }
         }
 
         return new Test($test->getName(), $configuration, $resolvedSteps);
