@@ -2,7 +2,6 @@
 
 namespace webignition\BasilParser\Resolver;
 
-use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
@@ -61,7 +60,7 @@ class StepResolver
             $dataProviderImportName = $step->getDataProviderImportName();
 
             if ('' !== $importName) {
-                $parentStep = $stepProvider->findStep($importName);
+                $parentStep = $stepProvider->findStep($importName, $stepProvider, $dataSetProvider, $pageProvider);
 
                 if ($parentStep instanceof PendingImportResolutionStepInterface) {
                     $parentStep = $this->resolve($parentStep, $stepProvider, $dataSetProvider, $pageProvider);

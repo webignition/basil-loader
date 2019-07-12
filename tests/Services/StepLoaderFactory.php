@@ -10,7 +10,7 @@ class StepLoaderFactory
     {
         return new StepLoader(
             YamlLoaderFactory::create(),
-            StepFactoryFactory::create()
+            StepBuilderFactory::create()
         );
     }
 }
