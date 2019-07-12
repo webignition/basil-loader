@@ -44,6 +44,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
         return [
             'input action lacking identifier' => [
                 'action' => new InputAction(
+                    'set to "foo"',
                     null,
                     new Value(
                         ValueTypes::STRING,
@@ -54,6 +55,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'input action lacking value' => [
                 'action' => new InputAction(
+                    'set ".selector" to',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -67,6 +69,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'input action with identifier and value, lacking "to" keyword' => [
                 'action' => new InputAction(
+                    'set ".selector" "foo"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -83,6 +86,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'input action with identifier containing "to" keyword and value, lacking "to" keyword' => [
                 'action' => new InputAction(
+                    'set ".selector to value" "foo"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -99,6 +103,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'input action with identifier and value containing "to" keyword, lacking "to" keyword' => [
                 'action' => new InputAction(
+                    'set ".selector" "foo to value"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -115,6 +120,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'interaction action without identifier' => [
                 'action' => new InteractionAction(
+                    'click',
                     ActionTypes::CLICK,
                     null,
                     ''
@@ -122,17 +128,20 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'wait action without duration' => [
                 'action' => new WaitAction(
+                    'wait',
                     ''
                 ),
             ],
             'unrecognised action' => [
                 'action' => new UnrecognisedAction(
                     'foo',
+                    'foo',
                     ''
                 ),
             ],
             'empty action' => [
                 'action' => new UnrecognisedAction(
+                    '',
                     '',
                     ''
                 ),
@@ -153,6 +162,7 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
         return [
             'input action' => [
                 'action' => new InputAction(
+                    'set ".selector" to "foo"',
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -167,8 +177,9 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
                     '".selector" to "foo"'
                 ),
             ],
-            'interaction action without identifier' => [
+            'interaction action' => [
                 'action' => new InteractionAction(
+                    'click ".selector"',
                     ActionTypes::CLICK,
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
@@ -182,42 +193,49 @@ class ActionValidatorTest extends \PHPUnit\Framework\TestCase
             ],
             'reload action, no arguments' => [
                 'action' => new NoArgumentsAction(
+                    'reload',
                     ActionTypes::RELOAD,
                     ''
                 ),
             ],
             'reload action, has arguments' => [
                 'action' => new NoArgumentsAction(
+                    'reload foo bar',
                     ActionTypes::RELOAD,
                     'foo bar'
                 ),
             ],
             'back action, no arguments' => [
                 'action' => new NoArgumentsAction(
+                    'back',
                     ActionTypes::BACK,
                     ''
                 ),
             ],
             'back action, has arguments' => [
                 'action' => new NoArgumentsAction(
+                    'back foo bar',
                     ActionTypes::BACK,
                     'foo bar'
                 ),
             ],
             'forward action, no arguments' => [
                 'action' => new NoArgumentsAction(
+                    'forward',
                     ActionTypes::FORWARD,
                     ''
                 ),
             ],
             'forward action, has arguments' => [
                 'action' => new NoArgumentsAction(
+                    'forward foo bar',
                     ActionTypes::FORWARD,
                     'foo bar'
                 ),
             ],
             'wait action' => [
                 'action' => new WaitAction(
+                    'wait 5',
                     '5'
                 ),
             ],

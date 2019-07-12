@@ -63,6 +63,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".button"',
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
@@ -98,7 +99,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'stepProvider' => new PopulatedStepProvider([
                     'no_parameters_import_name' => new Step(
                         [
-                            new WaitAction('20'),
+                            new WaitAction('wait 20', '20'),
                         ],
                         [
                             new Assertion(
@@ -119,7 +120,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
-                        new WaitAction('20'),
+                        new WaitAction('wait 20', '20'),
                     ],
                     [
                         new Assertion(
@@ -149,6 +150,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".button"',
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,

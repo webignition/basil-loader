@@ -117,6 +117,7 @@ trait CreateFromTestDataDataProviderTrait
                     'query "example"' => new Step(
                         [
                             new InteractionAction(
+                                'click ".form .submit"',
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,
@@ -175,6 +176,7 @@ trait CreateFromTestDataDataProviderTrait
                     'query "example"' => new Step(
                         [
                             new InteractionAction(
+                                'click page_import_name.elements.button',
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,

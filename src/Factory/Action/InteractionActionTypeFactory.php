@@ -27,6 +27,7 @@ class InteractionActionTypeFactory extends AbstractActionTypeFactory implements 
     }
 
     /**
+     * @param string $actionString
      * @param string $type
      * @param string $arguments
      *
@@ -34,8 +35,8 @@ class InteractionActionTypeFactory extends AbstractActionTypeFactory implements 
      *
      * @throws MalformedPageElementReferenceException
      */
-    protected function doCreateForActionType(string $type, string $arguments): ActionInterface
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
     {
-        return new InteractionAction($type, $this->identifierFactory->create($arguments), $arguments);
+        return new InteractionAction($actionString, $type, $this->identifierFactory->create($arguments), $arguments);
     }
 }
