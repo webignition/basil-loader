@@ -73,7 +73,10 @@ class TestResolver
                     $dataSetProvider,
                     $pageProvider
                 );
-            } catch (NonRetrievableDataProviderException | NonRetrievablePageException $contextAwareException) {
+            } catch (NonRetrievableDataProviderException |
+                NonRetrievablePageException |
+                NonRetrievableStepException $contextAwareException
+            ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $testName,
                     ExceptionContextInterface::KEY_STEP_NAME => $stepName,

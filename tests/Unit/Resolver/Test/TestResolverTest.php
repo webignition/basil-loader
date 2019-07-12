@@ -22,16 +22,23 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
+use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Step\DeferredStepProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
+use webignition\BasilParser\Provider\Step\Factory;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
@@ -40,6 +47,8 @@ use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
 use webignition\BasilParser\Tests\Services\DataSetProviderFactoryFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\PageProviderFactoryFactory;
+use webignition\BasilParser\Tests\Services\PathResolverFactory;
+use webignition\BasilParser\Tests\Services\StepProviderFactoryFactory;
 use webignition\BasilParser\Tests\Services\TestResolverFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
@@ -458,6 +467,55 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                     ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'NonRetrievableStepException: step.uses references step that does not exist' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        )
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => (StepProviderFactoryFactory::create())->createDeferredStepProvider([
+                    'step_import_name' => 'Step/non-existent.yml',
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => NonRetrievableStepException::class,
+                'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        )
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => (StepProviderFactoryFactory::create())->createDeferredStepProvider([
+                    'step_import_name' => $invalidYamlPath,
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => NonRetrievableStepException::class,
+                'expectedExceptionMessage' =>
+                    'Cannot retrieve step "step_import_name" from "' . $invalidYamlPath . '"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                 ])
             ],
         ];
