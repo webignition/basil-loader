@@ -52,7 +52,17 @@ class TestResolver
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider
     ): TestInterface {
-        $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
+        $testName = $test->getName();
+
+        try {
+            $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
+        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+            $contextAwareException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $testName,
+            ]);
+
+            throw $contextAwareException;
+        }
 
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
@@ -63,9 +73,9 @@ class TestResolver
                     $dataSetProvider,
                     $pageProvider
                 );
-            } catch (NonRetrievableDataProviderException $contextAwareException) {
+            } catch (NonRetrievableDataProviderException | NonRetrievablePageException $contextAwareException) {
                 $contextAwareException->applyExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => $test->getName(),
+                    ExceptionContextInterface::KEY_TEST_NAME => $testName,
                     ExceptionContextInterface::KEY_STEP_NAME => $stepName,
                 ]);
 

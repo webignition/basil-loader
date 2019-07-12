@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Resolver;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
@@ -82,14 +83,30 @@ class StepResolver
 
         $resolvedActions = [];
         foreach ($step->getActions() as $action) {
-            $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
+            try {
+                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
+            } catch (NonRetrievablePageException $contextAwareException) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $action->getActionString(),
+                ]);
+
+                throw $contextAwareException;
+            }
         }
 
         $step = $step->withActions($resolvedActions);
 
         $resolvedAssertions = [];
         foreach ($step->getAssertions() as $assertion) {
-            $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
+            try {
+                $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
+            } catch (NonRetrievablePageException $contextAwareException) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $assertion->getAssertionString(),
+                ]);
+
+                throw $contextAwareException;
+            }
         }
 
         $step = $step->withAssertions($resolvedAssertions);
