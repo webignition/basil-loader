@@ -82,33 +82,32 @@ class StepResolver
         }
 
         $resolvedActions = [];
-        foreach ($step->getActions() as $action) {
-            try {
-                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
-            } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
-                $contextAwareException->applyExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => $action->getActionString(),
-                ]);
+        $resolvedAssertions = [];
 
-                throw $contextAwareException;
+        $action = null;
+        $assertion = null;
+
+        try {
+            foreach ($step->getActions() as $action) {
+                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
             }
+
+            foreach ($step->getAssertions() as $assertion) {
+                $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
+            }
+        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+            $exceptionContextContent = null === $action
+                ? $assertion->getAssertionString()
+                : $action->getActionString();
+
+            $contextAwareException->applyExceptionContext([
+                ExceptionContextInterface::KEY_CONTENT => $exceptionContextContent,
+            ]);
+
+            throw $contextAwareException;
         }
 
         $step = $step->withActions($resolvedActions);
-
-        $resolvedAssertions = [];
-        foreach ($step->getAssertions() as $assertion) {
-            try {
-                $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
-            } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
-                $contextAwareException->applyExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => $assertion->getAssertionString(),
-                ]);
-
-                throw $contextAwareException;
-            }
-        }
-
         $step = $step->withAssertions($resolvedAssertions);
 
         $resolvedElementIdentifiers = [];
