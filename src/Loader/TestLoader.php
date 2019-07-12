@@ -3,27 +3,45 @@
 namespace webignition\BasilParser\Loader;
 
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
-use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\PathResolver\PathResolver;
+use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
+use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
+use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestLoader
 {
     private $yamlLoader;
-    private $testFactory;
+    private $testBuilder;
     private $pathResolver;
+    private $stepProviderFactory;
+    private $pageProviderFactory;
+    private $dataSetProviderFactory;
 
-    public function __construct(YamlLoader $yamlLoader, TestFactory $testFactory, PathResolver $pathResolver)
-    {
+    public function __construct(
+        YamlLoader $yamlLoader,
+        TestBuilder $testBuilder,
+        PathResolver $pathResolver,
+        StepProviderFactory $stepProviderFactory,
+        PageProviderFactory $pageProviderFactory,
+        DataSetProviderFactory $dataSetProviderFactory
+    ) {
         $this->yamlLoader = $yamlLoader;
-        $this->testFactory = $testFactory;
+        $this->testBuilder = $testBuilder;
         $this->pathResolver = $pathResolver;
+        $this->stepProviderFactory = $stepProviderFactory;
+        $this->pageProviderFactory = $pageProviderFactory;
+        $this->dataSetProviderFactory = $dataSetProviderFactory;
     }
 
     /**
@@ -31,18 +49,29 @@ class TestLoader
      *
      * @return TestInterface
      *
-     * @throws YamlLoaderException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
      * @throws UnknownStepException
+     * @throws YamlLoaderException
      */
     public function load(string $path): TestInterface
     {
         $data = $this->yamlLoader->loadArray($path);
         $testData = new TestData($this->pathResolver, $data, $path);
 
-        return $this->testFactory->createFromTestData($path, $testData);
+        $imports = $testData->getImports();
+
+        $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getStepPaths());
+        $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPagePaths());
+        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider(
+            $imports->getDataProviderPaths()
+        );
+
+        return $this->testBuilder->build($testData, $pageProvider, $stepProvider, $dataSetProvider);
     }
 }
