@@ -31,6 +31,7 @@ use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
@@ -607,6 +608,97 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                     ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'UnknownPageElementException: test.elements references element that does not exist within a page' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => (new Step([], []))->withElementIdentifiers([
+                            'element_name' => new Identifier(
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                                new Value(
+                                    ValueTypes::PAGE_MODEL_REFERENCE,
+                                    'page_import_name.elements.non_existent'
+                                )
+                            ),
+                        ]),
+                    ]
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        []
+                    )
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'UnknownPageElementException: assertion string references element that does not exist within a page' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [],
+                            [
+                                (AssertionFactoryFactory::create())
+                                    ->createFromAssertionString('page_import_name.elements.non_existent exists'),
+                            ]
+                        ),
+                    ]
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        []
+                    )
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.non_existent exists',
+                ])
+            ],
+            'UnknownPageElementException: action string references element that does not exist within a page' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [
+                                (ActionFactoryFactory::create())
+                                    ->createFromActionString('click page_import_name.elements.non_existent')
+                            ],
+                            []
+                        ),
+                    ]
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        []
+                    )
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "non_existent" in page "page_import_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.non_existent',
                 ])
             ],
         ];

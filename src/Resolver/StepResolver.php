@@ -95,7 +95,10 @@ class StepResolver
             foreach ($step->getAssertions() as $assertion) {
                 $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
             }
-        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+        } catch (NonRetrievablePageException |
+            UnknownPageException |
+            UnknownPageElementException $contextAwareException
+        ) {
             $exceptionContextContent = null === $action
                 ? $assertion->getAssertionString()
                 : $action->getActionString();

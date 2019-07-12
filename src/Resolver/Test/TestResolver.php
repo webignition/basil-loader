@@ -77,7 +77,8 @@ class TestResolver
                 NonRetrievablePageException |
                 NonRetrievableStepException |
                 UnknownDataProviderException |
-                UnknownPageException $contextAwareException
+                UnknownPageException |
+                UnknownPageElementException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $testName,
