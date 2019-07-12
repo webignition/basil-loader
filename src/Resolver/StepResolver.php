@@ -2,6 +2,9 @@
 
 namespace webignition\BasilParser\Resolver;
 
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
@@ -81,17 +84,41 @@ class StepResolver
         }
 
         $resolvedActions = [];
-        foreach ($step->getActions() as $action) {
-            $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
+        $resolvedAssertions = [];
+
+        $action = null;
+        $assertion = null;
+
+        try {
+            foreach ($step->getActions() as $action) {
+                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
+            }
+
+            foreach ($step->getAssertions() as $assertion) {
+                $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
+            }
+        } catch (NonRetrievablePageException |
+            UnknownPageException |
+            UnknownPageElementException $contextAwareException
+        ) {
+            $exceptionContextContent = null;
+
+            if ($assertion instanceof AssertionInterface) {
+                $exceptionContextContent = $assertion->getAssertionString();
+            }
+
+            if (null === $exceptionContextContent && $action instanceof ActionInterface) {
+                $exceptionContextContent = $action->getActionString();
+            }
+
+            $contextAwareException->applyExceptionContext([
+                ExceptionContextInterface::KEY_CONTENT => $exceptionContextContent,
+            ]);
+
+            throw $contextAwareException;
         }
 
         $step = $step->withActions($resolvedActions);
-
-        $resolvedAssertions = [];
-        foreach ($step->getAssertions() as $assertion) {
-            $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
-        }
-
         $step = $step->withAssertions($resolvedAssertions);
 
         $resolvedElementIdentifiers = [];

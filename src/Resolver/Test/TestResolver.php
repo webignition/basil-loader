@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Resolver\Test;
 
+use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
@@ -51,16 +52,42 @@ class TestResolver
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider
     ): TestInterface {
-        $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
+        $testName = $test->getName();
+
+        try {
+            $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
+        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+            $contextAwareException->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $testName,
+            ]);
+
+            throw $contextAwareException;
+        }
 
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
-            $resolvedSteps[$stepName] = $this->stepResolver->resolve(
-                $step,
-                $stepProvider,
-                $dataSetProvider,
-                $pageProvider
-            );
+            try {
+                $resolvedSteps[$stepName] = $this->stepResolver->resolve(
+                    $step,
+                    $stepProvider,
+                    $dataSetProvider,
+                    $pageProvider
+                );
+            } catch (NonRetrievableDataProviderException |
+                NonRetrievablePageException |
+                NonRetrievableStepException |
+                UnknownDataProviderException |
+                UnknownPageException |
+                UnknownPageElementException |
+                UnknownStepException $contextAwareException
+            ) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => $testName,
+                    ExceptionContextInterface::KEY_STEP_NAME => $stepName,
+                ]);
+
+                throw $contextAwareException;
+            }
         }
 
         return new Test($test->getName(), $configuration, $resolvedSteps);
