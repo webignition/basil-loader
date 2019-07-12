@@ -2,6 +2,8 @@
 
 namespace webignition\BasilParser\Resolver;
 
+use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
@@ -99,9 +101,15 @@ class StepResolver
             UnknownPageException |
             UnknownPageElementException $contextAwareException
         ) {
-            $exceptionContextContent = null === $action
-                ? $assertion->getAssertionString()
-                : $action->getActionString();
+            $exceptionContextContent = null;
+
+            if ($assertion instanceof AssertionInterface) {
+                $exceptionContextContent = $assertion->getAssertionString();
+            }
+
+            if (null === $exceptionContextContent && $action instanceof ActionInterface) {
+                $exceptionContextContent = $action->getActionString();
+            }
 
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $exceptionContextContent,
