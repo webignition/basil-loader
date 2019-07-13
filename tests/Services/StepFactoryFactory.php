@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Tests\Services;
 
 use webignition\BasilModelFactory\Action\ActionFactory;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Factory\StepFactory;
 
 class StepFactoryFactory
@@ -11,7 +12,7 @@ class StepFactoryFactory
     {
         return new StepFactory(
             ActionFactory::createFactory(),
-            AssertionFactoryFactory::create(),
+            AssertionFactory::createFactory(),
             IdentifierFactoryFactory::create()
         );
     }

@@ -10,6 +10,7 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilModelFactory\Action\ActionFactory;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 
 class StepFactory
