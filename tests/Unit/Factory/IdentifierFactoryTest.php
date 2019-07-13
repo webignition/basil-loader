@@ -10,7 +10,7 @@ use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Tests\Services\IdentifierFactoryFactory;
 

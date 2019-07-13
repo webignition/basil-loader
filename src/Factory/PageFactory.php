@@ -7,7 +7,7 @@ use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilDataStructure\Page as PageData;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 
 class PageFactory
 {

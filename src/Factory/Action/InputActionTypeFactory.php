@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;

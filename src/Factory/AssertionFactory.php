@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Factory;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
 
 class AssertionFactory

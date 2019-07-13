@@ -9,7 +9,7 @@ use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilDataStructure\Test\Imports as ImportsData;
 use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 trait MalformedPageElementReferenceDataProviderTrait

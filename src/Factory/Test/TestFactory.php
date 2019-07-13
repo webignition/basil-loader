@@ -7,7 +7,7 @@ use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilDataStructure\Step;
 use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Factory\StepFactory;
 
 class TestFactory

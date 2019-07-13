@@ -7,8 +7,8 @@ use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilModel\PageElementReference\PageElementReference;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 
 class IdentifierFactory
 {
