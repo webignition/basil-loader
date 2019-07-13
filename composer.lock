@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc79a7c1cab2246d746215ae091b988e",
+    "content-hash": "09094a8dde740cbdc4c43e482e46b140",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -336,6 +336,48 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2019-03-30T15:58:42+00:00"
+        },
+        {
+            "name": "webignition/php-basil-data-structures",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/php-basil-data-structures.git",
+                "reference": "dd54868165237dc24f6f5c58abbad5677c6e097d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/php-basil-data-structures/zipball/dd54868165237dc24f6f5c58abbad5677c6e097d",
+                "reference": "dd54868165237dc24f6f5c58abbad5677c6e097d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilDataStructure\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Data structures for basil language",
+            "homepage": "https://github.com/webignition/php-basil-data-structures",
+            "time": "2019-07-13T11:59:09+00:00"
         },
         {
             "name": "webignition/php-basil-models",
