@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Provider\Page;
 
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
 

@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\IdentifierContainerInterface;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;

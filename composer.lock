@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b301402e213ac2ec398fb6b80651480",
+    "content-hash": "a9525c55840cb309b44cf50aa1773954",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -420,6 +420,53 @@
             "description": "Data structures for basil language",
             "homepage": "https://github.com/webignition/php-basil-data-structures",
             "time": "2019-07-13T11:59:09+00:00"
+        },
+        {
+            "name": "webignition/php-basil-model-factory",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/php-basil-model-factory.git",
+                "reference": "d9771d95d3146610ac6485edd11570ab8d377818"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-factory/zipball/d9771d95d3146610ac6485edd11570ab8d377818",
+                "reference": "d9771d95d3146610ac6485edd11570ab8d377818",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "nyholm/psr7": "^1.1",
+                "php": ">=7.2",
+                "webignition/php-basil-context-aware-exception": "^0.1.0",
+                "webignition/php-basil-data-structures": "^0.1.0",
+                "webignition/php-basil-models": "^0.15.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilModelFactory\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Factories to create basil models",
+            "homepage": "https://github.com/webignition/php-basil-model-factory",
+            "time": "2019-07-13T15:45:02+00:00"
         },
         {
             "name": "webignition/php-basil-models",

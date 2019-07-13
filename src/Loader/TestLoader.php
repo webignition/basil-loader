@@ -4,10 +4,10 @@ namespace webignition\BasilParser\Loader;
 
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;

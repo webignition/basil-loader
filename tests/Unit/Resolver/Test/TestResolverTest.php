@@ -23,6 +23,8 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\Action\ActionFactory;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
@@ -40,8 +42,6 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
-use webignition\BasilParser\Tests\Services\ActionFactoryFactory;
-use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
 use webignition\BasilParser\Tests\Services\DataSetProviderFactoryFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\PageProviderFactoryFactory;
@@ -364,7 +364,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => new Step(
                             [],
                             [
-                                (AssertionFactoryFactory::create())
+                                (AssertionFactory::createFactory())
                                     ->createFromAssertionString('page_import_name.elements.element_name exists')
                             ]
                         )
@@ -391,7 +391,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => new Step(
                             [],
                             [
-                                (AssertionFactoryFactory::create())
+                                (AssertionFactory::createFactory())
                                     ->createFromAssertionString('page_import_name.elements.element_name exists')
                             ]
                         )
@@ -418,7 +418,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                (ActionFactoryFactory::create())
+                                (ActionFactory::createFactory())
                                     ->createFromActionString('click page_import_name.elements.element_name')
                             ],
                             []
@@ -445,7 +445,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                (ActionFactoryFactory::create())
+                                (ActionFactory::createFactory())
                                     ->createFromActionString('click page_import_name.elements.element_name')
                             ],
                             []
@@ -562,7 +562,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => new Step(
                             [],
                             [
-                                (AssertionFactoryFactory::create())
+                                (AssertionFactory::createFactory())
                                     ->createFromAssertionString('page_import_name.elements.element_name exists'),
                             ]
                         )
@@ -586,7 +586,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                (ActionFactoryFactory::create())
+                                (ActionFactory::createFactory())
                                     ->createFromActionString('click page_import_name.elements.element_name')
                             ],
                             []
@@ -643,7 +643,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => new Step(
                             [],
                             [
-                                (AssertionFactoryFactory::create())
+                                (AssertionFactory::createFactory())
                                     ->createFromAssertionString('page_import_name.elements.non_existent exists'),
                             ]
                         ),
@@ -672,7 +672,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                (ActionFactoryFactory::create())
+                                (ActionFactory::createFactory())
                                     ->createFromActionString('click page_import_name.elements.non_existent')
                             ],
                             []

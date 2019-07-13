@@ -4,8 +4,7 @@
 
 namespace webignition\BasilParser\Tests\Unit\Validator;
 
-use webignition\BasilParser\Factory\AssertionFactory;
-use webignition\BasilParser\Tests\Services\AssertionFactoryFactory;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Validator\AssertionValidator;
 
 class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
@@ -25,7 +24,7 @@ class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->assertionValidator = new AssertionValidator();
-        $this->assertionFactory = AssertionFactoryFactory::create();
+        $this->assertionFactory = AssertionFactory::createFactory();
     }
 
     /**
