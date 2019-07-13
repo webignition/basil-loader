@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\Services;
 
+use webignition\BasilModelFactory\Test\TestFactory;
 use webignition\BasilParser\Builder\TestBuilder;
 
 class TestBuilderFactory
@@ -9,7 +10,7 @@ class TestBuilderFactory
     public static function create(): TestBuilder
     {
         return new TestBuilder(
-            TestFactoryFactory::create(),
+            TestFactory::createFactory(),
             TestResolverFactory::create()
         );
     }
