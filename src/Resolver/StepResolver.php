@@ -2,9 +2,9 @@
 
 namespace webignition\BasilParser\Resolver;
 
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\CircularStepImportException;

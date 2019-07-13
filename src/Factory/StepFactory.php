@@ -2,8 +2,8 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;

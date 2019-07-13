@@ -2,7 +2,9 @@
 
 namespace webignition\BasilParser\Exception;
 
-use webignition\BasilModel\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
+use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
 
 abstract class AbstractUnknownImportException extends \Exception implements ContextAwareExceptionInterface
 {
