@@ -2,15 +2,15 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\ExceptionContext\ExceptionContext;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
-use webignition\BasilParser\DataStructure\Step as StepData;
-use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
-use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
-use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilDataStructure\Test\Imports as ImportsData;
+use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait MalformedPageElementReferenceDataProviderTrait
 {
@@ -28,7 +28,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: assertion string contains malformed reference (1)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -52,7 +52,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: assertion string contains malformed reference (2)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -77,7 +77,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: action string contains malformed reference (1)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -101,7 +101,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: action string contains malformed reference (2)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -126,7 +126,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: test.elements contains malformed reference (1)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -156,7 +156,7 @@ trait MalformedPageElementReferenceDataProviderTrait
             'MalformedPageElementReferenceException: test.elements contains malformed reference (2)' => [
                 'name' => 'test name',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',

@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
@@ -16,12 +17,11 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\DataStructure\Step as StepData;
-use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
-use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
-use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilDataStructure\Test\Imports as ImportsData;
+use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PathResolverFactory;
 
 trait CreateFromTestDataDataProviderTrait
 {
@@ -37,7 +37,7 @@ trait CreateFromTestDataDataProviderTrait
         return [
             'empty' => [
                 'name' => '',
-                'testData' => new TestData(PathResolverFactory::create(), []),
+                'testData' => new TestData(PathResolver::create(), []),
                 'expectedTest' => new Test(
                     '',
                     new Configuration('', ''),
@@ -47,7 +47,7 @@ trait CreateFromTestDataDataProviderTrait
             'configuration only' => [
                 'name' => 'configuration only',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                     ]
@@ -57,7 +57,7 @@ trait CreateFromTestDataDataProviderTrait
             'invalid inline steps only' => [
                 'name' => 'invalid inline steps only',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         'invalid' => [
@@ -76,7 +76,7 @@ trait CreateFromTestDataDataProviderTrait
             'inline step, scalar values' => [
                 'name' => 'inline step, scalar values',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         'verify page is open' => [
@@ -154,7 +154,7 @@ trait CreateFromTestDataDataProviderTrait
             'inline step, page element references' => [
                 'name' => 'inline step, page element references',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -213,7 +213,7 @@ trait CreateFromTestDataDataProviderTrait
             'invalid page import path, unused' => [
                 'name' => 'invalid page import path, unused',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -228,7 +228,7 @@ trait CreateFromTestDataDataProviderTrait
             'invalid step import path, unused' => [
                 'name' => 'invalid step import path, unused',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -243,7 +243,7 @@ trait CreateFromTestDataDataProviderTrait
             'invalid data provider import path, unused' => [
                 'name' => 'invalid data provider import path, unused',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -258,7 +258,7 @@ trait CreateFromTestDataDataProviderTrait
             'step import, no parameters' => [
                 'name' => 'step import, no parameters',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -282,7 +282,7 @@ trait CreateFromTestDataDataProviderTrait
             'step import, inline data' => [
                 'name' => 'step import, inline data',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -319,7 +319,7 @@ trait CreateFromTestDataDataProviderTrait
             'step import, imported data' => [
                 'name' => 'step import, imported data',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [
@@ -352,7 +352,7 @@ trait CreateFromTestDataDataProviderTrait
             'step import, uses page imported page elements' => [
                 'name' => 'step import, uses page imported page elements',
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => $configurationData,
                         TestData::KEY_IMPORTS => [

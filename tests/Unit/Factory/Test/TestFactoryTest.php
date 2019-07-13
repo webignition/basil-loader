@@ -6,7 +6,7 @@ namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use webignition\BasilModel\ExceptionContext\ExceptionContext;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Factory\Test\TestFactory;
 use webignition\BasilParser\Tests\DataProvider\Factory\Test\CreateFromTestDataDataProviderTrait;

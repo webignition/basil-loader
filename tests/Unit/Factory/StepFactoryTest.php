@@ -17,7 +17,7 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Tests\Services\StepFactoryFactory;
 

@@ -2,9 +2,10 @@
 
 namespace webignition\BasilParser\Loader;
 
+use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\DataStructure\ImportList;
+use webignition\BasilDataStructure\ImportList;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -16,7 +17,6 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\UnknownTestException;
 use webignition\BasilParser\Exception\YamlLoaderException;
-use webignition\BasilParser\PathResolver\PathResolver;
 
 class TestSuiteLoader
 {
