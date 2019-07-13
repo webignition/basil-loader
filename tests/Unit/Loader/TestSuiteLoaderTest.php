@@ -4,6 +4,7 @@
 
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
+use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Identifier\Identifier;
@@ -19,7 +20,6 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownTestException;
 use webignition\BasilParser\Loader\TestSuiteLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PathResolverFactory;
 use webignition\BasilParser\Tests\Services\TestSuiteLoaderFactory;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
@@ -158,7 +158,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadTestImportPathDoesNotExist()
     {
-        $expectedUnknownTestPath = (PathResolverFactory::create())->resolve(
+        $expectedUnknownTestPath = (PathResolver::create())->resolve(
             __DIR__,
             '../../../Fixtures/Test/example.com.path-does-not-exist.yml'
         );

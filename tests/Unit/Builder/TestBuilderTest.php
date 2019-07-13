@@ -5,6 +5,7 @@
 namespace webignition\BasilParser\Tests\Unit\Builder;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
@@ -19,10 +20,10 @@ use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Builder\TestBuilder;
-use webignition\BasilParser\DataStructure\Step as StepData;
-use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
-use webignition\BasilParser\DataStructure\Test\Imports as ImportsData;
-use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilDataStructure\Test\Imports as ImportsData;
+use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
@@ -32,7 +33,6 @@ use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
-use webignition\BasilParser\Tests\Services\PathResolverFactory;
 use webignition\BasilParser\Tests\Services\TestBuilderFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase
@@ -69,7 +69,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
         return [
             'literal steps, no imports, no resolution required' => [
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',
@@ -116,7 +116,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
             ],
             'imported step' => [
                 'testData' => new TestData(
-                    PathResolverFactory::create(),
+                    PathResolver::create(),
                     [
                         TestData::KEY_CONFIGURATION => [
                             ConfigurationData::KEY_BROWSER => 'chrome',

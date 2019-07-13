@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Factory\Test;
 
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
-use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
 
 class ConfigurationFactory
 {

@@ -20,7 +20,7 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Builder\StepBuilder;
-use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownStepException;

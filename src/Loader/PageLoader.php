@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Loader;
 
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilParser\DataStructure\Page as PageData;
+use webignition\BasilDataStructure\Page as PageData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Factory\PageFactory;

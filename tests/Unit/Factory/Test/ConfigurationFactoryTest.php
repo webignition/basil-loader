@@ -6,7 +6,7 @@ namespace webignition\BasilParser\Tests\Unit\Factory\Test;
 
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
-use webignition\BasilParser\DataStructure\Test\Configuration as ConfigurationData;
+use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilParser\Factory\Test\ConfigurationFactory;
 
 class ConfigurationFactoryTest extends \PHPUnit\Framework\TestCase

@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Builder;
 
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;

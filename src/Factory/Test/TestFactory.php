@@ -5,8 +5,8 @@ namespace webignition\BasilParser\Factory\Test;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Test\Test;
-use webignition\BasilParser\DataStructure\Step;
-use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilDataStructure\Step;
+use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Factory\StepFactory;
 
