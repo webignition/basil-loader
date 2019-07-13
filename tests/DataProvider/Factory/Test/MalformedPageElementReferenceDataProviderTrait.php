@@ -2,9 +2,9 @@
 
 namespace webignition\BasilParser\Tests\DataProvider\Factory\Test;
 
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilDataStructure\PathResolver;
-use webignition\BasilModel\ExceptionContext\ExceptionContext;
-use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilDataStructure\Test\Imports as ImportsData;

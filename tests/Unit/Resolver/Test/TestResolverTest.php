@@ -5,13 +5,14 @@
 namespace webignition\BasilParser\Tests\Unit\Resolver\Test;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\ExceptionContext\ExceptionContext;
-use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
@@ -22,7 +23,6 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\ContextAwareExceptionInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
