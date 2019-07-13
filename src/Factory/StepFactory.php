@@ -9,8 +9,8 @@ use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilParser\Factory\Action\ActionFactory;
 
 class StepFactory
 {

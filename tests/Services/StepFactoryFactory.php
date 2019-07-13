@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\Services;
 
+use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilParser\Factory\StepFactory;
 
 class StepFactoryFactory
@@ -9,7 +10,7 @@ class StepFactoryFactory
     public static function create(): StepFactory
     {
         return new StepFactory(
-            ActionFactoryFactory::create(),
+            ActionFactory::createFactory(),
             AssertionFactoryFactory::create(),
             IdentifierFactoryFactory::create()
         );
