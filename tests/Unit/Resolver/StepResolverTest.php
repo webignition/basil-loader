@@ -19,6 +19,7 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
@@ -446,6 +447,89 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         'identifier_name'
                     ),
                 ])
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider resolveCircularReferenceDataProvider
+     */
+    public function testResolveCircularReference(
+        StepInterface $step,
+        StepProviderInterface $stepProvider,
+        string $expectedCircularImportName
+    ) {
+        try {
+            $this->resolver->resolve($step, $stepProvider, new EmptyDataSetProvider(), new EmptyPageProvider());
+
+            $this->fail('CircularStepImportException not thrown for import "' . $expectedCircularImportName . '"');
+        } catch (CircularStepImportException $circularStepImportException) {
+            $this->assertSame($expectedCircularImportName, $circularStepImportException->getImportName());
+        }
+    }
+
+    public function resolveCircularReferenceDataProvider(): array
+    {
+        return [
+            'direct self-circular reference' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'start',
+                    ''
+                ),
+                'stepProvider' => new PopulatedStepProvider([
+                    'start' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'start',
+                        ''
+                    ),
+                ]),
+                'expectedCircularImportName' => 'start',
+            ],
+            'indirect self-circular reference' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'start',
+                    ''
+                ),
+                'stepProvider' => new PopulatedStepProvider([
+                    'start' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'middle',
+                        ''
+                    ),
+                    'middle' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'start',
+                        ''
+                    ),
+                ]),
+                'expectedCircularImportName' => 'start',
+            ],
+            'indirect circular reference' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'one',
+                    ''
+                ),
+                'stepProvider' => new PopulatedStepProvider([
+                    'one' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'two',
+                        ''
+                    ),
+                    'two' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'three',
+                        ''
+                    ),
+                    'three' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'two',
+                        ''
+                    ),
+                ]),
+                'expectedCircularImportName' => 'two',
             ],
         ];
     }

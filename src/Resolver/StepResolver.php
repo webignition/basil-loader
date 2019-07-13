@@ -7,6 +7,7 @@ use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -40,6 +41,7 @@ class StepResolver
      * @param StepProviderInterface $stepProvider
      * @param DataSetProviderInterface $dataSetProvider
      * @param PageProviderInterface $pageProvider
+     * @param array $handledImportNames
      *
      * @return StepInterface
      *
@@ -51,22 +53,36 @@ class StepResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
+     * @throws CircularStepImportException
      */
     public function resolve(
         StepInterface $step,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
-        PageProviderInterface $pageProvider
+        PageProviderInterface $pageProvider,
+        array $handledImportNames = []
     ): StepInterface {
         if ($step instanceof PendingImportResolutionStepInterface && $step->requiresResolution()) {
             $importName = $step->getImportName();
             $dataProviderImportName = $step->getDataProviderImportName();
 
             if ('' !== $importName) {
+                if (in_array($importName, $handledImportNames)) {
+                    throw new CircularStepImportException($importName);
+                }
+
                 $parentStep = $stepProvider->findStep($importName, $stepProvider, $dataSetProvider, $pageProvider);
 
                 if ($parentStep instanceof PendingImportResolutionStepInterface) {
-                    $parentStep = $this->resolve($parentStep, $stepProvider, $dataSetProvider, $pageProvider);
+                    $handledImportNames[] = $importName;
+
+                    $parentStep = $this->resolve(
+                        $parentStep,
+                        $stepProvider,
+                        $dataSetProvider,
+                        $pageProvider,
+                        $handledImportNames
+                    );
                 }
 
                 $step = $step
