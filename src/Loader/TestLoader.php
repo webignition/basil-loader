@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Loader;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilParser\DataStructure\Test\Test as TestData;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -49,6 +50,7 @@ class TestLoader
      *
      * @return TestInterface
      *
+     * @throws CircularStepImportException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
