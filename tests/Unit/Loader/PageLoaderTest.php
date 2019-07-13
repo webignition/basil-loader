@@ -11,9 +11,9 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PageFactoryFactory;
 use webignition\BasilParser\Tests\Services\YamlLoaderFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
@@ -23,7 +23,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoad(string $path, PageInterface $expectedPage)
     {
-        $pageLoader = new PageLoader(YamlLoaderFactory::create(), PageFactoryFactory::create());
+        $pageLoader = new PageLoader(YamlLoaderFactory::create(), PageFactory::create());
 
         $page = $pageLoader->load($path);
 

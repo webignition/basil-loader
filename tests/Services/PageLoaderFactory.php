@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\Services;
 
+use webignition\BasilModelFactory\PageFactory;
 use webignition\BasilParser\Loader\PageLoader;
 
 class PageLoaderFactory
@@ -10,7 +11,7 @@ class PageLoaderFactory
     {
         return new PageLoader(
             YamlLoaderFactory::create(),
-            PageFactoryFactory::create()
+            PageFactory::create()
         );
     }
 }
