@@ -9,12 +9,6 @@ class TestFactoryFactory
 {
     public static function create(): TestFactory
     {
-        return new TestFactory(
-            new ConfigurationFactory(),
-            StepBuilderFactory::create(),
-            StepProviderFactoryFactory::create(),
-            PageProviderFactoryFactory::create(),
-            DataSetProviderFactoryFactory::create()
-        );
+        return new TestFactory(new ConfigurationFactory(), StepFactoryFactory::create());
     }
 }

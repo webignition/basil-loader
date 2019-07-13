@@ -9,6 +9,7 @@ use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
@@ -116,6 +117,7 @@ trait CreateFromTestDataDataProviderTrait
                     'query "example"' => new Step(
                         [
                             new InteractionAction(
+                                'click ".form .submit"',
                                 ActionTypes::CLICK,
                                 new Identifier(
                                     IdentifierTypes::CSS_SELECTOR,
@@ -174,15 +176,15 @@ trait CreateFromTestDataDataProviderTrait
                     'query "example"' => new Step(
                         [
                             new InteractionAction(
+                                'click page_import_name.elements.button',
                                 ActionTypes::CLICK,
                                 new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
+                                    IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                     new Value(
                                         ValueTypes::STRING,
-                                        '.button'
+                                        'page_import_name.elements.button'
                                     ),
-                                    null,
-                                    'button'
+                                    null
                                 ),
                                 'page_import_name.elements.button'
                             ),
@@ -191,13 +193,12 @@ trait CreateFromTestDataDataProviderTrait
                             new Assertion(
                                 'page_import_name.elements.heading is "example"',
                                 new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
+                                    IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                     new Value(
                                         ValueTypes::STRING,
-                                        '.heading'
+                                        'page_import_name.elements.heading'
                                     ),
-                                    null,
-                                    'heading'
+                                    null
                                 ),
                                 AssertionComparisons::IS,
                                 new Value(
@@ -274,38 +275,7 @@ trait CreateFromTestDataDataProviderTrait
                     'step import, no parameters',
                     $expectedConfiguration,
                     [
-                        'step_name' => new Step(
-                            [
-                                new InteractionAction(
-                                    ActionTypes::CLICK,
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.button'
-                                        )
-                                    ),
-                                    '".button"'
-                                )
-                            ],
-                            [
-                                new Assertion(
-                                    '".heading" includes "Hello World"',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.heading'
-                                        )
-                                    ),
-                                    AssertionComparisons::INCLUDES,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        'Hello World'
-                                    )
-                                ),
-                            ]
-                        ),
+                        'step_name' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
                     ]
                 ),
             ],
@@ -334,39 +304,10 @@ trait CreateFromTestDataDataProviderTrait
                     'step import, inline data',
                     $expectedConfiguration,
                     [
-                        'step_name' => (new Step(
-                            [
-                                new InteractionAction(
-                                    ActionTypes::CLICK,
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.button'
-                                        )
-                                    ),
-                                    '".button"'
-                                )
-                            ],
-                            [
-                                new Assertion(
-                                    '".heading" includes $data.expected_title',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.heading'
-                                        )
-                                    ),
-                                    AssertionComparisons::INCLUDES,
-                                    new ObjectValue(
-                                        ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title',
-                                        'data',
-                                        'expected_title'
-                                    )
-                                ),
-                            ]
+                        'step_name' => (new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
                         ))->withDataSets([
                             'data_set_1' => new DataSet([
                                 'expected_title' => 'Foo',
@@ -400,47 +341,11 @@ trait CreateFromTestDataDataProviderTrait
                     'step import, imported data',
                     $expectedConfiguration,
                     [
-                        'step_name' => (new Step(
-                            [
-                                new InteractionAction(
-                                    ActionTypes::CLICK,
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.button'
-                                        )
-                                    ),
-                                    '".button"'
-                                )
-                            ],
-                            [
-                                new Assertion(
-                                    '".heading" includes $data.expected_title',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.heading'
-                                        )
-                                    ),
-                                    AssertionComparisons::INCLUDES,
-                                    new ObjectValue(
-                                        ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title',
-                                        'data',
-                                        'expected_title'
-                                    )
-                                ),
-                            ]
-                        ))->withDataSets([
-                            0 => new DataSet([
-                                'expected_title' => 'Foo',
-                            ]),
-                            1 => new DataSet([
-                                'expected_title' => 'Bar',
-                            ]),
-                        ]),
+                        'step_name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            'data_provider_import_name'
+                        ),
                     ]
                 ),
             ],
@@ -471,49 +376,20 @@ trait CreateFromTestDataDataProviderTrait
                     'step import, uses page imported page elements',
                     $expectedConfiguration,
                     [
-                        'step_name' => (new Step(
-                            [
-                                new InteractionAction(
-                                    ActionTypes::CLICK,
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.button'
-                                        )
-                                    ),
-                                    '".button"'
-                                )
-                            ],
-                            [
-                                new Assertion(
-                                    '$elements.heading includes "Hello World"',
-                                    new Identifier(
-                                        IdentifierTypes::ELEMENT_PARAMETER,
-                                        new ObjectValue(
-                                            ValueTypes::ELEMENT_PARAMETER,
-                                            '$elements.heading',
-                                            'elements',
-                                            'heading'
-                                        )
-                                    ),
-                                    AssertionComparisons::INCLUDES,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        'Hello World'
-                                    )
-                                ),
-                            ]
+                        'step_name' => (new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
                         ))->withElementIdentifiers([
                             'heading' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                 new Value(
                                     ValueTypes::STRING,
-                                    '.heading'
+                                    'page_import_name.elements.heading'
                                 ),
                                 null,
                                 'heading'
-                            ),
+                            )
                         ]),
                     ]
                 ),

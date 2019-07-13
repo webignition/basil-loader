@@ -9,7 +9,8 @@ class StepBuilderFactory
     public static function create(): StepBuilder
     {
         return new StepBuilder(
-            StepFactoryFactory::create()
+            StepFactoryFactory::create(),
+            StepResolverFactory::create()
         );
     }
 }

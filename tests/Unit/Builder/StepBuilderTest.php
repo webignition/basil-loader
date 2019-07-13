@@ -162,6 +162,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".selector"',
                             ActionTypes::CLICK,
                             $simpleCssSelectorIdentifier,
                             '".selector"'
@@ -210,6 +211,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InputAction(
+                            'set page_import_name.elements.element_name to "example"',
                             $simpleCssSelectorIdentifier,
                             new Value(
                                 ValueTypes::STRING,
@@ -246,6 +248,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".button"',
                             ActionTypes::CLICK,
                             $buttonCssSelectorIdentifier,
                             '".button"'
@@ -287,6 +290,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => (new Step(
                     [
                         new InteractionAction(
+                            'click ".button"',
                             ActionTypes::CLICK,
                             $buttonCssSelectorIdentifier,
                             '".button"'
@@ -339,6 +343,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => (new Step(
                     [
                         new InteractionAction(
+                            'click ".button"',
                             ActionTypes::CLICK,
                             $buttonCssSelectorIdentifier,
                             '".button"'
@@ -400,6 +405,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     (new Step(
                         [
                             new InteractionAction(
+                                'click ".button"',
                                 ActionTypes::CLICK,
                                 $buttonCssSelectorIdentifier,
                                 '".button"'

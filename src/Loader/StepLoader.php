@@ -3,42 +3,61 @@
 namespace webignition\BasilParser\Loader;
 
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
+use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\NonRetrievableStepException;
+use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
-use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class StepLoader
 {
     private $yamlLoader;
-    private $stepFactory;
+    private $stepBuilder;
 
-    public function __construct(YamlLoader $yamlLoader, StepFactory $stepFactory)
+    public function __construct(YamlLoader $yamlLoader, StepBuilder $stepBuilder)
     {
         $this->yamlLoader = $yamlLoader;
-        $this->stepFactory = $stepFactory;
+        $this->stepBuilder = $stepBuilder;
     }
 
     /**
      * @param string $path
+     * @param StepProviderInterface $stepProvider
+     * @param DataSetProviderInterface $dataSetProvider
+     * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
-     * @throws YamlLoaderException
      * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
+     * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
-     * @throws NonRetrievablePageException
+     * @throws UnknownStepException
+     * @throws YamlLoaderException
+     * @throws CircularStepImportException
      */
-    public function load(string $path): StepInterface
-    {
+    public function load(
+        string $path,
+        StepProviderInterface $stepProvider,
+        DataSetProviderInterface $dataSetProvider,
+        PageProviderInterface $pageProvider
+    ): StepInterface {
         $data = $this->yamlLoader->loadArray($path);
         $stepData = new StepData($data);
 
-        return $this->stepFactory->createFromStepData($stepData, new EmptyPageProvider());
+        return $this->stepBuilder->build($stepData, $stepProvider, $dataSetProvider, $pageProvider);
     }
 }

@@ -4,24 +4,21 @@
 
 namespace webignition\BasilParser\Tests\Unit\Factory;
 
-use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
-use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Factory\StepFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Tests\Services\StepFactoryFactory;
 
 class StepFactoryTest extends \PHPUnit\Framework\TestCase
@@ -41,12 +38,9 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromStepDataDataProvider
      */
-    public function testCreateFromStepData(
-        StepData $stepData,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $step = $this->stepFactory->createFromStepData($stepData, $pageProvider);
+    public function testCreateFromStepData(StepData $stepData, StepInterface $expectedStep)
+    {
+        $step = $this->stepFactory->createFromStepData($stepData);
 
         $this->assertEquals($expectedStep, $step);
     }
@@ -56,7 +50,6 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
         return [
             'empty step data' => [
                 'stepData' => new StepData([]),
-                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'empty actions and empty assertions' => [
@@ -70,7 +63,6 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         ' ',
                     ],
                 ]),
-                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
             'actions only' => [
@@ -80,10 +72,10 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'set ".input" to "value"',
                     ],
                 ]),
-                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click ".selector"',
                             ActionTypes::CLICK,
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
@@ -95,6 +87,7 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                             '".selector"'
                         ),
                         new InputAction(
+                            'set ".input" to "value"',
                             new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 new Value(
@@ -119,7 +112,6 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         '".input" exists'
                     ],
                 ]),
-                'pages' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
                     ],
@@ -162,29 +154,16 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         'page_import_name.elements.element_name exists'
                     ],
                 ]),
-                'pages' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
-                            ),
-                        ]
-                    )
-                ]),
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
+                            'click page_import_name.elements.element_name',
                             ActionTypes::CLICK,
                             new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                 new Value(
                                     ValueTypes::STRING,
-                                    '.selector'
+                                    'page_import_name.elements.element_name'
                                 )
                             ),
                             'page_import_name.elements.element_name'
@@ -194,15 +173,125 @@ class StepFactoryTest extends \PHPUnit\Framework\TestCase
                         new Assertion(
                             'page_import_name.elements.element_name exists',
                             new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
+                                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                 new Value(
                                     ValueTypes::STRING,
-                                    '.selector'
+                                    'page_import_name.elements.element_name'
                                 )
                             ),
                             AssertionComparisons::EXISTS
                         ),
                     ]
+                ),
+            ],
+            'import name only' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), 'import_name', ''),
+            ],
+            'data provider name only' => [
+                'stepData' => new StepData([
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
+            ],
+            'import name and data provider name' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'import_name',
+                    'data_provider_import_name'
+                ),
+            ],
+            'import name and inline data' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => [
+                        'data_set_1' => [
+                            'expected_title' => 'Foo',
+                        ],
+                    ]
+                ]),
+                'expectedStep' => (new PendingImportResolutionStep(
+                    new Step([], []),
+                    'import_name',
+                    ''
+                ))->withDataSets([
+                    'data_set_1' => new DataSet([
+                        'expected_title' => 'Foo',
+                    ]),
+                ]),
+            ],
+            'import name and page imported page elements' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_ELEMENTS => [
+                        'heading' => 'page_import_name.elements.heading'
+                    ],
+                ]),
+                'expectedStep' => (new PendingImportResolutionStep(
+                    new Step([], []),
+                    'import_name',
+                    ''
+                ))->withElementIdentifiers([
+                    'heading' => new Identifier(
+                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
+                        new Value(
+                            ValueTypes::STRING,
+                            'page_import_name.elements.heading'
+                        ),
+                        1,
+                        'heading'
+                    ),
+                ]),
+            ],
+            'import name, data provider name, actions and assertions' => [
+                'stepData' => new StepData([
+                    StepData::KEY_USE => 'import_name',
+                    StepData::KEY_DATA => 'data_provider_import_name',
+                    StepData::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".selector" exists',
+                    ],
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(
+                    new Step(
+                        [
+                            new InteractionAction(
+                                'click ".selector"',
+                                ActionTypes::CLICK,
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.selector'
+                                    )
+                                ),
+                                '".selector"'
+                            ),
+                        ],
+                        [
+                            new Assertion(
+                                '".selector" exists',
+                                new Identifier(
+                                    IdentifierTypes::CSS_SELECTOR,
+                                    new Value(
+                                        ValueTypes::STRING,
+                                        '.selector'
+                                    )
+                                ),
+                                AssertionComparisons::EXISTS
+                            ),
+                        ]
+                    ),
+                    'import_name',
+                    'data_provider_import_name'
                 ),
             ],
         ];

@@ -2,16 +2,15 @@
 
 namespace webignition\BasilParser\Factory;
 
+use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\Action\ActionFactory;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepFactory
 {
@@ -25,24 +24,29 @@ class StepFactory
      */
     private $assertionFactory;
 
-    public function __construct(ActionFactory $actionFactory, AssertionFactory $assertionFactory)
-    {
+    /**
+     * @var IdentifierFactory
+     */
+    private $identifierFactory;
+
+    public function __construct(
+        ActionFactory $actionFactory,
+        AssertionFactory $assertionFactory,
+        IdentifierFactory $identifierFactory
+    ) {
         $this->actionFactory = $actionFactory;
         $this->assertionFactory = $assertionFactory;
+        $this->identifierFactory = $identifierFactory;
     }
 
     /**
      * @param StepData $stepData
-     * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws NonRetrievablePageException
      */
-    public function createFromStepData(StepData $stepData, PageProviderInterface $pageProvider): StepInterface
+    public function createFromStepData(StepData $stepData): StepInterface
     {
         $actionStrings = $stepData->getActions();
         $assertionStrings = $stepData->getAssertions();
@@ -59,7 +63,7 @@ class StepFactory
                     $actionString = trim($actionString);
 
                     if ('' !== $actionString) {
-                        $actions[] = $this->actionFactory->createFromActionString($actionString, $pageProvider);
+                        $actions[] = $this->actionFactory->createFromActionString($actionString);
                     }
                 }
             }
@@ -69,18 +73,11 @@ class StepFactory
                     $assertionString = trim($assertionString);
 
                     if ('' !== $assertionString) {
-                        $assertions[] = $this->assertionFactory->createFromAssertionString(
-                            $assertionString,
-                            $pageProvider
-                        );
+                        $assertions[] = $this->assertionFactory->createFromAssertionString($assertionString);
                     }
                 }
             }
-        } catch (MalformedPageElementReferenceException |
-            NonRetrievablePageException |
-            UnknownPageElementException |
-            UnknownPageException $contextAwareException
-        ) {
+        } catch (MalformedPageElementReferenceException $contextAwareException) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_CONTENT => $assertionString !== '' ? $assertionString : $actionString,
             ]);
@@ -88,6 +85,40 @@ class StepFactory
             throw $contextAwareException;
         }
 
-        return new Step($actions, $assertions);
+        $step = new Step($actions, $assertions);
+
+        if ($stepData->getImportName() || $stepData->getDataImportName()) {
+            $step = new PendingImportResolutionStep(
+                $step,
+                $stepData->getImportName(),
+                $stepData->getDataImportName()
+            );
+        }
+
+        $dataArray = $stepData->getDataArray();
+        if (!empty($dataArray)) {
+            foreach ($dataArray as $key => $dataSetData) {
+                $data[$key] = new DataSet($dataSetData);
+            }
+        }
+
+        if (!empty($data)) {
+            $step = $step->withDataSets($data);
+        }
+
+        $elementIdentifiers = [];
+        foreach ($stepData->getElements() as $elementName => $elementIdentifierString) {
+            $elementIdentifier = $this->identifierFactory->create($elementIdentifierString, $elementName);
+
+            if ($elementIdentifier instanceof IdentifierInterface) {
+                $elementIdentifiers[$elementName] = $elementIdentifier;
+            }
+        }
+
+        if (!empty($elementIdentifiers)) {
+            $step = $step->withElementIdentifiers($elementIdentifiers);
+        }
+
+        return $step;
     }
 }

@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Provider\Test;
 
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -30,6 +31,7 @@ class DeferredTestProvider implements TestProviderInterface
      *
      * @return TestInterface
      *
+     * @throws CircularStepImportException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -57,6 +59,7 @@ class DeferredTestProvider implements TestProviderInterface
      *
      * @return TestInterface[]
      *
+     * @throws CircularStepImportException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -85,15 +88,16 @@ class DeferredTestProvider implements TestProviderInterface
      *
      * @return TestInterface
      *
+     * @throws CircularStepImportException
      * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws NonRetrievableTestException
+     * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws NonRetrievableDataProviderException
-     * @throws UnknownDataProviderException
      */
     private function retrieveTest(string $path): TestInterface
     {

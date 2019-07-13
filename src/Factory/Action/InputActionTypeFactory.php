@@ -6,13 +6,9 @@ use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\IdentifierFactory;
 use webignition\BasilParser\Factory\ValueFactory;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class InputActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
@@ -40,39 +36,33 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
     }
 
     /**
+     * @param string $actionString
      * @param string $type
      * @param string $arguments
-     * @param PageProviderInterface $pageProvider
      *
      * @return ActionInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws NonRetrievablePageException
      */
-    protected function doCreateForActionType(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
+    {
         $identifierString = $this->identifierStringExtractor->extractFromStart($arguments);
 
         if ('' === $identifierString) {
-            return new InputAction(null, null, $arguments);
+            return new InputAction($actionString, null, null, $arguments);
         }
 
-        $identifier = $this->identifierFactory->create($identifierString, $pageProvider);
+        $identifier = $this->identifierFactory->create($identifierString);
 
         $trimmedStopWord = trim(self::IDENTIFIER_STOP_WORD);
         $endsWithStopStringRegex = '/(( ' . $trimmedStopWord . ' )|( ' . $trimmedStopWord . '))$/';
 
         if (preg_match($endsWithStopStringRegex, $arguments) > 0) {
-            return new InputAction($identifier, null, $arguments);
+            return new InputAction($actionString, $identifier, null, $arguments);
         }
 
         if ($arguments === $identifierString) {
-            return new InputAction($identifier, null, $arguments);
+            return new InputAction($actionString, $identifier, null, $arguments);
         }
 
         $keywordAndValueString = mb_substr($arguments, mb_strlen($identifierString));
@@ -89,6 +79,6 @@ class InputActionTypeFactory extends AbstractActionTypeFactory implements Action
                 : $this->valueFactory->createFromValueString($keywordAndValueString);
         }
 
-        return new InputAction($identifier, $value, $arguments);
+        return new InputAction($actionString, $identifier, $value, $arguments);
     }
 }

@@ -5,7 +5,6 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\WaitAction;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
@@ -16,11 +15,8 @@ class WaitActionTypeFactory extends AbstractActionTypeFactory implements ActionT
         ];
     }
 
-    protected function doCreateForActionType(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
-        return new WaitAction($arguments);
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
+    {
+        return new WaitAction($actionString, $arguments);
     }
 }

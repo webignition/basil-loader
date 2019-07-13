@@ -77,4 +77,13 @@ class TestTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    public function testGetPath()
+    {
+        $path = 'path content';
+
+        $testDataStructure = new Test(\Mockery::mock(PathResolver::class), [], $path);
+
+        $this->assertSame($path, $testDataStructure->getPath());
+    }
 }

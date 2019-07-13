@@ -6,11 +6,7 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\IdentifierStringExtractor\IdentifierStringExtractor;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionFactory
 {
@@ -30,22 +26,16 @@ class AssertionFactory
 
     /**
      * @param string $assertionString
-     * @param PageProviderInterface $pageProvider
      *
      * @return AssertionInterface
      *
      * @throws MalformedPageElementReferenceException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws NonRetrievablePageException
      */
-    public function createFromAssertionString(
-        string $assertionString,
-        PageProviderInterface $pageProvider
-    ): AssertionInterface {
+    public function createFromAssertionString(string $assertionString): AssertionInterface
+    {
         $identifierString = $this->identifierStringExtractor->extractFromStart($assertionString);
 
-        $identifier = $this->identifierFactory->create($identifierString, $pageProvider);
+        $identifier = $this->identifierFactory->create($identifierString);
         $value = null;
 
         $comparisonAndValue = trim(mb_substr($assertionString, mb_strlen($identifierString)));

@@ -2,30 +2,32 @@
 
 namespace webignition\BasilParser\Builder;
 
-use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\PageElementReference\PageElementReference;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\DataStructure\Step as StepData;
+use webignition\BasilParser\Exception\CircularStepImportException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
+use webignition\BasilParser\Exception\UnknownPageElementException;
+use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Factory\StepFactory;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
+use webignition\BasilParser\Resolver\StepResolver;
 
 class StepBuilder
 {
     private $stepFactory;
+    private $stepResolver;
 
-    public function __construct(StepFactory $stepFactory)
+    public function __construct(StepFactory $stepFactory, StepResolver $stepResolver)
     {
         $this->stepFactory = $stepFactory;
+        $this->stepResolver = $stepResolver;
     }
 
     /**
@@ -39,71 +41,21 @@ class StepBuilder
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
-     * @throws NonRetrievableStepException
      * @throws UnknownStepException
+     * @throws CircularStepImportException
      */
     public function build(
         StepData $stepData,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
         PageProviderInterface $pageProvider
-    ) {
-        $stepImportName = $stepData->getImportName();
+    ): StepInterface {
+        $unresolvedStep = $this->stepFactory->createFromStepData($stepData);
 
-        $step = ('' === $stepImportName)
-            ? $this->stepFactory->createFromStepData($stepData, $pageProvider)
-            : $stepProvider->findStep($stepImportName);
-
-        $data = [];
-
-        $dataProviderImportName = $stepData->getDataImportName();
-        if ('' !== $dataProviderImportName) {
-            $data = $dataSetProvider->findDataSetCollection($dataProviderImportName);
-        }
-
-        $dataArray = $stepData->getDataArray();
-        if (!empty($dataArray)) {
-            foreach ($dataArray as $key => $dataSetData) {
-                $data[$key] = new DataSet($dataSetData);
-            }
-        }
-
-        if (!empty($data)) {
-            $step = $step->withDataSets($data);
-        }
-
-        $elementUses = $stepData->getElements();
-
-        if (!empty($elementUses)) {
-            $elementIdentifiers = [];
-
-            foreach ($elementUses as $elementName => $pageModelElementReferenceString) {
-                $pageElementReference = new PageElementReference($pageModelElementReferenceString);
-
-                if (!$pageElementReference->isValid()) {
-                    throw new MalformedPageElementReferenceException($pageElementReference);
-                }
-
-                $pageImportName = $pageElementReference->getImportName();
-                $elementName = $pageElementReference->getElementName();
-
-                $page = $pageProvider->findPage($pageImportName);
-
-                $elementIdentifier = $page->getElementIdentifier($elementName);
-
-                if (null === $elementIdentifier) {
-                    throw new UnknownPageElementException($pageImportName, $elementName);
-                }
-
-                $elementIdentifiers[$elementName] = $elementIdentifier;
-            }
-
-            $step = $step->withElementIdentifiers($elementIdentifiers);
-        }
-
-        return $step;
+        return $this->stepResolver->resolve($unresolvedStep, $stepProvider, $dataSetProvider, $pageProvider);
     }
 }

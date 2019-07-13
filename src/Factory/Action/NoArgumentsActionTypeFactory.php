@@ -5,7 +5,6 @@ namespace webignition\BasilParser\Factory\Action;
 use webignition\BasilModel\Action\NoArgumentsAction;
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class NoArgumentsActionTypeFactory extends AbstractActionTypeFactory implements ActionTypeFactoryInterface
 {
@@ -18,11 +17,8 @@ class NoArgumentsActionTypeFactory extends AbstractActionTypeFactory implements 
         ];
     }
 
-    protected function doCreateForActionType(
-        string $type,
-        string $arguments,
-        PageProviderInterface $pageProvider
-    ): ActionInterface {
-        return new NoArgumentsAction($type, $arguments);
+    protected function doCreateForActionType(string $actionString, string $type, string $arguments): ActionInterface
+    {
+        return new NoArgumentsAction($actionString, $type, $arguments);
     }
 }
