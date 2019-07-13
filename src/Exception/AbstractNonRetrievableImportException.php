@@ -2,6 +2,8 @@
 
 namespace webignition\BasilParser\Exception;
 
+use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
+use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
 use webignition\BasilModel\ExceptionContext\ExceptionContext;
 
 abstract class AbstractNonRetrievableImportException extends \Exception implements ContextAwareExceptionInterface
