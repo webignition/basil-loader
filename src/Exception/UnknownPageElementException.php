@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Exception;
 
 use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
 use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
-use webignition\BasilModel\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
 
 class UnknownPageElementException extends \Exception implements ContextAwareExceptionInterface
 {

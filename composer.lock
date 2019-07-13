@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b5c0933e9ca67a0290a7a7ad4ef60a4",
+    "content-hash": "4b301402e213ac2ec398fb6b80651480",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -423,22 +423,23 @@
         },
         {
             "name": "webignition/php-basil-models",
-            "version": "0.14",
+            "version": "0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-models.git",
-                "reference": "a894dbfde22e603a05feaae6c6d5f80dee685068"
+                "reference": "76697f66a6bf021ec5a6e5510212a3672c548d09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/a894dbfde22e603a05feaae6c6d5f80dee685068",
-                "reference": "a894dbfde22e603a05feaae6c6d5f80dee685068",
+                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/76697f66a6bf021ec5a6e5510212a3672c548d09",
+                "reference": "76697f66a6bf021ec5a6e5510212a3672c548d09",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "php": ">=7.2",
-                "psr/http-message": "^1.0"
+                "psr/http-message": "^1.0",
+                "webignition/php-basil-context-aware-exception": "^0.1.0"
             },
             "require-dev": {
                 "nyholm/psr7": "^1.1",
@@ -464,7 +465,7 @@
             ],
             "description": "Models for basil language objects",
             "homepage": "https://github.com/webignition/php-basil-models",
-            "time": "2019-07-12T15:03:38+00:00"
+            "time": "2019-07-13T14:53:37+00:00"
         }
     ],
     "packages-dev": [

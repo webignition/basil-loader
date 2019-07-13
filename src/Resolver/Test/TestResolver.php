@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Resolver\Test;
 
-use webignition\BasilModel\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilParser\Exception\CircularStepImportException;
