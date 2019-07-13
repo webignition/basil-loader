@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Provider\Step;
 
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -24,6 +25,7 @@ interface StepProviderInterface
      *
      * @return StepInterface
      *
+     * @throws CircularStepImportException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
