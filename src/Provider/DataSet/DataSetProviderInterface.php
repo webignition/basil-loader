@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Provider\DataSet;
 
-use webignition\BasilModel\DataSet\DataSetInterface;
+use webignition\BasilModel\DataSet\DataSetCollectionInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 
@@ -11,10 +11,10 @@ interface DataSetProviderInterface
     /**
      * @param string $importName
      *
-     * @return DataSetInterface[]
+     * @return DataSetCollectionInterface
      *
      * @throws NonRetrievableDataProviderException
      * @throws UnknownDataProviderException
      */
-    public function findDataSetCollection(string $importName): array;
+    public function findDataSetCollection(string $importName): DataSetCollectionInterface;
 }
