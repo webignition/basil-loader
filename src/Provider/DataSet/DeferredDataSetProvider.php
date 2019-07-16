@@ -2,7 +2,7 @@
 
 namespace webignition\BasilParser\Provider\DataSet;
 
-use webignition\BasilModel\DataSet\DataSetInterface;
+use webignition\BasilModel\DataSet\DataSetCollectionInterface;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\YamlLoaderException;
@@ -23,12 +23,12 @@ class DeferredDataSetProvider implements DataSetProviderInterface
     /**
      * @param string $importName
      *
-     * @return DataSetInterface[]
+     * @return DataSetCollectionInterface
      *
      * @throws NonRetrievableDataProviderException
      * @throws UnknownDataProviderException
      */
-    public function findDataSetCollection(string $importName): array
+    public function findDataSetCollection(string $importName): DataSetCollectionInterface
     {
         $dataSetCollection = $this->dataSetCollections[$importName] ?? null;
 
@@ -43,12 +43,12 @@ class DeferredDataSetProvider implements DataSetProviderInterface
     /**
      * @param string $importName
      *
-     * @return DataSetInterface[]
+     * @return DataSetCollectionInterface
      *
      * @throws NonRetrievableDataProviderException
      * @throws UnknownDataProviderException
      */
-    private function retrieveDataSetCollection(string $importName): array
+    private function retrieveDataSetCollection(string $importName): DataSetCollectionInterface
     {
         $importPath = $this->importPaths[$importName] ?? null;
 
