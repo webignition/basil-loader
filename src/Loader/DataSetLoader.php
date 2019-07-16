@@ -3,6 +3,8 @@
 namespace webignition\BasilParser\Loader;
 
 use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\DataSet\DataSetCollectionInterface;
 use webignition\BasilParser\Exception\YamlLoaderException;
 
 class DataSetLoader
@@ -17,22 +19,22 @@ class DataSetLoader
     /**
      * @param string $path
      *
-     * @return DataSet[]
+     * @return DataSetCollectionInterface
      *
      * @throws YamlLoaderException
      */
-    public function load(string $path): array
+    public function load(string $path): DataSetCollectionInterface
     {
         $data = $this->yamlLoader->loadArray($path);
 
-        $dataSets = [];
+        $dataSetCollection = new DataSetCollection();
 
-        foreach ($data as $dataSetData) {
+        foreach ($data as $key => $dataSetData) {
             if (is_array($dataSetData)) {
-                $dataSets[] = new DataSet($dataSetData);
+                $dataSetCollection[$key] = new DataSet($dataSetData);
             }
         }
 
-        return $dataSets;
+        return $dataSetCollection;
     }
 }
