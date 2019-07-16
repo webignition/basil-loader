@@ -7,12 +7,18 @@ use webignition\BasilParser\Exception\UnknownDataProviderException;
 
 class PopulatedDataSetProvider implements DataSetProviderInterface
 {
+    /**
+     * @var DataSetCollectionInterface[]
+     */
     private $dataSetCollections = [];
 
+    /**
+     * @param DataSetCollectionInterface[] $dataSetCollections
+     */
     public function __construct(array $dataSetCollections)
     {
         foreach ($dataSetCollections as $importName => $dataSetCollection) {
-            if (is_array($dataSetCollection)) {
+            if ($dataSetCollection instanceof DataSetCollectionInterface) {
                 $this->dataSetCollections[$importName] = $dataSetCollection;
             }
         }

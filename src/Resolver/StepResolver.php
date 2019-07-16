@@ -91,7 +91,7 @@ class StepResolver
             }
 
             if ('' !== $dataProviderImportName) {
-                $step = $step->withDataSets($dataSetProvider->findDataSetCollection($dataProviderImportName));
+                $step = $step->withDataSetCollection($dataSetProvider->findDataSetCollection($dataProviderImportName));
             }
 
             if ($step instanceof PendingImportResolutionStepInterface) {

@@ -11,6 +11,7 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
@@ -180,17 +181,17 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     'data_provider_import_name'
                 ),
                 'dataSetProvider' => new PopulatedDataSetProvider([
-                    'data_provider_import_name' => [
+                    'data_provider_import_name' => new DataSetCollection([
                         new DataSet([
                             'foo' => 'bar',
                         ])
-                    ],
+                    ]),
                 ]),
-                'expectedStep' => (new Step([], []))->withDataSets([
+                'expectedStep' => (new Step([], []))->withDataSetCollection(new DataSetCollection([
                     new DataSet([
                         'foo' => 'bar',
                     ])
-                ]),
+                ])),
             ],
         ];
     }

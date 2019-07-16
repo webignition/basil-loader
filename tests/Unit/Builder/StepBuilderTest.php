@@ -11,6 +11,7 @@ use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
@@ -309,14 +310,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             )
                         ),
                     ]
-                ))->withDataSets([
+                ))->withDataSetCollection(new DataSetCollection([
                     new DataSet([
                         'expected_title' => 'Foo',
                     ]),
                     new DataSet([
                         'expected_title' => 'Bar',
                     ]),
-                ]),
+                ])),
             ],
             'imported data' => [
                 'stepData' => new StepData([
@@ -330,14 +331,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'dataSetProvider' => new PopulatedDataSetProvider([
-                    'data_provider_name' => [
+                    'data_provider_name' => new DataSetCollection([
                         new DataSet([
                             'expected_title' => 'Foo',
                         ]),
                         new DataSet([
                             'expected_title' => 'Bar',
                         ]),
-                    ],
+                    ]),
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step(
@@ -362,14 +363,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             )
                         ),
                     ]
-                ))->withDataSets([
+                ))->withDataSetCollection(new DataSetCollection([
                     new DataSet([
                         'expected_title' => 'Foo',
                     ]),
                     new DataSet([
                         'expected_title' => 'Bar',
                     ]),
-                ]),
+                ])),
             ],
             'element parameters' => [
                 'stepData' => new StepData([
