@@ -6,6 +6,7 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollection;
+use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
