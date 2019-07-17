@@ -182,13 +182,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 ),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
-                        new DataSet([
+                        new DataSet('0', [
                             'foo' => 'bar',
                         ])
                     ]),
                 ]),
                 'expectedStep' => (new Step([], []))->withDataSetCollection(new DataSetCollection([
-                    new DataSet([
+                    new DataSet('0', [
                         'foo' => 'bar',
                     ])
                 ])),

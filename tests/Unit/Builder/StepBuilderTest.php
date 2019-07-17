@@ -311,10 +311,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ))->withDataSetCollection(new DataSetCollection([
-                    new DataSet([
+                    new DataSet('0', [
                         'expected_title' => 'Foo',
                     ]),
-                    new DataSet([
+                    new DataSet('1', [
                         'expected_title' => 'Bar',
                     ]),
                 ])),
@@ -332,10 +332,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_name' => new DataSetCollection([
-                        new DataSet([
+                        new DataSet('0', [
                             'expected_title' => 'Foo',
                         ]),
-                        new DataSet([
+                        new DataSet('1', [
                             'expected_title' => 'Bar',
                         ]),
                     ]),
@@ -364,10 +364,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ))->withDataSetCollection(new DataSetCollection([
-                    new DataSet([
+                    new DataSet('0', [
                         'expected_title' => 'Foo',
                     ]),
-                    new DataSet([
+                    new DataSet('1', [
                         'expected_title' => 'Bar',
                     ]),
                 ])),

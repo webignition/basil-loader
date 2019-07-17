@@ -167,7 +167,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
-                        new DataSet([
+                        new DataSet('0', [
                             'foo' => 'bar',
                         ]),
                     ]),
@@ -208,7 +208,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         )
                                     ]
                                 ))->withDataSetCollection(new DataSetCollection([
-                                    new DataSet([
+                                    new DataSet('0', [
                                         'foo' => 'bar',
                                     ]),
                                 ]))->withElementIdentifiers([
