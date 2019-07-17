@@ -34,10 +34,10 @@ class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
             'non-empty, expected title only' => [
                 'path' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
                 'expectedPage' => new DataSetCollection([
-                    new DataSet([
+                    new DataSet('0', [
                         'expected_title' => 'Foo',
                     ]),
-                    new DataSet([
+                    new DataSet('1', [
                         'expected_title' => 'Bar',
                     ]),
                 ]),
@@ -45,11 +45,11 @@ class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
             'non-empty, users' => [
                 'path' => FixturePathFinder::find('DataProvider/users.yml'),
                 'expectedPage' => new DataSetCollection([
-                    'user1' => new DataSet([
+                    'user1' => new DataSet('user1', [
                         'username' => 'user1',
                         'role' => 'user',
                     ]),
-                    'user2' => new DataSet([
+                    'user2' => new DataSet('user2', [
                         'username' => 'user2',
                         'role' => 'admin',
                     ]),

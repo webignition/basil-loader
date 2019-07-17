@@ -29,9 +29,9 @@ class DataSetLoader
 
         $dataSetCollection = new DataSetCollection();
 
-        foreach ($data as $key => $dataSetData) {
+        foreach ($data as $dataSetName => $dataSetData) {
             if (is_array($dataSetData)) {
-                $dataSetCollection[$key] = new DataSet($dataSetData);
+                $dataSetCollection->addDataSet(new DataSet((string) $dataSetName, $dataSetData));
             }
         }
 
