@@ -13,6 +13,7 @@ use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
@@ -391,7 +392,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step([], []),
             ],
             'no resolvable element identifiers' => [
-                'step' => (new Step([], []))->withElementIdentifiers([
+                'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -399,9 +400,9 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                             '.selector'
                         )
                     ),
-                ]),
+                ])),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([], []))->withElementIdentifiers([
+                'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -409,10 +410,10 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                             '.selector'
                         )
                     ),
-                ])
+                ]))
             ],
             'has resolvable element identifiers' => [
-                'step' => (new Step([], []))->withElementIdentifiers([
+                'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     'element_name' => new Identifier(
                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                         new Value(
@@ -422,7 +423,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         null,
                         'identifier_name'
                     ),
-                ]),
+                ])),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
@@ -437,7 +438,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => (new Step([], []))->withElementIdentifiers([
+                'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     'element_name' => new Identifier(
                         IdentifierTypes::CSS_SELECTOR,
                         new Value(
@@ -447,7 +448,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         null,
                         'identifier_name'
                     ),
-                ])
+                ]))
             ],
         ];
     }

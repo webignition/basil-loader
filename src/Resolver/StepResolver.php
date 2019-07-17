@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
@@ -138,14 +139,11 @@ class StepResolver
         $step = $step->withAssertions($resolvedAssertions);
 
         $resolvedElementIdentifiers = [];
-        foreach ($step->getElementIdentifiers() as $elementName => $elementIdentifier) {
-            $resolvedElementIdentifiers[$elementName] = $this->identifierResolver->resolve(
-                $elementIdentifier,
-                $pageProvider
-            );
+        foreach ($step->getIdentifierCollection() as $identifier) {
+            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve($identifier, $pageProvider);
         }
 
-        $step = $step->withElementIdentifiers($resolvedElementIdentifiers);
+        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedElementIdentifiers));
 
         return $step;
     }

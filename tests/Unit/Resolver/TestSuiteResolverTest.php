@@ -12,6 +12,7 @@ use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
@@ -91,7 +92,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                     new Step([], []),
                                     'step_import_name',
                                     'data_provider_import_name'
-                                ))->withElementIdentifiers([
+                                ))->withIdentifierCollection(new IdentifierCollection([
                                     new Identifier(
                                         IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
                                         new Value(
@@ -101,7 +102,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         1,
                                         'heading'
                                     ),
-                                ]),
+                                ])),
                             ]
                         )
                     ]
@@ -211,7 +212,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                     new DataSet('0', [
                                         'foo' => 'bar',
                                     ]),
-                                ]))->withElementIdentifiers([
+                                ]))->withIdentifierCollection(new IdentifierCollection([
                                     new Identifier(
                                         IdentifierTypes::CSS_SELECTOR,
                                         new Value(
@@ -221,7 +222,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         null,
                                         'heading'
                                     ),
-                                ]),
+                                ])),
                             ]
                         )
                     ]

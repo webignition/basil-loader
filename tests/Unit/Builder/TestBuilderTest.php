@@ -12,6 +12,7 @@ use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
@@ -231,7 +232,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                             new DataSet('0', [
                                 'foo' => 'bar',
                             ])
-                        ]))->withElementIdentifiers([
+                        ]))->withIdentifierCollection(new IdentifierCollection([
                             'element_name' => new Identifier(
                                 IdentifierTypes::CSS_SELECTOR,
                                 new Value(
@@ -241,7 +242,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 1,
                                 'element_name'
                             ),
-                        ]),
+                        ])),
                     ]
                 ),
             ],
