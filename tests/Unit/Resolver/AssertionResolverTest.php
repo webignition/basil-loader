@@ -11,6 +11,7 @@ use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
@@ -55,6 +56,23 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     '',
                     null,
                     ''
+                ),
+            ],
+            'assertion with environment parameter' => [
+                'assertion' => new Assertion(
+                    '".selector" is $env.KEY',
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    new EnvironmentValue(
+                        '$env.KEY',
+                        'KEY'
+                    )
                 ),
             ],
         ];
