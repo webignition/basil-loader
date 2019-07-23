@@ -80,13 +80,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', '1'),
+                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', '1'),
+                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -94,21 +94,21 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             'step with actions imports step with actions' => [
                 'step' => new PendingImportResolutionStep(
                     new Step([
-                        new WaitAction('wait 2', '2'),
+                        new WaitAction('wait 2', new Value(ValueTypes::STRING, '2')),
                     ], []),
                     'step_import_name',
                     ''
                 ),
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', '1'),
+                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', '1'),
-                    new WaitAction('wait 2', '2'),
+                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                    new WaitAction('wait 2', new Value(ValueTypes::STRING, '2')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -140,13 +140,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         ''
                     ),
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', '1'),
+                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', '1'),
+                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -225,11 +225,11 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'no resolvable actions' => [
                 'step' => new Step([
-                    new WaitAction('wait 30', '30'),
+                    new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
                 ], []),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 30', '30'),
+                    new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
                 ], []),
             ],
             'has resolvable actions' => [

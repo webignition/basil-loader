@@ -50,7 +50,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'wait action' => [
-                'action' => new WaitAction('wait 30', '30'),
+                'action' => new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
             ],
             'input action lacking identifier' => [
                 'action' => new InputAction(
