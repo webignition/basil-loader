@@ -99,7 +99,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'stepProvider' => new PopulatedStepProvider([
                     'no_parameters_import_name' => new Step(
                         [
-                            new WaitAction('wait 20', '20'),
+                            new WaitAction('wait 20', new Value(ValueTypes::STRING, '20')),
                         ],
                         [
                             new Assertion(
@@ -120,7 +120,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
-                        new WaitAction('wait 20', '20'),
+                        new WaitAction('wait 20', new Value(ValueTypes::STRING, '20')),
                     ],
                     [
                         new Assertion(

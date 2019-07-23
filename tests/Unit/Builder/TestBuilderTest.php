@@ -97,7 +97,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                new WaitAction('wait 30', '30'),
+                                new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
                             ],
                             [
                                 new Assertion(
@@ -167,7 +167,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step(
                         [
-                            new WaitAction('wait 10', '10'),
+                            new WaitAction('wait 10', new Value(ValueTypes::STRING, '10')),
                         ],
                         [
                             new Assertion(
@@ -213,7 +213,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                         ),
                         'step referencing imported step with imported data provider' => (new Step(
                             [
-                                new WaitAction('wait 10', '10'),
+                                new WaitAction('wait 10', new Value(ValueTypes::STRING, '10')),
                             ],
                             [
                                 new Assertion(
