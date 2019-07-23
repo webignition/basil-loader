@@ -13,6 +13,7 @@ use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
@@ -151,6 +152,23 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         'value'
                     ),
                     '$browser.size to "value"'
+                ),
+            ],
+            'input action with environment parameter value' => [
+                'action' => new InputAction(
+                    'set ".selector" to $env.KEY',
+                    new Identifier(
+                        IdentifierTypes::CSS_SELECTOR,
+                        new Value(
+                            ValueTypes::STRING,
+                            '.selector'
+                        )
+                    ),
+                    new EnvironmentValue(
+                        '$env.KEY',
+                        'KEY'
+                    ),
+                    '".selector" to $env.KEY'
                 ),
             ],
             'interaction action lacking identifier' => [
