@@ -18,6 +18,7 @@ use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
@@ -443,6 +444,51 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             'heading'
                         ),
                     ])),
+            ],
+            'actions and assertions with environment parameters' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
+                        'set page_import_name.elements.element_name to $env.KEY1',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        'page_import_name.elements.element_name is $env.KEY2|"default"',
+                    ],
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        [
+                            'element_name' => $simpleCssSelectorIdentifier
+                        ]
+                    )
+                ]),
+                'expectedStep' => new Step(
+                    [
+                        new InputAction(
+                            'set page_import_name.elements.element_name to $env.KEY1',
+                            $simpleCssSelectorIdentifier,
+                            new EnvironmentValue(
+                                '$env.KEY1',
+                                'KEY1'
+                            ),
+                            'page_import_name.elements.element_name to $env.KEY1'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            'page_import_name.elements.element_name is $env.KEY2|"default"',
+                            $simpleCssSelectorIdentifier,
+                            AssertionComparisons::IS,
+                            new EnvironmentValue(
+                                '$env.KEY2|"default"',
+                                'KEY2',
+                                'default'
+                            )
+                        )
+                    ]
+                ),
             ],
         ];
     }
