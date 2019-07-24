@@ -13,9 +13,18 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class IdentifierResolver
 {
+    private $pageElementReferenceResolver;
+
+    public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
+    {
+        $this->pageElementReferenceResolver = $pageElementReferenceResolver;
+    }
+
     public static function createResolver(): IdentifierResolver
     {
-        return new IdentifierResolver();
+        return new IdentifierResolver(
+            PageElementReferenceResolver::createResolver()
+        );
     }
 
     /**
@@ -43,13 +52,6 @@ class IdentifierResolver
             return $identifier;
         }
 
-        $page = $pageProvider->findPage($value->getObjectName());
-        $elementIdentifier = $page->getIdentifier($value->getObjectProperty());
-
-        if ($elementIdentifier instanceof IdentifierInterface) {
-            return $elementIdentifier;
-        }
-
-        throw new UnknownPageElementException($value->getObjectName(), $value->getObjectProperty());
+        return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
     }
 }
