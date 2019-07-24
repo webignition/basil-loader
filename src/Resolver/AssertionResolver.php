@@ -3,7 +3,8 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\IdentifierContainerInterface;
+use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -12,14 +13,18 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionResolver
 {
-    /**
-     * @var IdentifierContainerIdentifierResolver
-     */
-    private $identifierContainerIdentifierResolver;
+    private $pageElementReferenceResolver;
 
-    public function __construct(IdentifierContainerIdentifierResolver $identifierContainerIdentifierResolver)
+    public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
     {
-        $this->identifierContainerIdentifierResolver = $identifierContainerIdentifierResolver;
+        $this->pageElementReferenceResolver = $pageElementReferenceResolver;
+    }
+
+    public static function createResolver(): AssertionResolver
+    {
+        return new AssertionResolver(
+            PageElementReferenceResolver::createResolver()
+        );
     }
 
     /**
@@ -35,14 +40,14 @@ class AssertionResolver
      */
     public function resolve(AssertionInterface $assertion, PageProviderInterface $pageProvider): AssertionInterface
     {
-        if ($assertion instanceof IdentifierContainerInterface) {
-            $resolvedAssertion = $this->identifierContainerIdentifierResolver->resolve($assertion, $pageProvider);
+        $examinedValue = $assertion->getExaminedValue();
 
-            if ($resolvedAssertion instanceof AssertionInterface) {
-                return $resolvedAssertion;
-            }
+        if (!$examinedValue instanceof ObjectValue) {
+            return $assertion;
         }
 
-        return $assertion;
+        $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
+
+        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
     }
 }
