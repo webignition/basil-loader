@@ -14,6 +14,11 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class PageElementReferenceObjectValueResolver
 {
+    public static function createResolver(): PageElementReferenceObjectValueResolver
+    {
+        return new PageElementReferenceObjectValueResolver();
+    }
+
     /**
      * @param ObjectValueInterface $value
      * @param PageProviderInterface $pageProvider
