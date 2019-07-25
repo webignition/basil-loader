@@ -30,6 +30,15 @@ class StepLoader
         $this->stepBuilder = $stepBuilder;
     }
 
+    public static function createLoader(): StepLoader
+    {
+        return new StepLoader(
+            YamlLoader::createLoader(),
+            StepBuilder::createBuilder()
+        );
+    }
+
+
     /**
      * @param string $path
      * @param StepProviderInterface $stepProvider

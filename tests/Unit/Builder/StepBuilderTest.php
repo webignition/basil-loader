@@ -29,6 +29,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Loader\PageLoader;
+use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DeferredDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
@@ -44,7 +45,6 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\StepBuilderFactory;
-use webignition\BasilParser\Tests\Services\StepLoaderFactory;
 
 class StepBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -131,7 +131,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     StepData::KEY_ASSERTIONS => [],
                 ]),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'step_import_name' => 'invalid.yml',
                     ]
@@ -241,7 +241,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     StepData::KEY_USE => 'step_import_name',
                 ]),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'step_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
                     ]
@@ -283,7 +283,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                     ]
@@ -327,7 +327,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     StepData::KEY_DATA => 'data_provider_name',
                 ]),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                     ]
@@ -382,7 +382,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                     ]
@@ -519,7 +519,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 StepData::KEY_DATA => 'unknown_data_provider_name',
             ]),
             new DeferredStepProvider(
-                StepLoaderFactory::create(),
+                StepLoader::createLoader(),
                 [
                     'step_import_name' => FixturePathFinder::find('Step/data-parameters.yml'),
                 ]
@@ -542,7 +542,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
             ]),
             new DeferredStepProvider(
-                StepLoaderFactory::create(),
+                StepLoader::createLoader(),
                 [
                     'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                 ]
@@ -565,7 +565,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
             ]),
             new DeferredStepProvider(
-                StepLoaderFactory::create(),
+                StepLoader::createLoader(),
                 [
                     'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                 ]
@@ -603,7 +603,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ],
             ]),
             new DeferredStepProvider(
-                StepLoaderFactory::create(),
+                StepLoader::createLoader(),
                 [
                     'step_import_name' => FixturePathFinder::find('Step/element-parameters.yml'),
                 ]

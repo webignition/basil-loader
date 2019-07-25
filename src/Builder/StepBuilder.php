@@ -30,6 +30,14 @@ class StepBuilder
         $this->stepResolver = $stepResolver;
     }
 
+    public static function createBuilder(): StepBuilder
+    {
+        return new StepBuilder(
+            StepFactory::createFactory(),
+            StepResolver::createResolver()
+        );
+    }
+
     /**
      * @param StepData $stepData
      * @param StepProviderInterface $stepProvider
