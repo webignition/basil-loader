@@ -16,6 +16,13 @@ class DataSetLoader
         $this->yamlLoader = $yamlLoader;
     }
 
+    public static function createLoader(): DataSetLoader
+    {
+        return new DataSetLoader(
+            YamlLoader::createLoader()
+        );
+    }
+
     /**
      * @param string $path
      *

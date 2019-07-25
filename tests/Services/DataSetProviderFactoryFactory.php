@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Tests\Services;
 
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
 
 class DataSetProviderFactoryFactory
@@ -9,7 +10,7 @@ class DataSetProviderFactoryFactory
     public static function create(): DataSetProviderFactory
     {
         return new DataSetProviderFactory(
-            DataSetLoaderFactory::create()
+            DataSetLoader::createLoader()
         );
     }
 }
