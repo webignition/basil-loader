@@ -30,6 +30,14 @@ class TestResolver
         $this->stepResolver = $stepResolver;
     }
 
+    public static function createResolver(): TestResolver
+    {
+        return new TestResolver(
+            ConfigurationResolver::createResolver(),
+            StepResolver::createResolver()
+        );
+    }
+
     /**
      * @param TestInterface $test
      * @param PageProviderInterface $pageProvider

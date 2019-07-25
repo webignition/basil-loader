@@ -2,6 +2,9 @@
 
 namespace webignition\BasilParser\Tests\Services;
 
+use webignition\BasilParser\Resolver\ActionResolver;
+use webignition\BasilParser\Resolver\AssertionResolver;
+use webignition\BasilParser\Resolver\IdentifierResolver;
 use webignition\BasilParser\Resolver\StepResolver;
 
 class StepResolverFactory
@@ -9,9 +12,9 @@ class StepResolverFactory
     public static function create(): StepResolver
     {
         return new StepResolver(
-            ActionResolverFactory::create(),
-            AssertionResolverFactory::create(),
-            IdentifierResolverFactory::create()
+            ActionResolver::createResolver(),
+            AssertionResolver::createResolver(),
+            IdentifierResolver::createResolver()
         );
     }
 }
