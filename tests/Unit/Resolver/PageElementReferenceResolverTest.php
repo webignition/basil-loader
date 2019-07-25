@@ -12,7 +12,6 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ObjectValueInterface;
-use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
@@ -79,7 +78,7 @@ class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
      * @dataProvider resolveThrowsUnknownPageElementExceptionDataProvider
      */
     public function testResolveThrowsUnknownPageElementException(
-        ValueInterface $value,
+        ObjectValueInterface $value,
         PageProviderInterface $pageProvider,
         string $expectedExceptionMessage
     ) {

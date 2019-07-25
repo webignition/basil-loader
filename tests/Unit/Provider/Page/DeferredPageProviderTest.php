@@ -43,7 +43,8 @@ class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Cannot retrieve page "page_import_name" from "non-existent-file.yml"');
 
         $pageProvider = new DeferredPageProvider(
-            PageLoader::createLoader(), [
+            PageLoader::createLoader(),
+            [
                 'page_import_name' => 'non-existent-file.yml',
             ]
         );
