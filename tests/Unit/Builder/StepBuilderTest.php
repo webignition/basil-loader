@@ -12,15 +12,16 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\EnvironmentValue;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
@@ -44,7 +45,6 @@ use webignition\BasilParser\Provider\Step\DeferredStepProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\StepBuilderFactory;
 
 class StepBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -57,7 +57,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->stepBuilder = StepBuilderFactory::create();
+        $this->stepBuilder = StepBuilder::createBuilder();
     }
 
     /**
@@ -83,28 +83,16 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function buildSuccessDataProvider(): array
     {
-        $simpleCssSelectorIdentifier = new Identifier(
-            IdentifierTypes::CSS_SELECTOR,
-            new Value(
-                ValueTypes::STRING,
-                '.selector'
-            )
+        $simpleCssSelectorIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.selector')
         );
 
-        $buttonCssSelectorIdentifier = new Identifier(
-            IdentifierTypes::CSS_SELECTOR,
-            new Value(
-                ValueTypes::STRING,
-                '.button'
-            )
+        $buttonCssSelectorIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.button')
         );
 
-        $headingCssSelectorIdentifier = new Identifier(
-            IdentifierTypes::CSS_SELECTOR,
-            new Value(
-                ValueTypes::STRING,
-                '.heading'
-            )
+        $headingCssSelectorIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.heading')
         );
 
         return [
@@ -174,20 +162,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '$page.title is "Example"',
-                            new Identifier(
-                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                new ObjectValue(
-                                    ValueTypes::PAGE_OBJECT_PROPERTY,
-                                    '$page.title',
-                                    'page',
-                                    'title'
-                                )
+                            new ObjectValue(
+                                ValueTypes::PAGE_OBJECT_PROPERTY,
+                                '$page.title',
+                                ObjectNames::PAGE,
+                                'title'
                             ),
                             AssertionComparisons::IS,
-                            new Value(
-                                ValueTypes::STRING,
-                                'Example'
-                            )
+                            LiteralValue::createStringValue('Example')
                         )
                     ]
                 ),
@@ -206,32 +188,26 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
-                        [
-                            'element_name' => $simpleCssSelectorIdentifier
-                        ]
+                        new IdentifierCollection([
+                            $simpleCssSelectorIdentifier->withName('element_name')
+                        ])
                     )
                 ]),
                 'expectedStep' => new Step(
                     [
                         new InputAction(
                             'set page_import_name.elements.element_name to "example"',
-                            $simpleCssSelectorIdentifier,
-                            new Value(
-                                ValueTypes::STRING,
-                                'example'
-                            ),
+                            $simpleCssSelectorIdentifier->withName('element_name'),
+                            LiteralValue::createStringValue('example'),
                             'page_import_name.elements.element_name to "example"'
                         ),
                     ],
                     [
                         new Assertion(
                             'page_import_name.elements.element_name is "example"',
-                            $simpleCssSelectorIdentifier,
+                            new ElementValue($simpleCssSelectorIdentifier->withName('element_name')),
                             AssertionComparisons::IS,
-                            new Value(
-                                ValueTypes::STRING,
-                                'example'
-                            )
+                            LiteralValue::createStringValue('example')
                         )
                     ]
                 ),
@@ -260,12 +236,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".heading" includes "Hello World"',
-                            $headingCssSelectorIdentifier,
+                            new ElementValue($headingCssSelectorIdentifier),
                             AssertionComparisons::INCLUDES,
-                            new Value(
-                                ValueTypes::STRING,
-                                'Hello World'
-                            )
+                            LiteralValue::createStringValue('Hello World')
                         ),
                     ]
                 ),
@@ -302,7 +275,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            $headingCssSelectorIdentifier,
+                            new ElementValue($headingCssSelectorIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -355,7 +328,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            $headingCssSelectorIdentifier,
+                            new ElementValue($headingCssSelectorIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -391,17 +364,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
-                        [
-                            'heading' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.heading'
-                                ),
-                                null,
-                                'heading'
-                            ),
-                        ]
+                        new IdentifierCollection([
+                            $headingCssSelectorIdentifier->withName('heading'),
+                        ])
                     ),
                 ]),
                 'expectedStep' =>
@@ -417,32 +382,18 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         [
                             new Assertion(
                                 '$elements.heading includes "Hello World"',
-                                new Identifier(
-                                    IdentifierTypes::ELEMENT_PARAMETER,
-                                    new ObjectValue(
-                                        ValueTypes::ELEMENT_PARAMETER,
-                                        '$elements.heading',
-                                        'elements',
-                                        'heading'
-                                    )
+                                new ObjectValue(
+                                    ValueTypes::ELEMENT_PARAMETER,
+                                    '$elements.heading',
+                                    ObjectNames::ELEMENT,
+                                    'heading'
                                 ),
                                 AssertionComparisons::INCLUDES,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    'Hello World'
-                                )
+                                LiteralValue::createStringValue('Hello World')
                             ),
                         ]
                     ))->withIdentifierCollection(new IdentifierCollection([
-                        'heading' => new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            new Value(
-                                ValueTypes::STRING,
-                                '.heading'
-                            ),
-                            null,
-                            'heading'
-                        ),
+                        $headingCssSelectorIdentifier->withName('heading'),
                     ])),
             ],
             'actions and assertions with environment parameters' => [
@@ -459,16 +410,16 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
-                        [
-                            'element_name' => $simpleCssSelectorIdentifier
-                        ]
+                        new IdentifierCollection([
+                            $simpleCssSelectorIdentifier->withName('element_name')
+                        ])
                     )
                 ]),
                 'expectedStep' => new Step(
                     [
                         new InputAction(
                             'set page_import_name.elements.element_name to $env.KEY1',
-                            $simpleCssSelectorIdentifier,
+                            $simpleCssSelectorIdentifier->withName('element_name'),
                             new EnvironmentValue(
                                 '$env.KEY1',
                                 'KEY1'
@@ -479,7 +430,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             'page_import_name.elements.element_name is $env.KEY2|"default"',
-                            $simpleCssSelectorIdentifier,
+                            new ElementValue($simpleCssSelectorIdentifier->withName('element_name')),
                             AssertionComparisons::IS,
                             new EnvironmentValue(
                                 '$env.KEY2|"default"',
@@ -574,17 +525,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
             new PopulatedPageProvider([
                 'page_import_name' => new Page(
                     new Uri('http://example.com'),
-                    [
-                        'heading' => new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            new Value(
-                                ValueTypes::STRING,
-                                '.heading'
-                            ),
-                            null,
+                    new IdentifierCollection([
+                        new ElementIdentifier(
+                            LiteralValue::createCssSelectorValue('.heading'),
+                            1,
                             'heading'
                         )
-                    ]
+                    ])
                 ),
             ])
         );
