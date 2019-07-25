@@ -10,19 +10,20 @@ use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\EnvironmentValue;
+use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\ActionResolver;
-use webignition\BasilParser\Tests\Services\ActionResolverFactory;
 
 class ActionResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,7 +36,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->resolver = ActionResolverFactory::create();
+        $this->resolver = ActionResolver::createResolver();
     }
 
     /**
@@ -50,50 +51,33 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'wait action' => [
-                'action' => new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
+                'action' => new WaitAction('wait 30', LiteralValue::createStringValue('30')),
             ],
             'input action lacking identifier' => [
                 'action' => new InputAction(
                     'set to "value"',
                     null,
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     'to "value"'
                 ),
             ],
             'input action with css selector' => [
                 'action' => new InputAction(
                     'set ".selector" to "value"',
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     '".selector" to "value"'
                 ),
             ],
             'input action with xpath expression' => [
                 'action' => new InputAction(
                     'set "//foo" to "value"',
-                    new Identifier(
-                        IdentifierTypes::XPATH_EXPRESSION,
-                        new Value(
-                            ValueTypes::STRING,
-                            '//foo'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createXpathExpressionValue('//foo')
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     '"//foo" to "value"'
                 ),
             ],
@@ -109,60 +93,15 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                             'name'
                         )
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     '$elements.element_name to "value"'
-                ),
-            ],
-            'input action with page object parameter' => [
-                'action' => new InputAction(
-                    'set $page.title to "value"',
-                    new Identifier(
-                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::PAGE_OBJECT_PROPERTY,
-                            '$page.title',
-                            'page',
-                            'title'
-                        )
-                    ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
-                    '$page.title to "value"'
-                ),
-            ],
-            'input action with browser object parameter' => [
-                'action' => new InputAction(
-                    'set $browser.size to "value"',
-                    new Identifier(
-                        IdentifierTypes::BROWSER_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::BROWSER_OBJECT_PROPERTY,
-                            '$browser.size',
-                            'browser',
-                            'size'
-                        )
-                    ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
-                    '$browser.size to "value"'
                 ),
             ],
             'input action with environment parameter value' => [
                 'action' => new InputAction(
                     'set ".selector" to $env.KEY',
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
                     new EnvironmentValue(
                         '$env.KEY',
@@ -183,12 +122,8 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => new InteractionAction(
                     'click ".selector"',
                     ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
                     '".selector"'
                 ),
@@ -197,12 +132,8 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => new InteractionAction(
                     'click "/foo"',
                     ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::XPATH_EXPRESSION,
-                        new Value(
-                            ValueTypes::STRING,
-                            '//foo'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createXpathExpressionValue('//foo')
                     ),
                     '"//foo"'
                 ),
@@ -221,38 +152,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ),
                     '$elements.element_name'
-                ),
-            ],
-            'interaction action with page object parameter' => [
-                'action' => new InteractionAction(
-                    'click $page.title',
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::PAGE_OBJECT_PROPERTY,
-                            '$page.title',
-                            'page',
-                            'title'
-                        )
-                    ),
-                    '$page.title'
-                ),
-            ],
-            'interaction action with browser object parameter' => [
-                'action' => new InteractionAction(
-                    'click $browser.size',
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::BROWSER_OBJECT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::BROWSER_OBJECT_PROPERTY,
-                            '$browser.size',
-                            'browser',
-                            'size'
-                        )
-                    ),
-                    '$browser.size'
                 ),
             ],
         ];
@@ -279,45 +178,37 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
                     new Identifier(
-                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                        new Value(
-                            ValueTypes::STRING,
-                            'page_import_name.elements.element_name'
+                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                        new ObjectValue(
+                            ValueTypes::PAGE_ELEMENT_REFERENCE,
+                            'page_import_name.elements.element_name',
+                            'page_import_name',
+                            'element_name'
                         )
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     'page_import_name.elements.element_name to "value"'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedAction' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector'),
+                        1,
+                        'element_name'
                     ),
-                    new Value(
-                        ValueTypes::STRING,
-                        'value'
-                    ),
+                    LiteralValue::createStringValue('value'),
                     'page_import_name.elements.element_name to "value"'
                 ),
             ],
@@ -326,10 +217,12 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
                     new Identifier(
-                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                        new Value(
-                            ValueTypes::STRING,
-                            'page_import_name.elements.element_name'
+                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                        new ObjectValue(
+                            ValueTypes::PAGE_ELEMENT_REFERENCE,
+                            'page_import_name.elements.element_name',
+                            'page_import_name',
+                            'element_name'
                         )
                     ),
                     'page_import_name.elements.element_name'
@@ -337,26 +230,22 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedAction' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector'),
+                        1,
+                        'element_name'
                     ),
                     'page_import_name.elements.element_name'
                 ),
@@ -369,35 +258,27 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         $action = new InputAction(
             'set page_import_name.elements.unknown_element_name to "value"',
             new Identifier(
-                IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                new Value(
-                    ValueTypes::STRING,
-                    'page_import_name.elements.unknown_element_name'
+                IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                new ObjectValue(
+                    ValueTypes::PAGE_ELEMENT_REFERENCE,
+                    'page_import_name.elements.element_name',
+                    'page_import_name',
+                    'element_name'
                 )
             ),
-            new Value(
-                ValueTypes::STRING,
-                'value'
-            ),
+            LiteralValue::createStringValue('value'),
             'page_import_name.elements.unknown_element_name to "value"'
         );
 
         $pageProvider = new PopulatedPageProvider([
             'page_import_name' => new Page(
                 new Uri('http://example.com/'),
-                [
-                    'element_name' => new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
-                    )
-                ]
+                new IdentifierCollection()
             )
         ]);
 
         $this->expectException(UnknownPageElementException::class);
+        $this->expectExceptionMessage('Unknown page element "element_name" in page "page_import_name"');
 
         $this->resolver->resolve($action, $pageProvider);
     }
