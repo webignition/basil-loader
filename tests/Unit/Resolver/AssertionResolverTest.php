@@ -13,6 +13,7 @@ use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
@@ -60,6 +61,19 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     '',
                     LiteralValue::createStringValue('literal string'),
                     ''
+                ),
+            ],
+            'examined value is not page element reference' => [
+                'assertion' => new Assertion(
+                    '$page.url is "value"',
+                    new ObjectValue(
+                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                        '$page.url',
+                        ObjectNames::PAGE,
+                        'url'
+                    ),
+                    AssertionComparisons::IS,
+                    LiteralValue::createStringValue('value')
                 ),
             ],
         ];

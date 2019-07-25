@@ -13,6 +13,13 @@ class Factory
         $this->pageLoader = $pageLoader;
     }
 
+    public static function createFactory(): Factory
+    {
+        return new Factory(
+            PageLoader::createLoader()
+        );
+    }
+
     public function createDeferredPageProvider(array $importPaths)
     {
         return new DeferredPageProvider($this->pageLoader, $importPaths);

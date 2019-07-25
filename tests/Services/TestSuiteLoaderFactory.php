@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Tests\Services;
 
 use webignition\BasilDataStructure\PathResolver;
+use webignition\BasilParser\Loader\TestLoader;
 use webignition\BasilParser\Loader\TestSuiteLoader;
 
 class TestSuiteLoaderFactory
@@ -11,7 +12,7 @@ class TestSuiteLoaderFactory
     {
         return new TestSuiteLoader(
             YamlLoaderFactory::create(),
-            TestLoaderFactory::create(),
+            TestLoader::createLoader(),
             PathResolver::create()
         );
     }

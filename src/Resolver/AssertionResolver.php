@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
+use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -43,6 +44,10 @@ class AssertionResolver
         $examinedValue = $assertion->getExaminedValue();
 
         if (!$examinedValue instanceof ObjectValue) {
+            return $assertion;
+        }
+
+        if ($examinedValue->getType() !== ValueTypes::PAGE_ELEMENT_REFERENCE) {
             return $assertion;
         }
 

@@ -45,6 +45,18 @@ class TestLoader
         $this->dataSetProviderFactory = $dataSetProviderFactory;
     }
 
+    public static function createLoader(): TestLoader
+    {
+        return new TestLoader(
+            YamlLoader::createLoader(),
+            TestBuilder::createBuilder(),
+            PathResolver::create(),
+            StepProviderFactory::createFactory(),
+            PageProviderFactory::createFactory(),
+            DataSetProviderFactory::createFactory()
+        );
+    }
+
     /**
      * @param string $path
      *
