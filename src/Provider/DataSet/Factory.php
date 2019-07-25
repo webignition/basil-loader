@@ -13,6 +13,13 @@ class Factory
         $this->dataSetLoader = $dataSetLoader;
     }
 
+    public static function createFactory(): Factory
+    {
+        return new Factory(
+            DataSetLoader::createLoader()
+        );
+    }
+
     public function createDeferredDataSetProvider(array $importPaths)
     {
         return new DeferredDataSetProvider($this->dataSetLoader, $importPaths);

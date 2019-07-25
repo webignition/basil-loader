@@ -6,24 +6,22 @@ namespace webignition\BasilParser\Tests\Unit\Resolver;
 
 use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Identifier\ElementIdentifier;
-use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierInterface;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
+use webignition\BasilModel\Value\ObjectValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
-use webignition\BasilParser\Resolver\IdentifierResolver;
+use webignition\BasilParser\Resolver\PageElementReferenceResolver;
 
-class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
+class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var IdentifierResolver
+     * @var PageElementReferenceResolver
      */
     private $resolver;
 
@@ -31,47 +29,20 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->resolver = IdentifierResolver::createResolver();
-    }
-
-    /**
-     * @dataProvider resolveNonResolvableDataProvider
-     */
-    public function testResolveNonResolvable(IdentifierInterface $identifier)
-    {
-        $resolvedIdentifier = $this->resolver->resolve($identifier, new EmptyPageProvider());
-
-        $this->assertSame($identifier, $resolvedIdentifier);
-    }
-
-    public function resolveNonResolvableDataProvider(): array
-    {
-        return [
-            'wrong identifier type' => [
-                'identifier' => new ElementIdentifier(
-                    LiteralValue::createCssSelectorValue('.selector')
-                ),
-            ],
-            'wrong value type' => [
-                'identifier' => new Identifier(
-                    IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                    LiteralValue::createStringValue('value')
-                ),
-            ],
-        ];
+        $this->resolver = PageElementReferenceResolver::createResolver();
     }
 
     /**
      * @dataProvider resolveIsResolvedDataProvider
      */
     public function testResolveIsResolved(
-        IdentifierInterface $identifier,
+        ObjectValueInterface $value,
         PageProviderInterface $pageProvider,
         IdentifierInterface $expectedIdentifier
     ) {
-        $resolvedIdentifier = $this->resolver->resolve($identifier, $pageProvider);
+        $identifier = $this->resolver->resolve($value, $pageProvider);
 
-        $this->assertEquals($expectedIdentifier, $resolvedIdentifier);
+        $this->assertEquals($expectedIdentifier, $identifier);
     }
 
     public function resolveIsResolvedDataProvider(): array
@@ -84,14 +55,11 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
 
         return [
             'resolvable' => [
-                'identifier' => new Identifier(
-                    IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                    new ObjectValue(
-                        ValueTypes::PAGE_ELEMENT_REFERENCE,
-                        'page_import_name.elements.element_name',
-                        'page_import_name',
-                        'element_name'
-                    )
+                'value' => new ObjectValue(
+                    ValueTypes::PAGE_ELEMENT_REFERENCE,
+                    'page_import_name.elements.element_name',
+                    'page_import_name',
+                    'element_name'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
@@ -110,28 +78,25 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
      * @dataProvider resolveThrowsUnknownPageElementExceptionDataProvider
      */
     public function testResolveThrowsUnknownPageElementException(
-        IdentifierInterface $identifier,
+        ObjectValueInterface $value,
         PageProviderInterface $pageProvider,
         string $expectedExceptionMessage
     ) {
         $this->expectException(UnknownPageElementException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $this->resolver->resolve($identifier, $pageProvider);
+        $this->resolver->resolve($value, $pageProvider);
     }
 
     public function resolveThrowsUnknownPageElementExceptionDataProvider(): array
     {
         return [
             'element not present in page' => [
-                'identifier' => new Identifier(
-                    IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                    new ObjectValue(
-                        ValueTypes::PAGE_ELEMENT_REFERENCE,
-                        'page_import_name.elements.element_name',
-                        'page_import_name',
-                        'element_name'
-                    )
+                'value' => new ObjectValue(
+                    ValueTypes::PAGE_ELEMENT_REFERENCE,
+                    'page_import_name.elements.element_name',
+                    'page_import_name',
+                    'element_name'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(

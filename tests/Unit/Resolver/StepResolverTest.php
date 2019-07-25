@@ -9,9 +9,9 @@ use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
@@ -19,7 +19,9 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
@@ -32,7 +34,6 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepResolver;
-use webignition\BasilParser\Tests\Services\StepResolverFactory;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -45,7 +46,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->resolver = StepResolverFactory::create();
+        $this->resolver = StepResolver::createResolver();
     }
 
     /**
@@ -80,13 +81,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -94,21 +95,21 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             'step with actions imports step with actions' => [
                 'step' => new PendingImportResolutionStep(
                     new Step([
-                        new WaitAction('wait 2', new Value(ValueTypes::STRING, '2')),
+                        new WaitAction('wait 2', LiteralValue::createStringValue('2')),
                     ], []),
                     'step_import_name',
                     ''
                 ),
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
-                    new WaitAction('wait 2', new Value(ValueTypes::STRING, '2')),
+                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
+                    new WaitAction('wait 2', LiteralValue::createStringValue('2')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -140,13 +141,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         ''
                     ),
                     'step_import_name' => new Step([
-                        new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
                     ], [
                         new Assertion('".selector" exists', null, null)
                     ]),
                 ]),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 1', new Value(ValueTypes::STRING, '1')),
+                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
                 ], [
                     new Assertion('".selector" exists', null, null)
                 ]),
@@ -225,11 +226,11 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'no resolvable actions' => [
                 'step' => new Step([
-                    new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
+                    new WaitAction('wait 30', LiteralValue::createStringValue('30')),
                 ], []),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([
-                    new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
+                    new WaitAction('wait 30', LiteralValue::createStringValue('30')),
                 ], []),
             ],
             'has resolvable actions' => [
@@ -237,47 +238,39 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     new InputAction(
                         'set page_import_name.elements.element_name to "value"',
                         new Identifier(
-                            IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                            new Value(
-                                ValueTypes::STRING,
-                                'page_import_name.elements.element_name'
+                            IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                            new ObjectValue(
+                                ValueTypes::PAGE_ELEMENT_REFERENCE,
+                                'page_import_name.elements.element_name',
+                                'page_import_name',
+                                'element_name'
                             )
                         ),
-                        new Value(
-                            ValueTypes::STRING,
-                            'value'
-                        ),
+                        LiteralValue::createStringValue('value'),
                         'page_import_name.elements.element_name to "value"'
                     )
                 ], []),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedStep' => new Step([
                     new InputAction(
                         'set page_import_name.elements.element_name to "value"',
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            new Value(
-                                ValueTypes::STRING,
-                                '.selector'
-                            )
+                        new ElementIdentifier(
+                            LiteralValue::createCssSelectorValue('.selector'),
+                            1,
+                            'element_name'
                         ),
-                        new Value(
-                            ValueTypes::STRING,
-                            'value'
-                        ),
+                        LiteralValue::createStringValue('value'),
                         'page_import_name.elements.element_name to "value"'
                     )
                 ], []),
@@ -307,13 +300,9 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no assertions' => [
-                'step' => new Step([], [
-                    \Mockery::mock(AssertionInterface::class),
-                ]),
+                'step' => new Step([], []),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], [
-                    \Mockery::mock(AssertionInterface::class),
-                ]),
+                'expectedStep' => new Step([], []),
             ],
             'no resolvable assertions' => [
                 'step' => new Step([], []),
@@ -324,12 +313,11 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new Step([], [
                     new Assertion(
                         'page_import_name.elements.element_name exists',
-                        new Identifier(
-                            IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                            new Value(
-                                ValueTypes::STRING,
-                                'page_import_name.elements.element_name'
-                            )
+                        new ObjectValue(
+                            ValueTypes::PAGE_ELEMENT_REFERENCE,
+                            'page_import_name.elements.element_name',
+                            'page_import_name',
+                            'element_name'
                         ),
                         AssertionComparisons::EXISTS
                     ),
@@ -337,25 +325,23 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedStep' => new Step([], [
                     new Assertion(
                         'page_import_name.elements.element_name exists',
-                        new Identifier(
-                            IdentifierTypes::CSS_SELECTOR,
-                            new Value(
-                                ValueTypes::STRING,
-                                '.selector'
+                        new ElementValue(
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
                         ),
                         AssertionComparisons::EXISTS
@@ -393,60 +379,47 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'no resolvable element identifiers' => [
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
                 ])),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
                 ]))
             ],
             'has resolvable element identifiers' => [
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    'element_name' => new Identifier(
-                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                        new Value(
-                            ValueTypes::STRING,
-                            'page_import_name.elements.element_name'
+                    new Identifier(
+                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                        new ObjectValue(
+                            ValueTypes::PAGE_ELEMENT_REFERENCE,
+                            'page_import_name.elements.element_name',
+                            'page_import_name',
+                            'element_name'
                         ),
-                        null,
-                        'identifier_name'
+                        'element_name'
                     ),
                 ])),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    'element_name' => new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        ),
-                        null,
-                        'identifier_name'
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector'),
+                        1,
+                        'element_name'
                     ),
                 ]))
             ],

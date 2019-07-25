@@ -31,6 +31,15 @@ class TestSuiteLoader
         $this->pathResolver = $pathResolver;
     }
 
+    public static function createLoader(): TestSuiteLoader
+    {
+        return new TestSuiteLoader(
+            YamlLoader::createLoader(),
+            TestLoader::createLoader(),
+            PathResolver::create()
+        );
+    }
+
     /**
      * @param string $path
      *

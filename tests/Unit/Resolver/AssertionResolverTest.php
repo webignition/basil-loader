@@ -8,17 +8,18 @@ use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Identifier\ElementIdentifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
-use webignition\BasilModel\Value\EnvironmentValue;
-use webignition\BasilModel\Value\Value;
+use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectNames;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\AssertionResolver;
-use webignition\BasilParser\Tests\Services\AssertionResolverFactory;
 
 class AssertionResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -31,13 +32,13 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->resolver = AssertionResolverFactory::create();
+        $this->resolver = AssertionResolver::createResolver();
     }
 
     /**
-     * @dataProvider resolveLeavesActionUnchangedDataProvider
+     * @dataProvider resolveLeavesAssertionUnchangedDataProvider
      */
-    public function testResolveLeavesActionUnchanged(AssertionInterface $assertion)
+    public function testResolveLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
         $this->assertSame(
             $assertion,
@@ -45,43 +46,43 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function resolveLeavesActionUnchangedDataProvider(): array
+    public function resolveLeavesAssertionUnchangedDataProvider(): array
     {
         return [
-            'assertion not implementing IdentifierContainerInterface' => [
-                'assertion' => \Mockery::mock(AssertionInterface::class),
-            ],
-            'assertion lacking identifier' => [
+            'examined value missing' => [
                 'assertion' => new Assertion(
                     '',
                     null,
                     ''
                 ),
             ],
-            'assertion with environment parameter' => [
+            'examined value is not object value' => [
                 'assertion' => new Assertion(
-                    '".selector" is $env.KEY',
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
-                        )
+                    '',
+                    LiteralValue::createStringValue('literal string'),
+                    ''
+                ),
+            ],
+            'examined value is not page element reference' => [
+                'assertion' => new Assertion(
+                    '$page.url is "value"',
+                    new ObjectValue(
+                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                        '$page.url',
+                        ObjectNames::PAGE,
+                        'url'
                     ),
                     AssertionComparisons::IS,
-                    new EnvironmentValue(
-                        '$env.KEY',
-                        'KEY'
-                    )
+                    LiteralValue::createStringValue('value')
                 ),
             ],
         ];
     }
 
     /**
-     * @dataProvider resolveCreatesNewActionDataProvider
+     * @dataProvider resolveCreatesNewAssertionDataProvider
      */
-    public function testResolveCreatesNewAction(
+    public function testResolveCreatesNewAssertion(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider,
         AssertionInterface $expectedAssertion
@@ -92,42 +93,39 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAssertion, $resolvedAssertion);
     }
 
-    public function resolveCreatesNewActionDataProvider(): array
+    public function resolveCreatesNewAssertionDataProvider(): array
     {
         return [
-            'assertion' => [
+            'is resolved' => [
                 'assertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
-                    new Identifier(
-                        IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE,
-                        new Value(
-                            ValueTypes::STRING,
-                            'page_import_name.elements.element_name'
-                        )
+                    new ObjectValue(
+                        ValueTypes::PAGE_ELEMENT_REFERENCE,
+                        'page_import_name.elements.element_name',
+                        'page_import_name',
+                        'element_name'
                     ),
                     AssertionComparisons::EXISTS
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'expectedAssertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
-                    new Identifier(
-                        IdentifierTypes::CSS_SELECTOR,
-                        new Value(
-                            ValueTypes::STRING,
-                            '.selector'
+                    new ElementValue(
+                        new ElementIdentifier(
+                            LiteralValue::createCssSelectorValue('.selector'),
+                            1,
+                            'element_name'
                         )
                     ),
                     AssertionComparisons::EXISTS

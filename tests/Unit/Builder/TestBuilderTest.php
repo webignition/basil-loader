@@ -11,16 +11,15 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModel\Value\Value;
-use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
@@ -35,7 +34,6 @@ use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
-use webignition\BasilParser\Tests\Services\TestBuilderFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -48,7 +46,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->testBuilder = TestBuilderFactory::create();
+        $this->testBuilder = TestBuilder::createBuilder();
     }
 
     /**
@@ -97,16 +95,14 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         'step name' => new Step(
                             [
-                                new WaitAction('wait 30', new Value(ValueTypes::STRING, '30')),
+                                new WaitAction('wait 30', LiteralValue::createStringValue('30')),
                             ],
                             [
                                 new Assertion(
                                     '".selector" exists',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.selector'
+                                    new ElementValue(
+                                        new ElementIdentifier(
+                                            LiteralValue::createCssSelectorValue('.selector')
                                         )
                                     ),
                                     AssertionComparisons::EXISTS
@@ -153,30 +149,28 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
-                        [
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.imported-page-element-selector'
-                                )
+                        new IdentifierCollection([
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                1,
+                                'element_name'
                             )
-                        ]
+                        ])
                     )
                 ]),
                 'stepProvider' => new PopulatedStepProvider([
                     'step_import_name' => new Step(
                         [
-                            new WaitAction('wait 10', new Value(ValueTypes::STRING, '10')),
+                            new WaitAction('wait 10', LiteralValue::createStringValue('10')),
                         ],
                         [
                             new Assertion(
                                 '".imported-step-selector" exists',
-                                new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        '.imported-step-selector'
+                                new ElementValue(
+                                    new ElementIdentifier(
+                                        LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                        1,
+                                        'element_name'
                                     )
                                 ),
                                 AssertionComparisons::EXISTS
@@ -200,11 +194,11 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new Assertion(
                                     'page_import_name.elements.element_name exists',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.imported-page-element-selector'
+                                    new ElementValue(
+                                        new ElementIdentifier(
+                                            LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                            1,
+                                            'element_name'
                                         )
                                     ),
                                     AssertionComparisons::EXISTS
@@ -213,16 +207,16 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                         ),
                         'step referencing imported step with imported data provider' => (new Step(
                             [
-                                new WaitAction('wait 10', new Value(ValueTypes::STRING, '10')),
+                                new WaitAction('wait 10', LiteralValue::createStringValue('10')),
                             ],
                             [
                                 new Assertion(
                                     '".imported-step-selector" exists',
-                                    new Identifier(
-                                        IdentifierTypes::CSS_SELECTOR,
-                                        new Value(
-                                            ValueTypes::STRING,
-                                            '.imported-step-selector'
+                                    new ElementValue(
+                                        new ElementIdentifier(
+                                            LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                            1,
+                                            'element_name'
                                         )
                                     ),
                                     AssertionComparisons::EXISTS
@@ -233,12 +227,8 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 'foo' => 'bar',
                             ])
                         ]))->withIdentifierCollection(new IdentifierCollection([
-                            'element_name' => new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.imported-page-element-selector'
-                                ),
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
                                 1,
                                 'element_name'
                             ),

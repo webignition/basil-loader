@@ -7,20 +7,18 @@ namespace webignition\BasilParser\Tests\Unit\Loader;
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownTestException;
 use webignition\BasilParser\Loader\TestSuiteLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\TestSuiteLoaderFactory;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -33,7 +31,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->testSuiteLoader = TestSuiteLoaderFactory::create();
+        $this->testSuiteLoader = TestSuiteLoader::createLoader();
     }
 
     /**
@@ -67,20 +65,14 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new Identifier(
-                                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                new ObjectValue(
-                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                    '$page.url',
-                                                    'page',
-                                                    'url'
-                                                )
+                                            new ObjectValue(
+                                                ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                '$page.url',
+                                                ObjectNames::PAGE,
+                                                'url'
                                             ),
                                             AssertionComparisons::IS,
-                                            new Value(
-                                                ValueTypes::STRING,
-                                                'https://example.com'
-                                            )
+                                            LiteralValue::createStringValue('https://example.com')
                                         ),
                                     ]
                                 ),
@@ -103,20 +95,14 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new Identifier(
-                                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                new ObjectValue(
-                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                    '$page.url',
-                                                    'page',
-                                                    'url'
-                                                )
+                                            new ObjectValue(
+                                                ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                '$page.url',
+                                                ObjectNames::PAGE,
+                                                'url'
                                             ),
                                             AssertionComparisons::IS,
-                                            new Value(
-                                                ValueTypes::STRING,
-                                                'https://example.com'
-                                            )
+                                            LiteralValue::createStringValue('https://example.com')
                                         ),
                                     ]
                                 ),
@@ -131,20 +117,14 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new Identifier(
-                                                IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                                new ObjectValue(
-                                                    ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                    '$page.url',
-                                                    'page',
-                                                    'url'
-                                                )
+                                            new ObjectValue(
+                                                ValueTypes::PAGE_OBJECT_PROPERTY,
+                                                '$page.url',
+                                                ObjectNames::PAGE,
+                                                'url'
                                             ),
                                             AssertionComparisons::IS,
-                                            new Value(
-                                                ValueTypes::STRING,
-                                                'https://example.com'
-                                            )
+                                            LiteralValue::createStringValue('https://example.com')
                                         ),
                                     ]
                                 )

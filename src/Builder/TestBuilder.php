@@ -30,6 +30,14 @@ class TestBuilder
         $this->testResolver = $testResolver;
     }
 
+    public static function createBuilder(): TestBuilder
+    {
+        return new TestBuilder(
+            TestFactory::createFactory(),
+            TestResolver::createResolver()
+        );
+    }
+
     /**
      * @param TestData $testData
      * @param PageProviderInterface $pageProvider

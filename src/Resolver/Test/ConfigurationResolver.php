@@ -12,6 +12,11 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ConfigurationResolver
 {
+    public static function createResolver(): ConfigurationResolver
+    {
+        return new ConfigurationResolver();
+    }
+
     /**
      * @param ConfigurationInterface $configuration
      * @param PageProviderInterface $pageProvider

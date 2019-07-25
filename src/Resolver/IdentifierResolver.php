@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
-use webignition\BasilModel\PageElementReference\PageElementReference;
+use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -13,6 +13,20 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class IdentifierResolver
 {
+    private $pageElementReferenceResolver;
+
+    public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
+    {
+        $this->pageElementReferenceResolver = $pageElementReferenceResolver;
+    }
+
+    public static function createResolver(): IdentifierResolver
+    {
+        return new IdentifierResolver(
+            PageElementReferenceResolver::createResolver()
+        );
+    }
+
     /**
      * @param IdentifierInterface $identifier
      * @param PageProviderInterface $pageProvider
@@ -28,26 +42,16 @@ class IdentifierResolver
         IdentifierInterface $identifier,
         PageProviderInterface $pageProvider
     ): IdentifierInterface {
-        if (IdentifierTypes::PAGE_MODEL_ELEMENT_REFERENCE !== $identifier->getType()) {
+        if (IdentifierTypes::PAGE_ELEMENT_REFERENCE !== $identifier->getType()) {
             return $identifier;
         }
 
-        $pageElementReference = new PageElementReference($identifier->getValue()->getValue());
+        $value = $identifier->getValue();
 
-        $page = $pageProvider->findPage($pageElementReference->getImportName());
-        $elementIdentifier = $page->getElementIdentifier($pageElementReference->getElementName());
-
-        if ($elementIdentifier instanceof IdentifierInterface) {
-            $identifierName = $identifier->getName();
-
-            return null === $identifierName
-                ? $elementIdentifier
-                : $elementIdentifier->withName($identifierName);
+        if (!$value instanceof ObjectValue) {
+            return $identifier;
         }
 
-        throw new UnknownPageElementException(
-            $pageElementReference->getImportName(),
-            $pageElementReference->getElementName()
-        );
+        return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
     }
 }

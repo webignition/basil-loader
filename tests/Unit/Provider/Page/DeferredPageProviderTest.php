@@ -4,13 +4,10 @@
 
 namespace webignition\BasilParser\Tests\Unit\Provider\Page;
 
-use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilModelFactory\PageFactory;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Loader\PageLoader;
-use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Provider\Page\DeferredPageProvider;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
@@ -18,9 +15,12 @@ class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testFindPageSuccess()
     {
-        $pageProvider = new DeferredPageProvider($this->createPageLoader(), [
-            'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
-        ]);
+        $pageProvider = new DeferredPageProvider(
+            PageLoader::createLoader(),
+            [
+                'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+            ]
+        );
 
         $page = $pageProvider->findPage('page_import_name');
 
@@ -32,7 +32,7 @@ class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownPageException::class);
         $this->expectExceptionMessage('Unknown page "page_import_name"');
 
-        $pageProvider = new DeferredPageProvider($this->createPageLoader(), []);
+        $pageProvider = new DeferredPageProvider(PageLoader::createLoader(), []);
 
         $pageProvider->findPage('page_import_name');
     }
@@ -42,20 +42,13 @@ class DeferredPageProviderTest extends \PHPUnit\Framework\TestCase
         $this->expectException(NonRetrievablePageException::class);
         $this->expectExceptionMessage('Cannot retrieve page "page_import_name" from "non-existent-file.yml"');
 
-        $pageProvider = new DeferredPageProvider($this->createPageLoader(), [
-            'page_import_name' => 'non-existent-file.yml',
-        ]);
+        $pageProvider = new DeferredPageProvider(
+            PageLoader::createLoader(),
+            [
+                'page_import_name' => 'non-existent-file.yml',
+            ]
+        );
 
         $pageProvider->findPage('page_import_name');
-    }
-
-    private function createPageLoader()
-    {
-        $yamlParser = new YamlParser();
-
-        $yamlLoader = new YamlLoader($yamlParser);
-        $pageFactory = PageFactory::create();
-
-        return new PageLoader($yamlLoader, $pageFactory);
     }
 }

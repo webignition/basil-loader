@@ -27,6 +27,13 @@ class TestSuiteResolver
         $this->testResolver = $testResolver;
     }
 
+    public static function createResolver(): TestSuiteResolver
+    {
+        return new TestSuiteResolver(
+            TestResolver::createResolver()
+        );
+    }
+
     /**
      * @param TestSuiteInterface $testSuite
      * @param PageProviderInterface $pageProvider

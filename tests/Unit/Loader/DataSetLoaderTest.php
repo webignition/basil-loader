@@ -7,7 +7,7 @@ namespace webignition\BasilParser\Tests\Unit\Loader;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
-use webignition\BasilParser\Tests\Services\DataSetLoaderFactory;
+use webignition\BasilParser\Loader\DataSetLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
@@ -17,7 +17,7 @@ class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoad(string $path, DataSetCollectionInterface $expectedDataSetCollection)
     {
-        $dataSetLoader = DataSetLoaderFactory::create();
+        $dataSetLoader = DataSetLoader::createLoader();
 
         $dataSetCollection = $dataSetLoader->load($path);
 

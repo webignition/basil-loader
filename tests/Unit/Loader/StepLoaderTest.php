@@ -9,12 +9,12 @@ use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModel\Value\Value;
-use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
@@ -24,7 +24,6 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\StepLoaderFactory;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -38,7 +37,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
         PageProviderInterface $pageProvider,
         StepInterface $expectedStep
     ) {
-        $stepLoader = StepLoaderFactory::create();
+        $stepLoader = StepLoader::createLoader();
 
         $step = $stepLoader->load($path, $stepProvider, $dataSetProvider, $pageProvider);
 
@@ -65,12 +64,8 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.button'
-                                )
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.button')
                             ),
                             '".button"'
                         ),
@@ -78,18 +73,11 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".heading" includes "Hello World"',
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.heading'
-                                )
-                            ),
+                            new ElementValue(new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.heading')
+                            )),
                             AssertionComparisons::INCLUDES,
-                            new Value(
-                                ValueTypes::STRING,
-                                'Hello World'
-                            )
+                            LiteralValue::createStringValue('Hello World')
                         ),
                     ]
                 ),
@@ -99,18 +87,14 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'stepProvider' => new PopulatedStepProvider([
                     'no_parameters_import_name' => new Step(
                         [
-                            new WaitAction('wait 20', new Value(ValueTypes::STRING, '20')),
+                            new WaitAction('wait 20', LiteralValue::createStringValue('20')),
                         ],
                         [
                             new Assertion(
                                 '".selector" exists',
-                                new Identifier(
-                                    IdentifierTypes::CSS_SELECTOR,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        '.selector'
-                                    )
-                                ),
+                                new ElementValue(new ElementIdentifier(
+                                    LiteralValue::createCssSelectorValue('.selector')
+                                )),
                                 AssertionComparisons::EXISTS
                             )
                         ]
@@ -120,18 +104,14 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step(
                     [
-                        new WaitAction('wait 20', new Value(ValueTypes::STRING, '20')),
+                        new WaitAction('wait 20', LiteralValue::createStringValue('20')),
                     ],
                     [
                         new Assertion(
                             '".selector" exists',
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.selector'
-                                )
-                            ),
+                            new ElementValue(new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.selector')
+                            )),
                             AssertionComparisons::EXISTS
                         )
                     ]
@@ -140,7 +120,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
             'deferred import with deferred step provider' => [
                 'path' => FixturePathFinder::find('Step/deferred_import.yml'),
                 'stepProvider' => new DeferredStepProvider(
-                    StepLoaderFactory::create(),
+                    StepLoader::createLoader(),
                     [
                         'no_parameters_import_name' => FixturePathFinder::find('Step/no-parameters.yml'),
                     ]
@@ -152,12 +132,8 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.button'
-                                )
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.button')
                             ),
                             '".button"'
                         ),
@@ -165,18 +141,11 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".heading" includes "Hello World"',
-                            new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.heading'
-                                )
-                            ),
+                            new ElementValue(new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.heading')
+                            )),
                             AssertionComparisons::INCLUDES,
-                            new Value(
-                                ValueTypes::STRING,
-                                'Hello World'
-                            )
+                            LiteralValue::createStringValue('Hello World')
                         ),
                     ]
                 ),

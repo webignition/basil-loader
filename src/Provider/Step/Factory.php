@@ -13,6 +13,13 @@ class Factory
         $this->stepLoader = $stepLoader;
     }
 
+    public static function createFactory(): Factory
+    {
+        return new Factory(
+            StepLoader::createLoader()
+        );
+    }
+
     public function createDeferredStepProvider(array $importPaths)
     {
         return new DeferredStepProvider($this->stepLoader, $importPaths);

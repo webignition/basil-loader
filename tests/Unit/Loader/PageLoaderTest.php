@@ -5,16 +5,13 @@
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierTypes;
+use webignition\BasilModel\Identifier\ElementIdentifier;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilModel\Value\Value;
-use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilModelFactory\PageFactory;
+use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\YamlLoaderFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -23,7 +20,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoad(string $path, PageInterface $expectedPage)
     {
-        $pageLoader = new PageLoader(YamlLoaderFactory::create(), PageFactory::create());
+        $pageLoader = PageLoader::createLoader();
 
         $page = $pageLoader->load($path);
 
@@ -32,42 +29,34 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
-        $parentIdentifier = new Identifier(
-            IdentifierTypes::CSS_SELECTOR,
-            new Value(
-                ValueTypes::STRING,
-                '.form'
-            ),
-            null,
+        $parentIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.form'),
+            1,
             'form'
         );
 
         return [
             'empty' => [
                 'path' => FixturePathFinder::find('Empty/empty.yml'),
-                'expectedPage' => new Page(new Uri(''), []),
+                'expectedPage' => new Page(new Uri(''), new IdentifierCollection()),
             ],
             'url only' => [
                 'path' => FixturePathFinder::find('Page/example.com.url-only.yml'),
-                'expectedPage' => new Page(new Uri('https://example.com'), []),
+                'expectedPage' => new Page(new Uri('https://example.com'), new IdentifierCollection()),
             ],
             'url and element references' => [
                 'path' => FixturePathFinder::find('Page/example.com.form.yml'),
                 'expectedPage' => new Page(
                     new Uri('https://example.com'),
-                    [
+                    new IdentifierCollection([
                         'form' => $parentIdentifier,
                         'input' =>
-                            (new Identifier(
-                                IdentifierTypes::CSS_SELECTOR,
-                                new Value(
-                                    ValueTypes::STRING,
-                                    '.input'
-                                ),
-                                null,
+                            (new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.input'),
+                                1,
                                 'input'
                             ))->withParentIdentifier($parentIdentifier),
-                    ]
+                    ])
                 ),
             ],
         ];

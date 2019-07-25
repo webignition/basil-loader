@@ -6,17 +6,16 @@ namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\Identifier\Identifier;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModel\Value\LiteralValue;
+use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\Value;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\Loader\TestLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\TestLoaderFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -25,7 +24,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoad(string $path, TestInterface $expectedTest)
     {
-        $testLoader = TestLoaderFactory::create();
+        $testLoader = TestLoader::createLoader();
 
         $test = $testLoader->load($path);
 
@@ -54,20 +53,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new Assertion(
                                     '$page.url is "https://example.com"',
-                                    new Identifier(
-                                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                        new ObjectValue(
-                                            ValueTypes::PAGE_OBJECT_PROPERTY,
-                                            '$page.url',
-                                            'page',
-                                            'url'
-                                        )
+                                    new ObjectValue(
+                                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                                        '$page.url',
+                                        ObjectNames::PAGE,
+                                        'url'
                                     ),
                                     AssertionComparisons::IS,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        'https://example.com'
-                                    )
+                                    LiteralValue::createStringValue('https://example.com')
                                 ),
                             ]
                         )
@@ -85,20 +78,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new Assertion(
                                     '$page.url is "https://example.com"',
-                                    new Identifier(
-                                        IdentifierTypes::PAGE_OBJECT_PARAMETER,
-                                        new ObjectValue(
-                                            ValueTypes::PAGE_OBJECT_PROPERTY,
-                                            '$page.url',
-                                            'page',
-                                            'url'
-                                        )
+                                    new ObjectValue(
+                                        ValueTypes::PAGE_OBJECT_PROPERTY,
+                                        '$page.url',
+                                        'page',
+                                        'url'
                                     ),
                                     AssertionComparisons::IS,
-                                    new Value(
-                                        ValueTypes::STRING,
-                                        'https://example.com'
-                                    )
+                                    LiteralValue::createStringValue('https://example.com')
                                 ),
                             ]
                         )
