@@ -47,10 +47,10 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
-use webignition\BasilParser\Tests\Services\DataSetProviderFactoryFactory;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\PageProviderFactoryFactory;
-use webignition\BasilParser\Tests\Services\StepProviderFactoryFactory;
+use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
+use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
+use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -279,7 +279,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => (DataSetProviderFactoryFactory::create())->createDeferredDataSetProvider([
+                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
                     'data_provider_name' => 'DataProvider/non-existent.yml',
                 ]),
                 'expectedException' => NonRetrievableDataProviderException::class,
@@ -304,7 +304,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => (DataSetProviderFactoryFactory::create())->createDeferredDataSetProvider([
+                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
                     'data_provider_name' => $invalidYamlPath,
                 ]),
                 'expectedException' => NonRetrievableDataProviderException::class,
@@ -321,7 +321,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     new Configuration('chrome', 'page_import_name.url'),
                     []
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => 'Page/non-existent.yml',
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -338,7 +338,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     new Configuration('chrome', 'page_import_name.url'),
                     []
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => $invalidYamlPath,
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -364,7 +364,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => 'Page/non-existent.yml',
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -391,7 +391,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => $invalidYamlPath,
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -419,7 +419,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => 'Page/non-existent.yml',
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -446,7 +446,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ),
-                'pageProvider' => (PageProviderFactoryFactory::create())->createDeferredPageProvider([
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
                     'page_import_name' => $invalidYamlPath,
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -473,7 +473,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => (StepProviderFactoryFactory::create())->createDeferredStepProvider([
+                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
                     'step_import_name' => 'Step/non-existent.yml',
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
@@ -497,7 +497,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => (StepProviderFactoryFactory::create())->createDeferredStepProvider([
+                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
                     'step_import_name' => $invalidYamlPath,
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
