@@ -9,7 +9,6 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Loader\YamlLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\YamlLoaderFactory;
 
 class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -58,7 +57,7 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testLoadArrayWithEmptyContent(string $path)
     {
-        $yamlLoader = YamlLoaderFactory::create();
+        $yamlLoader = YamlLoader::createLoader();
 
         $data = $yamlLoader->loadArray($path);
 
