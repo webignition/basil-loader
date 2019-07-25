@@ -3,7 +3,6 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Identifier\IdentifierInterface;
-use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ObjectValueInterface;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
