@@ -15,6 +15,13 @@ class YamlLoader
         $this->yamlParser = $yamlParser;
     }
 
+    public static function createLoader(): YamlLoader
+    {
+        return new YamlLoader(
+            new YamlParser()
+        );
+    }
+
     /**
      * @param string $path
      *

@@ -19,6 +19,14 @@ class PageLoader
         $this->pageFactory = $pageFactory;
     }
 
+    public static function createLoader(): PageLoader
+    {
+        return new PageLoader(
+            YamlLoader::createLoader(),
+            PageFactory::create()
+        );
+    }
+
     /**
      * @param string $path
      *
