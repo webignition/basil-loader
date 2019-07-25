@@ -6,7 +6,6 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollection;
-use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
@@ -36,6 +35,15 @@ class StepResolver
         $this->actionResolver = $actionResolver;
         $this->assertionResolver = $assertionResolver;
         $this->identifierResolver = $identifierResolver;
+    }
+
+    public static function createResolver(): StepResolver
+    {
+        return new StepResolver(
+            ActionResolver::createResolver(),
+            AssertionResolver::createResolver(),
+            IdentifierResolver::createResolver()
+        );
     }
 
     /**
