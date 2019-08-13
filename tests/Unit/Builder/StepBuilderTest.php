@@ -61,6 +61,106 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @dataProvider buildSuccessNoImportsDataProvider
+     */
+    public function testBuildSuccessNoImports(StepData $stepData, StepInterface $expectedStep)
+    {
+        $step = $this->stepBuilder->build(
+            $stepData,
+            new EmptyStepProvider(),
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
+        );
+
+        $this->assertInstanceOf(StepInterface::class, $step);
+        $this->assertEquals($expectedStep, $step);
+    }
+
+    public function buildSuccessNoImportsDataProvider(): array
+    {
+        return [
+            'no actions, no assertions' => [
+                'stepData' => new StepData([]),
+                'expectedStep' => new Step([], []),
+            ],
+            'empty actions, empty assertions' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [],
+                    StepData::KEY_ASSERTIONS => [],
+                ]),
+                'expectedStep' => new Step([], []),
+            ],
+            'actions and assertions with simple selectors' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".input" is "example"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            'click ".selector"',
+                            ActionTypes::CLICK,
+                            TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                            '".selector"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '".input" is "example"',
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.input')
+                            ),
+                            AssertionComparisons::IS,
+                            LiteralValue::createStringValue('example')
+                        )
+                    ]
+                ),
+            ],
+            'actions and assertions with environment parameters' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
+                        'set ".selector" to $env.KEY1',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".input" is $env.KEY2|"default"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                        new InputAction(
+                            'set ".selector" to $env.KEY1',
+                            TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                            new EnvironmentValue(
+                                '$env.KEY1',
+                                'KEY1'
+                            ),
+                            '".selector" to $env.KEY1'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            '".input" is $env.KEY2|"default"',
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.input')
+                            ),
+                            AssertionComparisons::IS,
+                            new EnvironmentValue(
+                                '$env.KEY2|"default"',
+                                'KEY2',
+                                'default'
+                            )
+                        )
+                    ]
+                ),
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider buildSuccessDataProvider
      */
     public function testBuildSuccess(
@@ -89,23 +189,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
         $literalStringValue = LiteralValue::createStringValue('example');
 
         return [
-            'no imports, no actions, no assertions' => [
-                'stepData' => new StepData([]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], []),
-            ],
-            'no imports, empty actions, empty assertions' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [],
-                    StepData::KEY_ASSERTIONS => [],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], []),
-            ],
             'unused invalid imports, empty actions, empty assertions' => [
                 'stepData' => new StepData([
                     StepData::KEY_ACTIONS => [],
@@ -131,43 +214,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
                 'expectedStep' => new Step([], []),
             ],
-            'no imports, has actions, has assertions' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [
-                        'click ".selector"',
-                    ],
-                    StepData::KEY_ASSERTIONS => [
-                        '$page.title is "example"',
-                    ],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step(
-                    [
-                        new InteractionAction(
-                            'click ".selector"',
-                            ActionTypes::CLICK,
-                            $simpleCssElementIdentifier,
-                            '".selector"'
-                        )
-                    ],
-                    [
-                        new Assertion(
-                            '$page.title is "example"',
-                            new ObjectValue(
-                                ValueTypes::PAGE_OBJECT_PROPERTY,
-                                '$page.title',
-                                ObjectNames::PAGE,
-                                'title'
-                            ),
-                            AssertionComparisons::IS,
-                            $literalStringValue
-                        )
-                    ]
-                ),
-            ],
-            'no imports, inline step with page model element references' => [
+            'inline step with page model element references' => [
                 'stepData' => new StepData([
                     StepData::KEY_ACTIONS => [
                         'set page_import_name.elements.element_name to "example"',
@@ -211,7 +258,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
-            'import step' => [
+            'imported step' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                 ]),
@@ -242,7 +289,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
-            'inline data' => [
+            'imported step with inline data' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_DATA => [
@@ -293,7 +340,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ])),
             ],
-            'imported data' => [
+            'imported step with imported data' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_DATA => 'data_provider_name',
@@ -346,7 +393,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ])),
             ],
-            'element parameters' => [
+            'imported step with element parameters' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_ELEMENTS => [
@@ -394,57 +441,6 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ))->withIdentifierCollection(new IdentifierCollection([
                         $headingCssElementIdentifier->withName('heading'),
                     ])),
-            ],
-            'actions and assertions with environment parameters' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [
-                        'set page_import_name.elements.element_name to $env.KEY1',
-                    ],
-                    StepData::KEY_ASSERTIONS => [
-                        'page_import_name.elements.element_name is $env.KEY2|"default"',
-                    ],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        new IdentifierCollection([
-                            $simpleCssElementIdentifier->withName('element_name')
-                        ])
-                    )
-                ]),
-                'expectedStep' => new Step(
-                    [
-                        new InputAction(
-                            'set page_import_name.elements.element_name to $env.KEY1',
-                            $simpleCssElementIdentifier->withName('element_name'),
-                            new EnvironmentValue(
-                                '$env.KEY1',
-                                'KEY1'
-                            ),
-                            'page_import_name.elements.element_name to $env.KEY1'
-                        ),
-                    ],
-                    [
-                        new Assertion(
-                            'page_import_name.elements.element_name is $env.KEY2|"default"',
-                            new ElementValue(
-                                TestIdentifierFactory::createCssElementIdentifier(
-                                    '.selector',
-                                    1,
-                                    'element_name'
-                                )
-                            ),
-                            AssertionComparisons::IS,
-                            new EnvironmentValue(
-                                '$env.KEY2|"default"',
-                                'KEY2',
-                                'default'
-                            )
-                        )
-                    ]
-                ),
             ],
         ];
     }
