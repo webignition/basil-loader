@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e8c447e2296b63ecbc43b11bf5ebb4a",
+    "content-hash": "a167b06cb0e5d7bdd285279c107645dc",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -423,16 +423,16 @@
         },
         {
             "name": "webignition/php-basil-model-factory",
-            "version": "0.13",
+            "version": "0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-model-factory.git",
-                "reference": "73dcfcec8e8fbf9981a2191f23a17b0f90fd938f"
+                "reference": "217a396baf5e9438e2293b43e5beb4d0b40e4843"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-model-factory/zipball/73dcfcec8e8fbf9981a2191f23a17b0f90fd938f",
-                "reference": "73dcfcec8e8fbf9981a2191f23a17b0f90fd938f",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-factory/zipball/217a396baf5e9438e2293b43e5beb4d0b40e4843",
+                "reference": "217a396baf5e9438e2293b43e5beb4d0b40e4843",
                 "shasum": ""
             },
             "require": {
@@ -466,7 +466,7 @@
             ],
             "description": "Factories to create basil models",
             "homepage": "https://github.com/webignition/php-basil-model-factory",
-            "time": "2019-08-13T10:56:03+00:00"
+            "time": "2019-08-13T16:07:24+00:00"
         },
         {
             "name": "webignition/php-basil-models",

@@ -70,12 +70,12 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     ],
                     [
                         new Assertion(
-                            '".heading" includes "Hello World"',
+                            '".heading" includes "example"',
                             new ElementValue(
                                 TestIdentifierFactory::createCssElementIdentifier('.heading')
                             ),
                             AssertionComparisons::INCLUDES,
-                            LiteralValue::createStringValue('Hello World')
+                            LiteralValue::createStringValue('example')
                         ),
                     ]
                 ),
@@ -136,12 +136,12 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     ],
                     [
                         new Assertion(
-                            '".heading" includes "Hello World"',
+                            '".heading" includes "example"',
                             new ElementValue(
                                 TestIdentifierFactory::createCssElementIdentifier('.heading')
                             ),
                             AssertionComparisons::INCLUDES,
-                            LiteralValue::createStringValue('Hello World')
+                            LiteralValue::createStringValue('example')
                         ),
                     ]
                 ),

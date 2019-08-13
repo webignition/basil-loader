@@ -12,10 +12,13 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\LiteralValue;
@@ -61,6 +64,132 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @dataProvider buildSuccessNoImportsDataProvider
+     */
+    public function testBuildSuccessNoImports(StepData $stepData, StepInterface $expectedStep)
+    {
+        $step = $this->stepBuilder->build(
+            $stepData,
+            new EmptyStepProvider(),
+            new EmptyDataSetProvider(),
+            new EmptyPageProvider()
+        );
+
+        $this->assertInstanceOf(StepInterface::class, $step);
+        $this->assertEquals($expectedStep, $step);
+    }
+
+    public function buildSuccessNoImportsDataProvider(): array
+    {
+        return [
+            'no actions, no assertions' => [
+                'stepData' => new StepData([]),
+                'expectedStep' => new Step([], []),
+            ],
+            'empty actions, empty assertions' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [],
+                    StepData::KEY_ASSERTIONS => [],
+                ]),
+                'expectedStep' => new Step([], []),
+            ],
+            'actions and assertions with simple selectors' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
+                        'click ".selector"',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".input" is "example"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                        new InteractionAction(
+                            'click ".selector"',
+                            ActionTypes::CLICK,
+                            TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                            '".selector"'
+                        )
+                    ],
+                    [
+                        new Assertion(
+                            '".input" is "example"',
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.input')
+                            ),
+                            AssertionComparisons::IS,
+                            LiteralValue::createStringValue('example')
+                        )
+                    ]
+                ),
+            ],
+            'actions and assertions with environment parameters' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ACTIONS => [
+                        'set ".selector" to $env.KEY1',
+                    ],
+                    StepData::KEY_ASSERTIONS => [
+                        '".input" is $env.KEY2|"default"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                        new InputAction(
+                            'set ".selector" to $env.KEY1',
+                            TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                            new EnvironmentValue(
+                                '$env.KEY1',
+                                'KEY1'
+                            ),
+                            '".selector" to $env.KEY1'
+                        ),
+                    ],
+                    [
+                        new Assertion(
+                            '".input" is $env.KEY2|"default"',
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.input')
+                            ),
+                            AssertionComparisons::IS,
+                            new EnvironmentValue(
+                                '$env.KEY2|"default"',
+                                'KEY2',
+                                'default'
+                            )
+                        )
+                    ]
+                ),
+            ],
+            'assertion with attribute identifier in examined value' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ASSERTIONS => [
+                        '".selector".attribute_name is "value"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                    ],
+                    [
+                        new Assertion(
+                            '".selector".attribute_name is "value"',
+                            new AttributeValue(
+                                new AttributeIdentifier(
+                                    new ElementIdentifier(
+                                        LiteralValue::createCssSelectorValue('.selector')
+                                    ),
+                                    'attribute_name'
+                                )
+                            ),
+                            AssertionComparisons::IS,
+                            LiteralValue::createStringValue('value')
+                        )
+                    ]
+                ),
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider buildSuccessDataProvider
      */
     public function testBuildSuccess(
@@ -83,28 +212,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function buildSuccessDataProvider(): array
     {
-        $simpleCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
-        $buttonCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.button');
-        $headingCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.heading');
+        $simpleCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
+        $buttonCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.button');
+        $headingCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.heading');
+        $literalStringValue = LiteralValue::createStringValue('example');
 
         return [
-            'no imports, no actions, no assertions' => [
-                'stepData' => new StepData([]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], []),
-            ],
-            'no imports, empty actions, empty assertions' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [],
-                    StepData::KEY_ASSERTIONS => [],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], []),
-            ],
             'unused invalid imports, empty actions, empty assertions' => [
                 'stepData' => new StepData([
                     StepData::KEY_ACTIONS => [],
@@ -130,43 +243,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 ),
                 'expectedStep' => new Step([], []),
             ],
-            'no imports, has actions, has assertions' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [
-                        'click ".selector"',
-                    ],
-                    StepData::KEY_ASSERTIONS => [
-                        '$page.title is "Example"',
-                    ],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step(
-                    [
-                        new InteractionAction(
-                            'click ".selector"',
-                            ActionTypes::CLICK,
-                            $simpleCssSelectorIdentifier,
-                            '".selector"'
-                        )
-                    ],
-                    [
-                        new Assertion(
-                            '$page.title is "Example"',
-                            new ObjectValue(
-                                ValueTypes::PAGE_OBJECT_PROPERTY,
-                                '$page.title',
-                                ObjectNames::PAGE,
-                                'title'
-                            ),
-                            AssertionComparisons::IS,
-                            LiteralValue::createStringValue('Example')
-                        )
-                    ]
-                ),
-            ],
-            'no imports, inline step with page model element references' => [
+            'inline step with page model element references' => [
                 'stepData' => new StepData([
                     StepData::KEY_ACTIONS => [
                         'set page_import_name.elements.element_name to "example"',
@@ -181,7 +258,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
-                            $simpleCssSelectorIdentifier->withName('element_name')
+                            $simpleCssElementIdentifier->withName('element_name')
                         ])
                     )
                 ]),
@@ -189,8 +266,8 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new InputAction(
                             'set page_import_name.elements.element_name to "example"',
-                            $simpleCssSelectorIdentifier->withName('element_name'),
-                            LiteralValue::createStringValue('example'),
+                            $simpleCssElementIdentifier->withName('element_name'),
+                            $literalStringValue,
                             'page_import_name.elements.element_name to "example"'
                         ),
                     ],
@@ -205,12 +282,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                 )
                             ),
                             AssertionComparisons::IS,
-                            LiteralValue::createStringValue('example')
+                            $literalStringValue
                         )
                     ]
                 ),
             ],
-            'import step' => [
+            'imported step' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                 ]),
@@ -227,21 +304,21 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
-                            '".heading" includes "Hello World"',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            '".heading" includes "example"',
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
-                            LiteralValue::createStringValue('Hello World')
+                            $literalStringValue
                         ),
                     ]
                 ),
             ],
-            'inline data' => [
+            'imported step with inline data' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_DATA => [
@@ -266,14 +343,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -292,7 +369,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ])),
             ],
-            'imported data' => [
+            'imported step with imported data' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_DATA => 'data_provider_name',
@@ -319,14 +396,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -345,7 +422,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ])),
             ],
-            'element parameters' => [
+            'imported step with element parameters' => [
                 'stepData' => new StepData([
                     StepData::KEY_USE => 'step_import_name',
                     StepData::KEY_ELEMENTS => [
@@ -363,7 +440,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
-                            $headingCssSelectorIdentifier->withName('heading'),
+                            $headingCssElementIdentifier->withName('heading'),
                         ])
                     ),
                 ]),
@@ -373,13 +450,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             new InteractionAction(
                                 'click ".button"',
                                 ActionTypes::CLICK,
-                                $buttonCssSelectorIdentifier,
+                                $buttonCssElementIdentifier,
                                 '".button"'
                             )
                         ],
                         [
                             new Assertion(
-                                '$elements.heading includes "Hello World"',
+                                '$elements.heading includes "example"',
                                 new ObjectValue(
                                     ValueTypes::ELEMENT_PARAMETER,
                                     '$elements.heading',
@@ -387,63 +464,12 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                     'heading'
                                 ),
                                 AssertionComparisons::INCLUDES,
-                                LiteralValue::createStringValue('Hello World')
+                                $literalStringValue
                             ),
                         ]
                     ))->withIdentifierCollection(new IdentifierCollection([
-                        $headingCssSelectorIdentifier->withName('heading'),
+                        $headingCssElementIdentifier->withName('heading'),
                     ])),
-            ],
-            'actions and assertions with environment parameters' => [
-                'stepData' => new StepData([
-                    StepData::KEY_ACTIONS => [
-                        'set page_import_name.elements.element_name to $env.KEY1',
-                    ],
-                    StepData::KEY_ASSERTIONS => [
-                        'page_import_name.elements.element_name is $env.KEY2|"default"',
-                    ],
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com'),
-                        new IdentifierCollection([
-                            $simpleCssSelectorIdentifier->withName('element_name')
-                        ])
-                    )
-                ]),
-                'expectedStep' => new Step(
-                    [
-                        new InputAction(
-                            'set page_import_name.elements.element_name to $env.KEY1',
-                            $simpleCssSelectorIdentifier->withName('element_name'),
-                            new EnvironmentValue(
-                                '$env.KEY1',
-                                'KEY1'
-                            ),
-                            'page_import_name.elements.element_name to $env.KEY1'
-                        ),
-                    ],
-                    [
-                        new Assertion(
-                            'page_import_name.elements.element_name is $env.KEY2|"default"',
-                            new ElementValue(
-                                TestIdentifierFactory::createCssElementIdentifier(
-                                    '.selector',
-                                    1,
-                                    'element_name'
-                                )
-                            ),
-                            AssertionComparisons::IS,
-                            new EnvironmentValue(
-                                '$env.KEY2|"default"',
-                                'KEY2',
-                                'default'
-                            )
-                        )
-                    ]
-                ),
             ],
         ];
     }
