@@ -83,9 +83,10 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function buildSuccessDataProvider(): array
     {
-        $simpleCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
-        $buttonCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.button');
-        $headingCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.heading');
+        $simpleCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
+        $buttonCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.button');
+        $headingCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.heading');
+        $literalStringValue = LiteralValue::createStringValue('example');
 
         return [
             'no imports, no actions, no assertions' => [
@@ -136,7 +137,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         'click ".selector"',
                     ],
                     StepData::KEY_ASSERTIONS => [
-                        '$page.title is "Example"',
+                        '$page.title is "example"',
                     ],
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -147,13 +148,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".selector"',
                             ActionTypes::CLICK,
-                            $simpleCssSelectorIdentifier,
+                            $simpleCssElementIdentifier,
                             '".selector"'
                         )
                     ],
                     [
                         new Assertion(
-                            '$page.title is "Example"',
+                            '$page.title is "example"',
                             new ObjectValue(
                                 ValueTypes::PAGE_OBJECT_PROPERTY,
                                 '$page.title',
@@ -161,7 +162,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                 'title'
                             ),
                             AssertionComparisons::IS,
-                            LiteralValue::createStringValue('Example')
+                            $literalStringValue
                         )
                     ]
                 ),
@@ -181,7 +182,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
-                            $simpleCssSelectorIdentifier->withName('element_name')
+                            $simpleCssElementIdentifier->withName('element_name')
                         ])
                     )
                 ]),
@@ -189,8 +190,8 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new InputAction(
                             'set page_import_name.elements.element_name to "example"',
-                            $simpleCssSelectorIdentifier->withName('element_name'),
-                            LiteralValue::createStringValue('example'),
+                            $simpleCssElementIdentifier->withName('element_name'),
+                            $literalStringValue,
                             'page_import_name.elements.element_name to "example"'
                         ),
                     ],
@@ -205,7 +206,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                 )
                             ),
                             AssertionComparisons::IS,
-                            LiteralValue::createStringValue('example')
+                            $literalStringValue
                         )
                     ]
                 ),
@@ -227,16 +228,16 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
-                            '".heading" includes "Hello World"',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            '".heading" includes "example"',
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
-                            LiteralValue::createStringValue('Hello World')
+                            $literalStringValue
                         ),
                     ]
                 ),
@@ -266,14 +267,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -319,14 +320,14 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            $buttonCssSelectorIdentifier,
+                            $buttonCssElementIdentifier,
                             '".button"'
                         )
                     ],
                     [
                         new Assertion(
                             '".heading" includes $data.expected_title',
-                            new ElementValue($headingCssSelectorIdentifier),
+                            new ElementValue($headingCssElementIdentifier),
                             AssertionComparisons::INCLUDES,
                             new ObjectValue(
                                 ValueTypes::DATA_PARAMETER,
@@ -363,7 +364,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
-                            $headingCssSelectorIdentifier->withName('heading'),
+                            $headingCssElementIdentifier->withName('heading'),
                         ])
                     ),
                 ]),
@@ -373,13 +374,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                             new InteractionAction(
                                 'click ".button"',
                                 ActionTypes::CLICK,
-                                $buttonCssSelectorIdentifier,
+                                $buttonCssElementIdentifier,
                                 '".button"'
                             )
                         ],
                         [
                             new Assertion(
-                                '$elements.heading includes "Hello World"',
+                                '$elements.heading includes "example"',
                                 new ObjectValue(
                                     ValueTypes::ELEMENT_PARAMETER,
                                     '$elements.heading',
@@ -387,11 +388,11 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                     'heading'
                                 ),
                                 AssertionComparisons::INCLUDES,
-                                LiteralValue::createStringValue('Hello World')
+                                $literalStringValue
                             ),
                         ]
                     ))->withIdentifierCollection(new IdentifierCollection([
-                        $headingCssSelectorIdentifier->withName('heading'),
+                        $headingCssElementIdentifier->withName('heading'),
                     ])),
             ],
             'actions and assertions with environment parameters' => [
@@ -409,7 +410,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
-                            $simpleCssSelectorIdentifier->withName('element_name')
+                            $simpleCssElementIdentifier->withName('element_name')
                         ])
                     )
                 ]),
@@ -417,7 +418,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new InputAction(
                             'set page_import_name.elements.element_name to $env.KEY1',
-                            $simpleCssSelectorIdentifier->withName('element_name'),
+                            $simpleCssElementIdentifier->withName('element_name'),
                             new EnvironmentValue(
                                 '$env.KEY1',
                                 'KEY1'
