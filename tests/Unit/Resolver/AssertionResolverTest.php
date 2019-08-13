@@ -8,7 +8,6 @@ use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ElementValue;
@@ -20,6 +19,7 @@ use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\AssertionResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class AssertionResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -111,22 +111,14 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ])
                     )
                 ]),
                 'expectedAssertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
                     new ElementValue(
-                        new ElementIdentifier(
-                            LiteralValue::createCssSelectorValue('.selector'),
-                            1,
-                            'element_name'
-                        )
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                     ),
                     AssertionComparisons::EXISTS
                 ),

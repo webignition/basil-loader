@@ -5,7 +5,6 @@
 namespace webignition\BasilParser\Tests\Unit\Resolver;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierInterface;
@@ -19,6 +18,7 @@ use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\IdentifierResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -48,9 +48,7 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'wrong identifier type' => [
-                'identifier' => new ElementIdentifier(
-                    LiteralValue::createCssSelectorValue('.selector')
-                ),
+                'identifier' => TestIdentifierFactory::createCssElementIdentifier('.selector'),
             ],
             'wrong value type' => [
                 'identifier' => new Identifier(
@@ -76,9 +74,7 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveIsResolvedDataProvider(): array
     {
-        $cssElementIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.selector')
-        );
+        $cssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
 
         $cssElementIdentifierWithName = $cssElementIdentifier->withName('element_name');
 

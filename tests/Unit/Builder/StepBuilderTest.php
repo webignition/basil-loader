@@ -12,7 +12,6 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
@@ -45,6 +44,7 @@ use webignition\BasilParser\Provider\Step\DeferredStepProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class StepBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -83,17 +83,9 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function buildSuccessDataProvider(): array
     {
-        $simpleCssSelectorIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.selector')
-        );
-
-        $buttonCssSelectorIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.button')
-        );
-
-        $headingCssSelectorIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.heading')
-        );
+        $simpleCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
+        $buttonCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.button');
+        $headingCssSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier('.heading');
 
         return [
             'no imports, no actions, no assertions' => [
@@ -205,7 +197,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             'page_import_name.elements.element_name is "example"',
-                            new ElementValue($simpleCssSelectorIdentifier->withName('element_name')),
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier(
+                                    '.selector',
+                                    1,
+                                    'element_name'
+                                )
+                            ),
                             AssertionComparisons::IS,
                             LiteralValue::createStringValue('example')
                         )
@@ -430,7 +428,13 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             'page_import_name.elements.element_name is $env.KEY2|"default"',
-                            new ElementValue($simpleCssSelectorIdentifier->withName('element_name')),
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier(
+                                    '.selector',
+                                    1,
+                                    'element_name'
+                                )
+                            ),
                             AssertionComparisons::IS,
                             new EnvironmentValue(
                                 '$env.KEY2|"default"',
@@ -526,7 +530,7 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                 'page_import_name' => new Page(
                     new Uri('http://example.com'),
                     new IdentifierCollection([
-                        new ElementIdentifier(
+                        TestIdentifierFactory::createCssElementIdentifier(
                             LiteralValue::createCssSelectorValue('.heading'),
                             1,
                             'heading'

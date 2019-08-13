@@ -11,7 +11,6 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
@@ -23,7 +22,6 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilModel\Value\ElementValue;
-use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
@@ -36,6 +34,7 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\TestSuiteResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -95,8 +94,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                     'step_import_name',
                                     'data_provider_import_name'
                                 ))->withIdentifierCollection(new IdentifierCollection([
-                                    new Identifier(
-                                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                                    TestIdentifierFactory::createPageElementReferenceIdentifier(
                                         new ObjectValue(
                                             ValueTypes::STRING,
                                             'page_import_name.elements.heading_element_name',
@@ -114,18 +112,18 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.action-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.action-selector',
                                 1,
                                 'action_element_name'
                             ),
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.assertion-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.assertion-selector',
                                 1,
                                 'assertion_element_name'
                             ),
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.heading-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.heading-selector',
                                 1,
                                 'heading_element_name'
                             ),
@@ -183,8 +181,8 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         new InteractionAction(
                                             'click page_import_name.elements.action_element_name',
                                             ActionTypes::CLICK,
-                                            new ElementIdentifier(
-                                                LiteralValue::createCssSelectorValue('.action-selector'),
+                                            TestIdentifierFactory::createCssElementIdentifier(
+                                                '.action-selector',
                                                 1,
                                                 'action_element_name'
                                             ),
@@ -195,8 +193,8 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         new Assertion(
                                             'page_import_name.elements.assertion_element_name exists',
                                             new ElementValue(
-                                                new ElementIdentifier(
-                                                    LiteralValue::createCssSelectorValue('.assertion-selector'),
+                                                TestIdentifierFactory::createCssElementIdentifier(
+                                                    '.assertion-selector',
                                                     1,
                                                     'assertion_element_name'
                                                 )
@@ -209,8 +207,8 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                         'foo' => 'bar',
                                     ]),
                                 ]))->withIdentifierCollection(new IdentifierCollection([
-                                    new ElementIdentifier(
-                                        LiteralValue::createCssSelectorValue('.heading-selector'),
+                                    TestIdentifierFactory::createCssElementIdentifier(
+                                        '.heading-selector',
                                         1,
                                         'heading_element_name'
                                     ),

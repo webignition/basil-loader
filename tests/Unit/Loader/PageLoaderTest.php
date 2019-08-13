@@ -5,13 +5,12 @@
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -29,11 +28,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
-        $parentIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.form'),
-            1,
-            'form'
-        );
+        $parentIdentifier = TestIdentifierFactory::createCssElementIdentifier('.form', 1, 'form');
 
         return [
             'empty' => [
@@ -50,12 +45,12 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                     new Uri('https://example.com'),
                     new IdentifierCollection([
                         'form' => $parentIdentifier,
-                        'input' =>
-                            (new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.input'),
-                                1,
-                                'input'
-                            ))->withParentIdentifier($parentIdentifier),
+                        'input' => TestIdentifierFactory::createCssElementIdentifier(
+                            '.input',
+                            1,
+                            'input',
+                            $parentIdentifier
+                        ),
                     ])
                 ),
             ],

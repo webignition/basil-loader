@@ -9,7 +9,6 @@ use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\ElementValue;
@@ -24,6 +23,7 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -64,18 +64,16 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.button')
-                            ),
+                            TestIdentifierFactory::createCssElementIdentifier('.button'),
                             '".button"'
                         ),
                     ],
                     [
                         new Assertion(
                             '".heading" includes "Hello World"',
-                            new ElementValue(new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.heading')
-                            )),
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.heading')
+                            ),
                             AssertionComparisons::INCLUDES,
                             LiteralValue::createStringValue('Hello World')
                         ),
@@ -92,9 +90,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         [
                             new Assertion(
                                 '".selector" exists',
-                                new ElementValue(new ElementIdentifier(
-                                    LiteralValue::createCssSelectorValue('.selector')
-                                )),
+                                new ElementValue(
+                                    TestIdentifierFactory::createCssElementIdentifier('.selector')
+                                ),
                                 AssertionComparisons::EXISTS
                             )
                         ]
@@ -109,9 +107,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         new Assertion(
                             '".selector" exists',
-                            new ElementValue(new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector')
-                            )),
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.selector')
+                            ),
                             AssertionComparisons::EXISTS
                         )
                     ]
@@ -132,18 +130,16 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.button')
-                            ),
+                            TestIdentifierFactory::createCssElementIdentifier('.button'),
                             '".button"'
                         ),
                     ],
                     [
                         new Assertion(
                             '".heading" includes "Hello World"',
-                            new ElementValue(new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.heading')
-                            )),
+                            new ElementValue(
+                                TestIdentifierFactory::createCssElementIdentifier('.heading')
+                            ),
                             AssertionComparisons::INCLUDES,
                             LiteralValue::createStringValue('Hello World')
                         ),

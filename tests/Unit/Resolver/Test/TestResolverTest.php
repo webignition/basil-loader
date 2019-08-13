@@ -14,7 +14,6 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
@@ -25,7 +24,6 @@ use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\ElementValue;
-use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
@@ -51,6 +49,7 @@ use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -118,8 +117,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'step_import_name',
                             'data_provider_import_name'
                         ))->withIdentifierCollection(new IdentifierCollection([
-                            new Identifier(
-                                IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                            TestIdentifierFactory::createPageElementReferenceIdentifier(
                                 new ObjectValue(
                                     ValueTypes::PAGE_ELEMENT_REFERENCE,
                                     'page_import_name.elements.heading_element_name',
@@ -135,18 +133,18 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.action-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.action-selector',
                                 1,
                                 'action_element_name'
                             ),
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.assertion-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.assertion-selector',
                                 1,
                                 'assertion_element_name'
                             ),
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.heading-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.heading-selector',
                                 1,
                                 'heading_element_name'
                             ),
@@ -201,8 +199,8 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 new InteractionAction(
                                     'click page_import_name.elements.action_element_name',
                                     ActionTypes::CLICK,
-                                    new ElementIdentifier(
-                                        LiteralValue::createCssSelectorValue('.action-selector'),
+                                    TestIdentifierFactory::createCssElementIdentifier(
+                                        '.action-selector',
                                         1,
                                         'action_element_name'
                                     ),
@@ -213,8 +211,8 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 new Assertion(
                                     'page_import_name.elements.assertion_element_name exists',
                                     new ElementValue(
-                                        new ElementIdentifier(
-                                            LiteralValue::createCssSelectorValue('.assertion-selector'),
+                                        TestIdentifierFactory::createCssElementIdentifier(
+                                            '.assertion-selector',
                                             1,
                                             'assertion_element_name'
                                         )
@@ -227,8 +225,8 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 'foo' => 'bar',
                             ]),
                         ]))->withIdentifierCollection(new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.heading-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.heading-selector',
                                 1,
                                 'heading_element_name'
                             ),
@@ -604,8 +602,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     new Configuration('chrome', 'http://example.com'),
                     [
                         'step name' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                            new Identifier(
-                                IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                            TestIdentifierFactory::createPageElementReferenceIdentifier(
                                 new ObjectValue(
                                     ValueTypes::PAGE_ELEMENT_REFERENCE,
                                     'page_import_name.elements.non_existent',

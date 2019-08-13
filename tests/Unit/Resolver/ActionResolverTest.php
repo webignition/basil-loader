@@ -10,7 +10,6 @@ use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierTypes;
@@ -24,6 +23,7 @@ use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\ActionResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class ActionResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -64,9 +64,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             'input action with css selector' => [
                 'action' => new InputAction(
                     'set ".selector" to "value"',
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector')
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
                     LiteralValue::createStringValue('value'),
                     '".selector" to "value"'
                 ),
@@ -74,9 +72,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             'input action with xpath expression' => [
                 'action' => new InputAction(
                     'set "//foo" to "value"',
-                    new ElementIdentifier(
-                        LiteralValue::createXpathExpressionValue('//foo')
-                    ),
+                    TestIdentifierFactory::createXpathElementIdentifier('//foo'),
                     LiteralValue::createStringValue('value'),
                     '"//foo" to "value"'
                 ),
@@ -100,9 +96,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             'input action with environment parameter value' => [
                 'action' => new InputAction(
                     'set ".selector" to $env.KEY',
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector')
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
                     new EnvironmentValue(
                         '$env.KEY',
                         'KEY'
@@ -122,9 +116,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => new InteractionAction(
                     'click ".selector"',
                     ActionTypes::CLICK,
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector')
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
                     '".selector"'
                 ),
             ],
@@ -132,9 +124,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => new InteractionAction(
                     'click "/foo"',
                     ActionTypes::CLICK,
-                    new ElementIdentifier(
-                        LiteralValue::createXpathExpressionValue('//foo')
-                    ),
+                    TestIdentifierFactory::createXpathElementIdentifier('//foo'),
                     '"//foo"'
                 ),
             ],
@@ -193,21 +183,13 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ])
                     )
                 ]),
                 'expectedAction' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector'),
-                        1,
-                        'element_name'
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                     LiteralValue::createStringValue('value'),
                     'page_import_name.elements.element_name to "value"'
                 ),
@@ -231,22 +213,14 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ])
                     )
                 ]),
                 'expectedAction' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector'),
-                        1,
-                        'element_name'
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                     'page_import_name.elements.element_name'
                 ),
             ],
