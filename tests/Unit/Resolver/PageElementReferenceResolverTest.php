@@ -5,11 +5,9 @@
 namespace webignition\BasilParser\Tests\Unit\Resolver;
 
 use Nyholm\Psr7\Uri;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModel\Page\Page;
-use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ObjectValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
@@ -17,6 +15,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\PageElementReferenceResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -47,10 +46,7 @@ class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveIsResolvedDataProvider(): array
     {
-        $cssElementIdentifier = new ElementIdentifier(
-            LiteralValue::createCssSelectorValue('.selector')
-        );
-
+        $cssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
         $cssElementIdentifierWithName = $cssElementIdentifier->withName('element_name');
 
         return [

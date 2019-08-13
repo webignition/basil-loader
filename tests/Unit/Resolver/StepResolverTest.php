@@ -34,6 +34,7 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepResolver;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase
 {
@@ -254,22 +255,14 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ])
                     )
                 ]),
                 'expectedStep' => new Step([
                     new InputAction(
                         'set page_import_name.elements.element_name to "value"',
-                        new ElementIdentifier(
-                            LiteralValue::createCssSelectorValue('.selector'),
-                            1,
-                            'element_name'
-                        ),
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         LiteralValue::createStringValue('value'),
                         'page_import_name.elements.element_name to "value"'
                     )
@@ -326,11 +319,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ])
                     )
                 ]),
@@ -338,11 +327,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     new Assertion(
                         'page_import_name.elements.element_name exists',
                         new ElementValue(
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                         ),
                         AssertionComparisons::EXISTS
                     ),
@@ -379,21 +364,16 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'no resolvable element identifiers' => [
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector')
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
                 ])),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector')
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
                 ]))
             ],
             'has resolvable element identifiers' => [
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new Identifier(
-                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                    TestIdentifierFactory::createPageElementReferenceIdentifier(
                         new ObjectValue(
                             ValueTypes::PAGE_ELEMENT_REFERENCE,
                             'page_import_name.elements.element_name',
@@ -407,20 +387,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.selector'),
-                                1,
-                                'element_name'
-                            )
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         ])
                     )
                 ]),
                 'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    new ElementIdentifier(
-                        LiteralValue::createCssSelectorValue('.selector'),
-                        1,
-                        'element_name'
-                    ),
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ]))
             ],
         ];

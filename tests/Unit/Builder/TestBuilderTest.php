@@ -11,7 +11,6 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
@@ -34,6 +33,7 @@ use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -101,9 +101,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 new Assertion(
                                     '".selector" exists',
                                     new ElementValue(
-                                        new ElementIdentifier(
-                                            LiteralValue::createCssSelectorValue('.selector')
-                                        )
+                                        TestIdentifierFactory::createCssElementIdentifier('.selector')
                                     ),
                                     AssertionComparisons::EXISTS
                                 )
@@ -150,11 +148,11 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.imported-page-element-selector',
                                 1,
                                 'element_name'
-                            )
+                            ),
                         ])
                     )
                 ]),
@@ -167,8 +165,8 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                             new Assertion(
                                 '".imported-step-selector" exists',
                                 new ElementValue(
-                                    new ElementIdentifier(
-                                        LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                    TestIdentifierFactory::createCssElementIdentifier(
+                                        '.imported-page-element-selector',
                                         1,
                                         'element_name'
                                     )
@@ -195,8 +193,8 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 new Assertion(
                                     'page_import_name.elements.element_name exists',
                                     new ElementValue(
-                                        new ElementIdentifier(
-                                            LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                        TestIdentifierFactory::createCssElementIdentifier(
+                                            '.imported-page-element-selector',
                                             1,
                                             'element_name'
                                         )
@@ -213,8 +211,8 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 new Assertion(
                                     '".imported-step-selector" exists',
                                     new ElementValue(
-                                        new ElementIdentifier(
-                                            LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                                        TestIdentifierFactory::createCssElementIdentifier(
+                                            '.imported-page-element-selector',
                                             1,
                                             'element_name'
                                         )
@@ -227,8 +225,8 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                                 'foo' => 'bar',
                             ])
                         ]))->withIdentifierCollection(new IdentifierCollection([
-                            new ElementIdentifier(
-                                LiteralValue::createCssSelectorValue('.imported-page-element-selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.imported-page-element-selector',
                                 1,
                                 'element_name'
                             ),
