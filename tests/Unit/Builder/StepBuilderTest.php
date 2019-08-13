@@ -12,10 +12,13 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\LiteralValue;
@@ -153,6 +156,32 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                                 'KEY2',
                                 'default'
                             )
+                        )
+                    ]
+                ),
+            ],
+            'assertion with attribute identifier in examined value' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ASSERTIONS => [
+                        '".selector".attribute_name is "value"',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                    ],
+                    [
+                        new Assertion(
+                            '".selector".attribute_name is "value"',
+                            new AttributeValue(
+                                new AttributeIdentifier(
+                                    new ElementIdentifier(
+                                        LiteralValue::createCssSelectorValue('.selector')
+                                    ),
+                                    'attribute_name'
+                                )
+                            ),
+                            AssertionComparisons::IS,
+                            LiteralValue::createStringValue('value')
                         )
                     ]
                 ),
