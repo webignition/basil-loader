@@ -6,6 +6,7 @@ use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilDataStructure\ImportList;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -46,6 +47,7 @@ class TestSuiteLoader
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException

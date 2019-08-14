@@ -8,6 +8,7 @@ use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -55,6 +56,8 @@ class StepResolver
      *
      * @return StepInterface
      *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -63,7 +66,6 @@ class StepResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws CircularStepImportException
      */
     public function resolve(
         StepInterface $step,
