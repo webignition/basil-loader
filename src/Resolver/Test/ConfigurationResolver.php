@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Resolver\Test;
 use webignition\BasilModel\PageUrlReference\PageUrlReference;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -23,6 +24,7 @@ class ConfigurationResolver
      *
      * @return ConfigurationInterface
      *
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
      * @throws UnknownPageException
