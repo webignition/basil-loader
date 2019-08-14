@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Loader;
 
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Builder\StepBuilder;
 use webignition\BasilDataStructure\Step as StepData;
@@ -47,6 +48,8 @@ class StepLoader
      *
      * @return StepInterface
      *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -56,7 +59,6 @@ class StepLoader
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws YamlLoaderException
-     * @throws CircularStepImportException
      */
     public function load(
         string $path,

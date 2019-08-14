@@ -5,6 +5,7 @@ namespace webignition\BasilParser\Resolver\Test;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -46,6 +47,8 @@ class TestResolver
      *
      * @return TestInterface
      *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -54,7 +57,6 @@ class TestResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws CircularStepImportException
      */
     public function resolve(
         TestInterface $test,

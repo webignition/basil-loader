@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Builder;
 
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\StepFactory;
 use webignition\BasilParser\Exception\CircularStepImportException;
@@ -46,6 +47,8 @@ class StepBuilder
      *
      * @return StepInterface
      *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -54,7 +57,6 @@ class StepBuilder
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws CircularStepImportException
      */
     public function build(
         StepData $stepData,

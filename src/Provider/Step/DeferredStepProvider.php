@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Provider\Step;
 
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
@@ -38,6 +39,7 @@ class DeferredStepProvider implements StepProviderInterface
      * @return StepInterface
      *
      * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -71,6 +73,8 @@ class DeferredStepProvider implements StepProviderInterface
      *
      * @return StepInterface
      *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -79,7 +83,6 @@ class DeferredStepProvider implements StepProviderInterface
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws CircularStepImportException
      */
     private function retrieveStep(
         string $importName,

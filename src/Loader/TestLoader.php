@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Loader;
 
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Test\Test as TestData;
@@ -63,6 +64,7 @@ class TestLoader
      * @return TestInterface
      *
      * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException

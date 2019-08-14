@@ -2,8 +2,9 @@
 
 namespace webignition\BasilParser\Resolver;
 
-use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModel\Identifier\ElementIdentifierInterface;
 use webignition\BasilModel\Value\ObjectValueInterface;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -21,8 +22,9 @@ class PageElementReferenceResolver
      * @param ObjectValueInterface $value
      * @param PageProviderInterface $pageProvider
      *
-     * @return IdentifierInterface
+     * @return ElementIdentifierInterface
      *
+     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
      * @throws UnknownPageElementException
@@ -31,11 +33,11 @@ class PageElementReferenceResolver
     public function resolve(
         ObjectValueInterface $value,
         PageProviderInterface $pageProvider
-    ): ?IdentifierInterface {
+    ): ElementIdentifierInterface {
         $page = $pageProvider->findPage($value->getObjectName());
         $elementIdentifier = $page->getIdentifier($value->getObjectProperty());
 
-        if ($elementIdentifier instanceof IdentifierInterface) {
+        if ($elementIdentifier instanceof ElementIdentifierInterface) {
             return $elementIdentifier;
         }
 
