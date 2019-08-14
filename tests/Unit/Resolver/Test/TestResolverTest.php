@@ -28,6 +28,7 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
+use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
@@ -709,6 +710,60 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedExceptionContext' =>  new ExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                ])
+            ],
+            'InvalidPageElementIdentifierException: action string references invalid element identifier in page' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [
+                                (ActionFactory::createFactory())
+                                    ->createFromActionString('click page_import_name.elements.element_name')
+                            ],
+                            []
+                        ),
+                    ]
+                ),
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
+                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => InvalidPageElementIdentifierException::class,
+                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
+                ])
+            ],
+            'InvalidPageElementIdentifierException: assertion string references invalid element identifier in page' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('chrome', 'http://example.com'),
+                    [
+                        'step name' => new Step(
+                            [],
+                            [
+                                (AssertionFactory::createFactory())
+                                    ->createFromAssertionString('page_import_name.elements.element_name exists'),
+                            ]
+                        ),
+                    ]
+                ),
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
+                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedException' => InvalidPageElementIdentifierException::class,
+                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
+                'expectedExceptionContext' =>  new ExceptionContext([
+                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
+                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
+                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
                 ])
             ],
         ];

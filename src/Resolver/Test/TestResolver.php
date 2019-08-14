@@ -91,7 +91,8 @@ class TestResolver
                 UnknownDataProviderException |
                 UnknownPageException |
                 UnknownPageElementException |
-                UnknownStepException $contextAwareException
+                UnknownStepException |
+                InvalidPageElementIdentifierException $contextAwareException
             ) {
                 $contextAwareException->applyExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => $testName,
