@@ -186,6 +186,34 @@ class StepBuilderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'assertion with attribute value in expected value' => [
+                'stepData' => new StepData([
+                    StepData::KEY_ASSERTIONS => [
+                        '".selector" is $elements.element_name.attribute_name',
+                    ],
+                ]),
+                'expectedStep' => new Step(
+                    [
+                    ],
+                    [
+                        new Assertion(
+                            '".selector" is $elements.element_name.attribute_name',
+                            new ElementValue(
+                                new ElementIdentifier(
+                                    LiteralValue::createCssSelectorValue('.selector')
+                                )
+                            ),
+                            AssertionComparisons::IS,
+                            new ObjectValue(
+                                ValueTypes::ATTRIBUTE_PARAMETER,
+                                '$elements.element_name.attribute_name',
+                                ObjectNames::ELEMENT,
+                                'element_name.attribute_name'
+                            )
+                        )
+                    ]
+                ),
+            ],
         ];
     }
 
