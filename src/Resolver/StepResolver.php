@@ -127,7 +127,8 @@ class StepResolver
             }
         } catch (NonRetrievablePageException |
             UnknownPageException |
-            UnknownPageElementException $contextAwareException
+            UnknownPageElementException |
+            InvalidPageElementIdentifierException $contextAwareException
         ) {
             $exceptionContextContent = null;
 
