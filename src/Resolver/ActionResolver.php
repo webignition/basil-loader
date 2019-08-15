@@ -4,10 +4,12 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\InteractionActionInterface;
+use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
@@ -31,17 +33,22 @@ class ActionResolver
     /**
      * @param ActionInterface $action
      * @param PageProviderInterface $pageProvider
+     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return ActionInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolve(ActionInterface $action, PageProviderInterface $pageProvider): ActionInterface
-    {
+    public function resolve(
+        ActionInterface $action,
+        PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection
+    ): ActionInterface {
         if (!$action instanceof InteractionActionInterface) {
             return $action;
         }
@@ -52,7 +59,7 @@ class ActionResolver
             return $action;
         }
 
-        $resolvedIdentifier = $this->identifierResolver->resolve($identifier, $pageProvider);
+        $resolvedIdentifier = $this->identifierResolver->resolve($identifier, $pageProvider, $identifierCollection);
 
         if ($resolvedIdentifier === $identifier) {
             return $action;

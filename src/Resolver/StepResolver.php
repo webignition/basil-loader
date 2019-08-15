@@ -15,6 +15,7 @@ use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
@@ -63,6 +64,7 @@ class StepResolver
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
@@ -111,24 +113,42 @@ class StepResolver
             }
         }
 
+        $resolvedElementIdentifiers = [];
+        foreach ($step->getIdentifierCollection() as $identifier) {
+            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve(
+                $identifier,
+                $pageProvider,
+                new IdentifierCollection()
+            );
+        }
+
+        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedElementIdentifiers));
+
         $resolvedActions = [];
         $resolvedAssertions = [];
 
         $action = null;
         $assertion = null;
 
+        $identifierCollection = $step->getIdentifierCollection();
+
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider);
+                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider, $identifierCollection);
             }
 
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolve($assertion, $pageProvider);
+                $resolvedAssertions[] = $this->assertionResolver->resolve(
+                    $assertion,
+                    $pageProvider,
+                    $identifierCollection
+                );
             }
-        } catch (NonRetrievablePageException |
-            UnknownPageException |
+        } catch (InvalidPageElementIdentifierException |
+            NonRetrievablePageException |
+            UnknownElementException |
             UnknownPageElementException |
-            InvalidPageElementIdentifierException $contextAwareException
+            UnknownPageException $contextAwareException
         ) {
             $exceptionContextContent = null;
 
@@ -149,13 +169,6 @@ class StepResolver
 
         $step = $step->withActions($resolvedActions);
         $step = $step->withAssertions($resolvedAssertions);
-
-        $resolvedElementIdentifiers = [];
-        foreach ($step->getIdentifierCollection() as $identifier) {
-            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve($identifier, $pageProvider);
-        }
-
-        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedElementIdentifiers));
 
         return $step;
     }

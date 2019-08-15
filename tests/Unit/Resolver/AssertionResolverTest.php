@@ -8,13 +8,16 @@ use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
+use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -42,7 +45,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(
             $assertion,
-            $this->resolver->resolve($assertion, new EmptyPageProvider())
+            $this->resolver->resolve($assertion, new EmptyPageProvider(), new IdentifierCollection())
         );
     }
 
@@ -76,6 +79,18 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     LiteralValue::createStringValue('value')
                 ),
             ],
+            'examined value is not an element parameter' => [
+                'assertion' => new Assertion(
+                    '".selector" is "value"',
+                    new ElementValue(
+                        new ElementIdentifier(
+                            LiteralValue::createStringValue('.selector')
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    LiteralValue::createStringValue('value')
+                ),
+            ],
         ];
     }
 
@@ -85,9 +100,10 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     public function testResolveCreatesNewAssertion(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection,
         AssertionInterface $expectedAssertion
     ) {
-        $resolvedAssertion = $this->resolver->resolve($assertion, $pageProvider);
+        $resolvedAssertion = $this->resolver->resolve($assertion, $pageProvider, $identifierCollection);
 
         $this->assertNotSame($assertion, $resolvedAssertion);
         $this->assertEquals($expectedAssertion, $resolvedAssertion);
@@ -96,7 +112,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     public function resolveCreatesNewAssertionDataProvider(): array
     {
         return [
-            'is resolved' => [
+            'page element reference is resolved' => [
                 'assertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
                     new ObjectValue(
@@ -115,6 +131,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAssertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
                     new ElementValue(
@@ -123,6 +140,48 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     AssertionComparisons::EXISTS
                 ),
             ],
+            'element parameter is resolved' => [
+                'assertion' => new Assertion(
+                    '$elements.element_name exists',
+                    new ObjectValue(
+                        ValueTypes::ELEMENT_PARAMETER,
+                        '$elements.element_name',
+                        '$elements',
+                        'element_name'
+                    ),
+                    AssertionComparisons::EXISTS
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '$elements.element_name exists',
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                    ),
+                    AssertionComparisons::EXISTS
+                ),
+            ],
         ];
+    }
+
+    public function testResolveThrowsUnknownElementException()
+    {
+        $assertion = new Assertion(
+            '$elements.element_name exists',
+            new ObjectValue(
+                ValueTypes::ELEMENT_PARAMETER,
+                '$elements.element_name',
+                '$elements',
+                'element_name'
+            ),
+            AssertionComparisons::EXISTS
+        );
+
+        $this->expectException(UnknownElementException::class);
+        $this->expectExceptionMessage('Unknown element "element_name"');
+
+        $this->resolver->resolve($assertion, new EmptyPageProvider(), new IdentifierCollection());
     }
 }
