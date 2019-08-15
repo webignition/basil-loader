@@ -81,12 +81,21 @@ class TestResolver
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
             try {
-                $resolvedSteps[$stepName] = $this->stepResolver->resolve(
+                $resolvedStep = $this->stepResolver->resolveIncludingPageElementReferences(
                     $step,
                     $stepProvider,
                     $dataSetProvider,
                     $pageProvider
                 );
+
+                $resolvedStep =$this->stepResolver->resolveIncludingElementParameterReferences(
+                    $resolvedStep,
+                    $stepProvider,
+                    $dataSetProvider,
+                    $pageProvider
+                );
+
+                $resolvedSteps[$stepName] = $resolvedStep;
             } catch (InvalidPageElementIdentifierException |
                 NonRetrievableDataProviderException |
                 NonRetrievablePageException |
