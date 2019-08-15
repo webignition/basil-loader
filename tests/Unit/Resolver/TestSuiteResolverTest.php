@@ -206,12 +206,6 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                                     new DataSet('0', [
                                         'foo' => 'bar',
                                     ]),
-                                ]))->withIdentifierCollection(new IdentifierCollection([
-                                    TestIdentifierFactory::createCssElementIdentifier(
-                                        '.heading-selector',
-                                        1,
-                                        'heading_element_name'
-                                    ),
                                 ])),
                             ]
                         )

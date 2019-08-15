@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Resolver\Test;
 
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
+use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
@@ -88,12 +89,14 @@ class TestResolver
                     $pageProvider
                 );
 
-                $resolvedStep =$this->stepResolver->resolveIncludingElementParameterReferences(
+                $resolvedStep = $this->stepResolver->resolveIncludingElementParameterReferences(
                     $resolvedStep,
                     $stepProvider,
                     $dataSetProvider,
                     $pageProvider
                 );
+
+                $resolvedStep = $resolvedStep->withIdentifierCollection(new IdentifierCollection());
 
                 $resolvedSteps[$stepName] = $resolvedStep;
             } catch (InvalidPageElementIdentifierException |

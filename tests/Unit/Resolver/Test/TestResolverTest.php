@@ -245,22 +245,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             new DataSet('0', [
                                 'foo' => 'bar',
                             ]),
-                        ]))->withIdentifierCollection(new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.action-selector',
-                                1,
-                                'action_element_name'
-                            ),
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.assertion-selector',
-                                1,
-                                'assertion_element_name'
-                            ),
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.heading-selector',
-                                1,
-                                'heading_element_name'
-                            ),
                         ])),
                     ]
                 ),
