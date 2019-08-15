@@ -144,10 +144,11 @@ class StepResolver
                     $identifierCollection
                 );
             }
-        } catch (NonRetrievablePageException |
-            UnknownPageException |
+        } catch (InvalidPageElementIdentifierException |
+            NonRetrievablePageException |
+            UnknownElementException |
             UnknownPageElementException |
-            InvalidPageElementIdentifierException $contextAwareException
+            UnknownPageException $contextAwareException
         ) {
             $exceptionContextContent = null;
 
