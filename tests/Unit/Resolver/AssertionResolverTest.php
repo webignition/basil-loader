@@ -57,7 +57,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(
             $assertion,
-            $this->resolver->resolveElementParameterExaminedValue($assertion, new IdentifierCollection())
+            $this->resolver->resolveElementParameters($assertion, new IdentifierCollection())
         );
     }
 
@@ -196,33 +196,26 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveElementParameterExaminedValueCreatesNewAssertionDataProvider
+     * @dataProvider resolveElementParametersCreatesNewAssertionDataProvider
      */
-    public function testResolveElementParameterExaminedValueCreatesNewAssertion(
+    public function testResolveElementParametersCreatesNewAssertion(
         AssertionInterface $assertion,
         IdentifierCollectionInterface $identifierCollection,
         AssertionInterface $expectedAssertion
     ) {
-        $resolvedAssertion = $this->resolver->resolveElementParameterExaminedValue($assertion, $identifierCollection);
+        $resolvedAssertion = $this->resolver->resolveElementParameters($assertion, $identifierCollection);
 
         $this->assertNotSame($assertion, $resolvedAssertion);
         $this->assertEquals($expectedAssertion, $resolvedAssertion);
     }
 
-    public function resolveElementParameterExaminedValueCreatesNewAssertionDataProvider(): array
+    public function resolveElementParametersCreatesNewAssertionDataProvider(): array
     {
+        $assertionFactory = AssertionFactory::createFactory();
+
         return [
-            'element parameter is resolved' => [
-                'assertion' => new Assertion(
-                    '$elements.element_name exists',
-                    new ObjectValue(
-                        ValueTypes::ELEMENT_PARAMETER,
-                        '$elements.element_name',
-                        '$elements',
-                        'element_name'
-                    ),
-                    AssertionComparisons::EXISTS
-                ),
+            'examined value is element parameter' => [
+                'assertion' => $assertionFactory->createFromAssertionString('$elements.element_name exists'),
                 'identifierCollection' => new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                 ]),
@@ -232,6 +225,43 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                         TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                     ),
                     AssertionComparisons::EXISTS
+                ),
+            ],
+            'expected value is element parameter' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '".selector" is $elements.element_name'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '".selector" is $elements.element_name',
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.selector')
+                    ),
+                    AssertionComparisons::IS,
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                    )
+                ),
+            ],
+            'expected and examined values are element references' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '$elements.examined is $elements.expected'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                    TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined'),
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '$elements.examined is $elements.expected',
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined')
+                    ),
+                    AssertionComparisons::IS,
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected')
+                    )
                 ),
             ],
         ];
@@ -253,7 +283,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownElementException::class);
         $this->expectExceptionMessage('Unknown element "element_name"');
 
-        $this->resolver->resolveElementParameterExaminedValue($assertion, new IdentifierCollection());
+        $this->resolver->resolveElementParameters($assertion, new IdentifierCollection());
     }
 
 //    public function testFoo()

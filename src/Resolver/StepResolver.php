@@ -374,7 +374,7 @@ class StepResolver
 
         try {
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolveElementParameterExaminedValue(
+                $resolvedAssertions[] = $this->assertionResolver->resolveElementParameters(
                     $assertion,
                     $identifierCollection
                 );

@@ -75,7 +75,7 @@ class AssertionResolver
      *
      * @throws UnknownElementException
      */
-    public function resolveElementParameterExaminedValue(
+    public function resolveElementParameters(
         AssertionInterface $assertion,
         IdentifierCollectionInterface $identifierCollection
     ): AssertionInterface {
@@ -89,7 +89,20 @@ class AssertionResolver
                 throw new UnknownElementException($elementName);
             }
 
-            return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+            $assertion = $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        }
+
+        $expectedValue = $assertion->getExpectedValue();
+
+        if ($expectedValue instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $expectedValue->getType()) {
+            $elementName = $expectedValue->getObjectProperty();
+            $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
+
+            if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
+                throw new UnknownElementException($elementName);
+            }
+
+            $assertion = $assertion->withExpectedValue(new ElementValue($resolvedIdentifier));
         }
 
         return $assertion;
