@@ -3,8 +3,10 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
 use webignition\BasilModel\Identifier\ElementIdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
@@ -18,6 +20,8 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionResolver
 {
+    const ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER = '.';
+
     private $pageElementReferenceResolver;
 
     public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
@@ -96,15 +100,77 @@ class AssertionResolver
 
         if ($expectedValue instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $expectedValue->getType()) {
             $elementName = $expectedValue->getObjectProperty();
-            $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
+            $identifier = $this->findElementIdentifier($identifierCollection, $elementName);
 
-            if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
-                throw new UnknownElementException($elementName);
-            }
-
-            $assertion = $assertion->withExpectedValue(new ElementValue($resolvedIdentifier));
+            $assertion = $assertion->withExpectedValue(new ElementValue($identifier));
         }
 
         return $assertion;
+    }
+
+    /**
+     * @param AssertionInterface $assertion
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return AssertionInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveAttributeParameters(
+        AssertionInterface $assertion,
+        IdentifierCollectionInterface $identifierCollection
+    ): AssertionInterface {
+        $examinedValue = $assertion->getExaminedValue();
+
+        if ($examinedValue instanceof ObjectValue && ValueTypes::ATTRIBUTE_PARAMETER === $examinedValue->getType()) {
+            $objectProperty = $examinedValue->getObjectProperty();
+
+            if (substr_count($objectProperty, self::ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER) > 0) {
+                list($elementName, $attributeName) = explode('.', $examinedValue->getObjectProperty());
+
+                $elementIdentifier = $this->findElementIdentifier($identifierCollection, $elementName);
+                $attributeIdentifier = new AttributeIdentifier($elementIdentifier, $attributeName);
+
+                $assertion = $assertion->withExaminedValue(new AttributeValue($attributeIdentifier));
+            }
+        }
+
+        $expectedValue = $assertion->getExpectedValue();
+
+        if ($expectedValue instanceof ObjectValue && ValueTypes::ATTRIBUTE_PARAMETER === $expectedValue->getType()) {
+            $objectProperty = $expectedValue->getObjectProperty();
+
+            if (substr_count($objectProperty, self::ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER) > 0) {
+                list($elementName, $attributeName) = explode('.', $expectedValue->getObjectProperty());
+
+                $elementIdentifier = $this->findElementIdentifier($identifierCollection, $elementName);
+                $attributeIdentifier = new AttributeIdentifier($elementIdentifier, $attributeName);
+
+                $assertion = $assertion->withExpectedValue(new AttributeValue($attributeIdentifier));
+            }
+        }
+
+        return $assertion;
+    }
+
+    /**
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @param string $elementName
+     *
+     * @return ElementIdentifierInterface
+     * @throws UnknownElementException
+     */
+    private function findElementIdentifier(
+        IdentifierCollectionInterface $identifierCollection,
+        string $elementName
+    ): ElementIdentifierInterface {
+        $identifier = $identifierCollection->getIdentifier($elementName);
+
+        if (!$identifier instanceof ElementIdentifierInterface) {
+            throw new UnknownElementException($elementName);
+        }
+
+        return $identifier;
     }
 }

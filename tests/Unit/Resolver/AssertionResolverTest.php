@@ -8,10 +8,12 @@ use Nyholm\Psr7\Uri;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
 use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
@@ -133,7 +135,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         ])
                     )
                 ]),
@@ -217,7 +219,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
             'examined value is element parameter' => [
                 'assertion' => $assertionFactory->createFromAssertionString('$elements.element_name exists'),
                 'identifierCollection' => new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ]),
                 'expectedAssertion' => new Assertion(
                     '$elements.element_name exists',
@@ -267,6 +269,94 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    /**
+     * @dataProvider resolveAttributeParametersDataProvider
+     */
+    public function testResolveAttributeParameters(
+        AssertionInterface $assertion,
+        IdentifierCollectionInterface $identifierCollection,
+        AssertionInterface $expectedAssertion
+    ) {
+        $resolvedAssertion = $this->resolver->resolveAttributeParameters($assertion, $identifierCollection);
+
+        $this->assertNotSame($assertion, $resolvedAssertion);
+        $this->assertEquals($expectedAssertion, $resolvedAssertion);
+    }
+
+    public function resolveAttributeParametersDataProvider()
+    {
+        $assertionFactory = AssertionFactory::createFactory();
+
+        return [
+            'expected value is attribute parameter' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '$elements.element_name.attribute_name exists'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '$elements.element_name.attribute_name exists',
+                    new AttributeValue(
+                        new AttributeIdentifier(
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                            'attribute_name'
+                        )
+                    ),
+                    AssertionComparisons::EXISTS
+                ),
+            ],
+            'examined value is attribute parameter' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '".examined-selector" is $elements.expected.attribute_name'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '".examined-selector" is $elements.expected.attribute_name',
+                    new ElementValue(
+                        new ElementIdentifier(
+                            LiteralValue::createCssSelectorValue('.examined-selector')
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    new AttributeValue(
+                        new AttributeIdentifier(
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                            'attribute_name'
+                        )
+                    )
+                ),
+            ],
+            'examined and expected values are attribute parameter' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '$elements.examined.attribute_name is $elements.expected.attribute_name'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined'),
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '$elements.examined.attribute_name is $elements.expected.attribute_name',
+                    new AttributeValue(
+                        new AttributeIdentifier(
+                            TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined'),
+                            'attribute_name'
+                        )
+                    ),
+                    AssertionComparisons::IS,
+                    new AttributeValue(
+                        new AttributeIdentifier(
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                            'attribute_name'
+                        )
+                    )
+                ),
+            ],
+        ];
+    }
+
     public function testResolveElementParameterExaminedValueThrowsUnknownElementException()
     {
         $assertion = new Assertion(
@@ -285,30 +375,4 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
 
         $this->resolver->resolveElementParameters($assertion, new IdentifierCollection());
     }
-
-//    public function testFoo()
-//    {
-//        $assertionFactory = AssertionFactory::createFactory();
-//        $assertion1 = $assertionFactory->createFromAssertionString(
-//            '$elements.element_name.attribute_name exists'
-//        );
-//
-//        $assertion2 = $assertionFactory->createFromAssertionString(
-//            '$elements.element1.attribute_name is $elements.element2.attribute_name'
-//        );
-//
-//        $assertion3 = $assertionFactory->createFromAssertionString(
-//            '".selector".attribute_name is $elements.element2.attribute_name'
-//        );
-//
-//        $assertion4 = $assertionFactory->createFromAssertionString(
-//            '".selector" is page_import_name.elements.element_name'
-//        );
-//
-//        $assertion5 = $assertionFactory->createFromAssertionString(
-//            'page_import_name.elements.element_name is page_import_name.elements.element_name'
-//        );
-//
-//        var_dump($assertion1, $assertion2, $assertion3, $assertion4, $assertion5);
-//    }
 }
