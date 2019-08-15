@@ -44,23 +44,27 @@ class AssertionResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReferenceExaminedValue(
+    public function resolvePageElementReferences(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
 
-        if (!$examinedValue instanceof ObjectValue) {
-            return $assertion;
+        if ($examinedValue instanceof ObjectValue && ValueTypes::PAGE_ELEMENT_REFERENCE === $examinedValue->getType()) {
+            $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
+
+            $assertion = $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
         }
 
-        if (ValueTypes::PAGE_ELEMENT_REFERENCE !== $examinedValue->getType()) {
-            return $assertion;
+        $expectedValue = $assertion->getExpectedValue();
+
+        if ($expectedValue instanceof ObjectValue && ValueTypes::PAGE_ELEMENT_REFERENCE === $expectedValue->getType()) {
+            $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($expectedValue, $pageProvider);
+
+            $assertion = $assertion->withExpectedValue(new ElementValue($resolvedIdentifier));
         }
 
-        $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
-
-        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        return $assertion;
     }
 
     /**
@@ -77,22 +81,17 @@ class AssertionResolver
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
 
-        if (!$examinedValue instanceof ObjectValue) {
-            return $assertion;
+        if ($examinedValue instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $examinedValue->getType()) {
+            $elementName = $examinedValue->getObjectProperty();
+            $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
+
+            if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
+                throw new UnknownElementException($elementName);
+            }
+
+            return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
         }
 
-        if (ValueTypes::ELEMENT_PARAMETER !== $examinedValue->getType()) {
-            return $assertion;
-        }
-
-        $elementName = $examinedValue->getObjectProperty();
-
-        $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
-
-        if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
-            throw new UnknownElementException($elementName);
-        }
-
-        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        return $assertion;
     }
 }

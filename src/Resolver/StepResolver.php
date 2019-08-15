@@ -334,7 +334,7 @@ class StepResolver
 
         try {
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolvePageElementReferenceExaminedValue(
+                $resolvedAssertions[] = $this->assertionResolver->resolvePageElementReferences(
                     $assertion,
                     $pageProvider
                 );

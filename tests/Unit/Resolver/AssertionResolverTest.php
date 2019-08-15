@@ -17,6 +17,7 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
@@ -41,11 +42,11 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesAssertionUnchangedDataProvider
      */
-    public function testResolvePageElementReferenceExaminedValueLeavesAssertionUnchanged(AssertionInterface $assertion)
+    public function testResolvePageElementReferencesLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
         $this->assertSame(
             $assertion,
-            $this->resolver->resolvePageElementReferenceExaminedValue($assertion, new EmptyPageProvider())
+            $this->resolver->resolvePageElementReferences($assertion, new EmptyPageProvider())
         );
     }
 
@@ -106,32 +107,27 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolvePageElementReferenceExaminedValueCreatesNewAssertionDataProvider
+     * @dataProvider resolvePageElementReferencesDataProvider
      */
-    public function testResolvePageElementReferenceExaminedValueCreatesNewAssertion(
+    public function testResolvePageElementReferences(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider,
         AssertionInterface $expectedAssertion
     ) {
-        $resolvedAssertion = $this->resolver->resolvePageElementReferenceExaminedValue($assertion, $pageProvider);
+        $resolvedAssertion = $this->resolver->resolvePageElementReferences($assertion, $pageProvider);
 
         $this->assertNotSame($assertion, $resolvedAssertion);
         $this->assertEquals($expectedAssertion, $resolvedAssertion);
     }
 
-    public function resolvePageElementReferenceExaminedValueCreatesNewAssertionDataProvider(): array
+    public function resolvePageElementReferencesDataProvider(): array
     {
+        $assertionFactory = AssertionFactory::createFactory();
+
         return [
-            'page element reference is resolved' => [
-                'assertion' => new Assertion(
-                    'page_import_name.elements.element_name exists',
-                    new ObjectValue(
-                        ValueTypes::PAGE_ELEMENT_REFERENCE,
-                        'page_import_name.elements.element_name',
-                        'page_import_name',
-                        'element_name'
-                    ),
-                    AssertionComparisons::EXISTS
+            'examined value is page element reference' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    'page_import_name.elements.element_name exists'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
@@ -147,6 +143,53 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                         TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                     ),
                     AssertionComparisons::EXISTS
+                ),
+            ],
+            'expected value is page element reference' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    '".examined-selector" is page_import_name.elements.element_name'
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                        ])
+                    )
+                ]),
+                'expectedAssertion' => new Assertion(
+                    '".examined-selector" is page_import_name.elements.element_name',
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.examined-selector')
+                    ),
+                    AssertionComparisons::IS,
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                    )
+                ),
+            ],
+            'expected and examined values are page element reference' => [
+                'assertion' => $assertionFactory->createFromAssertionString(
+                    'page_import_name.elements.examined is page_import_name.elements.expected'
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected'),
+                            TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined'),
+                        ])
+                    )
+                ]),
+                'expectedAssertion' => new Assertion(
+                    'page_import_name.elements.examined is page_import_name.elements.expected',
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.examined-selector', 1, 'examined')
+                    ),
+                    AssertionComparisons::IS,
+                    new ElementValue(
+                        TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'expected')
+                    )
                 ),
             ],
         ];
@@ -212,4 +255,30 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
 
         $this->resolver->resolveElementParameterExaminedValue($assertion, new IdentifierCollection());
     }
+
+//    public function testFoo()
+//    {
+//        $assertionFactory = AssertionFactory::createFactory();
+//        $assertion1 = $assertionFactory->createFromAssertionString(
+//            '$elements.element_name.attribute_name exists'
+//        );
+//
+//        $assertion2 = $assertionFactory->createFromAssertionString(
+//            '$elements.element1.attribute_name is $elements.element2.attribute_name'
+//        );
+//
+//        $assertion3 = $assertionFactory->createFromAssertionString(
+//            '".selector".attribute_name is $elements.element2.attribute_name'
+//        );
+//
+//        $assertion4 = $assertionFactory->createFromAssertionString(
+//            '".selector" is page_import_name.elements.element_name'
+//        );
+//
+//        $assertion5 = $assertionFactory->createFromAssertionString(
+//            'page_import_name.elements.element_name is page_import_name.elements.element_name'
+//        );
+//
+//        var_dump($assertion1, $assertion2, $assertion3, $assertion4, $assertion5);
+//    }
 }
