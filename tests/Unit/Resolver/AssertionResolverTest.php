@@ -41,11 +41,22 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesAssertionUnchangedDataProvider
      */
-    public function testResolveLeavesAssertionUnchanged(AssertionInterface $assertion)
+    public function testResolvePageElementReferenceExaminedValueLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
         $this->assertSame(
             $assertion,
-            $this->resolver->resolve($assertion, new EmptyPageProvider(), new IdentifierCollection())
+            $this->resolver->resolvePageElementReferenceExaminedValue($assertion, new EmptyPageProvider())
+        );
+    }
+
+    /**
+     * @dataProvider resolveLeavesAssertionUnchangedDataProvider
+     */
+    public function testResolveElementParameterExaminedValueLeavesAssertionUnchanged(AssertionInterface $assertion)
+    {
+        $this->assertSame(
+            $assertion,
+            $this->resolver->resolveElementParameterExaminedValue($assertion, new IdentifierCollection())
         );
     }
 
@@ -95,21 +106,20 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveCreatesNewAssertionDataProvider
+     * @dataProvider resolvePageElementReferenceExaminedValueCreatesNewAssertionDataProvider
      */
-    public function testResolveCreatesNewAssertion(
+    public function testResolvePageElementReferenceExaminedValueCreatesNewAssertion(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider,
-        IdentifierCollectionInterface $identifierCollection,
         AssertionInterface $expectedAssertion
     ) {
-        $resolvedAssertion = $this->resolver->resolve($assertion, $pageProvider, $identifierCollection);
+        $resolvedAssertion = $this->resolver->resolvePageElementReferenceExaminedValue($assertion, $pageProvider);
 
         $this->assertNotSame($assertion, $resolvedAssertion);
         $this->assertEquals($expectedAssertion, $resolvedAssertion);
     }
 
-    public function resolveCreatesNewAssertionDataProvider(): array
+    public function resolvePageElementReferenceExaminedValueCreatesNewAssertionDataProvider(): array
     {
         return [
             'page element reference is resolved' => [
@@ -131,7 +141,6 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
-                'identifierCollection' => new IdentifierCollection(),
                 'expectedAssertion' => new Assertion(
                     'page_import_name.elements.element_name exists',
                     new ElementValue(
@@ -140,6 +149,26 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     AssertionComparisons::EXISTS
                 ),
             ],
+        ];
+    }
+
+    /**
+     * @dataProvider resolveElementParameterExaminedValueCreatesNewAssertionDataProvider
+     */
+    public function testResolveElementParameterExaminedValueCreatesNewAssertion(
+        AssertionInterface $assertion,
+        IdentifierCollectionInterface $identifierCollection,
+        AssertionInterface $expectedAssertion
+    ) {
+        $resolvedAssertion = $this->resolver->resolveElementParameterExaminedValue($assertion, $identifierCollection);
+
+        $this->assertNotSame($assertion, $resolvedAssertion);
+        $this->assertEquals($expectedAssertion, $resolvedAssertion);
+    }
+
+    public function resolveElementParameterExaminedValueCreatesNewAssertionDataProvider(): array
+    {
+        return [
             'element parameter is resolved' => [
                 'assertion' => new Assertion(
                     '$elements.element_name exists',
@@ -151,7 +180,6 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                     ),
                     AssertionComparisons::EXISTS
                 ),
-                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
                 ]),
@@ -166,7 +194,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testResolveThrowsUnknownElementException()
+    public function testResolveElementParameterExaminedValueThrowsUnknownElementException()
     {
         $assertion = new Assertion(
             '$elements.element_name exists',
@@ -182,6 +210,6 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownElementException::class);
         $this->expectExceptionMessage('Unknown element "element_name"');
 
-        $this->resolver->resolve($assertion, new EmptyPageProvider(), new IdentifierCollection());
+        $this->resolver->resolveElementParameterExaminedValue($assertion, new IdentifierCollection());
     }
 }

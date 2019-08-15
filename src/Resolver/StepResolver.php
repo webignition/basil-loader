@@ -147,11 +147,17 @@ class StepResolver
             }
 
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolve(
+                $resolvedAssertion = $this->assertionResolver->resolvePageElementReferenceExaminedValue(
                     $assertion,
-                    $pageProvider,
+                    $pageProvider
+                );
+
+                $resolvedAssertion = $this->assertionResolver->resolveElementParameterExaminedValue(
+                    $resolvedAssertion,
                     $identifierCollection
                 );
+
+                $resolvedAssertions[] = $resolvedAssertion;
             }
         } catch (InvalidPageElementIdentifierException |
             NonRetrievablePageException |
