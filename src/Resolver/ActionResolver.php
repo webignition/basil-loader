@@ -33,21 +33,18 @@ class ActionResolver
     /**
      * @param ActionInterface $action
      * @param PageProviderInterface $pageProvider
-     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return ActionInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
-     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolve(
+    public function resolvePageElementReferenceIdentifier(
         ActionInterface $action,
-        PageProviderInterface $pageProvider,
-        IdentifierCollectionInterface $identifierCollection
+        PageProviderInterface $pageProvider
     ): ActionInterface {
         if (!$action instanceof InteractionActionInterface) {
             return $action;
@@ -60,8 +57,38 @@ class ActionResolver
         }
 
         $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+
+        if ($resolvedIdentifier === $identifier) {
+            return $action;
+        }
+
+        return $action->withIdentifier($resolvedIdentifier);
+    }
+
+    /**
+     * @param ActionInterface $action
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return ActionInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveElementParameterIdentifier(
+        ActionInterface $action,
+        IdentifierCollectionInterface $identifierCollection
+    ): ActionInterface {
+        if (!$action instanceof InteractionActionInterface) {
+            return $action;
+        }
+
+        $identifier = $action->getIdentifier();
+
+        if (!$identifier instanceof IdentifierInterface) {
+            return $action;
+        }
+
         $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
-            $resolvedIdentifier,
+            $identifier,
             $identifierCollection
         );
 

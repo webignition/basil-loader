@@ -19,7 +19,6 @@ use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -43,11 +42,22 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesActionUnchangedDataProvider
      */
-    public function testResolveLeavesActionUnchanged(ActionInterface $action)
+    public function testResolvePageElementReferenceIdentifierLeavesActionUnchanged(ActionInterface $action)
     {
         $this->assertSame(
             $action,
-            $this->resolver->resolve($action, new EmptyPageProvider(), new IdentifierCollection())
+            $this->resolver->resolvePageElementReferenceIdentifier($action, new EmptyPageProvider())
+        );
+    }
+
+    /**
+     * @dataProvider resolveLeavesActionUnchangedDataProvider
+     */
+    public function testResolveElementParameterIdentifierLeavesActionUnchanged(ActionInterface $action)
+    {
+        $this->assertSame(
+            $action,
+            $this->resolver->resolveElementParameterIdentifier($action, new IdentifierCollection())
         );
     }
 
@@ -120,21 +130,20 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveCreatesNewActionDataProvider
+     * @dataProvider resolvePageElementReferenceIdentifierCreatesNewActionDataProvider
      */
-    public function testResolveCreatesNewAction(
+    public function testResolvePageElementReferenceIdentifierCreatesNewAction(
         ActionInterface $action,
         PageProviderInterface $pageProvider,
-        IdentifierCollectionInterface $identifierCollection,
         ActionInterface $expectedAction
     ) {
-        $resolvedIdentifierContainer = $this->resolver->resolve($action, $pageProvider, $identifierCollection);
+        $resolvedIdentifierContainer = $this->resolver->resolvePageElementReferenceIdentifier($action, $pageProvider);
 
         $this->assertNotSame($action, $resolvedIdentifierContainer);
         $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
     }
 
-    public function resolveCreatesNewActionDataProvider(): array
+    public function resolvePageElementReferenceIdentifierCreatesNewActionDataProvider(): array
     {
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
 
@@ -162,7 +171,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
-                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
                     $namedCssElementIdentifier,
@@ -193,7 +201,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
-                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
@@ -201,6 +208,31 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name.elements.element_name'
                 ),
             ],
+        ];
+    }
+
+    /**
+     * @dataProvider resolveElementParameterIdentifierCreatesNewActionDataProvider
+     */
+    public function testResolveElementParameterIdentifierCreatesNewAction(
+        ActionInterface $action,
+        IdentifierCollectionInterface $identifierCollection,
+        ActionInterface $expectedAction
+    ) {
+        $resolvedIdentifierContainer = $this->resolver->resolveElementParameterIdentifier(
+            $action,
+            $identifierCollection
+        );
+
+        $this->assertNotSame($action, $resolvedIdentifierContainer);
+        $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
+    }
+
+    public function resolveElementParameterIdentifierCreatesNewActionDataProvider(): array
+    {
+        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+
+        return [
             'input action with element parameter' => [
                 'action' => new InputAction(
                     'set $elements.element_name to "value"',
@@ -216,7 +248,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     LiteralValue::createStringValue('value'),
                     '$elements.element_name to "value"'
                 ),
-                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -242,7 +273,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     ),
                     '$elements.element_name'
                 ),
-                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -254,35 +284,5 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
-    }
-
-    public function testThrowsUnknownPageElementException()
-    {
-        $action = new InputAction(
-            'set page_import_name.elements.unknown_element_name to "value"',
-            new Identifier(
-                IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                new ObjectValue(
-                    ValueTypes::PAGE_ELEMENT_REFERENCE,
-                    'page_import_name.elements.element_name',
-                    'page_import_name',
-                    'element_name'
-                )
-            ),
-            LiteralValue::createStringValue('value'),
-            'page_import_name.elements.unknown_element_name to "value"'
-        );
-
-        $pageProvider = new PopulatedPageProvider([
-            'page_import_name' => new Page(
-                new Uri('http://example.com/'),
-                new IdentifierCollection()
-            )
-        ]);
-
-        $this->expectException(UnknownPageElementException::class);
-        $this->expectExceptionMessage('Unknown page element "element_name" in page "page_import_name"');
-
-        $this->resolver->resolve($action, $pageProvider, new IdentifierCollection());
     }
 }

@@ -137,7 +137,13 @@ class StepResolver
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider, $identifierCollection);
+                $resolvedAction = $this->actionResolver->resolvePageElementReferenceIdentifier($action, $pageProvider);
+                $resolvedAction = $this->actionResolver->resolveElementParameterIdentifier(
+                    $resolvedAction,
+                    $identifierCollection
+                );
+
+                $resolvedActions[] = $resolvedAction;
             }
 
             foreach ($step->getAssertions() as $assertion) {
