@@ -3,12 +3,15 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
+use webignition\BasilModel\Identifier\ElementIdentifierInterface;
+use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
+use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
@@ -32,29 +35,48 @@ class AssertionResolver
     /**
      * @param AssertionInterface $assertion
      * @param PageProviderInterface $pageProvider
+     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return AssertionInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolve(AssertionInterface $assertion, PageProviderInterface $pageProvider): AssertionInterface
-    {
+    public function resolve(
+        AssertionInterface $assertion,
+        PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection
+    ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
 
         if (!$examinedValue instanceof ObjectValue) {
             return $assertion;
         }
 
-        if ($examinedValue->getType() !== ValueTypes::PAGE_ELEMENT_REFERENCE) {
-            return $assertion;
+        $examinedValueType = $examinedValue->getType();
+
+        if (ValueTypes::PAGE_ELEMENT_REFERENCE === $examinedValueType) {
+            $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
+
+            return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
         }
 
-        $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
+        if (ValueTypes::ELEMENT_PARAMETER === $examinedValueType) {
+            $elementName = $examinedValue->getObjectProperty();
 
-        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+            $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
+
+            if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
+                throw new UnknownElementException($elementName);
+            }
+
+            return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        }
+
+        return $assertion;
     }
 }
