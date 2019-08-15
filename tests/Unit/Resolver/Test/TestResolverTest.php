@@ -24,6 +24,7 @@ use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
@@ -122,6 +123,24 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             TestIdentifierFactory::createPageElementReferenceIdentifier(
                                 new ObjectValue(
                                     ValueTypes::PAGE_ELEMENT_REFERENCE,
+                                    'page_import_name.elements.action_element_name',
+                                    'page_import_name',
+                                    'action_element_name'
+                                ),
+                                'action_element_name'
+                            ),
+                            TestIdentifierFactory::createPageElementReferenceIdentifier(
+                                new ObjectValue(
+                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
+                                    'page_import_name.elements.assertion_element_name',
+                                    'page_import_name',
+                                    'assertion_element_name'
+                                ),
+                                'assertion_element_name'
+                            ),
+                            TestIdentifierFactory::createPageElementReferenceIdentifier(
+                                new ObjectValue(
+                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
                                     'page_import_name.elements.heading_element_name',
                                     'page_import_name',
                                     'heading_element_name'
@@ -157,27 +176,27 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => new Step(
                         [
                             new InteractionAction(
-                                'click page_import_name.elements.action_element_name',
+                                'click $elements.action_element_name',
                                 ActionTypes::CLICK,
                                 new Identifier(
-                                    IdentifierTypes::PAGE_ELEMENT_REFERENCE,
+                                    IdentifierTypes::ELEMENT_PARAMETER,
                                     new ObjectValue(
-                                        ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                        'page_import_name.elements.action_element_name',
-                                        'page_import_name',
+                                        ValueTypes::ELEMENT_PARAMETER,
+                                        '$elements.action_element_name',
+                                        ObjectNames::ELEMENT,
                                         'action_element_name'
                                     )
                                 ),
-                                'page_import_name.elements.action_element_name'
+                                '$elements.action_element_name'
                             )
                         ],
                         [
                             new Assertion(
-                                'page_import_name.elements.assertion_element_name exists',
+                                '$elements.assertion_element_name exists',
                                 new ObjectValue(
-                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                    'page_import_name.elements.assertion_element_name',
-                                    'page_import_name',
+                                    ValueTypes::ELEMENT_PARAMETER,
+                                    '$elements.assertion_element_name',
+                                    ObjectNames::ELEMENT,
                                     'assertion_element_name'
                                 ),
                                 AssertionComparisons::EXISTS
@@ -199,19 +218,19 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'step name' => (new Step(
                             [
                                 new InteractionAction(
-                                    'click page_import_name.elements.action_element_name',
+                                    'click $elements.action_element_name',
                                     ActionTypes::CLICK,
                                     TestIdentifierFactory::createCssElementIdentifier(
                                         '.action-selector',
                                         1,
                                         'action_element_name'
                                     ),
-                                    'page_import_name.elements.action_element_name'
+                                    '$elements.action_element_name'
                                 )
                             ],
                             [
                                 new Assertion(
-                                    'page_import_name.elements.assertion_element_name exists',
+                                    '$elements.assertion_element_name exists',
                                     new ElementValue(
                                         TestIdentifierFactory::createCssElementIdentifier(
                                             '.assertion-selector',
@@ -227,6 +246,16 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 'foo' => 'bar',
                             ]),
                         ]))->withIdentifierCollection(new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.action-selector',
+                                1,
+                                'action_element_name'
+                            ),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.assertion-selector',
+                                1,
+                                'assertion_element_name'
+                            ),
                             TestIdentifierFactory::createCssElementIdentifier(
                                 '.heading-selector',
                                 1,
