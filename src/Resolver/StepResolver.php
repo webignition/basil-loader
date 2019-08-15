@@ -113,16 +113,19 @@ class StepResolver
             }
         }
 
-        $resolvedElementIdentifiers = [];
+        $resolvedIdentifiers = [];
         foreach ($step->getIdentifierCollection() as $identifier) {
-            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve(
-                $identifier,
-                $pageProvider,
+            $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+
+            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
+                $resolvedIdentifier,
                 new IdentifierCollection()
             );
+
+            $resolvedIdentifiers[] = $resolvedIdentifier;
         }
 
-        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedElementIdentifiers));
+        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedIdentifiers));
 
         $resolvedActions = [];
         $resolvedAssertions = [];

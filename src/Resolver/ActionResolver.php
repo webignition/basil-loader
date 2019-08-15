@@ -59,7 +59,11 @@ class ActionResolver
             return $action;
         }
 
-        $resolvedIdentifier = $this->identifierResolver->resolve($identifier, $pageProvider, $identifierCollection);
+        $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+        $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
+            $resolvedIdentifier,
+            $identifierCollection
+        );
 
         if ($resolvedIdentifier === $identifier) {
             return $action;
