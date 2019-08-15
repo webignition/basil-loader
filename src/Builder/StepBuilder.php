@@ -68,6 +68,11 @@ class StepBuilder
     ): StepInterface {
         $unresolvedStep = $this->stepFactory->createFromStepData($stepData);
 
-        return $this->stepResolver->resolve($unresolvedStep, $stepProvider, $dataSetProvider, $pageProvider);
+        return $this->stepResolver->resolveIncludingPageElementReferences(
+            $unresolvedStep,
+            $stepProvider,
+            $dataSetProvider,
+            $pageProvider
+        );
     }
 }

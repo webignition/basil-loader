@@ -34,25 +34,20 @@ class IdentifierResolver
     /**
      * @param IdentifierInterface $identifier
      * @param PageProviderInterface $pageProvider
-     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return IdentifierInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
-     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolve(
+    public function resolvePageElementReference(
         IdentifierInterface $identifier,
-        PageProviderInterface $pageProvider,
-        IdentifierCollectionInterface $identifierCollection
+        PageProviderInterface $pageProvider
     ): IdentifierInterface {
-        $identifierType = $identifier->getType();
-
-        if (!in_array($identifierType, [IdentifierTypes::PAGE_ELEMENT_REFERENCE, IdentifierTypes::ELEMENT_PARAMETER])) {
+        if (IdentifierTypes::PAGE_ELEMENT_REFERENCE !== $identifier->getType()) {
             return $identifier;
         }
 
@@ -62,8 +57,29 @@ class IdentifierResolver
             return $identifier;
         }
 
-        if (IdentifierTypes::PAGE_ELEMENT_REFERENCE === $identifierType) {
-            return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
+        return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
+    }
+
+    /**
+     * @param IdentifierInterface $identifier
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return IdentifierInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveElementParameter(
+        IdentifierInterface $identifier,
+        IdentifierCollectionInterface $identifierCollection
+    ): IdentifierInterface {
+        if (IdentifierTypes::ELEMENT_PARAMETER !== $identifier->getType()) {
+            return $identifier;
+        }
+
+        $value = $identifier->getValue();
+
+        if (!$value instanceof ObjectValue) {
+            return $identifier;
         }
 
         $elementName = $value->getObjectProperty();

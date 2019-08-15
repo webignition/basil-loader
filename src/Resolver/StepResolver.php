@@ -69,7 +69,7 @@ class StepResolver
      * @throws UnknownPageException
      * @throws UnknownStepException
      */
-    public function resolve(
+    public function resolveIncludingPageElementReferences(
         StepInterface $step,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
@@ -90,7 +90,7 @@ class StepResolver
                 if ($parentStep instanceof PendingImportResolutionStepInterface) {
                     $handledImportNames[] = $importName;
 
-                    $parentStep = $this->resolve(
+                    $parentStep = $this->resolveIncludingPageElementReferences(
                         $parentStep,
                         $stepProvider,
                         $dataSetProvider,
@@ -113,63 +113,284 @@ class StepResolver
             }
         }
 
-        $resolvedElementIdentifiers = [];
+        $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
+        $step = $this->resolveActionPageElementReferenceIdentifiers($step, $pageProvider);
+        $step = $this->resolveAssertionPageElementReferenceIdentifiers($step, $pageProvider);
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param StepProviderInterface $stepProvider
+     * @param DataSetProviderInterface $dataSetProvider
+     * @param PageProviderInterface $pageProvider
+     * @param array $handledImportNames
+     *
+     * @return StepInterface
+     *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
+     * @throws UnknownDataProviderException
+     * @throws UnknownElementException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws UnknownStepException
+     */
+    public function resolveIncludingElementParameterReferences(
+        StepInterface $step,
+        StepProviderInterface $stepProvider,
+        DataSetProviderInterface $dataSetProvider,
+        PageProviderInterface $pageProvider,
+        array $handledImportNames = []
+    ): StepInterface {
+        if ($step instanceof PendingImportResolutionStepInterface && $step->requiresResolution()) {
+            $importName = $step->getImportName();
+            $dataProviderImportName = $step->getDataProviderImportName();
+
+            if ('' !== $importName) {
+                if (in_array($importName, $handledImportNames)) {
+                    throw new CircularStepImportException($importName);
+                }
+
+                $parentStep = $stepProvider->findStep($importName, $stepProvider, $dataSetProvider, $pageProvider);
+
+                if ($parentStep instanceof PendingImportResolutionStepInterface) {
+                    $handledImportNames[] = $importName;
+
+                    $parentStep = $this->resolveIncludingElementParameterReferences(
+                        $parentStep,
+                        $stepProvider,
+                        $dataSetProvider,
+                        $pageProvider,
+                        $handledImportNames
+                    );
+                }
+
+                $step = $step
+                    ->withPrependedActions($parentStep->getActions())
+                    ->withPrependedAssertions($parentStep->getAssertions());
+            }
+
+            if ('' !== $dataProviderImportName) {
+                $step = $step->withDataSetCollection($dataSetProvider->findDataSetCollection($dataProviderImportName));
+            }
+
+            if ($step instanceof PendingImportResolutionStepInterface) {
+                $step = $step->getStep();
+            }
+        }
+
+        $step = $this->resolveIdentifierCollectionElementParameters($step);
+        $step = $this->resolveActionElementParameterIdentifiers($step);
+        $step = $this->resolveAssertionElementParameterIdentifiers($step);
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param PageProviderInterface $pageProvider
+     *
+     * @return StepInterface
+     *
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    private function resolveIdentifierCollectionPageElementReferences(
+        StepInterface $step,
+        PageProviderInterface $pageProvider
+    ): StepInterface {
+        $resolvedIdentifiers = [];
         foreach ($step->getIdentifierCollection() as $identifier) {
-            $resolvedElementIdentifiers[] = $this->identifierResolver->resolve(
+            $resolvedIdentifiers[] = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+        }
+
+        return $step->withIdentifierCollection(new IdentifierCollection($resolvedIdentifiers));
+    }
+
+    /**
+     * @param StepInterface $step
+     *
+     * @return StepInterface
+     *
+     * @throws UnknownElementException
+     */
+    private function resolveIdentifierCollectionElementParameters(StepInterface $step): StepInterface
+    {
+        $resolvedIdentifiers = [];
+        foreach ($step->getIdentifierCollection() as $identifier) {
+            $resolvedIdentifiers[] = $this->identifierResolver->resolveElementParameter(
                 $identifier,
-                $pageProvider,
                 new IdentifierCollection()
             );
         }
 
-        $step = $step->withIdentifierCollection(new IdentifierCollection($resolvedElementIdentifiers));
+        return $step->withIdentifierCollection(new IdentifierCollection($resolvedIdentifiers));
+    }
 
+    /**
+     * @param StepInterface $step
+     * @param PageProviderInterface $pageProvider
+     *
+     * @return StepInterface
+     *
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    private function resolveActionPageElementReferenceIdentifiers(
+        StepInterface $step,
+        PageProviderInterface $pageProvider
+    ): StepInterface {
         $resolvedActions = [];
-        $resolvedAssertions = [];
-
         $action = null;
-        $assertion = null;
+
+        try {
+            foreach ($step->getActions() as $action) {
+                $resolvedActions[] = $this->actionResolver->resolvePageElementReferenceIdentifier(
+                    $action,
+                    $pageProvider
+                );
+            }
+        } catch (InvalidPageElementIdentifierException |
+            NonRetrievablePageException |
+            UnknownPageElementException |
+            UnknownPageException $contextAwareException
+        ) {
+            if ($action instanceof ActionInterface) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $action->getActionString(),
+                ]);
+            }
+
+            throw $contextAwareException;
+        }
+
+        return $step->withActions($resolvedActions);
+    }
+
+    /**
+     * @param StepInterface $step
+     *
+     * @return StepInterface
+     *
+     * @throws UnknownElementException
+     */
+    private function resolveActionElementParameterIdentifiers(StepInterface $step): StepInterface
+    {
+        $resolvedActions = [];
+        $action = null;
 
         $identifierCollection = $step->getIdentifierCollection();
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolve($action, $pageProvider, $identifierCollection);
+                $resolvedActions[] = $this->actionResolver->resolveElementParameterIdentifier(
+                    $action,
+                    $identifierCollection
+                );
+            }
+        } catch (UnknownElementException $contextAwareException) {
+            if ($action instanceof ActionInterface) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $action->getActionString(),
+                ]);
             }
 
+            throw $contextAwareException;
+        }
+
+        return $step->withActions($resolvedActions);
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param PageProviderInterface $pageProvider
+     *
+     * @return StepInterface
+     *
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    private function resolveAssertionPageElementReferenceIdentifiers(
+        StepInterface $step,
+        PageProviderInterface $pageProvider
+    ): StepInterface {
+        $resolvedAssertions = [];
+        $assertion = null;
+
+        try {
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolve(
+                $resolvedAssertions[] = $this->assertionResolver->resolvePageElementReferenceExaminedValue(
                     $assertion,
-                    $pageProvider,
-                    $identifierCollection
+                    $pageProvider
                 );
             }
         } catch (InvalidPageElementIdentifierException |
             NonRetrievablePageException |
-            UnknownElementException |
             UnknownPageElementException |
             UnknownPageException $contextAwareException
         ) {
             $exceptionContextContent = null;
 
             if ($assertion instanceof AssertionInterface) {
-                $exceptionContextContent = $assertion->getAssertionString();
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $assertion->getAssertionString(),
+                ]);
             }
-
-            if (null === $exceptionContextContent && $action instanceof ActionInterface) {
-                $exceptionContextContent = $action->getActionString();
-            }
-
-            $contextAwareException->applyExceptionContext([
-                ExceptionContextInterface::KEY_CONTENT => $exceptionContextContent,
-            ]);
 
             throw $contextAwareException;
         }
 
-        $step = $step->withActions($resolvedActions);
-        $step = $step->withAssertions($resolvedAssertions);
+        return $step->withAssertions($resolvedAssertions);
+    }
 
-        return $step;
+    /**
+     * @param StepInterface $step
+     *
+     * @return StepInterface
+     *
+     * @throws UnknownElementException
+     */
+    private function resolveAssertionElementParameterIdentifiers(StepInterface $step): StepInterface
+    {
+        $resolvedAssertions = [];
+        $assertion = null;
+
+        $identifierCollection = $step->getIdentifierCollection();
+
+        try {
+            foreach ($step->getAssertions() as $assertion) {
+                $resolvedAssertions[] = $this->assertionResolver->resolveElementParameterExaminedValue(
+                    $assertion,
+                    $identifierCollection
+                );
+            }
+        } catch (UnknownElementException $contextAwareException) {
+            $exceptionContextContent = null;
+
+            if ($assertion instanceof AssertionInterface) {
+                $contextAwareException->applyExceptionContext([
+                    ExceptionContextInterface::KEY_CONTENT => $assertion->getAssertionString(),
+                ]);
+            }
+
+            throw $contextAwareException;
+        }
+
+        return $step->withAssertions($resolvedAssertions);
     }
 }
