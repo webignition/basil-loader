@@ -224,12 +224,6 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                             new DataSet('0', [
                                 'foo' => 'bar',
                             ])
-                        ]))->withIdentifierCollection(new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.imported-page-element-selector',
-                                1,
-                                'element_name'
-                            ),
                         ])),
                     ]
                 ),
