@@ -12,6 +12,7 @@ use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
+use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\EnvironmentValue;
@@ -44,7 +45,10 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
      */
     public function testResolveLeavesActionUnchanged(ActionInterface $action)
     {
-        $this->assertSame($action, $this->resolver->resolve($action, new EmptyPageProvider()));
+        $this->assertSame(
+            $action,
+            $this->resolver->resolve($action, new EmptyPageProvider(), new IdentifierCollection())
+        );
     }
 
     public function resolveLeavesActionUnchangedDataProvider(): array
@@ -75,22 +79,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     TestIdentifierFactory::createXpathElementIdentifier('//foo'),
                     LiteralValue::createStringValue('value'),
                     '"//foo" to "value"'
-                ),
-            ],
-            'input action with element parameter' => [
-                'action' => new InputAction(
-                    'set $elements.element_name to "value"',
-                    new Identifier(
-                        IdentifierTypes::ELEMENT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            'elements',
-                            'name'
-                        )
-                    ),
-                    LiteralValue::createStringValue('value'),
-                    '$elements.element_name to "value"'
                 ),
             ],
             'input action with environment parameter value' => [
@@ -128,22 +116,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     '"//foo"'
                 ),
             ],
-            'interaction action with element parameter' => [
-                'action' => new InteractionAction(
-                    'click $elements.element_name',
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::ELEMENT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            'elements',
-                            'name'
-                        )
-                    ),
-                    '$elements.element_name'
-                ),
-            ],
         ];
     }
 
@@ -153,9 +125,10 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     public function testResolveCreatesNewAction(
         ActionInterface $action,
         PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection,
         ActionInterface $expectedAction
     ) {
-        $resolvedIdentifierContainer = $this->resolver->resolve($action, $pageProvider);
+        $resolvedIdentifierContainer = $this->resolver->resolve($action, $pageProvider, $identifierCollection);
 
         $this->assertNotSame($action, $resolvedIdentifierContainer);
         $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
@@ -163,8 +136,10 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveCreatesNewActionDataProvider(): array
     {
+        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+
         return [
-            'input action' => [
+            'input action with page element reference' => [
                 'action' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
                     new Identifier(
@@ -183,18 +158,19 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                            $namedCssElementIdentifier
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                    $namedCssElementIdentifier,
                     LiteralValue::createStringValue('value'),
                     'page_import_name.elements.element_name to "value"'
                 ),
             ],
-            'interaction action' => [
+            'interaction action with page element reference' => [
                 'action' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
@@ -213,15 +189,68 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                            $namedCssElementIdentifier
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                    $namedCssElementIdentifier,
                     'page_import_name.elements.element_name'
+                ),
+            ],
+            'input action with element parameter' => [
+                'action' => new InputAction(
+                    'set $elements.element_name to "value"',
+                    new Identifier(
+                        IdentifierTypes::ELEMENT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::ELEMENT_PARAMETER,
+                            '$elements.element_name',
+                            'elements',
+                            'element_name'
+                        )
+                    ),
+                    LiteralValue::createStringValue('value'),
+                    '$elements.element_name to "value"'
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'identifierCollection' => new IdentifierCollection([
+                    $namedCssElementIdentifier,
+                ]),
+                'expectedAction' => new InputAction(
+                    'set $elements.element_name to "value"',
+                    $namedCssElementIdentifier,
+                    LiteralValue::createStringValue('value'),
+                    '$elements.element_name to "value"'
+                ),
+            ],
+            'interaction action with element parameter' => [
+                'action' => new InteractionAction(
+                    'click $elements.element_name',
+                    ActionTypes::CLICK,
+                    new Identifier(
+                        IdentifierTypes::ELEMENT_PARAMETER,
+                        new ObjectValue(
+                            ValueTypes::ELEMENT_PARAMETER,
+                            '$elements.element_name',
+                            'elements',
+                            'element_name'
+                        )
+                    ),
+                    '$elements.element_name'
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'identifierCollection' => new IdentifierCollection([
+                    $namedCssElementIdentifier,
+                ]),
+                'expectedAction' => new InteractionAction(
+                    'click $elements.element_name',
+                    ActionTypes::CLICK,
+                    $namedCssElementIdentifier,
+                    '$elements.element_name'
                 ),
             ],
         ];
@@ -254,6 +283,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownPageElementException::class);
         $this->expectExceptionMessage('Unknown page element "element_name" in page "page_import_name"');
 
-        $this->resolver->resolve($action, $pageProvider);
+        $this->resolver->resolve($action, $pageProvider, new IdentifierCollection());
     }
 }
