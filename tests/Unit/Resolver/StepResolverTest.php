@@ -11,11 +11,8 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
-use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
-use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\Identifier\AttributeIdentifier;
 use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
@@ -34,21 +31,14 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
-use webignition\BasilParser\Provider\Step\EmptyStepProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
-use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepResolver;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
@@ -68,251 +58,182 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveIncludingPageElementReferencesForStepImport
+     * @dataProvider resolvePageElementReferencesForPendingImportStepDataProvider
+     * @dataProvider resolvePageElementReferencesNoResolvableActionsOrAssertions
+     * @dataProvider resolvePageElementReferencesResolvableActionsAndAssertionsDataProvider
+     * @dataProvider resolvePageElementReferencesNonResolvableIdentifierCollectionDataProvider
+     * @dataProvider resolvePageElementReferencesResolvableIdentifierCollectionDataProvider
      */
-    public function testResolveIncludingPageElementReferencesForStepImport(
+    public function testResolvePageElementReferences(
         StepInterface $step,
-        StepProviderInterface $stepProvider,
+        PageProviderInterface $pageProvider,
         StepInterface $expectedStep
     ) {
-        $resolvedStep = $this->resolver->resolveIncludingPageElementReferences(
-            $step,
-            $stepProvider,
-            new EmptyDataSetProvider(),
-            new EmptyPageProvider()
-        );
+        $resolvedStep = $this->resolver->resolvePageElementReferences($step, $pageProvider);
 
         $this->assertEquals($expectedStep, $resolvedStep);
     }
 
-    /**
-     * @dataProvider resolveIncludingPageElementReferencesForStepImport
-     */
-    public function testResolveIncludingElementParameterReferencesForStepImport(
-        StepInterface $step,
-        StepProviderInterface $stepProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingElementParameterReferences(
-            $step,
-            $stepProvider,
-            new EmptyDataSetProvider(),
-            new EmptyPageProvider()
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    public function resolveIncludingPageElementReferencesForStepImport(): array
+    public function resolvePageElementReferencesForPendingImportStepDataProvider(): array
     {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $nonResolvableActions = [
+            $actionFactory->createFromActionString('wait 1'),
+            $actionFactory->createFromActionString('click $elements.element_name'),
+            $actionFactory->createFromActionString('click $elements.element_name.attribute_name'),
+            $actionFactory->createFromActionString(
+                'set $elements.element_name to $elements.element_name'
+            ),
+            $actionFactory->createFromActionString(
+                'set $elements.element_name.attribute_name to $elements.element_name.attribute_name'
+            ),
+        ];
+
+        $nonResolvableAssertions = [
+            $assertionFactory->createFromAssertionString('".selector" exists'),
+            $assertionFactory->createFromAssertionString('$elements.element_name exists'),
+            $assertionFactory->createFromAssertionString('$elements.element_name.attribute_name exists'),
+        ];
+
+        $resolvableActions = [
+            $actionFactory->createFromActionString('click page_import_name.elements.element_name'),
+            $actionFactory->createFromActionString(
+                'set page_import_name.elements.element_name to page_import_name.elements.element_name'
+            ),
+        ];
+
+        $resolvableAssertions = [
+            $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
+            $assertionFactory->createFromAssertionString(
+                'page_import_name.elements.element_name is page_import_name.elements.element_name'
+            ),
+        ];
+
+        $resolvedActions = [
+            new InteractionAction(
+                'click page_import_name.elements.element_name',
+                ActionTypes::CLICK,
+                TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                'page_import_name.elements.element_name'
+            ),
+            new InputAction(
+                'set page_import_name.elements.element_name to page_import_name.elements.element_name',
+                TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ),
+                'page_import_name.elements.element_name to page_import_name.elements.element_name'
+            )
+        ];
+
+        $resolvedAssertions = [
+            new Assertion(
+                'page_import_name.elements.element_name exists',
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ),
+                AssertionComparisons::EXISTS
+            ),
+            new Assertion(
+                'page_import_name.elements.element_name is page_import_name.elements.element_name',
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ),
+                AssertionComparisons::IS,
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                )
+            ),
+        ];
+
+        $pageProvider = new PopulatedPageProvider([
+            'page_import_name' => new Page(
+                new Uri('http://example.com/'),
+                new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])
+            )
+        ]);
+
         return [
-            'no step imports, empty step' => [
-                'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
-                    'step_import_name' => new Step([], []),
-                ]),
+            'pending import step: empty step not requiring import resolution' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', ''),
+                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
-            'no step imports, non-empty step' => [
-                'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
-                    'step_import_name' => new Step([
-                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                    ], [
-                        new Assertion('".selector" exists', null, null)
-                    ]),
-                ]),
-                'expectedStep' => new Step([
-                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                ], [
-                    new Assertion('".selector" exists', null, null)
-                ]),
-            ],
-            'step with actions imports step with actions' => [
+            'pending import step: non-empty step, has non-resolvable actions and assertions' => [
                 'step' => new PendingImportResolutionStep(
-                    new Step([
-                        new WaitAction('wait 2', LiteralValue::createStringValue('2')),
-                    ], []),
-                    'step_import_name',
-                    ''
-                ),
-                'stepProvider' => new PopulatedStepProvider([
-                    'step_import_name' => new Step([
-                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                    ], [
-                        new Assertion('".selector" exists', null, null)
-                    ]),
-                ]),
-                'expectedStep' => new Step([
-                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                    new WaitAction('wait 2', LiteralValue::createStringValue('2')),
-                ], [
-                    new Assertion('".selector" exists', null, null)
-                ]),
-            ],
-            'step with assertions imports step with assertions' => [
-                'step' => new PendingImportResolutionStep(
-                    new Step([], [
-                        new Assertion('".selector2" exists', null, null)
-                    ]),
-                    'step_import_name',
-                    ''
-                ),
-                'stepProvider' => new PopulatedStepProvider([
-                    'step_import_name' => new Step([], [
-                        new Assertion('".selector1" exists', null, null)
-                    ]),
-                ]),
-                'expectedStep' => new Step([], [
-                    new Assertion('".selector1" exists', null, null),
-                    new Assertion('".selector2" exists', null, null),
-                ]),
-            ],
-            'deferred' => [
-                'step' => new PendingImportResolutionStep(new Step([], []), 'deferred_step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
-                    'deferred_step_import_name' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'step_import_name',
-                        ''
-                    ),
-                    'step_import_name' => new Step([
-                        new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                    ], [
-                        new Assertion('".selector" exists', null, null)
-                    ]),
-                ]),
-                'expectedStep' => new Step([
-                    new WaitAction('wait 1', LiteralValue::createStringValue('1')),
-                ], [
-                    new Assertion('".selector" exists', null, null)
-                ]),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider resolveDataProviderImportDataProvider
-     */
-    public function testResolveIncludingPageElementReferencesDataProviderImport(
-        StepInterface $step,
-        DataSetProviderInterface $dataSetProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingPageElementReferences(
-            $step,
-            new EmptyStepProvider(),
-            $dataSetProvider,
-            new EmptyPageProvider()
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    /**
-     * @dataProvider resolveDataProviderImportDataProvider
-     */
-    public function testResolveIncludingElementParameterReferencesDataProviderImport(
-        StepInterface $step,
-        DataSetProviderInterface $dataSetProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingElementParameterReferences(
-            $step,
-            new EmptyStepProvider(),
-            $dataSetProvider,
-            new EmptyPageProvider()
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    public function resolveDataProviderImportDataProvider(): array
-    {
-        return [
-            'step imports from data provider' => [
-                'step' => new PendingImportResolutionStep(
-                    new Step([], []),
+                    new Step($nonResolvableActions, $nonResolvableAssertions),
                     '',
-                    'data_provider_import_name'
+                    ''
                 ),
-                'dataSetProvider' => new PopulatedDataSetProvider([
-                    'data_provider_import_name' => new DataSetCollection([
-                        new DataSet('0', [
-                            'foo' => 'bar',
-                        ])
-                    ]),
-                ]),
-                'expectedStep' => (new Step([], []))->withDataSetCollection(new DataSetCollection([
-                    new DataSet('0', [
-                        'foo' => 'bar',
-                    ])
-                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions),
+            ],
+            'pending import step: non-empty step, has resolvable actions and assertions' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step($resolvableActions, $resolvableAssertions),
+                    '',
+                    ''
+                ),
+                'pageProvider' => $pageProvider,
+                'expectedStep' => new Step($resolvedActions, $resolvedAssertions),
+            ],
+            'pending import step: has step import name' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
+            ],
+            'pending import step: has data provider import name' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
             ],
         ];
     }
 
-    /**
-     * @dataProvider resolveActionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveActionsWithResolvablePageElementReferencesDataProvider
-     */
-    public function testResolveIncludingPageElementReferencesForActions(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingPageElementReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    /**
-     * @dataProvider resolveActionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveActionsWithResolvableElementAndAttributeParameterReferencesDataProvider
-     */
-    public function testResolveIncludingElementParameterReferencesForActions(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingElementParameterReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    public function resolveActionsNoResolvableReferencesDataProvider(): array
+    public function resolvePageElementReferencesNoResolvableActionsOrAssertions(): array
     {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $nonResolvableAction = $actionFactory->createFromActionString('wait 30');
+        $nonResolvableAssertion = $assertionFactory->createFromAssertionString('".selector" exists');
+
         return [
-            'no actions' => [
+            'no resolvable actions or assertions: no actions, no assertions' => [
                 'step' => new Step([], []),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
-            'no resolvable actions' => [
-                'step' => new Step([
-                    new WaitAction('wait 30', LiteralValue::createStringValue('30')),
-                ], []),
+            'no resolvable actions or assertions: non-resolvable actions, non-resolvable assertions' => [
+                'step' => new Step(
+                    [
+                        $nonResolvableAction
+                    ],
+                    [
+                        $nonResolvableAssertion
+                    ]
+                ),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([
-                    new WaitAction('wait 30', LiteralValue::createStringValue('30')),
-                ], []),
+                'expectedStep' => new Step(
+                    [
+                        $nonResolvableAction
+                    ],
+                    [
+                        $nonResolvableAssertion
+                    ]
+                ),
             ],
         ];
     }
 
-    public function resolveActionsWithResolvablePageElementReferencesDataProvider(): array
+    public function resolvePageElementReferencesResolvableActionsAndAssertionsDataProvider(): array
     {
         $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
 
         return [
             'resolvable page element reference in action identifier' => [
@@ -361,151 +282,6 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     )
                 ], []),
             ],
-        ];
-    }
-
-    public function resolveActionsWithResolvableElementAndAttributeParameterReferencesDataProvider(): array
-    {
-        $actionFactory = ActionFactory::createFactory();
-
-        return [
-            'resolvable element parameter in action identifier' => [
-                'step' => (new Step([
-                    $actionFactory->createFromActionString('set $elements.element_name to "value"'),
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
-                ])),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([
-                    new InputAction(
-                        'set $elements.element_name to "value"',
-                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
-                        LiteralValue::createStringValue('value'),
-                        '$elements.element_name to "value"'
-                    )
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
-                ])),
-            ],
-            'resolvable element parameter in action value' => [
-                'step' => (new Step([
-                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name'),
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
-                ])),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([
-                    new InputAction(
-                        'set ".selector" to $elements.element_name',
-                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
-                        new ElementValue(
-                            TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name')
-                        ),
-                        '".selector" to $elements.element_name'
-                    )
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
-                ])),
-            ],
-            'resolvable attribute parameter in action value' => [
-                'step' => (new Step([
-                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name.attribute_name'),
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
-                ])),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([
-                    new InputAction(
-                        'set ".selector" to $elements.element_name.attribute_name',
-                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
-                        new AttributeValue(
-                            new AttributeIdentifier(
-                                TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
-                                'attribute_name'
-                            )
-                        ),
-                        '".selector" to $elements.element_name.attribute_name'
-                    )
-                ], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
-                ])),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider resolveAssertionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveAssertionsWithResolvablePageElementReferencesDataProvider
-     */
-    public function testResolveIncludingPageElementReferencesForAssertions(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingPageElementReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    /**
-     * @dataProvider resolveAssertionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveAssertionsWithResolvableElementAndAttributeParameterReferencesDataProvider
-     */
-    public function testResolveIncludingElementParameterReferencesForAssertions(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingElementParameterReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    public function resolveAssertionsNoResolvableReferencesDataProvider(): array
-    {
-        $nonResolvableAssertion = new Assertion(
-            '".selector" exists',
-            new ElementValue(
-                new ElementIdentifier(
-                    LiteralValue::createCssSelectorValue('.selector')
-                )
-            ),
-            AssertionComparisons::EXISTS
-        );
-
-        return [
-            'no assertions' => [
-                'step' => new Step([], []),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], []),
-            ],
-            'no resolvable assertions' => [
-                'step' => new Step([], [
-                    $nonResolvableAssertion,
-                ]),
-                'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => new Step([], [
-                    $nonResolvableAssertion
-                ]),
-            ],
-        ];
-    }
-
-    public function resolveAssertionsWithResolvablePageElementReferencesDataProvider(): array
-    {
-        $assertionFactory = AssertionFactory::createFactory();
-
-        return [
             'resolvable page element reference in assertion examined value' => [
                 'step' => new Step([], [
                     $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
@@ -560,19 +336,347 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function resolveAssertionsWithResolvableElementAndAttributeParameterReferencesDataProvider(): array
+    public function resolvePageElementReferencesNonResolvableIdentifierCollectionDataProvider(): array
     {
+        return [
+            'non-resolvable identifier collection: no element identifiers' => [
+                'step' => new Step([], []),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => new Step([], []),
+            ],
+            'non-resolvable identifier collection: no resolvable element identifiers' => [
+                'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                ]))
+            ],
+        ];
+    }
+
+    public function resolvePageElementReferencesResolvableIdentifierCollectionDataProvider(): array
+    {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $unresolvedElementIdentifier = TestIdentifierFactory::createPageElementReferenceIdentifier(
+            new ObjectValue(
+                ValueTypes::PAGE_ELEMENT_REFERENCE,
+                'page_import_name.elements.element_name',
+                'page_import_name',
+                'element_name'
+            ),
+            'element_name'
+        );
+
+        $resolvedElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+
+        $unresolvedActions = [
+            $actionFactory->createFromActionString('click page_import_name.elements.element_name'),
+        ];
+
+        $unresolvedAssertions = [
+            $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
+        ];
+
+        $resolvedActions = [
+            new InteractionAction(
+                'click page_import_name.elements.element_name',
+                ActionTypes::CLICK,
+                $resolvedElementIdentifier,
+                'page_import_name.elements.element_name'
+            ),
+        ];
+
+        $resolvedAssertions = [
+            new Assertion(
+                'page_import_name.elements.element_name exists',
+                new ElementValue(
+                    $resolvedElementIdentifier
+                ),
+                AssertionComparisons::EXISTS
+            ),
+        ];
+
+        return [
+            'resolvable identifier collection: page element references, unused by actions or assertions' => [
+                'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
+                    $unresolvedElementIdentifier,
+                ])),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            $resolvedElementIdentifier,
+                        ])
+                    )
+                ]),
+                'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
+                    $resolvedElementIdentifier,
+                ]))
+            ],
+            'resolvable identifier collection: page element references, used by actions and assertions' => [
+                'step' => (new Step($unresolvedActions, $unresolvedAssertions))
+                    ->withIdentifierCollection(new IdentifierCollection([
+                        $unresolvedElementIdentifier,
+                    ])),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            $resolvedElementIdentifier,
+                        ])
+                    )
+                ]),
+                'expectedStep' => (new Step($resolvedActions, $resolvedAssertions))
+                    ->withIdentifierCollection(new IdentifierCollection([
+                        $resolvedElementIdentifier,
+                    ]))
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider resolveElementAndAttributeParametersForPendingImportStepDataProvider
+     * @dataProvider resolveElementAndAttributeParametersNoResolvableActionsOrAssertions
+     * @dataProvider resolveElementAndAttributeParametersResolvableActionsAndAssertionsDataProvider
+     * @dataProvider resolveElementAndAttributeParametersNonResolvableIdentifierCollectionDataProvider
+     */
+    public function testResolveElementAndAttributeParameters(StepInterface $step, StepInterface $expectedStep)
+    {
+        $resolvedStep = $this->resolver->resolveElementAndAttributeParameters($step);
+
+        $this->assertEquals($expectedStep, $resolvedStep);
+    }
+
+    public function resolveElementAndAttributeParametersForPendingImportStepDataProvider(): array
+    {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $nonResolvableActions = [
+            $actionFactory->createFromActionString('wait 1'),
+            $actionFactory->createFromActionString('click page_import_name.elements.element_name'),
+            $actionFactory->createFromActionString(
+                'set page_import_name.elements.element_name to page_import_name.elements.element_name'
+            ),
+        ];
+
+        $nonResolvableAssertions = [
+            $assertionFactory->createFromAssertionString('".selector" exists'),
+            $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
+            $assertionFactory->createFromAssertionString(
+                'page_import_name.elements.element_name is page_import_name.elements.element_name'
+            ),
+        ];
+
+        $resolvableActions = [
+            $actionFactory->createFromActionString('click $elements.element_name'),
+            $actionFactory->createFromActionString(
+                'set $elements.element_name to $elements.element_name'
+            ),
+            $actionFactory->createFromActionString(
+                'set ".selector" to $elements.element_name.attribute_name'
+            ),
+        ];
+
+        $resolvableAssertions = [
+            $assertionFactory->createFromAssertionString('$elements.element_name exists'),
+            $assertionFactory->createFromAssertionString('$elements.element_name.attribute_name exists'),
+        ];
+
+        $resolvedActions = [
+            new InteractionAction(
+                'click $elements.element_name',
+                ActionTypes::CLICK,
+                TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                '$elements.element_name'
+            ),
+            new InputAction(
+                'set $elements.element_name to $elements.element_name',
+                TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ),
+                '$elements.element_name to $elements.element_name'
+            ),
+            new InputAction(
+                'set ".selector" to $elements.element_name.attribute_name',
+                TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                new AttributeValue(
+                    new AttributeIdentifier(
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                        'attribute_name'
+                    )
+                ),
+                '".selector" to $elements.element_name.attribute_name'
+            ),
+        ];
+
+        $resolvedAssertions = [
+            new Assertion(
+                '$elements.element_name exists',
+                new ElementValue(
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                ),
+                AssertionComparisons::EXISTS
+            ),
+            new Assertion(
+                '$elements.element_name.attribute_name exists',
+                new AttributeValue(
+                    new AttributeIdentifier(
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                        'attribute_name'
+                    )
+                ),
+                AssertionComparisons::EXISTS
+            ),
+        ];
+
+        $identifierCollection = new IdentifierCollection([
+            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+        ]);
+
+        return [
+            'pending import step: empty step not requiring import resolution' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', ''),
+                'expectedStep' => new Step([], []),
+            ],
+            'pending import step: non-empty step, has non-resolvable actions and assertions' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step($nonResolvableActions, $nonResolvableAssertions),
+                    '',
+                    ''
+                ),
+                'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions),
+            ],
+            'pending import step: non-empty step, has resolvable actions and assertions' => [
+                'step' => (new PendingImportResolutionStep(
+                    new Step($resolvableActions, $resolvableAssertions),
+                    '',
+                    ''
+                ))->withIdentifierCollection($identifierCollection),
+                'expectedStep' => (new Step($resolvedActions, $resolvedAssertions))
+                    ->withIdentifierCollection(clone $identifierCollection),
+            ],
+            'pending import step: has step import name' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
+            ],
+            'pending import step: has data provider import name' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
+                'expectedStep' => new PendingImportResolutionStep(new Step([], []), '', 'data_provider_import_name'),
+            ],
+        ];
+    }
+
+    public function resolveElementAndAttributeParametersNoResolvableActionsOrAssertions(): array
+    {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $nonResolvableAction = $actionFactory->createFromActionString('wait 30');
+        $nonResolvableAssertion = $assertionFactory->createFromAssertionString('".selector" exists');
+
+        return [
+            'no resolvable actions or assertions: no actions, no assertions' => [
+                'step' => new Step([], []),
+                'expectedStep' => new Step([], []),
+            ],
+            'no resolvable actions or assertions: non-resolvable actions, non-resolvable assertions' => [
+                'step' => new Step(
+                    [
+                        $nonResolvableAction
+                    ],
+                    [
+                        $nonResolvableAssertion
+                    ]
+                ),
+                'expectedStep' => new Step(
+                    [
+                        $nonResolvableAction
+                    ],
+                    [
+                        $nonResolvableAssertion
+                    ]
+                ),
+            ],
+        ];
+    }
+
+    public function resolveElementAndAttributeParametersResolvableActionsAndAssertionsDataProvider(): array
+    {
+        $actionFactory = ActionFactory::createFactory();
         $assertionFactory = AssertionFactory::createFactory();
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
 
         return [
+            'resolvable element parameter in action identifier' => [
+                'step' => (new Step([
+                    $actionFactory->createFromActionString('set $elements.element_name to "value"'),
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+                'expectedStep' => (new Step([
+                    new InputAction(
+                        'set $elements.element_name to "value"',
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                        LiteralValue::createStringValue('value'),
+                        '$elements.element_name to "value"'
+                    )
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable element parameter in action value' => [
+                'step' => (new Step([
+                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name'),
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+                'expectedStep' => (new Step([
+                    new InputAction(
+                        'set ".selector" to $elements.element_name',
+                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name')
+                        ),
+                        '".selector" to $elements.element_name'
+                    )
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable attribute parameter in action value' => [
+                'step' => (new Step([
+                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name.attribute_name'),
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+                'expectedStep' => (new Step([
+                    new InputAction(
+                        'set ".selector" to $elements.element_name.attribute_name',
+                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                        new AttributeValue(
+                            new AttributeIdentifier(
+                                TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                                'attribute_name'
+                            )
+                        ),
+                        '".selector" to $elements.element_name.attribute_name'
+                    )
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+            ],
             'resolvable element parameter reference in assertion examined value' => [
                 'step' => (new Step([], [
                     $assertionFactory->createFromAssertionString('$elements.element_name exists'),
                 ]))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ])),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], [
                     new Assertion(
                         '$elements.element_name exists',
@@ -589,7 +693,6 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 ]))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
                 ])),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], [
                     new Assertion(
                         '".examined-selector" is $elements.element_name',
@@ -613,7 +716,6 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 ]))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ])),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], [
                     new Assertion(
                         '$elements.element_name.attribute_name exists',
@@ -637,7 +739,6 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 ]))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
                 ])),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], [
                     new Assertion(
                         '".examined-selector" is $elements.element_name.attribute_name',
@@ -665,56 +766,17 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveElementIdentifiersNoResolvableIdentifiersDataProvider
-     * @dataProvider resolveElementIdentifiersWithPageElementReferencesDataProvider
-     */
-    public function testResolveIncludingPageElementReferencesForElementIdentifiers(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingPageElementReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    /**
-     * @dataProvider resolveElementIdentifiersNoResolvableIdentifiersDataProvider
-     */
-    public function testResolveIncludingElementParameterReferencesForElementIdentifiers(
-        StepInterface $step,
-        PageProviderInterface $pageProvider,
-        StepInterface $expectedStep
-    ) {
-        $resolvedStep = $this->resolver->resolveIncludingElementParameterReferences(
-            $step,
-            new EmptyStepProvider(),
-            new EmptyDataSetProvider(),
-            $pageProvider
-        );
-
-        $this->assertEquals($expectedStep, $resolvedStep);
-    }
-
-    public function resolveElementIdentifiersNoResolvableIdentifiersDataProvider(): array
+    public function resolveElementAndAttributeParametersNonResolvableIdentifierCollectionDataProvider(): array
     {
         return [
-            'no element identifiers' => [
+            'non-resolvable identifier collection: no element identifiers' => [
                 'step' => new Step([], []),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => new Step([], []),
             ],
-            'no resolvable element identifiers' => [
+            'non-resolvable identifier collection: no resolvable element identifiers' => [
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector'),
                 ])),
-                'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     TestIdentifierFactory::createCssElementIdentifier('.selector'),
                 ]))
@@ -722,150 +784,17 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function resolveElementIdentifiersWithPageElementReferencesDataProvider(): array
+    public function resolveElementAndAttributeParametersDataProvider(): array
     {
         return [
-            'resolvable element identifiers: page element references' => [
-                'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createPageElementReferenceIdentifier(
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        ),
-                        'element_name'
-                    ),
-                ])),
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com/'),
-                        new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
-                        ])
-                    )
-                ]),
-                'expectedStep' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
-                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
-                ]))
-            ],
+            //
         ];
     }
 
     /**
-     * @dataProvider resolveCircularReferenceDataProvider
+     * @dataProvider resolvePageElementReferencesThrowsExceptionDataProvider
      */
-    public function testResolveIncludingPageElementReferencesForCircularReference(
-        StepInterface $step,
-        StepProviderInterface $stepProvider,
-        string $expectedCircularImportName
-    ) {
-        try {
-            $this->resolver->resolveIncludingPageElementReferences(
-                $step,
-                $stepProvider,
-                new EmptyDataSetProvider(),
-                new EmptyPageProvider()
-            );
-
-            $this->fail('CircularStepImportException not thrown for import "' . $expectedCircularImportName . '"');
-        } catch (CircularStepImportException $circularStepImportException) {
-            $this->assertSame($expectedCircularImportName, $circularStepImportException->getImportName());
-        }
-    }
-
-    /**
-     * @dataProvider resolveCircularReferenceDataProvider
-     */
-    public function testResolveIncludingElementParameterReferencesForCircularReference(
-        StepInterface $step,
-        StepProviderInterface $stepProvider,
-        string $expectedCircularImportName
-    ) {
-        try {
-            $this->resolver->resolveIncludingElementParameterReferences(
-                $step,
-                $stepProvider,
-                new EmptyDataSetProvider(),
-                new EmptyPageProvider()
-            );
-
-            $this->fail('CircularStepImportException not thrown for import "' . $expectedCircularImportName . '"');
-        } catch (CircularStepImportException $circularStepImportException) {
-            $this->assertSame($expectedCircularImportName, $circularStepImportException->getImportName());
-        }
-    }
-
-    public function resolveCircularReferenceDataProvider(): array
-    {
-        return [
-            'direct self-circular reference' => [
-                'step' => new PendingImportResolutionStep(
-                    new Step([], []),
-                    'start',
-                    ''
-                ),
-                'stepProvider' => new PopulatedStepProvider([
-                    'start' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'start',
-                        ''
-                    ),
-                ]),
-                'expectedCircularImportName' => 'start',
-            ],
-            'indirect self-circular reference' => [
-                'step' => new PendingImportResolutionStep(
-                    new Step([], []),
-                    'start',
-                    ''
-                ),
-                'stepProvider' => new PopulatedStepProvider([
-                    'start' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'middle',
-                        ''
-                    ),
-                    'middle' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'start',
-                        ''
-                    ),
-                ]),
-                'expectedCircularImportName' => 'start',
-            ],
-            'indirect circular reference' => [
-                'step' => new PendingImportResolutionStep(
-                    new Step([], []),
-                    'one',
-                    ''
-                ),
-                'stepProvider' => new PopulatedStepProvider([
-                    'one' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'two',
-                        ''
-                    ),
-                    'two' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'three',
-                        ''
-                    ),
-                    'three' => new PendingImportResolutionStep(
-                        new Step([], []),
-                        'two',
-                        ''
-                    ),
-                ]),
-                'expectedCircularImportName' => 'two',
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider resolveIncludingPageElementReferencesThrowsExceptionDataProvider
-     */
-    public function testResolveIncludingPageElementReferencesThrowsException(
+    public function testResolvePageElementReferencesThrowsException(
         StepInterface $step,
         PageProviderInterface $pageProvider,
         string $expectedException,
@@ -873,12 +802,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ExceptionContextInterface $expectedExceptionContext
     ) {
         try {
-            $this->resolver->resolveIncludingPageElementReferences(
-                $step,
-                new EmptyStepProvider(),
-                new EmptyDataSetProvider(),
-                $pageProvider
-            );
+            $this->resolver->resolvePageElementReferences($step, $pageProvider);
 
             $this->fail('Exception "' . $expectedException . '" not thrown');
         } catch (\Exception $exception) {
@@ -891,7 +815,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function resolveIncludingPageElementReferencesThrowsExceptionDataProvider(): array
+    public function resolvePageElementReferencesThrowsExceptionDataProvider(): array
     {
         $invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
 
@@ -1088,21 +1012,16 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveIncludingElementParameterReferencesThrowsExceptionDataProvider
+     * @dataProvider resolveElementAndAttributeParametersThrowsExceptionDataProvider
      */
-    public function testResolveIncludingElementParameterReferencesThrowsException(
+    public function testResolveElementAndAttributeParametersThrowsException(
         StepInterface $step,
         string $expectedException,
         string $expectedExceptionMessage,
         ExceptionContextInterface $expectedExceptionContext
     ) {
         try {
-            $this->resolver->resolveIncludingElementParameterReferences(
-                $step,
-                new EmptyStepProvider(),
-                new EmptyDataSetProvider(),
-                new EmptyPageProvider()
-            );
+            $this->resolver->resolveElementAndAttributeParameters($step);
 
             $this->fail('Exception "' . $expectedException . '" not thrown');
         } catch (\Exception $exception) {
@@ -1115,7 +1034,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function resolveIncludingElementParameterReferencesThrowsExceptionDataProvider(): array
+    public function resolveElementAndAttributeParametersThrowsExceptionDataProvider(): array
     {
         return [
             'UnknownElementException: action has element parameter reference, element missing' => [

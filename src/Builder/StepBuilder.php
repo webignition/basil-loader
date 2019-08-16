@@ -19,24 +19,31 @@ use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
+use webignition\BasilParser\Resolver\StepImportResolver;
 use webignition\BasilParser\Resolver\StepResolver;
 
 class StepBuilder
 {
     private $stepFactory;
     private $stepResolver;
+    private $stepImportResolver;
 
-    public function __construct(StepFactory $stepFactory, StepResolver $stepResolver)
-    {
+    public function __construct(
+        StepFactory $stepFactory,
+        StepResolver $stepResolver,
+        StepImportResolver $stepImportResolver
+    ) {
         $this->stepFactory = $stepFactory;
         $this->stepResolver = $stepResolver;
+        $this->stepImportResolver = $stepImportResolver;
     }
 
     public static function createBuilder(): StepBuilder
     {
         return new StepBuilder(
             StepFactory::createFactory(),
-            StepResolver::createResolver()
+            StepResolver::createResolver(),
+            StepImportResolver::createResolver()
         );
     }
 
@@ -68,11 +75,15 @@ class StepBuilder
     ): StepInterface {
         $unresolvedStep = $this->stepFactory->createFromStepData($stepData);
 
-        return $this->stepResolver->resolveIncludingPageElementReferences(
+        $resolvedStep = $this->stepImportResolver->resolveStepImport(
             $unresolvedStep,
             $stepProvider,
             $dataSetProvider,
             $pageProvider
         );
+
+        $resolvedStep = $this->stepImportResolver->resolveDataProviderImport($resolvedStep, $dataSetProvider);
+
+        return $this->stepResolver->resolvePageElementReferences($resolvedStep, $pageProvider);
     }
 }
