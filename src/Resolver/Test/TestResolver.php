@@ -20,24 +20,31 @@ use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
+use webignition\BasilParser\Resolver\StepImportResolver;
 use webignition\BasilParser\Resolver\StepResolver;
 
 class TestResolver
 {
     private $configurationResolver;
     private $stepResolver;
+    private $stepImportResolver;
 
-    public function __construct(ConfigurationResolver $configurationResolver, StepResolver $stepResolver)
-    {
+    public function __construct(
+        ConfigurationResolver $configurationResolver,
+        StepResolver $stepResolver,
+        StepImportResolver $stepImportResolver
+    ) {
         $this->configurationResolver = $configurationResolver;
         $this->stepResolver = $stepResolver;
+        $this->stepImportResolver = $stepImportResolver;
     }
 
     public static function createResolver(): TestResolver
     {
         return new TestResolver(
             ConfigurationResolver::createResolver(),
-            StepResolver::createResolver()
+            StepResolver::createResolver(),
+            StepImportResolver::createResolver()
         );
     }
 
@@ -82,20 +89,16 @@ class TestResolver
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
             try {
-                $resolvedStep = $this->stepResolver->resolveIncludingPageElementReferences(
+                $resolvedStep = $this->stepImportResolver->resolveStepImport(
                     $step,
                     $stepProvider,
                     $dataSetProvider,
                     $pageProvider
                 );
 
-                $resolvedStep = $this->stepResolver->resolveIncludingElementParameterReferences(
-                    $resolvedStep,
-                    $stepProvider,
-                    $dataSetProvider,
-                    $pageProvider
-                );
-
+                $resolvedStep = $this->stepImportResolver->resolveDataProviderImport($resolvedStep, $dataSetProvider);
+                $resolvedStep = $this->stepResolver->resolvePageElementReferences($resolvedStep, $pageProvider);
+                $resolvedStep = $this->stepResolver->resolveElementAndAttributeParameters($resolvedStep);
                 $resolvedStep = $resolvedStep->withIdentifierCollection(new IdentifierCollection());
 
                 $resolvedSteps[$stepName] = $resolvedStep;

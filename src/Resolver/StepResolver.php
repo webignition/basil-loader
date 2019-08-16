@@ -6,6 +6,7 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollection;
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
@@ -105,6 +106,54 @@ class StepResolver
         $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
         $step = $this->resolveActionPageElementReferences($step, $pageProvider);
         $step = $this->resolveAssertionPageElementReferences($step, $pageProvider);
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param PageProviderInterface $pageProvider
+     *
+     * @return StepInterface
+     *
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    public function resolvePageElementReferences(
+        StepInterface $step,
+        PageProviderInterface $pageProvider
+    ): StepInterface {
+        if ($step instanceof PendingImportResolutionStep) {
+            if ($step->requiresResolution()) {
+                return $step;
+            }
+
+            $step = $step->getStep();
+        }
+
+        $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
+        $step = $this->resolveActionPageElementReferences($step, $pageProvider);
+        $step = $this->resolveAssertionPageElementReferences($step, $pageProvider);
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     *
+     * @return StepInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveElementAndAttributeParameters(
+        StepInterface $step
+    ): StepInterface {
+        $step = $this->resolveIdentifierCollectionElementParameters($step);
+        $step = $this->resolveActionElementAndAttributeParameters($step);
+        $step = $this->resolveAssertionElementAndAttributeParameters($step);
 
         return $step;
     }
