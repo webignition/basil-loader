@@ -54,7 +54,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesAssertionUnchangedDataProvider
      */
-    public function testResolveElementParameterExaminedValueLeavesAssertionUnchanged(AssertionInterface $assertion)
+    public function testResolveElementParametersValueLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
         $this->assertEquals(
             $assertion,

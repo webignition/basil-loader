@@ -187,7 +187,7 @@ class StepResolver
 
         $step = $this->resolveIdentifierCollectionElementParameters($step);
         $step = $this->resolveActionElementParameterIdentifiers($step);
-        $step = $this->resolveAssertionElementParameterIdentifiers($step);
+        $step = $this->resolveAssertionElementParameters($step);
 
         return $step;
     }
@@ -365,7 +365,7 @@ class StepResolver
      *
      * @throws UnknownElementException
      */
-    private function resolveAssertionElementParameterIdentifiers(StepInterface $step): StepInterface
+    private function resolveAssertionElementParameters(StepInterface $step): StepInterface
     {
         $resolvedAssertions = [];
         $assertion = null;

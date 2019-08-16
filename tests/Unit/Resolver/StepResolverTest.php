@@ -461,7 +461,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         $assertionFactory = AssertionFactory::createFactory();
 
         return [
-            'resolvable page element references in assertion identifier' => [
+            'resolvable page element reference in assertion examined value' => [
                 'step' => new Step([], [
                     $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
                 ]),
@@ -483,7 +483,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ),
                 ]),
             ],
-            'resolvable page element references in assertion value' => [
+            'resolvable page element reference in assertion expected value' => [
                 'step' => new Step([], [
                     $assertionFactory->createFromAssertionString(
                         '".examined-selector" is page_import_name.elements.element_name '
@@ -517,23 +517,15 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveAssertionsWithResolvableElementParameterReferencesDataProvider(): array
     {
+        $assertionFactory = AssertionFactory::createFactory();
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
 
         return [
-            'resolvable element parameter references in assertions' => [
+            'resolvable element parameter reference in assertion examined value' => [
                 'step' => (new Step([], [
-                    new Assertion(
-                        '$elements.element_name exists',
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            ObjectNames::ELEMENT,
-                            'element_name'
-                        ),
-                        AssertionComparisons::EXISTS
-                    ),
+                    $assertionFactory->createFromAssertionString('$elements.element_name exists'),
                 ]))->withIdentifierCollection(new IdentifierCollection([
-                    $namedCssElementIdentifier,
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ])),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], [
@@ -543,7 +535,31 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         AssertionComparisons::EXISTS
                     ),
                 ]))->withIdentifierCollection(new IdentifierCollection([
-                    $namedCssElementIdentifier,
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable element parameter reference in assertion expected value' => [
+                'step' => (new Step([], [
+                    $assertionFactory->createFromAssertionString('".examined-selector" is $elements.element_name'),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([], [
+                    new Assertion(
+                        '".examined-selector" is $elements.element_name',
+                        new ElementValue(
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.examined-selector')
+                            )
+                        ),
+                        AssertionComparisons::IS,
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                        )
+                    ),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
                 ])),
             ],
         ];
