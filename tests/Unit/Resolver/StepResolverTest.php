@@ -16,6 +16,7 @@ use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
 use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
@@ -24,6 +25,7 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
@@ -271,7 +273,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider resolveActionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveActionsWithResolvableElementParameterReferencesDataProvider
+     * @dataProvider resolveActionsWithResolvableElementAndAttributeParameterReferencesDataProvider
      */
     public function testResolveIncludingElementParameterReferencesForActions(
         StepInterface $step,
@@ -362,7 +364,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function resolveActionsWithResolvableElementParameterReferencesDataProvider(): array
+    public function resolveActionsWithResolvableElementAndAttributeParameterReferencesDataProvider(): array
     {
         $actionFactory = ActionFactory::createFactory();
 
@@ -405,6 +407,29 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
                 ])),
             ],
+            'resolvable attribute parameter in action value' => [
+                'step' => (new Step([
+                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name.attribute_name'),
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([
+                    new InputAction(
+                        'set ".selector" to $elements.element_name.attribute_name',
+                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                        new AttributeValue(
+                            new AttributeIdentifier(
+                                TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                                'attribute_name'
+                            )
+                        ),
+                        '".selector" to $elements.element_name.attribute_name'
+                    )
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+            ],
         ];
     }
 
@@ -429,7 +454,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider resolveAssertionsNoResolvableReferencesDataProvider
-     * @dataProvider resolveAssertionsWithResolvableElementParameterReferencesDataProvider
+     * @dataProvider resolveAssertionsWithResolvableElementAndAttributeParameterReferencesDataProvider
      */
     public function testResolveIncludingElementParameterReferencesForAssertions(
         StepInterface $step,
@@ -535,7 +560,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function resolveAssertionsWithResolvableElementParameterReferencesDataProvider(): array
+    public function resolveAssertionsWithResolvableElementAndAttributeParameterReferencesDataProvider(): array
     {
         $assertionFactory = AssertionFactory::createFactory();
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
@@ -576,6 +601,61 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         AssertionComparisons::IS,
                         new ElementValue(
                             TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                        )
+                    ),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable attribute parameter reference in assertion examined value' => [
+                'step' => (new Step([], [
+                    $assertionFactory->createFromAssertionString('$elements.element_name.attribute_name exists'),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([], [
+                    new Assertion(
+                        '$elements.element_name.attribute_name exists',
+                        new AttributeValue(
+                            new AttributeIdentifier(
+                                $namedCssElementIdentifier,
+                                'attribute_name'
+                            )
+                        ),
+                        AssertionComparisons::EXISTS
+                    ),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable attribute parameter reference in assertion expected value' => [
+                'step' => (new Step([], [
+                    $assertionFactory->createFromAssertionString(
+                        '".examined-selector" is $elements.element_name.attribute_name'
+                    ),
+                ]))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([], [
+                    new Assertion(
+                        '".examined-selector" is $elements.element_name.attribute_name',
+                        new ElementValue(
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.examined-selector')
+                            )
+                        ),
+                        AssertionComparisons::IS,
+                        new AttributeValue(
+                            new AttributeIdentifier(
+                                TestIdentifierFactory::createCssElementIdentifier(
+                                    '.expected-selector',
+                                    1,
+                                    'element_name'
+                                ),
+                                'attribute_name'
+                            )
                         )
                     ),
                 ]))->withIdentifierCollection(new IdentifierCollection([

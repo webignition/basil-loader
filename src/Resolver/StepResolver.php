@@ -186,8 +186,8 @@ class StepResolver
         }
 
         $step = $this->resolveIdentifierCollectionElementParameters($step);
-        $step = $this->resolveActionElementParameters($step);
-        $step = $this->resolveAssertionElementParameters($step);
+        $step = $this->resolveActionElementAndAttributeParameters($step);
+        $step = $this->resolveAssertionElementAndAttributeParameters($step);
 
         return $step;
     }
@@ -286,7 +286,7 @@ class StepResolver
      *
      * @throws UnknownElementException
      */
-    private function resolveActionElementParameters(StepInterface $step): StepInterface
+    private function resolveActionElementAndAttributeParameters(StepInterface $step): StepInterface
     {
         $resolvedActions = [];
         $action = null;
@@ -295,10 +295,17 @@ class StepResolver
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolveElementParameters(
+                $resolvedAction = $this->actionResolver->resolveElementParameters(
                     $action,
                     $identifierCollection
                 );
+
+                $resolvedAction = $this->actionResolver->resolveAttributeParameters(
+                    $resolvedAction,
+                    $identifierCollection
+                );
+
+                $resolvedActions[] = $resolvedAction;
             }
         } catch (UnknownElementException $contextAwareException) {
             if ($action instanceof ActionInterface) {
@@ -365,7 +372,7 @@ class StepResolver
      *
      * @throws UnknownElementException
      */
-    private function resolveAssertionElementParameters(StepInterface $step): StepInterface
+    private function resolveAssertionElementAndAttributeParameters(StepInterface $step): StepInterface
     {
         $resolvedAssertions = [];
         $assertion = null;
@@ -374,10 +381,17 @@ class StepResolver
 
         try {
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->assertionResolver->resolveElementParameters(
+                $resolvedAssertion = $this->assertionResolver->resolveElementParameters(
                     $assertion,
                     $identifierCollection
                 );
+
+                $resolvedAssertion = $this->assertionResolver->resolveAttributeParameters(
+                    $resolvedAssertion,
+                    $identifierCollection
+                );
+
+                $resolvedAssertions[] = $resolvedAssertion;
             }
         } catch (UnknownElementException $contextAwareException) {
             $exceptionContextContent = null;
