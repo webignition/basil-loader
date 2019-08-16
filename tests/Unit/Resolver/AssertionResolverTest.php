@@ -45,7 +45,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
      */
     public function testResolvePageElementReferencesLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
-        $this->assertSame(
+        $this->assertEquals(
             $assertion,
             $this->resolver->resolvePageElementReferences($assertion, new EmptyPageProvider())
         );
@@ -56,7 +56,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
      */
     public function testResolveElementParameterExaminedValueLeavesAssertionUnchanged(AssertionInterface $assertion)
     {
-        $this->assertSame(
+        $this->assertEquals(
             $assertion,
             $this->resolver->resolveElementParameters($assertion, new IdentifierCollection())
         );
