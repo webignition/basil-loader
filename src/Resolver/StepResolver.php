@@ -51,67 +51,6 @@ class StepResolver
 
     /**
      * @param StepInterface $step
-     * @param StepProviderInterface $stepProvider
-     * @param DataSetProviderInterface $dataSetProvider
-     * @param PageProviderInterface $pageProvider
-     * @param array $handledImportNames
-     *
-     * @return StepInterface
-     *
-     * @throws CircularStepImportException
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
-     * @throws UnknownDataProviderException
-     * @throws UnknownElementException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws UnknownStepException
-     */
-    public function resolveIncludingPageElementReferences(
-        StepInterface $step,
-        StepProviderInterface $stepProvider,
-        DataSetProviderInterface $dataSetProvider,
-        PageProviderInterface $pageProvider,
-        array $handledImportNames = []
-    ): StepInterface {
-        $parentStepResolver = function (
-            StepInterface $parentStep,
-            array $handledImportNames
-        ) use (
-            $stepProvider,
-            $dataSetProvider,
-            $pageProvider
-        ) {
-            return $this->resolveIncludingPageElementReferences(
-                $parentStep,
-                $stepProvider,
-                $dataSetProvider,
-                $pageProvider,
-                $handledImportNames
-            );
-        };
-
-        $step = $this->resolvePendingImportStep(
-            $step,
-            $stepProvider,
-            $dataSetProvider,
-            $pageProvider,
-            $parentStepResolver,
-            $handledImportNames
-        );
-
-        $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
-        $step = $this->resolveActionPageElementReferences($step, $pageProvider);
-        $step = $this->resolveAssertionPageElementReferences($step, $pageProvider);
-
-        return $step;
-    }
-
-    /**
-     * @param StepInterface $step
      * @param PageProviderInterface $pageProvider
      *
      * @return StepInterface
