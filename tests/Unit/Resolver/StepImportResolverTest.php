@@ -36,14 +36,14 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveStepImport
+     * @dataProvider resolveStepImportDataProvider
      */
     public function testResolveStepImport(
         StepInterface $step,
         StepProviderInterface $stepProvider,
         StepInterface $expectedStep
     ) {
-        $resolvedStep = $this->resolver->resolve(
+        $resolvedStep = $this->resolver->resolveStepImport(
             $step,
             $stepProvider,
             new EmptyDataSetProvider(),
@@ -53,7 +53,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedStep, $resolvedStep);
     }
 
-    public function resolveStepImport(): array
+    public function resolveStepImportDataProvider(): array
     {
         $actionFactory = ActionFactory::createFactory();
         $assertionFactory = AssertionFactory::createFactory();
@@ -142,6 +142,21 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions),
             ],
+            'empty step imports actions and assertions, has data provider import name' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'step_import_name',
+                    'data_provider_import_name'
+                ),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
+                ]),
+                'expectedStep' => new PendingImportResolutionStep(
+                    new Step($nonResolvableActions, $nonResolvableAssertions),
+                    '',
+                    'data_provider_import_name'
+                ),
+            ],
         ];
     }
 
@@ -153,11 +168,9 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         DataSetProviderInterface $dataSetProvider,
         StepInterface $expectedStep
     ) {
-        $resolvedStep = $this->resolver->resolve(
+        $resolvedStep = $this->resolver->resolveDataProviderImport(
             $step,
-            new EmptyStepProvider(),
-            $dataSetProvider,
-            new EmptyPageProvider()
+            $dataSetProvider
         );
 
         $this->assertEquals($expectedStep, $resolvedStep);
@@ -166,7 +179,17 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
     public function resolveDataProviderImportDataProvider(): array
     {
         return [
-            'step imports from data provider' => [
+            'non-pending step' => [
+                'step' => new Step([], []),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedStep' => new Step([], []),
+            ],
+            'empty data provider name' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', ''),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedStep' => new Step([], []),
+            ],
+            'has data provider name, empty step import name' => [
                 'step' => new PendingImportResolutionStep(
                     new Step([], []),
                     '',
@@ -185,19 +208,42 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     ])
                 ])),
             ],
+            'has data provider name, has step import name' => [
+                'step' => new PendingImportResolutionStep(
+                    new Step([], []),
+                    'step_import_name',
+                    'data_provider_import_name'
+                ),
+                'dataSetProvider' => new PopulatedDataSetProvider([
+                    'data_provider_import_name' => new DataSetCollection([
+                        new DataSet('0', [
+                            'foo' => 'bar',
+                        ])
+                    ]),
+                ]),
+                'expectedStep' => (new PendingImportResolutionStep(
+                    new Step([], []),
+                    'step_import_name',
+                    ''
+                ))->withDataSetCollection(new DataSetCollection([
+                    new DataSet('0', [
+                        'foo' => 'bar',
+                    ])
+                ])),
+            ],
         ];
     }
 
     /**
-     * @dataProvider resolveCircularReferenceDataProvider
+     * @dataProvider resolveStepImportThrowsCircularReferenceExceptionDataProvider
      */
-    public function testResolveStepImportCircularReference(
+    public function testResolveStepImportThrowsCircularReferenceException(
         StepInterface $step,
         StepProviderInterface $stepProvider,
         string $expectedCircularImportName
     ) {
         try {
-            $this->resolver->resolve(
+            $this->resolver->resolveStepImport(
                 $step,
                 $stepProvider,
                 new EmptyDataSetProvider(),
@@ -210,7 +256,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function resolveCircularReferenceDataProvider(): array
+    public function resolveStepImportThrowsCircularReferenceExceptionDataProvider(): array
     {
         return [
             'direct self-circular reference' => [

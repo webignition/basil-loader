@@ -2,6 +2,7 @@
 
 namespace webignition\BasilParser\Resolver;
 
+use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
@@ -47,7 +48,7 @@ class StepImportResolver
      * @throws UnknownPageException
      * @throws UnknownStepException
      */
-    public function resolve(
+    public function resolveStepImport(
         StepInterface $step,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
@@ -56,7 +57,6 @@ class StepImportResolver
     ): StepInterface {
         if ($step instanceof PendingImportResolutionStepInterface) {
             $importName = $step->getImportName();
-            $dataProviderImportName = $step->getDataProviderImportName();
 
             if ('' !== $importName) {
                 if (in_array($importName, $handledImportNames)) {
@@ -67,7 +67,7 @@ class StepImportResolver
 
                 if ($parentStep instanceof PendingImportResolutionStepInterface) {
                     $handledImportNames[] = $importName;
-                    $parentStep = $this->resolve(
+                    $parentStep = $this->resolveStepImport(
                         $parentStep,
                         $stepProvider,
                         $dataSetProvider,
@@ -81,12 +81,44 @@ class StepImportResolver
                     ->withPrependedAssertions($parentStep->getAssertions());
             }
 
+            if ($step instanceof PendingImportResolutionStep) {
+                $step = $step->clearImportName();
+
+                if (!$step->requiresResolution()) {
+                    $step = $step->getStep();
+                }
+            }
+        }
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param DataSetProviderInterface $dataSetProvider
+     *
+     * @return StepInterface
+     *
+     * @throws NonRetrievableDataProviderException
+     * @throws UnknownDataProviderException
+     */
+    public function resolveDataProviderImport(
+        StepInterface $step,
+        DataSetProviderInterface $dataSetProvider
+    ): StepInterface {
+        if ($step instanceof PendingImportResolutionStepInterface) {
+            $dataProviderImportName = $step->getDataProviderImportName();
+
             if ('' !== $dataProviderImportName) {
                 $step = $step->withDataSetCollection($dataSetProvider->findDataSetCollection($dataProviderImportName));
             }
 
-            if ($step instanceof PendingImportResolutionStepInterface) {
-                $step = $step->getStep();
+            if ($step instanceof PendingImportResolutionStep) {
+                $step = $step->clearDataProviderImportName();
+
+                if (!$step->requiresResolution()) {
+                    $step = $step->getStep();
+                }
             }
         }
 
