@@ -90,6 +90,14 @@ class StepResolver
     public function resolveElementAndAttributeParameters(
         StepInterface $step
     ): StepInterface {
+        if ($step instanceof PendingImportResolutionStep) {
+            if ($step->requiresResolution()) {
+                return $step;
+            }
+
+            $step = $step->getStep();
+        }
+
         $step = $this->resolveIdentifierCollectionElementParameters($step);
         $step = $this->resolveActionElementAndAttributeParameters($step);
         $step = $this->resolveAssertionElementAndAttributeParameters($step);
