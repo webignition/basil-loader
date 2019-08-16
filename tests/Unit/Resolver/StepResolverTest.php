@@ -29,6 +29,7 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -457,35 +458,57 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveAssertionsWithResolvablePageElementReferencesDataProvider(): array
     {
-        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+        $assertionFactory = AssertionFactory::createFactory();
 
         return [
-            'resolvable page element references in assertions' => [
+            'resolvable page element references in assertion identifier' => [
                 'step' => new Step([], [
-                    new Assertion(
-                        'page_import_name.elements.element_name exists',
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        ),
-                        AssertionComparisons::EXISTS
-                    ),
+                    $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
                 ]),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            $namedCssElementIdentifier,
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         ])
                     )
                 ]),
                 'expectedStep' => new Step([], [
                     new Assertion(
                         'page_import_name.elements.element_name exists',
-                        new ElementValue($namedCssElementIdentifier),
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name')
+                        ),
                         AssertionComparisons::EXISTS
+                    ),
+                ]),
+            ],
+            'resolvable page element references in assertion value' => [
+                'step' => new Step([], [
+                    $assertionFactory->createFromAssertionString(
+                        '".examined-selector" is page_import_name.elements.element_name '
+                    ),
+                ]),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name'),
+                        ])
+                    )
+                ]),
+                'expectedStep' => new Step([], [
+                    new Assertion(
+                        '".examined-selector" is page_import_name.elements.element_name',
+                        new ElementValue(
+                            new ElementIdentifier(
+                                LiteralValue::createCssSelectorValue('.examined-selector')
+                            )
+                        ),
+                        AssertionComparisons::IS,
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.expected-selector', 1, 'element_name')
+                        )
                     ),
                 ]),
             ],

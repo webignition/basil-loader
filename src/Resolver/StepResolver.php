@@ -115,7 +115,7 @@ class StepResolver
 
         $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
         $step = $this->resolveActionPageElementReferenceIdentifiers($step, $pageProvider);
-        $step = $this->resolveAssertionPageElementReferenceIdentifiers($step, $pageProvider);
+        $step = $this->resolveAssertionPageElementReferences($step, $pageProvider);
 
         return $step;
     }
@@ -325,7 +325,7 @@ class StepResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    private function resolveAssertionPageElementReferenceIdentifiers(
+    private function resolveAssertionPageElementReferences(
         StepInterface $step,
         PageProviderInterface $pageProvider
     ): StepInterface {
