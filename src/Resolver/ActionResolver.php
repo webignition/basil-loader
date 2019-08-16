@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Action\ActionInterface;
+use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionActionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
@@ -17,16 +18,19 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 class ActionResolver
 {
     private $identifierResolver;
+    private $valueResolver;
 
-    public function __construct(IdentifierResolver $identifierResolver)
+    public function __construct(IdentifierResolver $identifierResolver, ValueResolver $valueResolver)
     {
         $this->identifierResolver = $identifierResolver;
+        $this->valueResolver = $valueResolver;
     }
 
     public static function createResolver(): ActionResolver
     {
         return new ActionResolver(
-            IdentifierResolver::createResolver()
+            IdentifierResolver::createResolver(),
+            ValueResolver::createResolver()
         );
     }
 
@@ -42,7 +46,7 @@ class ActionResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReferenceIdentifier(
+    public function resolvePageElementReferences(
         ActionInterface $action,
         PageProviderInterface $pageProvider
     ): ActionInterface {
@@ -52,17 +56,21 @@ class ActionResolver
 
         $identifier = $action->getIdentifier();
 
-        if (!$identifier instanceof IdentifierInterface) {
-            return $action;
+        if ($identifier instanceof IdentifierInterface) {
+            $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+
+            if ($resolvedIdentifier !== $identifier) {
+                $action = $action->withIdentifier($resolvedIdentifier);
+            }
         }
 
-        $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
-
-        if ($resolvedIdentifier === $identifier) {
-            return $action;
+        if ($action instanceof InputAction) {
+            $action = $action->withValue(
+                $this->valueResolver->resolvePageElementReference($action->getValue(), $pageProvider)
+            );
         }
 
-        return $action->withIdentifier($resolvedIdentifier);
+        return $action;
     }
 
     /**

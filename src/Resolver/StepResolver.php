@@ -257,7 +257,7 @@ class StepResolver
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolvePageElementReferenceIdentifier(
+                $resolvedActions[] = $this->actionResolver->resolvePageElementReferences(
                     $action,
                     $pageProvider
                 );

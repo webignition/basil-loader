@@ -10,15 +10,18 @@ use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Action\WaitAction;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -42,11 +45,11 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesActionUnchangedDataProvider
      */
-    public function testResolvePageElementReferenceIdentifierLeavesActionUnchanged(ActionInterface $action)
+    public function testResolvePageElementReferencesLeavesActionUnchanged(ActionInterface $action)
     {
-        $this->assertSame(
+        $this->assertEquals(
             $action,
-            $this->resolver->resolvePageElementReferenceIdentifier($action, new EmptyPageProvider())
+            $this->resolver->resolvePageElementReferences($action, new EmptyPageProvider())
         );
     }
 
@@ -55,7 +58,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
      */
     public function testResolveElementParameterIdentifierLeavesActionUnchanged(ActionInterface $action)
     {
-        $this->assertSame(
+        $this->assertEquals(
             $action,
             $this->resolver->resolveElementParameterIdentifier($action, new IdentifierCollection())
         );
@@ -130,38 +133,28 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolvePageElementReferenceIdentifierCreatesNewActionDataProvider
+     * @dataProvider resolvePageElementReferencesCreatesNewActionDataProvider
      */
-    public function testResolvePageElementReferenceIdentifierCreatesNewAction(
+    public function testResolvePageElementReferencesCreatesNewAction(
         ActionInterface $action,
         PageProviderInterface $pageProvider,
         ActionInterface $expectedAction
     ) {
-        $resolvedIdentifierContainer = $this->resolver->resolvePageElementReferenceIdentifier($action, $pageProvider);
+        $resolvedIdentifierContainer = $this->resolver->resolvePageElementReferences($action, $pageProvider);
 
         $this->assertNotSame($action, $resolvedIdentifierContainer);
         $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
     }
 
-    public function resolvePageElementReferenceIdentifierCreatesNewActionDataProvider(): array
+    public function resolvePageElementReferencesCreatesNewActionDataProvider(): array
     {
+        $actionFactory = ActionFactory::createFactory();
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
 
         return [
-            'input action with page element reference' => [
-                'action' => new InputAction(
-                    'set page_import_name.elements.element_name to "value"',
-                    new Identifier(
-                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        )
-                    ),
-                    LiteralValue::createStringValue('value'),
-                    'page_import_name.elements.element_name to "value"'
+            'input action with page element reference identifier' => [
+                'action' => $actionFactory->createFromActionString(
+                    'set page_import_name.elements.element_name to "value"'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
@@ -178,20 +171,32 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name.elements.element_name to "value"'
                 ),
             ],
-            'interaction action with page element reference' => [
-                'action' => new InteractionAction(
-                    'click page_import_name.elements.element_name',
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        )
+            'input action with page element reference value' => [
+                'action' => $actionFactory->createFromActionString(
+                    'set ".selector" to page_import_name.elements.element_name'
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            $namedCssElementIdentifier
+                        ])
+                    )
+                ]),
+                'expectedAction' => new InputAction(
+                    'set ".selector" to page_import_name.elements.element_name',
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
-                    'page_import_name.elements.element_name'
+                    new ElementValue(
+                        $namedCssElementIdentifier
+                    ),
+                    '".selector" to page_import_name.elements.element_name'
+                ),
+            ],
+            'interaction action with page element reference identifier' => [
+                'action' => $actionFactory->createFromActionString(
+                    'click page_import_name.elements.element_name'
                 ),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
@@ -285,4 +290,16 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+//    public function testFoo()
+//    {
+//        $actionFactory = ActionFactory::createFactory();
+//
+//        $action = $actionFactory->createFromActionString(
+//            'set page_import_name.elements.target to page_import_name.elements.source'
+//        );
+//
+//        var_dump($action);
+//        exit();
+//    }
 }
