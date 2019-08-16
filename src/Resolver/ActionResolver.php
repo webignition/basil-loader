@@ -4,6 +4,7 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\InputAction;
+use webignition\BasilModel\Action\InputActionInterface;
 use webignition\BasilModel\Action\InteractionActionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
@@ -64,7 +65,7 @@ class ActionResolver
             }
         }
 
-        if ($action instanceof InputAction) {
+        if ($action instanceof InputActionInterface) {
             $action = $action->withValue(
                 $this->valueResolver->resolvePageElementReference($action->getValue(), $pageProvider)
             );
@@ -81,7 +82,7 @@ class ActionResolver
      *
      * @throws UnknownElementException
      */
-    public function resolveElementParameterIdentifier(
+    public function resolveElementParameters(
         ActionInterface $action,
         IdentifierCollectionInterface $identifierCollection
     ): ActionInterface {
@@ -91,19 +92,21 @@ class ActionResolver
 
         $identifier = $action->getIdentifier();
 
-        if (!$identifier instanceof IdentifierInterface) {
-            return $action;
+        if ($identifier instanceof IdentifierInterface) {
+            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
+                $identifier,
+                $identifierCollection
+            );
+
+            $action = $action->withIdentifier($resolvedIdentifier);
         }
 
-        $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
-            $identifier,
-            $identifierCollection
-        );
-
-        if ($resolvedIdentifier === $identifier) {
-            return $action;
+        if ($action instanceof InputActionInterface) {
+            $action = $action->withValue(
+                $this->valueResolver->resolveElementParameter($action->getValue(), $identifierCollection)
+            );
         }
 
-        return $action->withIdentifier($resolvedIdentifier);
+        return $action;
     }
 }

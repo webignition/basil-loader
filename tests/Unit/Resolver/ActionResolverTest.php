@@ -9,18 +9,12 @@ use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
-use webignition\BasilModel\Action\WaitAction;
 use webignition\BasilModel\Identifier\ElementIdentifier;
-use webignition\BasilModel\Identifier\Identifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ElementValue;
-use webignition\BasilModel\Value\EnvironmentValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
@@ -56,19 +50,21 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesActionUnchangedDataProvider
      */
-    public function testResolveElementParameterIdentifierLeavesActionUnchanged(ActionInterface $action)
+    public function testResolveElementParametersLeavesActionUnchanged(ActionInterface $action)
     {
         $this->assertEquals(
             $action,
-            $this->resolver->resolveElementParameterIdentifier($action, new IdentifierCollection())
+            $this->resolver->resolveElementParameters($action, new IdentifierCollection())
         );
     }
 
     public function resolveLeavesActionUnchangedDataProvider(): array
     {
+        $actionFactory = ActionFactory::createFactory();
+
         return [
             'wait action' => [
-                'action' => new WaitAction('wait 30', LiteralValue::createStringValue('30')),
+                'action' => $actionFactory->createFromActionString('wait 30'),
             ],
             'input action lacking identifier' => [
                 'action' => new InputAction(
@@ -79,55 +75,22 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
             'input action with css selector' => [
-                'action' => new InputAction(
-                    'set ".selector" to "value"',
-                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
-                    LiteralValue::createStringValue('value'),
-                    '".selector" to "value"'
-                ),
+                'action' => $actionFactory->createFromActionString('set ".selector" to "value"'),
             ],
             'input action with xpath expression' => [
-                'action' => new InputAction(
-                    'set "//foo" to "value"',
-                    TestIdentifierFactory::createXpathElementIdentifier('//foo'),
-                    LiteralValue::createStringValue('value'),
-                    '"//foo" to "value"'
-                ),
+                'action' => $actionFactory->createFromActionString('set "//foo" to "value"'),
             ],
             'input action with environment parameter value' => [
-                'action' => new InputAction(
-                    'set ".selector" to $env.KEY',
-                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
-                    new EnvironmentValue(
-                        '$env.KEY',
-                        'KEY'
-                    ),
-                    '".selector" to $env.KEY'
-                ),
+                'action' => $actionFactory->createFromActionString('set ".selector" to $env.KEY'),
             ],
             'interaction action lacking identifier' => [
-                'action' => new InteractionAction(
-                    'click',
-                    ActionTypes::CLICK,
-                    null,
-                    ''
-                ),
+                'action' => $actionFactory->createFromActionString('click'),
             ],
             'interaction action with css selector' => [
-                'action' => new InteractionAction(
-                    'click ".selector"',
-                    ActionTypes::CLICK,
-                    TestIdentifierFactory::createCssElementIdentifier('.selector'),
-                    '".selector"'
-                ),
+                'action' => $actionFactory->createFromActionString('click ".selector"'),
             ],
             'interaction action with xpath expression' => [
-                'action' => new InteractionAction(
-                    'click "/foo"',
-                    ActionTypes::CLICK,
-                    TestIdentifierFactory::createXpathElementIdentifier('//foo'),
-                    '"//foo"'
-                ),
+                'action' => $actionFactory->createFromActionString('click "/foo"'),
             ],
         ];
     }
@@ -188,9 +151,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     new ElementIdentifier(
                         LiteralValue::createCssSelectorValue('.selector')
                     ),
-                    new ElementValue(
-                        $namedCssElementIdentifier
-                    ),
+                    new ElementValue($namedCssElementIdentifier),
                     '".selector" to page_import_name.elements.element_name'
                 ),
             ],
@@ -217,14 +178,14 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolveElementParameterIdentifierCreatesNewActionDataProvider
+     * @dataProvider resolveElementParametersCreatesNewActionDataProvider
      */
-    public function testResolveElementParameterIdentifierCreatesNewAction(
+    public function testResolveElementParametersCreatesNewAction(
         ActionInterface $action,
         IdentifierCollectionInterface $identifierCollection,
         ActionInterface $expectedAction
     ) {
-        $resolvedIdentifierContainer = $this->resolver->resolveElementParameterIdentifier(
+        $resolvedIdentifierContainer = $this->resolver->resolveElementParameters(
             $action,
             $identifierCollection
         );
@@ -233,26 +194,14 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
     }
 
-    public function resolveElementParameterIdentifierCreatesNewActionDataProvider(): array
+    public function resolveElementParametersCreatesNewActionDataProvider(): array
     {
+        $actionFactory = ActionFactory::createFactory();
         $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
 
         return [
-            'input action with element parameter' => [
-                'action' => new InputAction(
-                    'set $elements.element_name to "value"',
-                    new Identifier(
-                        IdentifierTypes::ELEMENT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            'elements',
-                            'element_name'
-                        )
-                    ),
-                    LiteralValue::createStringValue('value'),
-                    '$elements.element_name to "value"'
-                ),
+            'input action with element parameter identifier' => [
+                'action' => $actionFactory->createFromActionString('set $elements.element_name to "value"'),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -263,21 +212,22 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     '$elements.element_name to "value"'
                 ),
             ],
-            'interaction action with element parameter' => [
-                'action' => new InteractionAction(
-                    'click $elements.element_name',
-                    ActionTypes::CLICK,
-                    new Identifier(
-                        IdentifierTypes::ELEMENT_PARAMETER,
-                        new ObjectValue(
-                            ValueTypes::ELEMENT_PARAMETER,
-                            '$elements.element_name',
-                            'elements',
-                            'element_name'
-                        )
+            'input action with element parameter value' => [
+                'action' => $actionFactory->createFromActionString('set ".selector" to $elements.element_name'),
+                'identifierCollection' => new IdentifierCollection([
+                    $namedCssElementIdentifier,
+                ]),
+                'expectedAction' => new InputAction(
+                    'set ".selector" to $elements.element_name',
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
                     ),
-                    '$elements.element_name'
+                    new ElementValue($namedCssElementIdentifier),
+                    '".selector" to $elements.element_name'
                 ),
+            ],
+            'interaction action with element parameter identifier' => [
+                'action' => $actionFactory->createFromActionString('click $elements.element_name'),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -290,16 +240,4 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
-
-//    public function testFoo()
-//    {
-//        $actionFactory = ActionFactory::createFactory();
-//
-//        $action = $actionFactory->createFromActionString(
-//            'set page_import_name.elements.target to page_import_name.elements.source'
-//        );
-//
-//        var_dump($action);
-//        exit();
-//    }
 }

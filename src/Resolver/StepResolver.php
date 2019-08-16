@@ -295,7 +295,7 @@ class StepResolver
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->actionResolver->resolveElementParameterIdentifier(
+                $resolvedActions[] = $this->actionResolver->resolveElementParameters(
                     $action,
                     $identifierCollection
                 );
