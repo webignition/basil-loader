@@ -3,11 +3,7 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\Identifier\ElementIdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
-use webignition\BasilModel\Value\ElementValue;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -18,17 +14,19 @@ use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionResolver
 {
-    private $pageElementReferenceResolver;
+    const ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER = '.';
 
-    public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
+    private $valueResolver;
+
+    public function __construct(ValueResolver $valueResolver)
     {
-        $this->pageElementReferenceResolver = $pageElementReferenceResolver;
+        $this->valueResolver = $valueResolver;
     }
 
     public static function createResolver(): AssertionResolver
     {
         return new AssertionResolver(
-            PageElementReferenceResolver::createResolver()
+            ValueResolver::createResolver()
         );
     }
 
@@ -44,23 +42,25 @@ class AssertionResolver
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReferenceExaminedValue(
+    public function resolvePageElementReferences(
         AssertionInterface $assertion,
         PageProviderInterface $pageProvider
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
-
-        if (!$examinedValue instanceof ObjectValue) {
-            return $assertion;
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolvePageElementReference($examinedValue, $pageProvider)
+            );
         }
 
-        if (ValueTypes::PAGE_ELEMENT_REFERENCE !== $examinedValue->getType()) {
-            return $assertion;
+        $expectedValue = $assertion->getExpectedValue();
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolvePageElementReference($expectedValue, $pageProvider)
+            );
         }
 
-        $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
-
-        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        return $assertion;
     }
 
     /**
@@ -71,28 +71,53 @@ class AssertionResolver
      *
      * @throws UnknownElementException
      */
-    public function resolveElementParameterExaminedValue(
+    public function resolveElementParameters(
         AssertionInterface $assertion,
         IdentifierCollectionInterface $identifierCollection
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
-
-        if (!$examinedValue instanceof ObjectValue) {
-            return $assertion;
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolveElementParameter($examinedValue, $identifierCollection)
+            );
         }
 
-        if (ValueTypes::ELEMENT_PARAMETER !== $examinedValue->getType()) {
-            return $assertion;
+        $expectedValue = $assertion->getExpectedValue();
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolveElementParameter($expectedValue, $identifierCollection)
+            );
         }
 
-        $elementName = $examinedValue->getObjectProperty();
+        return $assertion;
+    }
 
-        $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
-
-        if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
-            throw new UnknownElementException($elementName);
+    /**
+     * @param AssertionInterface $assertion
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return AssertionInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveAttributeParameters(
+        AssertionInterface $assertion,
+        IdentifierCollectionInterface $identifierCollection
+    ): AssertionInterface {
+        $examinedValue = $assertion->getExaminedValue();
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolveAttributeParameter($examinedValue, $identifierCollection)
+            );
         }
 
-        return $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        $expectedValue = $assertion->getExpectedValue();
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolveAttributeParameter($expectedValue, $identifierCollection)
+            );
+        }
+
+        return $assertion;
     }
 }
