@@ -364,38 +364,45 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveActionsWithResolvableElementParameterReferencesDataProvider(): array
     {
-        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+        $actionFactory = ActionFactory::createFactory();
 
         return [
-            'resolvable element parameters in actions' => [
+            'resolvable element parameter in action identifier' => [
                 'step' => (new Step([
-                    new InputAction(
-                        'set $elements.element_name to "value"',
-                        new Identifier(
-                            IdentifierTypes::ELEMENT_PARAMETER,
-                            new ObjectValue(
-                                ValueTypes::ELEMENT_PARAMETER,
-                                '$elements.element_name',
-                                ObjectNames::ELEMENT,
-                                'element_name'
-                            )
-                        ),
-                        LiteralValue::createStringValue('value'),
-                        '$elements.element_name to "value"'
-                    )
+                    $actionFactory->createFromActionString('set $elements.element_name to "value"'),
                 ], []))->withIdentifierCollection(new IdentifierCollection([
-                    $namedCssElementIdentifier,
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                 ])),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([
                     new InputAction(
                         'set $elements.element_name to "value"',
-                        $namedCssElementIdentifier,
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         LiteralValue::createStringValue('value'),
                         '$elements.element_name to "value"'
                     )
                 ], []))->withIdentifierCollection(new IdentifierCollection([
-                    $namedCssElementIdentifier,
+                    TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
+                ])),
+            ],
+            'resolvable element parameter in action value' => [
+                'step' => (new Step([
+                    $actionFactory->createFromActionString('set ".selector" to $elements.element_name'),
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                ])),
+                'pageProvider' => new EmptyPageProvider(),
+                'expectedStep' => (new Step([
+                    new InputAction(
+                        'set ".selector" to $elements.element_name',
+                        TestIdentifierFactory::createCssElementIdentifier('.selector'),
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name')
+                        ),
+                        '".selector" to $elements.element_name'
+                    )
+                ], []))->withIdentifierCollection(new IdentifierCollection([
+                    TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
                 ])),
             ],
         ];
