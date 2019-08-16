@@ -76,42 +76,31 @@ class StepResolver
         PageProviderInterface $pageProvider,
         array $handledImportNames = []
     ): StepInterface {
-        if ($step instanceof PendingImportResolutionStepInterface && $step->requiresResolution()) {
-            $importName = $step->getImportName();
-            $dataProviderImportName = $step->getDataProviderImportName();
+        $parentStepResolver = function (
+            StepInterface $parentStep,
+            array $handledImportNames
+        ) use (
+            $stepProvider,
+            $dataSetProvider,
+            $pageProvider
+        ) {
+            return $this->resolveIncludingPageElementReferences(
+                $parentStep,
+                $stepProvider,
+                $dataSetProvider,
+                $pageProvider,
+                $handledImportNames
+            );
+        };
 
-            if ('' !== $importName) {
-                if (in_array($importName, $handledImportNames)) {
-                    throw new CircularStepImportException($importName);
-                }
-
-                $parentStep = $stepProvider->findStep($importName, $stepProvider, $dataSetProvider, $pageProvider);
-
-                if ($parentStep instanceof PendingImportResolutionStepInterface) {
-                    $handledImportNames[] = $importName;
-
-                    $parentStep = $this->resolveIncludingPageElementReferences(
-                        $parentStep,
-                        $stepProvider,
-                        $dataSetProvider,
-                        $pageProvider,
-                        $handledImportNames
-                    );
-                }
-
-                $step = $step
-                    ->withPrependedActions($parentStep->getActions())
-                    ->withPrependedAssertions($parentStep->getAssertions());
-            }
-
-            if ('' !== $dataProviderImportName) {
-                $step = $step->withDataSetCollection($dataSetProvider->findDataSetCollection($dataProviderImportName));
-            }
-
-            if ($step instanceof PendingImportResolutionStepInterface) {
-                $step = $step->getStep();
-            }
-        }
+        $step = $this->resolvePendingImportStep(
+            $step,
+            $stepProvider,
+            $dataSetProvider,
+            $pageProvider,
+            $parentStepResolver,
+            $handledImportNames
+        );
 
         $step = $this->resolveIdentifierCollectionPageElementReferences($step, $pageProvider);
         $step = $this->resolveActionPageElementReferences($step, $pageProvider);
@@ -148,7 +137,70 @@ class StepResolver
         PageProviderInterface $pageProvider,
         array $handledImportNames = []
     ): StepInterface {
-        if ($step instanceof PendingImportResolutionStepInterface && $step->requiresResolution()) {
+        $parentStepResolver = function (
+            StepInterface $parentStep,
+            array $handledImportNames
+        ) use (
+            $stepProvider,
+            $dataSetProvider,
+            $pageProvider
+        ) {
+            return $this->resolveIncludingElementParameterReferences(
+                $parentStep,
+                $stepProvider,
+                $dataSetProvider,
+                $pageProvider,
+                $handledImportNames
+            );
+        };
+
+        $step = $this->resolvePendingImportStep(
+            $step,
+            $stepProvider,
+            $dataSetProvider,
+            $pageProvider,
+            $parentStepResolver,
+            $handledImportNames
+        );
+
+        $step = $this->resolveIdentifierCollectionElementParameters($step);
+        $step = $this->resolveActionElementAndAttributeParameters($step);
+        $step = $this->resolveAssertionElementAndAttributeParameters($step);
+
+        return $step;
+    }
+
+    /**
+     * @param StepInterface $step
+     * @param StepProviderInterface $stepProvider
+     * @param DataSetProviderInterface $dataSetProvider
+     * @param PageProviderInterface $pageProvider
+     * @param callable $parentStepResolver
+     * @param array $handledImportNames
+     *
+     * @return StepInterface
+     *
+     * @throws CircularStepImportException
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievablePageException
+     * @throws NonRetrievableStepException
+     * @throws UnknownDataProviderException
+     * @throws UnknownElementException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     * @throws UnknownStepException
+     */
+    private function resolvePendingImportStep(
+        StepInterface $step,
+        StepProviderInterface $stepProvider,
+        DataSetProviderInterface $dataSetProvider,
+        PageProviderInterface $pageProvider,
+        callable $parentStepResolver,
+        array $handledImportNames
+    ): StepInterface {
+        if ($step instanceof PendingImportResolutionStepInterface) {
             $importName = $step->getImportName();
             $dataProviderImportName = $step->getDataProviderImportName();
 
@@ -161,14 +213,7 @@ class StepResolver
 
                 if ($parentStep instanceof PendingImportResolutionStepInterface) {
                     $handledImportNames[] = $importName;
-
-                    $parentStep = $this->resolveIncludingElementParameterReferences(
-                        $parentStep,
-                        $stepProvider,
-                        $dataSetProvider,
-                        $pageProvider,
-                        $handledImportNames
-                    );
+                    $parentStep = $parentStepResolver($parentStep, $handledImportNames);
                 }
 
                 $step = $step
@@ -184,10 +229,6 @@ class StepResolver
                 $step = $step->getStep();
             }
         }
-
-        $step = $this->resolveIdentifierCollectionElementParameters($step);
-        $step = $this->resolveActionElementAndAttributeParameters($step);
-        $step = $this->resolveAssertionElementAndAttributeParameters($step);
 
         return $step;
     }

@@ -106,6 +106,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     public function resolveIncludingPageElementReferencesForStepImport(): array
     {
         return [
+            'no imports, empty step' => [
+                'step' => new PendingImportResolutionStep(new Step([], []), '', ''),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step([], []),
+                ]),
+                'expectedStep' => new Step([], []),
+            ],
             'no step imports, empty step' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
                 'stepProvider' => new PopulatedStepProvider([
