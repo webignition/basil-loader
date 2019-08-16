@@ -55,18 +55,71 @@ class ValueResolver
         PageProviderInterface $pageProvider,
         IdentifierCollectionInterface $identifierCollection
     ): ValueInterface {
+        $value = $this->resolvePageElementReference($value, $pageProvider);
+        $value = $this->resolveElementParameter($value, $identifierCollection);
+        $value = $this->resolveAttributeParameter($value, $identifierCollection);
+
+        return $value;
+    }
+
+    /**
+     * @param ValueInterface $value
+     * @param PageProviderInterface $pageProvider
+     *
+     * @return ValueInterface
+     *
+     * @throws InvalidPageElementIdentifierException
+     * @throws MalformedPageElementReferenceException
+     * @throws NonRetrievablePageException
+     * @throws UnknownPageElementException
+     * @throws UnknownPageException
+     */
+    public function resolvePageElementReference(
+        ValueInterface $value,
+        PageProviderInterface $pageProvider
+    ): ValueInterface {
         if ($value instanceof ObjectValue && ValueTypes::PAGE_ELEMENT_REFERENCE === $value->getType()) {
             return new ElementValue(
                 $this->pageElementReferenceResolver->resolve($value, $pageProvider)
             );
         }
 
+        return $value;
+    }
+
+    /**
+     * @param ValueInterface $value
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return ValueInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveElementParameter(
+        ValueInterface $value,
+        IdentifierCollectionInterface $identifierCollection
+    ): ValueInterface {
         if ($value instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $value->getType()) {
             return new ElementValue(
                 $this->findElementIdentifier($identifierCollection, $value->getObjectProperty())
             );
         }
 
+        return $value;
+    }
+
+    /**
+     * @param ValueInterface $value
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return ValueInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveAttributeParameter(
+        ValueInterface $value,
+        IdentifierCollectionInterface $identifierCollection
+    ): ValueInterface {
         if ($value instanceof ObjectValue && ValueTypes::ATTRIBUTE_PARAMETER === $value->getType()) {
             $objectProperty = $value->getObjectProperty();
 
