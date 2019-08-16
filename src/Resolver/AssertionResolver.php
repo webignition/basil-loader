@@ -3,13 +3,7 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
-use webignition\BasilModel\Identifier\AttributeIdentifier;
-use webignition\BasilModel\Identifier\ElementIdentifierInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
-use webignition\BasilModel\Value\AttributeValue;
-use webignition\BasilModel\Value\ElementValue;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -22,17 +16,17 @@ class AssertionResolver
 {
     const ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER = '.';
 
-    private $pageElementReferenceResolver;
+    private $valueResolver;
 
-    public function __construct(PageElementReferenceResolver $pageElementReferenceResolver)
+    public function __construct(ValueResolver $valueResolver)
     {
-        $this->pageElementReferenceResolver = $pageElementReferenceResolver;
+        $this->valueResolver = $valueResolver;
     }
 
     public static function createResolver(): AssertionResolver
     {
         return new AssertionResolver(
-            PageElementReferenceResolver::createResolver()
+            ValueResolver::createResolver()
         );
     }
 
@@ -53,19 +47,17 @@ class AssertionResolver
         PageProviderInterface $pageProvider
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
-
-        if ($examinedValue instanceof ObjectValue && ValueTypes::PAGE_ELEMENT_REFERENCE === $examinedValue->getType()) {
-            $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($examinedValue, $pageProvider);
-
-            $assertion = $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolvePageElementReference($examinedValue, $pageProvider)
+            );
         }
 
         $expectedValue = $assertion->getExpectedValue();
-
-        if ($expectedValue instanceof ObjectValue && ValueTypes::PAGE_ELEMENT_REFERENCE === $expectedValue->getType()) {
-            $resolvedIdentifier = $this->pageElementReferenceResolver->resolve($expectedValue, $pageProvider);
-
-            $assertion = $assertion->withExpectedValue(new ElementValue($resolvedIdentifier));
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolvePageElementReference($expectedValue, $pageProvider)
+            );
         }
 
         return $assertion;
@@ -84,25 +76,17 @@ class AssertionResolver
         IdentifierCollectionInterface $identifierCollection
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
-
-        if ($examinedValue instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $examinedValue->getType()) {
-            $elementName = $examinedValue->getObjectProperty();
-            $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
-
-            if (!$resolvedIdentifier instanceof ElementIdentifierInterface) {
-                throw new UnknownElementException($elementName);
-            }
-
-            $assertion = $assertion->withExaminedValue(new ElementValue($resolvedIdentifier));
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolveElementParameter($examinedValue, $identifierCollection)
+            );
         }
 
         $expectedValue = $assertion->getExpectedValue();
-
-        if ($expectedValue instanceof ObjectValue && ValueTypes::ELEMENT_PARAMETER === $expectedValue->getType()) {
-            $elementName = $expectedValue->getObjectProperty();
-            $identifier = $this->findElementIdentifier($identifierCollection, $elementName);
-
-            $assertion = $assertion->withExpectedValue(new ElementValue($identifier));
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolveElementParameter($expectedValue, $identifierCollection)
+            );
         }
 
         return $assertion;
@@ -121,56 +105,19 @@ class AssertionResolver
         IdentifierCollectionInterface $identifierCollection
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
-
-        if ($examinedValue instanceof ObjectValue && ValueTypes::ATTRIBUTE_PARAMETER === $examinedValue->getType()) {
-            $objectProperty = $examinedValue->getObjectProperty();
-
-            if (substr_count($objectProperty, self::ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER) > 0) {
-                list($elementName, $attributeName) = explode('.', $examinedValue->getObjectProperty());
-
-                $elementIdentifier = $this->findElementIdentifier($identifierCollection, $elementName);
-                $attributeIdentifier = new AttributeIdentifier($elementIdentifier, $attributeName);
-
-                $assertion = $assertion->withExaminedValue(new AttributeValue($attributeIdentifier));
-            }
+        if (null !== $examinedValue) {
+            $assertion = $assertion->withExaminedValue(
+                $this->valueResolver->resolveAttributeParameter($examinedValue, $identifierCollection)
+            );
         }
 
         $expectedValue = $assertion->getExpectedValue();
-
-        if ($expectedValue instanceof ObjectValue && ValueTypes::ATTRIBUTE_PARAMETER === $expectedValue->getType()) {
-            $objectProperty = $expectedValue->getObjectProperty();
-
-            if (substr_count($objectProperty, self::ELEMENT_NAME_ATTRIBUTE_NAME_DELIMITER) > 0) {
-                list($elementName, $attributeName) = explode('.', $expectedValue->getObjectProperty());
-
-                $elementIdentifier = $this->findElementIdentifier($identifierCollection, $elementName);
-                $attributeIdentifier = new AttributeIdentifier($elementIdentifier, $attributeName);
-
-                $assertion = $assertion->withExpectedValue(new AttributeValue($attributeIdentifier));
-            }
+        if (null !== $expectedValue) {
+            $assertion = $assertion->withExpectedValue(
+                $this->valueResolver->resolveAttributeParameter($expectedValue, $identifierCollection)
+            );
         }
 
         return $assertion;
-    }
-
-    /**
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @param string $elementName
-     *
-     * @return ElementIdentifierInterface
-     * @throws UnknownElementException
-     */
-    private function findElementIdentifier(
-        IdentifierCollectionInterface $identifierCollection,
-        string $elementName
-    ): ElementIdentifierInterface {
-        $identifier = $identifierCollection->getIdentifier($elementName);
-
-        if (!$identifier instanceof ElementIdentifierInterface) {
-            throw new UnknownElementException($elementName);
-        }
-
-        return $identifier;
     }
 }

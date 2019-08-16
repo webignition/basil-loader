@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b56895c8f41826e7e1cedc689951e4da",
+    "content-hash": "10025252c350df6a3a574d41842584c3",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -470,16 +470,16 @@
         },
         {
             "name": "webignition/php-basil-models",
-            "version": "0.54",
+            "version": "0.55",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-models.git",
-                "reference": "606c64f3e03975c11fc8449f3ec254e38940a267"
+                "reference": "ca65031853bb2d35b242d68962568b709aaecebf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/606c64f3e03975c11fc8449f3ec254e38940a267",
-                "reference": "606c64f3e03975c11fc8449f3ec254e38940a267",
+                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/ca65031853bb2d35b242d68962568b709aaecebf",
+                "reference": "ca65031853bb2d35b242d68962568b709aaecebf",
                 "shasum": ""
             },
             "require": {
@@ -512,7 +512,7 @@
             ],
             "description": "Models for basil language objects",
             "homepage": "https://github.com/webignition/php-basil-models",
-            "time": "2019-08-15T17:58:25+00:00"
+            "time": "2019-08-16T07:20:18+00:00"
         }
     ],
     "packages-dev": [

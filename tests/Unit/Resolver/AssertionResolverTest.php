@@ -20,7 +20,6 @@ use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\AssertionFactory;
-use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -355,24 +354,5 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
-    }
-
-    public function testResolveElementParameterExaminedValueThrowsUnknownElementException()
-    {
-        $assertion = new Assertion(
-            '$elements.element_name exists',
-            new ObjectValue(
-                ValueTypes::ELEMENT_PARAMETER,
-                '$elements.element_name',
-                '$elements',
-                'element_name'
-            ),
-            AssertionComparisons::EXISTS
-        );
-
-        $this->expectException(UnknownElementException::class);
-        $this->expectExceptionMessage('Unknown element "element_name"');
-
-        $this->resolver->resolveElementParameters($assertion, new IdentifierCollection());
     }
 }
