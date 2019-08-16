@@ -29,6 +29,7 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilParser\Exception\CircularStepImportException;
@@ -309,40 +310,52 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveActionsWithResolvablePageElementReferencesDataProvider(): array
     {
-        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+        $actionFactory = ActionFactory::createFactory();
 
         return [
-            'resolvable page element references in actions' => [
+            'resolvable page element reference in action identifier' => [
                 'step' => new Step([
-                    new InputAction(
-                        'set page_import_name.elements.element_name to "value"',
-                        new Identifier(
-                            IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                            new ObjectValue(
-                                ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                'page_import_name.elements.element_name',
-                                'page_import_name',
-                                'element_name'
-                            )
-                        ),
-                        LiteralValue::createStringValue('value'),
-                        'page_import_name.elements.element_name to "value"'
-                    )
+                    $actionFactory->createFromActionString('set page_import_name.elements.element_name to "value"'),
                 ], []),
                 'pageProvider' => new PopulatedPageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
-                            $namedCssElementIdentifier,
+                            TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         ])
                     )
                 ]),
                 'expectedStep' => new Step([
                     new InputAction(
                         'set page_import_name.elements.element_name to "value"',
-                        $namedCssElementIdentifier,
+                        TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name'),
                         LiteralValue::createStringValue('value'),
                         'page_import_name.elements.element_name to "value"'
+                    )
+                ], []),
+            ],
+            'resolvable page element reference in action value' => [
+                'step' => new Step([
+                    $actionFactory->createFromActionString(
+                        'set ".identifier-selector" to page_import_name.elements.element_name'
+                    ),
+                ], []),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com/'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name'),
+                        ])
+                    )
+                ]),
+                'expectedStep' => new Step([
+                    new InputAction(
+                        'set ".identifier-selector" to page_import_name.elements.element_name',
+                        TestIdentifierFactory::createCssElementIdentifier('.identifier-selector'),
+                        new ElementValue(
+                            TestIdentifierFactory::createCssElementIdentifier('.value-selector', 1, 'element_name')
+                        ),
+                        '".identifier-selector" to page_import_name.elements.element_name'
                     )
                 ], []),
             ],
