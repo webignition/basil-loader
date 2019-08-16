@@ -9,10 +9,12 @@ use webignition\BasilModel\Action\ActionInterface;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
+use webignition\BasilModel\Identifier\AttributeIdentifier;
 use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Page\Page;
+use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModelFactory\Action\ActionFactory;
@@ -55,6 +57,17 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             $action,
             $this->resolver->resolveElementParameters($action, new IdentifierCollection())
+        );
+    }
+
+    /**
+     * @dataProvider resolveLeavesActionUnchangedDataProvider
+     */
+    public function testResolveAttributeParametersLeavesActionUnchanged(ActionInterface $action)
+    {
+        $this->assertEquals(
+            $action,
+            $this->resolver->resolveAttributeParameters($action, new IdentifierCollection())
         );
     }
 
@@ -236,6 +249,53 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                     ActionTypes::CLICK,
                     $namedCssElementIdentifier,
                     '$elements.element_name'
+                ),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider resolveAttributeParametersCreatesNewActionDataProvider
+     */
+    public function testResolveAttributeParametersCreatesNewAction(
+        ActionInterface $action,
+        IdentifierCollectionInterface $identifierCollection,
+        ActionInterface $expectedAction
+    ) {
+        $resolvedIdentifierContainer = $this->resolver->resolveAttributeParameters(
+            $action,
+            $identifierCollection
+        );
+
+        $this->assertNotSame($action, $resolvedIdentifierContainer);
+        $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
+    }
+
+    public function resolveAttributeParametersCreatesNewActionDataProvider(): array
+    {
+        $actionFactory = ActionFactory::createFactory();
+        $namedCssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector', 1, 'element_name');
+
+        return [
+            'input action with attribute parameter value' => [
+                'action' => $actionFactory->createFromActionString(
+                    'set ".selector" to $elements.element_name.attribute_name'
+                ),
+                'identifierCollection' => new IdentifierCollection([
+                    $namedCssElementIdentifier,
+                ]),
+                'expectedAction' => new InputAction(
+                    'set ".selector" to $elements.element_name.attribute_name',
+                    new ElementIdentifier(
+                        LiteralValue::createCssSelectorValue('.selector')
+                    ),
+                    new AttributeValue(
+                        new AttributeIdentifier(
+                            $namedCssElementIdentifier,
+                            'attribute_name'
+                        )
+                    ),
+                    '".selector" to $elements.element_name.attribute_name'
                 ),
             ],
         ];

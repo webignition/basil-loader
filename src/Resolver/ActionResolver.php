@@ -3,7 +3,6 @@
 namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Action\ActionInterface;
-use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InputActionInterface;
 use webignition\BasilModel\Action\InteractionActionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
@@ -104,6 +103,27 @@ class ActionResolver
         if ($action instanceof InputActionInterface) {
             $action = $action->withValue(
                 $this->valueResolver->resolveElementParameter($action->getValue(), $identifierCollection)
+            );
+        }
+
+        return $action;
+    }
+
+    /**
+     * @param ActionInterface $action
+     * @param IdentifierCollectionInterface $identifierCollection
+     *
+     * @return ActionInterface
+     *
+     * @throws UnknownElementException
+     */
+    public function resolveAttributeParameters(
+        ActionInterface $action,
+        IdentifierCollectionInterface $identifierCollection
+    ): ActionInterface {
+        if ($action instanceof InputActionInterface) {
+            $action = $action->withValue(
+                $this->valueResolver->resolveAttributeParameter($action->getValue(), $identifierCollection)
             );
         }
 
