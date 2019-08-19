@@ -15,7 +15,6 @@ use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;
@@ -42,12 +41,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         StepProviderInterface $stepProvider,
         StepInterface $expectedStep
     ) {
-        $resolvedStep = $this->resolver->resolveStepImport(
-            $step,
-            $stepProvider,
-            new EmptyDataSetProvider(),
-            new EmptyPageProvider()
-        );
+        $resolvedStep = $this->resolver->resolveStepImport($step, $stepProvider);
 
         $this->assertEquals($expectedStep, $resolvedStep);
     }
@@ -242,12 +236,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         string $expectedCircularImportName
     ) {
         try {
-            $this->resolver->resolveStepImport(
-                $step,
-                $stepProvider,
-                new EmptyDataSetProvider(),
-                new EmptyPageProvider()
-            );
+            $this->resolver->resolveStepImport($step, $stepProvider);
 
             $this->fail('CircularStepImportException not thrown for import "' . $expectedCircularImportName . '"');
         } catch (CircularStepImportException $circularStepImportException) {
