@@ -41,33 +41,11 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveLeavesActionUnchangedDataProvider
      */
-    public function testResolvePageElementReferencesLeavesActionUnchanged(ActionInterface $action)
+    public function testResolveLeavesActionUnchanged(ActionInterface $action)
     {
         $this->assertEquals(
             $action,
-            $this->resolver->resolvePageElementReferences($action, new EmptyPageProvider())
-        );
-    }
-
-    /**
-     * @dataProvider resolveLeavesActionUnchangedDataProvider
-     */
-    public function testResolveElementParametersLeavesActionUnchanged(ActionInterface $action)
-    {
-        $this->assertEquals(
-            $action,
-            $this->resolver->resolveElementParameters($action, new IdentifierCollection())
-        );
-    }
-
-    /**
-     * @dataProvider resolveLeavesActionUnchangedDataProvider
-     */
-    public function testResolveAttributeParametersLeavesActionUnchanged(ActionInterface $action)
-    {
-        $this->assertEquals(
-            $action,
-            $this->resolver->resolveAttributeParameters($action, new IdentifierCollection())
+            $this->resolver->resolve($action, new EmptyPageProvider(), new IdentifierCollection())
         );
     }
 
@@ -110,13 +88,16 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider resolvePageElementReferencesCreatesNewActionDataProvider
+     * @dataProvider resolveElementParametersCreatesNewActionDataProvider
+     * @dataProvider resolveAttributeParametersCreatesNewActionDataProvider
      */
-    public function testResolvePageElementReferencesCreatesNewAction(
+    public function testResolveCreatesNewAction(
         ActionInterface $action,
         PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection,
         ActionInterface $expectedAction
     ) {
-        $resolvedIdentifierContainer = $this->resolver->resolvePageElementReferences($action, $pageProvider);
+        $resolvedIdentifierContainer = $this->resolver->resolve($action, $pageProvider, $identifierCollection);
 
         $this->assertNotSame($action, $resolvedIdentifierContainer);
         $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
@@ -140,6 +121,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InputAction(
                     'set page_import_name.elements.element_name to "value"',
                     $namedCssElementIdentifier,
@@ -159,6 +141,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InputAction(
                     'set ".selector" to page_import_name.elements.element_name',
                     new ElementIdentifier(
@@ -180,6 +163,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedAction' => new InteractionAction(
                     'click page_import_name.elements.element_name',
                     ActionTypes::CLICK,
@@ -190,23 +174,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveElementParametersCreatesNewActionDataProvider
-     */
-    public function testResolveElementParametersCreatesNewAction(
-        ActionInterface $action,
-        IdentifierCollectionInterface $identifierCollection,
-        ActionInterface $expectedAction
-    ) {
-        $resolvedIdentifierContainer = $this->resolver->resolveElementParameters(
-            $action,
-            $identifierCollection
-        );
-
-        $this->assertNotSame($action, $resolvedIdentifierContainer);
-        $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
-    }
-
     public function resolveElementParametersCreatesNewActionDataProvider(): array
     {
         $actionFactory = ActionFactory::createFactory();
@@ -215,6 +182,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         return [
             'input action with element parameter identifier' => [
                 'action' => $actionFactory->createFromActionString('set $elements.element_name to "value"'),
+                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -227,6 +195,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'input action with element parameter value' => [
                 'action' => $actionFactory->createFromActionString('set ".selector" to $elements.element_name'),
+                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -241,6 +210,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'interaction action with element parameter identifier' => [
                 'action' => $actionFactory->createFromActionString('click $elements.element_name'),
+                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),
@@ -254,23 +224,6 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveAttributeParametersCreatesNewActionDataProvider
-     */
-    public function testResolveAttributeParametersCreatesNewAction(
-        ActionInterface $action,
-        IdentifierCollectionInterface $identifierCollection,
-        ActionInterface $expectedAction
-    ) {
-        $resolvedIdentifierContainer = $this->resolver->resolveAttributeParameters(
-            $action,
-            $identifierCollection
-        );
-
-        $this->assertNotSame($action, $resolvedIdentifierContainer);
-        $this->assertEquals($expectedAction, $resolvedIdentifierContainer);
-    }
-
     public function resolveAttributeParametersCreatesNewActionDataProvider(): array
     {
         $actionFactory = ActionFactory::createFactory();
@@ -281,6 +234,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => $actionFactory->createFromActionString(
                     'set ".selector" to $elements.element_name.attribute_name'
                 ),
+                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $namedCssElementIdentifier,
                 ]),

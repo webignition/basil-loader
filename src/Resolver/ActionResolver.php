@@ -37,18 +37,21 @@ class ActionResolver
     /**
      * @param ActionInterface $action
      * @param PageProviderInterface $pageProvider
+     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return ActionInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReferences(
+    public function resolve(
         ActionInterface $action,
-        PageProviderInterface $pageProvider
+        PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection
     ): ActionInterface {
         if (!$action instanceof InteractionActionInterface) {
             return $action;
@@ -58,6 +61,10 @@ class ActionResolver
 
         if ($identifier instanceof IdentifierInterface) {
             $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
+            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
+                $resolvedIdentifier,
+                $identifierCollection
+            );
 
             if ($resolvedIdentifier !== $identifier) {
                 $action = $action->withIdentifier($resolvedIdentifier);
@@ -65,66 +72,11 @@ class ActionResolver
         }
 
         if ($action instanceof InputActionInterface) {
-            $action = $action->withValue(
-                $this->valueResolver->resolvePageElementReference($action->getValue(), $pageProvider)
-            );
-        }
+            $resolvedValue = $this->valueResolver->resolvePageElementReference($action->getValue(), $pageProvider);
+            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
 
-        return $action;
-    }
-
-    /**
-     * @param ActionInterface $action
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @return ActionInterface
-     *
-     * @throws UnknownElementException
-     */
-    public function resolveElementParameters(
-        ActionInterface $action,
-        IdentifierCollectionInterface $identifierCollection
-    ): ActionInterface {
-        if (!$action instanceof InteractionActionInterface) {
-            return $action;
-        }
-
-        $identifier = $action->getIdentifier();
-
-        if ($identifier instanceof IdentifierInterface) {
-            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
-                $identifier,
-                $identifierCollection
-            );
-
-            $action = $action->withIdentifier($resolvedIdentifier);
-        }
-
-        if ($action instanceof InputActionInterface) {
-            $action = $action->withValue(
-                $this->valueResolver->resolveElementParameter($action->getValue(), $identifierCollection)
-            );
-        }
-
-        return $action;
-    }
-
-    /**
-     * @param ActionInterface $action
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @return ActionInterface
-     *
-     * @throws UnknownElementException
-     */
-    public function resolveAttributeParameters(
-        ActionInterface $action,
-        IdentifierCollectionInterface $identifierCollection
-    ): ActionInterface {
-        if ($action instanceof InputActionInterface) {
-            $action = $action->withValue(
-                $this->valueResolver->resolveAttributeParameter($action->getValue(), $identifierCollection)
-            );
+            $action = $action->withValue($resolvedValue);
         }
 
         return $action;
