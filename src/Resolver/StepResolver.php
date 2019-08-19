@@ -126,22 +126,11 @@ class StepResolver
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedAction = $this->actionResolver->resolvePageElementReferences(
+                $resolvedActions[] = $this->actionResolver->resolve(
                     $action,
-                    $pageProvider
-                );
-
-                $resolvedAction = $this->actionResolver->resolveElementParameters(
-                    $resolvedAction,
+                    $pageProvider,
                     $identifierCollection
                 );
-
-                $resolvedAction = $this->actionResolver->resolveAttributeParameters(
-                    $resolvedAction,
-                    $identifierCollection
-                );
-
-                $resolvedActions[] = $resolvedAction;
             }
         } catch (InvalidPageElementIdentifierException |
             NonRetrievablePageException |
