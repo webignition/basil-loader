@@ -51,18 +51,14 @@ class AssertionResolver
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
         if (null !== $examinedValue) {
-            $resolvedValue = $this->valueResolver->resolvePageElementReference($examinedValue, $pageProvider);
-            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
-            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolve($examinedValue, $pageProvider, $identifierCollection);
 
             $assertion = $assertion->withExaminedValue($resolvedValue);
         }
 
         $expectedValue = $assertion->getExpectedValue();
         if (null !== $expectedValue) {
-            $resolvedValue = $this->valueResolver->resolvePageElementReference($expectedValue, $pageProvider);
-            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
-            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolve($expectedValue, $pageProvider, $identifierCollection);
 
             $assertion = $assertion->withExpectedValue($resolvedValue);
         }
