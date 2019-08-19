@@ -90,13 +90,11 @@ class StepResolver
     ): StepInterface {
         $resolvedIdentifiers = [];
         foreach ($step->getIdentifierCollection() as $identifier) {
-            $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
-            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
-                $resolvedIdentifier,
+            $resolvedIdentifiers[] = $this->identifierResolver->resolve(
+                $identifier,
+                $pageProvider,
                 new IdentifierCollection()
             );
-
-            $resolvedIdentifiers[] = $resolvedIdentifier;
         }
 
         return $step->withIdentifierCollection(new IdentifierCollection($resolvedIdentifiers));

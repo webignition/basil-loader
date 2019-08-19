@@ -34,61 +34,45 @@ class IdentifierResolver
     /**
      * @param IdentifierInterface $identifier
      * @param PageProviderInterface $pageProvider
+     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return IdentifierInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReference(
+    public function resolve(
         IdentifierInterface $identifier,
-        PageProviderInterface $pageProvider
-    ): IdentifierInterface {
-        if (IdentifierTypes::PAGE_ELEMENT_REFERENCE !== $identifier->getType()) {
-            return $identifier;
-        }
-
-        $value = $identifier->getValue();
-
-        if (!$value instanceof ObjectValue) {
-            return $identifier;
-        }
-
-        return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
-    }
-
-    /**
-     * @param IdentifierInterface $identifier
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @return IdentifierInterface
-     *
-     * @throws UnknownElementException
-     */
-    public function resolveElementParameter(
-        IdentifierInterface $identifier,
+        PageProviderInterface $pageProvider,
         IdentifierCollectionInterface $identifierCollection
     ): IdentifierInterface {
-        if (IdentifierTypes::ELEMENT_PARAMETER !== $identifier->getType()) {
-            return $identifier;
+        if (IdentifierTypes::PAGE_ELEMENT_REFERENCE === $identifier->getType()) {
+            $value = $identifier->getValue();
+
+            if ($value instanceof ObjectValue) {
+                return $this->pageElementReferenceResolver->resolve($value, $pageProvider);
+            }
         }
 
-        $value = $identifier->getValue();
+        if (IdentifierTypes::ELEMENT_PARAMETER === $identifier->getType()) {
+            $value = $identifier->getValue();
 
-        if (!$value instanceof ObjectValue) {
-            return $identifier;
+            if ($value instanceof ObjectValue) {
+                $elementName = $value->getObjectProperty();
+                $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
+
+                if ($resolvedIdentifier instanceof ElementIdentifierInterface) {
+                    return $resolvedIdentifier;
+                }
+
+                throw new UnknownElementException($elementName);
+            }
         }
 
-        $elementName = $value->getObjectProperty();
-        $resolvedIdentifier = $identifierCollection->getIdentifier($elementName);
-
-        if ($resolvedIdentifier instanceof ElementIdentifierInterface) {
-            return $resolvedIdentifier;
-        }
-
-        throw new UnknownElementException($elementName);
+        return $identifier;
     }
 }

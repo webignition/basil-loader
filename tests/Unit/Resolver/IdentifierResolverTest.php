@@ -39,19 +39,13 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider resolveNonResolvableDataProvider
      */
-    public function testResolvePageElementReferenceNonResolvable(IdentifierInterface $identifier)
+    public function testResolveNonResolvable(IdentifierInterface $identifier)
     {
-        $resolvedIdentifier = $this->resolver->resolvePageElementReference($identifier, new EmptyPageProvider());
-
-        $this->assertSame($identifier, $resolvedIdentifier);
-    }
-
-    /**
-     * @dataProvider resolveNonResolvableDataProvider
-     */
-    public function testResolveElementParameterNonResolvable(IdentifierInterface $identifier)
-    {
-        $resolvedIdentifier = $this->resolver->resolveElementParameter($identifier, new IdentifierCollection());
+        $resolvedIdentifier = $this->resolver->resolve(
+            $identifier,
+            new EmptyPageProvider(),
+            new IdentifierCollection()
+        );
 
         $this->assertSame($identifier, $resolvedIdentifier);
     }
@@ -72,19 +66,20 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider resolvePageElementReferenceIsResolvedDataProvider
+     * @dataProvider resolveDataProvider
      */
-    public function testResolvePageElementReferenceIsResolved(
+    public function testResolveIsResolved(
         IdentifierInterface $identifier,
         PageProviderInterface $pageProvider,
+        IdentifierCollectionInterface $identifierCollection,
         IdentifierInterface $expectedIdentifier
     ) {
-        $resolvedIdentifier = $this->resolver->resolvePageElementReference($identifier, $pageProvider);
+        $resolvedIdentifier = $this->resolver->resolve($identifier, $pageProvider, $identifierCollection);
 
         $this->assertEquals($expectedIdentifier, $resolvedIdentifier);
     }
 
-    public function resolvePageElementReferenceIsResolvedDataProvider(): array
+    public function resolveDataProvider(): array
     {
         $cssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
 
@@ -109,31 +104,9 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
+                'identifierCollection' => new IdentifierCollection(),
                 'expectedIdentifier' => $cssElementIdentifierWithName,
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider resolveElementParameterIsResolvedDataProvider
-     */
-    public function testResolveElementParameterIsResolved(
-        IdentifierInterface $identifier,
-        IdentifierCollectionInterface $identifierCollection,
-        IdentifierInterface $expectedIdentifier
-    ) {
-        $resolvedIdentifier = $this->resolver->resolveElementParameter($identifier, $identifierCollection);
-
-        $this->assertEquals($expectedIdentifier, $resolvedIdentifier);
-    }
-
-    public function resolveElementParameterIsResolvedDataProvider(): array
-    {
-        $cssElementIdentifier = TestIdentifierFactory::createCssElementIdentifier('.selector');
-
-        $cssElementIdentifierWithName = $cssElementIdentifier->withName('element_name');
-
-        return [
             'element parameter' => [
                 'identifier' => new Identifier(
                     IdentifierTypes::ELEMENT_PARAMETER,
@@ -144,6 +117,7 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
                         'element_name'
                     )
                 ),
+                'pageProvider' => new EmptyPageProvider(),
                 'identifierCollection' => new IdentifierCollection([
                     $cssElementIdentifierWithName
                 ]),
@@ -152,7 +126,7 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testResolveElementParameterThrowsUnknownElementException()
+    public function testResolveThrowsUnknownElementException()
     {
         $identifier = new Identifier(
             IdentifierTypes::ELEMENT_PARAMETER,
@@ -167,6 +141,6 @@ class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
         $this->expectException(UnknownElementException::class);
         $this->expectExceptionMessage('Unknown element "element_name"');
 
-        $this->resolver->resolveElementParameter($identifier, new IdentifierCollection());
+        $this->resolver->resolve($identifier, new EmptyPageProvider(), new IdentifierCollection());
     }
 }
