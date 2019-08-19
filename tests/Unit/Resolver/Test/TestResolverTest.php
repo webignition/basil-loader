@@ -9,14 +9,14 @@ use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InputAction;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\Identifier;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Identifier\IdentifierCollection;
-use webignition\BasilModel\Identifier\IdentifierTypes;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
@@ -24,6 +24,7 @@ use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
@@ -85,8 +86,51 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveSuccessDataProvider(): array
     {
+        $actionFactory = ActionFactory::createFactory();
+        $assertionFactory = AssertionFactory::createFactory();
+
+        $actionSelectorIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.action-selector')
+        );
+
+        $assertionSelectorIdentifier = new ElementIdentifier(
+            LiteralValue::createCssSelectorValue('.assertion-selector')
+        );
+
+        $namedActionSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier(
+            '.action-selector',
+            1,
+            'action_selector'
+        );
+
+        $namedAssertionSelectorIdentifier = TestIdentifierFactory::createCssElementIdentifier(
+            '.assertion-selector',
+            1,
+            'assertion_selector'
+        );
+
+        $pageElementReferenceActionIdentifier = TestIdentifierFactory::createPageElementReferenceIdentifier(
+            new ObjectValue(
+                ValueTypes::PAGE_ELEMENT_REFERENCE,
+                'page_import_name.elements.action_selector',
+                'page_import_name',
+                'action_selector'
+            ),
+            'action_selector'
+        );
+
+        $pageElementReferenceAssertionIdentifier = TestIdentifierFactory::createPageElementReferenceIdentifier(
+            new ObjectValue(
+                ValueTypes::PAGE_ELEMENT_REFERENCE,
+                'page_import_name.elements.assertion_selector',
+                'page_import_name',
+                'assertion_selector'
+            ),
+            'assertion_selector'
+        );
+
         return [
-            'empty' => [
+            'empty test' => [
                 'test' => new Test('test name', new Configuration('', ''), []),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
@@ -110,7 +154,398 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     []
                 ),
             ],
-            'steps are resolved' => [
+            'empty step' => [
+                'test' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step([], []),
+                ]),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step([], []),
+                ]),
+            ],
+            'no imports, actions and assertions require no resolution' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => new Step(
+                            [
+                                $actionFactory->createFromActionString('click ".action-selector"'),
+                            ],
+                            [
+                                $assertionFactory->createFromAssertionString('".assertion-selector" exists')
+                            ]
+                        ),
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step(
+                        [
+                            new InteractionAction(
+                                'click ".action-selector"',
+                                ActionTypes::CLICK,
+                                $actionSelectorIdentifier,
+                                '".action-selector"'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '".assertion-selector" exists',
+                                new ElementValue($assertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            )
+                        ]
+                    ),
+                ]),
+            ],
+            'actions and assertions require resolution of page imports' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => new Step(
+                            [
+                                $actionFactory->createFromActionString(
+                                    'click page_import_name.elements.action_selector'
+                                ),
+                            ],
+                            [
+                                $assertionFactory->createFromAssertionString(
+                                    'page_import_name.elements.assertion_selector exists'
+                                )
+                            ]
+                        ),
+                    ]
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        new IdentifierCollection([
+                            $namedActionSelectorIdentifier,
+                            $namedAssertionSelectorIdentifier,
+                        ])
+                    ),
+                ]),
+                'stepProvider' => new EmptyStepProvider(),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step(
+                        [
+                            new InteractionAction(
+                                'click page_import_name.elements.action_selector',
+                                ActionTypes::CLICK,
+                                $namedActionSelectorIdentifier,
+                                'page_import_name.elements.action_selector'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                'page_import_name.elements.assertion_selector exists',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            )
+                        ]
+                    ),
+                ]),
+            ],
+            'empty step imports step, imported actions and assertions require no resolution' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        ),
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step(
+                        [
+                            $actionFactory->createFromActionString('click ".action-selector"'),
+                        ],
+                        [
+                            $assertionFactory->createFromAssertionString('".assertion-selector" exists')
+                        ]
+                    )
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step(
+                        [
+                            new InteractionAction(
+                                'click ".action-selector"',
+                                ActionTypes::CLICK,
+                                $actionSelectorIdentifier,
+                                '".action-selector"'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '".assertion-selector" exists',
+                                new ElementValue($assertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            )
+                        ]
+                    ),
+                ]),
+            ],
+            'empty step imports step, imported actions and assertions require element resolution' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => (new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        ))->withIdentifierCollection(new IdentifierCollection([
+                            $pageElementReferenceActionIdentifier,
+                            $pageElementReferenceAssertionIdentifier,
+                        ])),
+                    ]
+                ),
+                'pageProvider' => new PopulatedPageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('http://example.com'),
+                        new IdentifierCollection([
+                            $namedActionSelectorIdentifier,
+                            $namedAssertionSelectorIdentifier,
+                        ])
+                    ),
+                ]),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step(
+                        [
+                            $actionFactory->createFromActionString('click $elements.action_selector'),
+                        ],
+                        [
+                            $assertionFactory->createFromAssertionString('$elements.assertion_selector exists')
+                        ]
+                    )
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step(
+                        [
+                            new InteractionAction(
+                                'click $elements.action_selector',
+                                ActionTypes::CLICK,
+                                $namedActionSelectorIdentifier,
+                                '$elements.action_selector'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector exists',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            )
+                        ]
+                    ),
+                ]),
+            ],
+            'empty step imports step, imported actions and assertions use inline data' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => (new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        ))->withDataSetCollection(new DataSetCollection([
+                            new DataSet(0, [
+                                'key1' => 'key1value1',
+                                'key2' => 'key2value1',
+                            ]),
+                            new DataSet(1, [
+                                'key1' => 'key1value2',
+                                'key2' => 'key2value2',
+                            ]),
+                        ])),
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step(
+                        [
+                            $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
+                        ],
+                        [
+                            $assertionFactory->createFromAssertionString('".assertion-selector" is $data.key2')
+                        ]
+                    )
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => (new Step(
+                        [
+                            new InputAction(
+                                'set ".action-selector" to $data.key1',
+                                $actionSelectorIdentifier,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key1',
+                                    ObjectNames::DATA,
+                                    'key1'
+                                ),
+                                '".action-selector" to $data.key1'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '".assertion-selector" is $data.key2',
+                                new ElementValue($assertionSelectorIdentifier),
+                                AssertionComparisons::IS,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key2',
+                                    ObjectNames::DATA,
+                                    'key2'
+                                )
+                            )
+                        ]
+                    ))->withDataSetCollection(new DataSetCollection([
+                        new DataSet(0, [
+                            'key1' => 'key1value1',
+                            'key2' => 'key2value1',
+                        ]),
+                        new DataSet(1, [
+                            'key1' => 'key1value2',
+                            'key2' => 'key2value2',
+                        ]),
+                    ])),
+                ]),
+            ],
+            'empty step imports step, imported actions and assertions use imported data' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            'data_provider_import_name'
+                        ),
+                    ]
+                ),
+                'pageProvider' => new EmptyPageProvider(),
+                'stepProvider' => new PopulatedStepProvider([
+                    'step_import_name' => new Step(
+                        [
+                            $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
+                        ],
+                        [
+                            $assertionFactory->createFromAssertionString('".assertion-selector" is $data.key2')
+                        ]
+                    )
+                ]),
+                'dataSetProvider' => new PopulatedDataSetProvider([
+                    'data_provider_import_name' => new DataSetCollection([
+                        new DataSet(0, [
+                            'key1' => 'key1value1',
+                            'key2' => 'key2value1',
+                        ]),
+                        new DataSet(1, [
+                            'key1' => 'key1value2',
+                            'key2' => 'key2value2',
+                        ]),
+                    ]),
+                ]),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => (new Step(
+                        [
+                            new InputAction(
+                                'set ".action-selector" to $data.key1',
+                                $actionSelectorIdentifier,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key1',
+                                    ObjectNames::DATA,
+                                    'key1'
+                                ),
+                                '".action-selector" to $data.key1'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '".assertion-selector" is $data.key2',
+                                new ElementValue($assertionSelectorIdentifier),
+                                AssertionComparisons::IS,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key2',
+                                    ObjectNames::DATA,
+                                    'key2'
+                                )
+                            )
+                        ]
+                    ))->withDataSetCollection(new DataSetCollection([
+                        new DataSet(0, [
+                            'key1' => 'key1value1',
+                            'key2' => 'key2value1',
+                        ]),
+                        new DataSet(1, [
+                            'key1' => 'key1value2',
+                            'key2' => 'key2value2',
+                        ]),
+                    ])),
+                ]),
+            ],
+            'deferred step import, imported actions and assertions require element resolution' => [
+                'test' => new Test(
+                    'test name',
+                    new Configuration('', ''),
+                    [
+                        'step name' => (new PendingImportResolutionStep(
+                            new Step([], []),
+                            'step_import_name',
+                            ''
+                        ))->withIdentifierCollection(new IdentifierCollection([
+                            $pageElementReferenceActionIdentifier,
+                            $pageElementReferenceAssertionIdentifier,
+                        ])),
+                    ]
+                ),
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
+                    'page_import_name' => FixturePathFinder::find(
+                        'Page/example.com.elemental-action-and-assertion.yml'
+                    ),
+                ]),
+                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
+                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
+                    'deferred' => FixturePathFinder::find('Step/elemental_action_and_assertion.yml'),
+                ]),
+                'dataSetProvider' => new EmptyDataSetProvider(),
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => new Step(
+                        [
+                            new InteractionAction(
+                                'click $elements.action_selector',
+                                ActionTypes::CLICK,
+                                $namedActionSelectorIdentifier,
+                                '$elements.action_selector'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector exists',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            )
+                        ]
+                    ),
+                ]),
+            ],
+            'deferred step import, imported actions and assertions use imported data' => [
                 'test' => new Test(
                     'test name',
                     new Configuration('', ''),
@@ -120,134 +555,73 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'step_import_name',
                             'data_provider_import_name'
                         ))->withIdentifierCollection(new IdentifierCollection([
-                            TestIdentifierFactory::createPageElementReferenceIdentifier(
-                                new ObjectValue(
-                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                    'page_import_name.elements.action_element_name',
-                                    'page_import_name',
-                                    'action_element_name'
-                                ),
-                                'action_element_name'
-                            ),
-                            TestIdentifierFactory::createPageElementReferenceIdentifier(
-                                new ObjectValue(
-                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                    'page_import_name.elements.assertion_element_name',
-                                    'page_import_name',
-                                    'assertion_element_name'
-                                ),
-                                'assertion_element_name'
-                            ),
-                            TestIdentifierFactory::createPageElementReferenceIdentifier(
-                                new ObjectValue(
-                                    ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                    'page_import_name.elements.heading_element_name',
-                                    'page_import_name',
-                                    'heading_element_name'
-                                ),
-                                'heading'
-                            ),
+                            $pageElementReferenceActionIdentifier,
+                            $pageElementReferenceAssertionIdentifier,
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
-                    'page_import_name' => new Page(
-                        new Uri('http://example.com/'),
-                        new IdentifierCollection([
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.action-selector',
-                                1,
-                                'action_element_name'
-                            ),
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.assertion-selector',
-                                1,
-                                'assertion_element_name'
-                            ),
-                            TestIdentifierFactory::createCssElementIdentifier(
-                                '.heading-selector',
-                                1,
-                                'heading_element_name'
-                            ),
-                        ])
-                    )
+                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
+                    'page_import_name' => FixturePathFinder::find(
+                        'Page/example.com.elemental-action-and-assertion.yml'
+                    ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
-                    'step_import_name' => new Step(
-                        [
-                            new InteractionAction(
-                                'click $elements.action_element_name',
-                                ActionTypes::CLICK,
-                                new Identifier(
-                                    IdentifierTypes::ELEMENT_PARAMETER,
-                                    new ObjectValue(
-                                        ValueTypes::ELEMENT_PARAMETER,
-                                        '$elements.action_element_name',
-                                        ObjectNames::ELEMENT,
-                                        'action_element_name'
-                                    )
-                                ),
-                                '$elements.action_element_name'
-                            )
-                        ],
-                        [
-                            new Assertion(
-                                '$elements.assertion_element_name exists',
-                                new ObjectValue(
-                                    ValueTypes::ELEMENT_PARAMETER,
-                                    '$elements.assertion_element_name',
-                                    ObjectNames::ELEMENT,
-                                    'assertion_element_name'
-                                ),
-                                AssertionComparisons::EXISTS
-                            )
-                        ]
+                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
+                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
+                    'deferred' => FixturePathFinder::find(
+                        'Step/elemental_action_and_assertion_with_data_parameters.yml'
                     ),
                 ]),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
-                        new DataSet('0', [
-                            'foo' => 'bar',
-                        ])
+                        new DataSet(0, [
+                            'key1' => 'key1value1',
+                            'key2' => 'key2value1',
+                        ]),
+                        new DataSet(1, [
+                            'key1' => 'key1value2',
+                            'key2' => 'key2value2',
+                        ]),
                     ]),
                 ]),
-                'expectedTest' => new Test(
-                    'test name',
-                    new Configuration('', ''),
-                    [
-                        'step name' => (new Step(
-                            [
-                                new InteractionAction(
-                                    'click $elements.action_element_name',
-                                    ActionTypes::CLICK,
-                                    TestIdentifierFactory::createCssElementIdentifier(
-                                        '.action-selector',
-                                        1,
-                                        'action_element_name'
-                                    ),
-                                    '$elements.action_element_name'
+                'expectedTest' => new Test('test name', new Configuration('', ''), [
+                    'step name' => (new Step(
+                        [
+                            new InputAction(
+                                'set $elements.action_selector to $data.key1',
+                                $namedActionSelectorIdentifier,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key1',
+                                    ObjectNames::DATA,
+                                    'key1'
+                                ),
+                                '$elements.action_selector to $data.key1'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector is $data.key2',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::IS,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key2',
+                                    ObjectNames::DATA,
+                                    'key2'
                                 )
-                            ],
-                            [
-                                new Assertion(
-                                    '$elements.assertion_element_name exists',
-                                    new ElementValue(
-                                        TestIdentifierFactory::createCssElementIdentifier(
-                                            '.assertion-selector',
-                                            1,
-                                            'assertion_element_name'
-                                        )
-                                    ),
-                                    AssertionComparisons::EXISTS
-                                )
-                            ]
-                        ))->withDataSetCollection(new DataSetCollection([
-                            new DataSet('0', [
-                                'foo' => 'bar',
-                            ]),
-                        ])),
-                    ]
-                ),
+                            )
+                        ]
+                    ))->withDataSetCollection(new DataSetCollection([
+                        new DataSet(0, [
+                            'key1' => 'key1value1',
+                            'key2' => 'key2value1',
+                        ]),
+                        new DataSet(1, [
+                            'key1' => 'key1value2',
+                            'key2' => 'key2value2',
+                        ]),
+                    ])),
+                ]),
             ],
         ];
     }
