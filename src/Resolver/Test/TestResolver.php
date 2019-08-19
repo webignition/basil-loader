@@ -90,10 +90,8 @@ class TestResolver
         foreach ($test->getSteps() as $stepName => $step) {
             try {
                 $resolvedStep = $this->stepImportResolver->resolveStepImport($step, $stepProvider);
-
                 $resolvedStep = $this->stepImportResolver->resolveDataProviderImport($resolvedStep, $dataSetProvider);
-                $resolvedStep = $this->stepResolver->resolvePageElementReferences($resolvedStep, $pageProvider);
-                $resolvedStep = $this->stepResolver->resolveElementAndAttributeParameters($resolvedStep);
+                $resolvedStep = $this->stepResolver->resolve($resolvedStep, $pageProvider);
                 $resolvedStep = $resolvedStep->withIdentifierCollection(new IdentifierCollection());
 
                 $resolvedSteps[$stepName] = $resolvedStep;
