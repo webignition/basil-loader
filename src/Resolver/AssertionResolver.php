@@ -33,89 +33,38 @@ class AssertionResolver
     /**
      * @param AssertionInterface $assertion
      * @param PageProviderInterface $pageProvider
+     * @param IdentifierCollectionInterface $identifierCollection
      *
      * @return AssertionInterface
      *
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
+     * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      */
-    public function resolvePageElementReferences(
+    public function resolve(
         AssertionInterface $assertion,
-        PageProviderInterface $pageProvider
-    ): AssertionInterface {
-        $examinedValue = $assertion->getExaminedValue();
-        if (null !== $examinedValue) {
-            $assertion = $assertion->withExaminedValue(
-                $this->valueResolver->resolvePageElementReference($examinedValue, $pageProvider)
-            );
-        }
-
-        $expectedValue = $assertion->getExpectedValue();
-        if (null !== $expectedValue) {
-            $assertion = $assertion->withExpectedValue(
-                $this->valueResolver->resolvePageElementReference($expectedValue, $pageProvider)
-            );
-        }
-
-        return $assertion;
-    }
-
-    /**
-     * @param AssertionInterface $assertion
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @return AssertionInterface
-     *
-     * @throws UnknownElementException
-     */
-    public function resolveElementParameters(
-        AssertionInterface $assertion,
+        PageProviderInterface $pageProvider,
         IdentifierCollectionInterface $identifierCollection
     ): AssertionInterface {
         $examinedValue = $assertion->getExaminedValue();
         if (null !== $examinedValue) {
-            $assertion = $assertion->withExaminedValue(
-                $this->valueResolver->resolveElementParameter($examinedValue, $identifierCollection)
-            );
+            $resolvedValue = $this->valueResolver->resolvePageElementReference($examinedValue, $pageProvider);
+            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
+
+            $assertion = $assertion->withExaminedValue($resolvedValue);
         }
 
         $expectedValue = $assertion->getExpectedValue();
         if (null !== $expectedValue) {
-            $assertion = $assertion->withExpectedValue(
-                $this->valueResolver->resolveElementParameter($expectedValue, $identifierCollection)
-            );
-        }
+            $resolvedValue = $this->valueResolver->resolvePageElementReference($expectedValue, $pageProvider);
+            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
 
-        return $assertion;
-    }
-
-    /**
-     * @param AssertionInterface $assertion
-     * @param IdentifierCollectionInterface $identifierCollection
-     *
-     * @return AssertionInterface
-     *
-     * @throws UnknownElementException
-     */
-    public function resolveAttributeParameters(
-        AssertionInterface $assertion,
-        IdentifierCollectionInterface $identifierCollection
-    ): AssertionInterface {
-        $examinedValue = $assertion->getExaminedValue();
-        if (null !== $examinedValue) {
-            $assertion = $assertion->withExaminedValue(
-                $this->valueResolver->resolveAttributeParameter($examinedValue, $identifierCollection)
-            );
-        }
-
-        $expectedValue = $assertion->getExpectedValue();
-        if (null !== $expectedValue) {
-            $assertion = $assertion->withExpectedValue(
-                $this->valueResolver->resolveAttributeParameter($expectedValue, $identifierCollection)
-            );
+            $assertion = $assertion->withExpectedValue($resolvedValue);
         }
 
         return $assertion;
