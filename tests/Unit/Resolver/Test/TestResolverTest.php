@@ -362,11 +362,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'step_import_name',
                             ''
                         ))->withDataSetCollection(new DataSetCollection([
-                            new DataSet(0, [
+                            new DataSet('0', [
                                 'key1' => 'key1value1',
                                 'key2' => 'key2value1',
                             ]),
-                            new DataSet(1, [
+                            new DataSet('1', [
                                 'key1' => 'key1value2',
                                 'key2' => 'key2value2',
                             ]),
@@ -414,11 +414,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ))->withDataSetCollection(new DataSetCollection([
-                        new DataSet(0, [
+                        new DataSet('0', [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
                         ]),
-                        new DataSet(1, [
+                        new DataSet('1', [
                             'key1' => 'key1value2',
                             'key2' => 'key2value2',
                         ]),
@@ -450,11 +450,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
-                        new DataSet(0, [
+                        new DataSet('0', [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
                         ]),
-                        new DataSet(1, [
+                        new DataSet('1', [
                             'key1' => 'key1value2',
                             'key2' => 'key2value2',
                         ]),
@@ -489,11 +489,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ))->withDataSetCollection(new DataSetCollection([
-                        new DataSet(0, [
+                        new DataSet('0', [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
                         ]),
-                        new DataSet(1, [
+                        new DataSet('1', [
                             'key1' => 'key1value2',
                             'key2' => 'key2value2',
                         ]),
@@ -573,11 +573,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'dataSetProvider' => new PopulatedDataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
-                        new DataSet(0, [
+                        new DataSet('0', [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
                         ]),
-                        new DataSet(1, [
+                        new DataSet('1', [
                             'key1' => 'key1value2',
                             'key2' => 'key2value2',
                         ]),
@@ -612,11 +612,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             )
                         ]
                     ))->withDataSetCollection(new DataSetCollection([
-                        new DataSet(0, [
+                        new DataSet('0', [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
                         ]),
-                        new DataSet(1, [
+                        new DataSet('1', [
                             'key1' => 'key1value2',
                             'key2' => 'key2value2',
                         ]),
