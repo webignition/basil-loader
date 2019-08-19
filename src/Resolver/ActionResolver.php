@@ -72,9 +72,7 @@ class ActionResolver
         }
 
         if ($action instanceof InputActionInterface) {
-            $resolvedValue = $this->valueResolver->resolvePageElementReference($action->getValue(), $pageProvider);
-            $resolvedValue = $this->valueResolver->resolveElementParameter($resolvedValue, $identifierCollection);
-            $resolvedValue = $this->valueResolver->resolveAttributeParameter($resolvedValue, $identifierCollection);
+            $resolvedValue = $this->valueResolver->resolve($action->getValue(), $pageProvider, $identifierCollection);
 
             $action = $action->withValue($resolvedValue);
         }
