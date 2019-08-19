@@ -89,12 +89,7 @@ class TestResolver
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
             try {
-                $resolvedStep = $this->stepImportResolver->resolveStepImport(
-                    $step,
-                    $stepProvider,
-                    $dataSetProvider,
-                    $pageProvider
-                );
+                $resolvedStep = $this->stepImportResolver->resolveStepImport($step, $stepProvider);
 
                 $resolvedStep = $this->stepImportResolver->resolveDataProviderImport($resolvedStep, $dataSetProvider);
                 $resolvedStep = $this->stepResolver->resolvePageElementReferences($resolvedStep, $pageProvider);
