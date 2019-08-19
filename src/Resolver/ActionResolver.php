@@ -60,11 +60,7 @@ class ActionResolver
         $identifier = $action->getIdentifier();
 
         if ($identifier instanceof IdentifierInterface) {
-            $resolvedIdentifier = $this->identifierResolver->resolvePageElementReference($identifier, $pageProvider);
-            $resolvedIdentifier = $this->identifierResolver->resolveElementParameter(
-                $resolvedIdentifier,
-                $identifierCollection
-            );
+            $resolvedIdentifier = $this->identifierResolver->resolve($identifier, $pageProvider, $identifierCollection);
 
             if ($resolvedIdentifier !== $identifier) {
                 $action = $action->withIdentifier($resolvedIdentifier);
