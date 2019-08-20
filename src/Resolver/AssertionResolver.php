@@ -4,9 +4,6 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -37,9 +34,6 @@ class AssertionResolver
      *
      * @return AssertionInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException

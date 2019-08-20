@@ -7,9 +7,6 @@ use webignition\BasilModel\Action\InputActionInterface;
 use webignition\BasilModel\Action\InteractionActionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -41,9 +38,6 @@ class ActionResolver
      *
      * @return ActionInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
