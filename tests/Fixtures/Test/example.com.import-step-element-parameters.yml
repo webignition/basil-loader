@@ -1,0 +1,15 @@
+config:
+  browser: chrome
+  url: https://example.com
+
+imports:
+  pages:
+    page_import_name: "../Page/example.com.button.heading.yml"
+  steps:
+    element_parameters: "../Step/element-parameters.yml"
+
+"element parameters step":
+  use: element_parameters
+  elements:
+    button: page_import_name.elements.button
+    heading: page_import_name.elements.heading

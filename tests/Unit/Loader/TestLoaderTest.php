@@ -21,8 +21,10 @@ use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
+use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Loader\TestLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -154,10 +156,39 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'import step with element parameters and imported page' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
+                'expectedTest' => new Test(
+                    FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
+                    new Configuration('chrome', 'https://example.com'),
+                    [
+                        'element parameters step' => new Step(
+                            [
+                                new InteractionAction(
+                                    'click $elements.button',
+                                    ActionTypes::CLICK,
+                                    TestIdentifierFactory::createCssElementIdentifier('.button', 1, 'button'),
+                                    '$elements.button'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '$elements.heading includes "example"',
+                                    new ElementValue(
+                                        TestIdentifierFactory::createCssElementIdentifier('.heading', 1, 'heading')
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    LiteralValue::createStringValue('example')
+                                ),
+                            ]
+                        )
+                    ]
+                ),
+            ],
         ];
     }
 
-    public function testLoadForNonRetrievableDataProvider()
+    public function testLoadThrowsNonRetrievableDataProvider()
     {
         $expectedInvalidDataProviderPath = sprintf(
             '%s/DataProvider/file-does-not-exist.yml',
@@ -171,5 +202,21 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ));
 
         $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-data-provider.yml'));
+    }
+
+    public function testLoadThrowsNonRetrievablePageException()
+    {
+        $expectedInvalidDataProviderPath = sprintf(
+            '%s/Page/file-does-not-exist.yml',
+            str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
+        );
+
+        $this->expectException(NonRetrievablePageException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Cannot retrieve page "page_import_name" from "%s"',
+            $expectedInvalidDataProviderPath
+        ));
+
+        $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-page-provider.yml'));
     }
 }
