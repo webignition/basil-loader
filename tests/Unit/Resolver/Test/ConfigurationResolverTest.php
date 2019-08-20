@@ -9,10 +9,10 @@ use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
 use webignition\BasilParser\Resolver\Test\ConfigurationResolver;
+use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 
 class ConfigurationResolverTest extends \PHPUnit\Framework\TestCase
 {
