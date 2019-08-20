@@ -9,9 +9,9 @@ use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class StepResolver
 {

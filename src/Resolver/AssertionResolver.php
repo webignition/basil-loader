@@ -5,9 +5,9 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class AssertionResolver
 {

@@ -5,8 +5,8 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilModel\Identifier\ElementIdentifierInterface;
 use webignition\BasilModel\Value\ObjectValueInterface;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class PageElementReferenceResolver
 {

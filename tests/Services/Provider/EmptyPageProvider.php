@@ -4,7 +4,7 @@ namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 
 class EmptyPageProvider implements PageProviderInterface
 {

@@ -11,9 +11,9 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ObjectValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelProvider\Page\PageProvider;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\PageElementReferenceResolver;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
