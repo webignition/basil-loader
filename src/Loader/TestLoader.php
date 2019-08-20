@@ -18,7 +18,9 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
+use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
@@ -30,6 +32,7 @@ class TestLoader
     private $stepProviderFactory;
     private $pageProviderFactory;
     private $dataSetProviderFactory;
+    private $dataSetLoader;
 
     public function __construct(
         YamlLoader $yamlLoader,
@@ -37,7 +40,8 @@ class TestLoader
         PathResolver $pathResolver,
         StepProviderFactory $stepProviderFactory,
         PageProviderFactory $pageProviderFactory,
-        DataSetProviderFactory $dataSetProviderFactory
+        DataSetProviderFactory $dataSetProviderFactory,
+        DataSetLoader $dataSetLoader
     ) {
         $this->yamlLoader = $yamlLoader;
         $this->testBuilder = $testBuilder;
@@ -45,6 +49,7 @@ class TestLoader
         $this->stepProviderFactory = $stepProviderFactory;
         $this->pageProviderFactory = $pageProviderFactory;
         $this->dataSetProviderFactory = $dataSetProviderFactory;
+        $this->dataSetLoader = $dataSetLoader;
     }
 
     public static function createLoader(): TestLoader
@@ -55,7 +60,8 @@ class TestLoader
             PathResolver::create(),
             StepProviderFactory::createFactory(),
             PageProviderFactory::createFactory(),
-            DataSetProviderFactory::createFactory()
+            DataSetProviderFactory::createFactory(),
+            DataSetLoader::createLoader()
         );
     }
 
@@ -86,10 +92,30 @@ class TestLoader
 
         $stepProvider = $this->stepProviderFactory->createDeferredStepProvider($imports->getStepPaths());
         $pageProvider = $this->pageProviderFactory->createDeferredPageProvider($imports->getPagePaths());
-        $dataSetProvider = $this->dataSetProviderFactory->createDeferredDataSetProvider(
-            $imports->getDataProviderPaths()
-        );
+        $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
 
         return $this->testBuilder->build($testData, $pageProvider, $stepProvider, $dataSetProvider);
+    }
+
+    /**
+     * @param array $importPaths
+     *
+     * @return DataSetProviderInterface
+     *
+     * @throws NonRetrievableDataProviderException
+     */
+    private function createDataSetProvider(array $importPaths): DataSetProviderInterface
+    {
+        $dataSetCollections = [];
+
+        foreach ($importPaths as $importName => $importPath) {
+            try {
+                $dataSetCollections[$importName] = $this->dataSetLoader->load($importPath);
+            } catch (YamlLoaderException $yamlLoaderException) {
+                throw new NonRetrievableDataProviderException($importName, $importPath, $yamlLoaderException);
+            }
+        }
+
+        return new PopulatedDataSetProvider($dataSetCollections);
     }
 }
