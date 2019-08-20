@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "75d832d99dfbb969d2b44e3eb0d8afcb",
+    "content-hash": "240fcba8fe0b394890f507b79a2dd56f",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -470,16 +470,16 @@
         },
         {
             "name": "webignition/php-basil-model-provider",
-            "version": "0.1",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-model-provider.git",
-                "reference": "a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369"
+                "reference": "8954244c4b17d091f45b214def85cf603202cf54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-model-provider/zipball/a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369",
-                "reference": "a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-provider/zipball/8954244c4b17d091f45b214def85cf603202cf54",
+                "reference": "8954244c4b17d091f45b214def85cf603202cf54",
                 "shasum": ""
             },
             "require": {
@@ -511,7 +511,7 @@
             ],
             "description": "Providers for basil models",
             "homepage": "https://github.com/webignition/php-basil-model-provider",
-            "time": "2019-08-20T15:48:45+00:00"
+            "time": "2019-08-20T18:02:59+00:00"
         },
         {
             "name": "webignition/php-basil-models",

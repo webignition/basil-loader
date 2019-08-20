@@ -26,14 +26,14 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\DataSet\EmptyDataSetProvider;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\Step\EmptyStepProvider;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\TestSuiteResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase

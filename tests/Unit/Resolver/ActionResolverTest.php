@@ -18,10 +18,10 @@ use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModelFactory\Action\ActionFactory;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Resolver\ActionResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class ActionResolverTest extends \PHPUnit\Framework\TestCase

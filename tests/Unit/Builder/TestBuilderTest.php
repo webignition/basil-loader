@@ -21,8 +21,11 @@ use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\DataSet\EmptyDataSetProvider;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\Step\EmptyStepProvider;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Builder\TestBuilder;
@@ -30,9 +33,6 @@ use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilDataStructure\Test\Configuration as ConfigurationData;
 use webignition\BasilDataStructure\Test\Imports as ImportsData;
 use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase

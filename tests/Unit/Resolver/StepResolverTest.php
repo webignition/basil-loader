@@ -31,12 +31,12 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Resolver\StepResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase

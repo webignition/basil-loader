@@ -20,10 +20,10 @@ use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\AssertionFactory;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Resolver\AssertionResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class AssertionResolverTest extends \PHPUnit\Framework\TestCase
