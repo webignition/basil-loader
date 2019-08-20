@@ -3,7 +3,7 @@
 namespace webignition\BasilParser\Provider\Page;
 
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Exception\UnknownPageException;
 
 interface PageProviderInterface
 {

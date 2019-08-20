@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Resolver\Test;
 use webignition\BasilModel\PageUrlReference\PageUrlReference;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
-use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ConfigurationResolver
