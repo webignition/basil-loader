@@ -30,7 +30,6 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -40,14 +39,12 @@ use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\EmptyStepProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
+use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
@@ -261,7 +258,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click ".action-selector"'),
@@ -316,7 +313,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click $elements.action_selector'),
@@ -369,7 +366,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -433,7 +430,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -523,9 +520,29 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
-                    'deferred' => FixturePathFinder::find('Step/elemental_action_and_assertion.yml'),
+                'stepProvider' => new StepProvider([
+                    'step_import_name' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'deferred',
+                        ''
+                    ),
+                    'deferred' => new Step(
+                        [
+                            new InteractionAction(
+                                'click $elements.action_selector',
+                                ActionTypes::CLICK,
+                                $namedActionSelectorIdentifier,
+                                '$elements.action_selector'
+                            ),
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector exists',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            ),
+                        ]
+                    ),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('test name', new Configuration('', ''), [
@@ -536,14 +553,14 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 ActionTypes::CLICK,
                                 $namedActionSelectorIdentifier,
                                 '$elements.action_selector'
-                            )
+                            ),
                         ],
                         [
                             new Assertion(
                                 '$elements.assertion_selector exists',
                                 new ElementValue($namedAssertionSelectorIdentifier),
                                 AssertionComparisons::EXISTS
-                            )
+                            ),
                         ]
                     ),
                 ]),
@@ -576,10 +593,39 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
-                    'deferred' => FixturePathFinder::find(
-                        'Step/elemental_action_and_assertion_with_data_parameters.yml'
+                'stepProvider' => new StepProvider([
+                    'step_import_name' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'deferred',
+                        ''
+                    ),
+                    'deferred' => new Step(
+                        [
+                            new InputAction(
+                                'set $elements.action_selector to $data.key1',
+                                $namedActionSelectorIdentifier,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key1',
+                                    ObjectNames::DATA,
+                                    'key1'
+                                ),
+                                '$elements.action_selector to $data.key1'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector is $data.key2',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::IS,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key2',
+                                    ObjectNames::DATA,
+                                    'key2'
+                                )
+                            )
+                        ]
                     ),
                 ]),
                 'dataSetProvider' => new DataSetProvider([
@@ -660,58 +706,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveThrowsExceptionDataProvider(): array
     {
-        $invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
-
         return [
-            'NonRetrievableStepException: step.uses references step that does not exist' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            'step_import_name',
-                            ''
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => 'Step/non-existent.yml',
-                ]),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievableStepException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            'step_import_name',
-                            ''
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => $invalidYamlPath,
-                ]),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievableStepException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve step "step_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
             'UnknownDataProviderException: test.data references a data provider that has not been defined' => [
                 'test' => new Test(
                     'test name',
@@ -725,7 +720,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),

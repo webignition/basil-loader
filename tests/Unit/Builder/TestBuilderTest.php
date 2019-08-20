@@ -28,11 +28,11 @@ use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\EmptyStepProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
+use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase
@@ -156,7 +156,7 @@ class TestBuilderTest extends \PHPUnit\Framework\TestCase
                         ])
                     )
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             new WaitAction('wait 10', LiteralValue::createStringValue('10')),

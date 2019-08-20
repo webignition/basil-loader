@@ -14,7 +14,7 @@ use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
@@ -83,28 +83,28 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
         return [
             'empty step, no imports' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), '', ''),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
                 ]),
                 'expectedStep' => new Step([], []),
             ],
             'empty step imports empty step' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
                 ]),
                 'expectedStep' => new Step([], []),
             ],
             'empty step imports non-empty step, non-resolvable actions and assertions' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
                 'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions),
             ],
             'empty step imports non-empty step, resolvable actions and assertions' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), 'step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($resolvableActions, $resolvableAssertions),
                 ]),
                 'expectedStep' => new Step($resolvableActions, $resolvableAssertions),
@@ -115,7 +115,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name',
                     ''
                 ),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
                 'expectedStep' => new Step(
@@ -125,7 +125,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'deferred' => [
                 'step' => new PendingImportResolutionStep(new Step([], []), 'deferred_step_import_name', ''),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'deferred_step_import_name' => new PendingImportResolutionStep(
                         new Step([], []),
                         'step_import_name',
@@ -141,7 +141,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name',
                     'data_provider_import_name'
                 ),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
                 'expectedStep' => new PendingImportResolutionStep(
@@ -253,7 +253,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'start',
                     ''
                 ),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'start' => new PendingImportResolutionStep(
                         new Step([], []),
                         'start',
@@ -268,7 +268,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'start',
                     ''
                 ),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'start' => new PendingImportResolutionStep(
                         new Step([], []),
                         'middle',
@@ -288,7 +288,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'one',
                     ''
                 ),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'one' => new PendingImportResolutionStep(
                         new Step([], []),
                         'two',

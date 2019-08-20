@@ -5,9 +5,7 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
@@ -28,8 +26,6 @@ class StepImportResolver
      * @return StepInterface
      *
      * @throws CircularStepImportException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableStepException
      * @throws UnknownStepException
      */
     public function resolveStepImport(
