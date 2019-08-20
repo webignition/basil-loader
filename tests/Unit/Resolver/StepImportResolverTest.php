@@ -13,11 +13,11 @@ use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;
+use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 
 class StepImportResolverTest extends \PHPUnit\Framework\TestCase
 {
