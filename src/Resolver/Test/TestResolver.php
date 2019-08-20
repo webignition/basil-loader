@@ -6,9 +6,7 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -54,8 +52,6 @@ class TestResolver
      * @return TestInterface
      *
      * @throws CircularStepImportException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
@@ -89,8 +85,7 @@ class TestResolver
                 $resolvedStep = $resolvedStep->withIdentifierCollection(new IdentifierCollection());
 
                 $resolvedSteps[$stepName] = $resolvedStep;
-            } catch (NonRetrievableStepException |
-                UnknownDataProviderException |
+            } catch (UnknownDataProviderException |
                 UnknownElementException |
                 UnknownPageElementException |
                 UnknownPageException |
