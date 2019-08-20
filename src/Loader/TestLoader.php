@@ -19,7 +19,6 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
 use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
@@ -31,7 +30,6 @@ class TestLoader
     private $pathResolver;
     private $stepProviderFactory;
     private $pageProviderFactory;
-    private $dataSetProviderFactory;
     private $dataSetLoader;
 
     public function __construct(
@@ -40,7 +38,6 @@ class TestLoader
         PathResolver $pathResolver,
         StepProviderFactory $stepProviderFactory,
         PageProviderFactory $pageProviderFactory,
-        DataSetProviderFactory $dataSetProviderFactory,
         DataSetLoader $dataSetLoader
     ) {
         $this->yamlLoader = $yamlLoader;
@@ -48,7 +45,6 @@ class TestLoader
         $this->pathResolver = $pathResolver;
         $this->stepProviderFactory = $stepProviderFactory;
         $this->pageProviderFactory = $pageProviderFactory;
-        $this->dataSetProviderFactory = $dataSetProviderFactory;
         $this->dataSetLoader = $dataSetLoader;
     }
 
@@ -60,7 +56,6 @@ class TestLoader
             PathResolver::create(),
             StepProviderFactory::createFactory(),
             PageProviderFactory::createFactory(),
-            DataSetProviderFactory::createFactory(),
             DataSetLoader::createLoader()
         );
     }
