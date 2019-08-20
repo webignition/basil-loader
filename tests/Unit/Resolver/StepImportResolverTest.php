@@ -14,7 +14,7 @@ use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;
@@ -188,7 +188,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     '',
                     'data_provider_import_name'
                 ),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'foo' => 'bar',
@@ -207,7 +207,7 @@ class StepImportResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name',
                     'data_provider_import_name'
                 ),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'foo' => 'bar',

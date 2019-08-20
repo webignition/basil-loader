@@ -40,7 +40,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -446,7 +446,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',
@@ -569,7 +569,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'Step/elemental_action_and_assertion_with_data_parameters.yml'
                     ),
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',

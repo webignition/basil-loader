@@ -19,7 +19,7 @@ use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
@@ -111,6 +111,6 @@ class TestLoader
             }
         }
 
-        return new PopulatedDataSetProvider($dataSetCollections);
+        return new DataSetProvider($dataSetCollections);
     }
 }
