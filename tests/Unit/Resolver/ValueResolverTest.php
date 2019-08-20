@@ -18,11 +18,11 @@ use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Resolver\ValueResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class ValueResolverTest extends \PHPUnit\Framework\TestCase

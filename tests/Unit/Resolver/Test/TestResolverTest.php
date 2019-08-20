@@ -32,19 +32,19 @@ use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\DataSet\EmptyDataSetProvider;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Page\EmptyPageProvider;
 use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\Step\EmptyStepProvider;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Resolver\Test\TestResolver;
-use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
