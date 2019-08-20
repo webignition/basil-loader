@@ -19,9 +19,4 @@ class Factory
             DataSetLoader::createLoader()
         );
     }
-
-    public function createDeferredDataSetProvider(array $importPaths)
-    {
-        return new DeferredDataSetProvider($this->dataSetLoader, $importPaths);
-    }
 }
