@@ -8,8 +8,8 @@ use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class StepImportResolver
 {

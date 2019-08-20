@@ -13,9 +13,9 @@ use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\Step\StepProvider;
+use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Provider\Step\StepProvider;
-use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 
