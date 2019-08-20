@@ -76,7 +76,7 @@ class TestResolver
 
         try {
             $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
-        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+        } catch (UnknownPageException $contextAwareException) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_TEST_NAME => $testName,
             ]);

@@ -24,9 +24,6 @@ class ConfigurationResolver
      *
      * @return ConfigurationInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownPageException
      */
     public function resolve(
