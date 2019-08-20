@@ -18,10 +18,10 @@ use webignition\BasilModel\Value\AttributeValue;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModelFactory\Action\ActionFactory;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\ActionResolver;
+use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class ActionResolverTest extends \PHPUnit\Framework\TestCase
@@ -113,7 +113,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => $actionFactory->createFromActionString(
                     'set page_import_name.elements.element_name to "value"'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -133,7 +133,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => $actionFactory->createFromActionString(
                     'set ".selector" to page_import_name.elements.element_name'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -155,7 +155,7 @@ class ActionResolverTest extends \PHPUnit\Framework\TestCase
                 'action' => $actionFactory->createFromActionString(
                     'click page_import_name.elements.element_name'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([

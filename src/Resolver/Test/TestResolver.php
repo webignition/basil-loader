@@ -6,10 +6,8 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
@@ -56,9 +54,7 @@ class TestResolver
      * @return TestInterface
      *
      * @throws CircularStepImportException
-     * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
@@ -76,7 +72,7 @@ class TestResolver
 
         try {
             $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
-        } catch (NonRetrievablePageException | UnknownPageException $contextAwareException) {
+        } catch (UnknownPageException $contextAwareException) {
             $contextAwareException->applyExceptionContext([
                 ExceptionContextInterface::KEY_TEST_NAME => $testName,
             ]);
@@ -93,9 +89,7 @@ class TestResolver
                 $resolvedStep = $resolvedStep->withIdentifierCollection(new IdentifierCollection());
 
                 $resolvedSteps[$stepName] = $resolvedStep;
-            } catch (InvalidPageElementIdentifierException |
-                NonRetrievablePageException |
-                NonRetrievableStepException |
+            } catch (NonRetrievableStepException |
                 UnknownDataProviderException |
                 UnknownElementException |
                 UnknownPageElementException |

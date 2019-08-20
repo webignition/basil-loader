@@ -1,9 +1,10 @@
 <?php
 
-namespace webignition\BasilParser\Provider\Page;
+namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\Exception\UnknownPageException;
+use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class EmptyPageProvider implements PageProviderInterface
 {

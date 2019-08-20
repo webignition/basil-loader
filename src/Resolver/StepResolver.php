@@ -8,9 +8,6 @@ use webignition\BasilModel\Assertion\AssertionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -47,9 +44,6 @@ class StepResolver
      *
      * @return StepInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -77,9 +71,6 @@ class StepResolver
      *
      * @return StepInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -106,9 +97,6 @@ class StepResolver
      *
      * @return StepInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -130,9 +118,7 @@ class StepResolver
                     $identifierCollection
                 );
             }
-        } catch (InvalidPageElementIdentifierException |
-            NonRetrievablePageException |
-            UnknownElementException |
+        } catch (UnknownElementException |
             UnknownPageElementException |
             UnknownPageException $contextAwareException
         ) {
@@ -154,9 +140,6 @@ class StepResolver
      *
      * @return StepInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
@@ -178,9 +161,7 @@ class StepResolver
                     $identifierCollection
                 );
             }
-        } catch (InvalidPageElementIdentifierException |
-            NonRetrievablePageException |
-            UnknownElementException |
+        } catch (UnknownElementException |
             UnknownPageElementException |
             UnknownPageException $contextAwareException
         ) {
