@@ -39,12 +39,12 @@ use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
+use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase

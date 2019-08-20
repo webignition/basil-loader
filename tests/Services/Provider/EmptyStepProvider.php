@@ -1,9 +1,10 @@
 <?php
 
-namespace webignition\BasilParser\Provider\Step;
+namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\UnknownStepException;
+use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class EmptyStepProvider implements StepProviderInterface
 {
