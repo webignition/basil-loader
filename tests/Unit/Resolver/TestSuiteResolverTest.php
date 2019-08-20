@@ -34,7 +34,7 @@ use webignition\BasilParser\Resolver\TestSuiteResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
 {

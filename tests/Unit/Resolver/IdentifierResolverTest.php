@@ -20,7 +20,7 @@ use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Resolver\IdentifierResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class IdentifierResolverTest extends \PHPUnit\Framework\TestCase
 {

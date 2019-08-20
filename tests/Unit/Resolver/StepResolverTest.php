@@ -37,7 +37,7 @@ use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Resolver\StepResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase
 {

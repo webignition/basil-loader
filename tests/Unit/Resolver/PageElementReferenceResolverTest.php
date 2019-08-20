@@ -15,7 +15,7 @@ use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Resolver\PageElementReferenceResolver;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
 {
