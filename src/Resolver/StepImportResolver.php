@@ -5,10 +5,10 @@ namespace webignition\BasilParser\Resolver;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\PendingImportResolutionStepInterface;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class StepImportResolver

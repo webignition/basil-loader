@@ -6,13 +6,13 @@ use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInte
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\StepImportResolver;

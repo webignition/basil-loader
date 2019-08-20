@@ -3,6 +3,7 @@
 namespace webignition\BasilParser\Provider\DataSet;
 
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 
 class DataSetProvider implements DataSetProviderInterface

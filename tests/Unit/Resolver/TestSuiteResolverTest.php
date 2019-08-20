@@ -24,7 +24,7 @@ use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;

@@ -4,8 +4,8 @@
 namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 
 class EmptyDataSetProvider implements DataSetProviderInterface
 {
