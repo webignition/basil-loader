@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Provider\Page;
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\Exception\UnknownPageException;
 
-class PopulatedPageProvider implements PageProviderInterface
+class PageProvider implements PageProviderInterface
 {
     private $pages = [];
 

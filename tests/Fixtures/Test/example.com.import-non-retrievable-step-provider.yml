@@ -1,0 +1,11 @@
+config:
+  browser: chrome
+  url: https://example.com
+
+imports:
+  steps:
+    step_import_name: "../Step/file-does-not-exist.yml"
+
+"verify page is open":
+  assertions:
+    - $page.url is "https://example.com"

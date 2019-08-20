@@ -19,10 +19,10 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Exception\UnknownElementException;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\ValueResolver;
+use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class ValueResolverTest extends \PHPUnit\Framework\TestCase
@@ -149,7 +149,7 @@ class ValueResolverTest extends \PHPUnit\Framework\TestCase
                     'page_import_name',
                     'element_name'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([

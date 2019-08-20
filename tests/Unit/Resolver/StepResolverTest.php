@@ -30,17 +30,13 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
-use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\StepResolver;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase
@@ -177,7 +173,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             $namedCssElementIdentifier,
         ]);
 
-        $pageProvider = new PopulatedPageProvider([
+        $pageProvider = new PageProvider([
             'page_import_name' => new Page(
                 new Uri('http://example.com/'),
                 $identifierCollection
@@ -280,7 +276,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new Step([
                     $actionFactory->createFromActionString('set page_import_name.elements.element_name to "value"'),
                 ], []),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -303,7 +299,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         'set ".identifier-selector" to page_import_name.elements.element_name'
                     ),
                 ], []),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -326,7 +322,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new Step([], [
                     $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
                 ]),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -348,7 +344,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         '".examined-selector" is page_import_name.elements.element_name '
                     ),
                 ]),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -600,7 +596,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     $unresolvedElementIdentifier,
                 ])),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -617,7 +613,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ->withIdentifierCollection(new IdentifierCollection([
                         $unresolvedElementIdentifier,
                     ])),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -659,105 +655,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolvePageElementReferencesThrowsExceptionDataProvider(): array
     {
-        $invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
-
         return [
-            'InvalidPageElementIdentifierException: action has page element reference, referenced page invalid' => [
-                'step' => new Step([
-                    new InteractionAction(
-                        'click page_import_name.elements.element_name',
-                        ActionTypes::CLICK,
-                        new Identifier(
-                            IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                            new ObjectValue(
-                                ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                'page_import_name.elements.element_name',
-                                'page_import_name',
-                                'element_name'
-                            )
-                        ),
-                        'page_import_name.elements.element_name'
-                    )
-                ], []),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
-                ]),
-                'expectedException' => InvalidPageElementIdentifierException::class,
-                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
-                ]),
-            ],
-            'InvalidPageElementIdentifierException: assertion has page element reference, referenced page invalid' => [
-                'step' => new Step([], [
-                    new Assertion(
-                        'page_import_name.elements.element_name exists',
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        ),
-                        AssertionComparisons::EXISTS
-                    )
-                ]),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
-                ]),
-                'expectedException' => InvalidPageElementIdentifierException::class,
-                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
-                ]),
-            ],
-            'NonRetrievablePageException: action has page element reference, referenced page invalid' => [
-                'step' => new Step([
-                    new InteractionAction(
-                        'click page_import_name.elements.element_name',
-                        ActionTypes::CLICK,
-                        new Identifier(
-                            IdentifierTypes::PAGE_ELEMENT_REFERENCE,
-                            new ObjectValue(
-                                ValueTypes::PAGE_ELEMENT_REFERENCE,
-                                'page_import_name.elements.element_name',
-                                'page_import_name',
-                                'element_name'
-                            )
-                        ),
-                        'page_import_name.elements.element_name'
-                    )
-                ], []),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => $invalidYamlPath,
-                ]),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
-                ]),
-            ],
-            'NonRetrievablePageException: assertion has page element reference, referenced page invalid' => [
-                'step' => new Step([], [
-                    new Assertion(
-                        'page_import_name.elements.element_name exists',
-                        new ObjectValue(
-                            ValueTypes::PAGE_ELEMENT_REFERENCE,
-                            'page_import_name.elements.element_name',
-                            'page_import_name',
-                            'element_name'
-                        ),
-                        AssertionComparisons::EXISTS
-                    )
-                ]),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => $invalidYamlPath,
-                ]),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
-                ]),
-            ],
             'UnknownPageElementException: action has page element reference, referenced page lacks element' => [
                 'step' => new Step([
                     new InteractionAction(
@@ -775,8 +673,11 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         'page_import_name.elements.element_name'
                     )
                 ], []),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'pageProvider' => new PageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('https://example.com'),
+                        new IdentifierCollection()
+                    ),
                 ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',
@@ -797,8 +698,11 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         AssertionComparisons::EXISTS
                     )
                 ]),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.heading.yml'),
+                'pageProvider' => new PageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('https://example.com'),
+                        new IdentifierCollection()
+                    ),
                 ]),
                 'expectedException' => UnknownPageElementException::class,
                 'expectedExceptionMessage' => 'Unknown page element "element_name" in page "page_import_name"',

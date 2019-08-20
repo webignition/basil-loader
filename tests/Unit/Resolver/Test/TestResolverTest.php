@@ -30,29 +30,21 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
-use webignition\BasilParser\Provider\Page\EmptyPageProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
-use webignition\BasilParser\Provider\Step\EmptyStepProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
-use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
-use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
+use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
+use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
+use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
@@ -143,7 +135,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     new Configuration('', 'page_import_name.url'),
                     []
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(new Uri('http://example.com/'), new IdentifierCollection()),
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -222,7 +214,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
@@ -266,7 +258,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click ".action-selector"'),
@@ -312,7 +304,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
@@ -321,7 +313,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click $elements.action_selector'),
@@ -374,7 +366,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -438,7 +430,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -448,7 +440,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',
@@ -515,14 +507,42 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find(
-                        'Page/example.com.elemental-action-and-assertion.yml'
+                'pageProvider' => new PageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('https://example.com'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.action-selector', 1, 'action_selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.assertion-selector',
+                                1,
+                                'assertion_selector'
+                            ),
+                        ])
                     ),
                 ]),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
-                    'deferred' => FixturePathFinder::find('Step/elemental_action_and_assertion.yml'),
+                'stepProvider' => new StepProvider([
+                    'step_import_name' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'deferred',
+                        ''
+                    ),
+                    'deferred' => new Step(
+                        [
+                            new InteractionAction(
+                                'click $elements.action_selector',
+                                ActionTypes::CLICK,
+                                $namedActionSelectorIdentifier,
+                                '$elements.action_selector'
+                            ),
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector exists',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::EXISTS
+                            ),
+                        ]
+                    ),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('test name', new Configuration('', ''), [
@@ -533,14 +553,14 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                                 ActionTypes::CLICK,
                                 $namedActionSelectorIdentifier,
                                 '$elements.action_selector'
-                            )
+                            ),
                         ],
                         [
                             new Assertion(
                                 '$elements.assertion_selector exists',
                                 new ElementValue($namedAssertionSelectorIdentifier),
                                 AssertionComparisons::EXISTS
-                            )
+                            ),
                         ]
                     ),
                 ]),
@@ -560,18 +580,55 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find(
-                        'Page/example.com.elemental-action-and-assertion.yml'
+                'pageProvider' => new PageProvider([
+                    'page_import_name' => new Page(
+                        new Uri('https://example.com'),
+                        new IdentifierCollection([
+                            TestIdentifierFactory::createCssElementIdentifier('.action-selector', 1, 'action_selector'),
+                            TestIdentifierFactory::createCssElementIdentifier(
+                                '.assertion-selector',
+                                1,
+                                'assertion_selector'
+                            ),
+                        ])
                     ),
                 ]),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => FixturePathFinder::find('Step/deferred_elemental_action_and_assertion.yml'),
-                    'deferred' => FixturePathFinder::find(
-                        'Step/elemental_action_and_assertion_with_data_parameters.yml'
+                'stepProvider' => new StepProvider([
+                    'step_import_name' => new PendingImportResolutionStep(
+                        new Step([], []),
+                        'deferred',
+                        ''
+                    ),
+                    'deferred' => new Step(
+                        [
+                            new InputAction(
+                                'set $elements.action_selector to $data.key1',
+                                $namedActionSelectorIdentifier,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key1',
+                                    ObjectNames::DATA,
+                                    'key1'
+                                ),
+                                '$elements.action_selector to $data.key1'
+                            )
+                        ],
+                        [
+                            new Assertion(
+                                '$elements.assertion_selector is $data.key2',
+                                new ElementValue($namedAssertionSelectorIdentifier),
+                                AssertionComparisons::IS,
+                                new ObjectValue(
+                                    ValueTypes::DATA_PARAMETER,
+                                    '$data.key2',
+                                    ObjectNames::DATA,
+                                    'key2'
+                                )
+                            )
+                        ]
                     ),
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',
@@ -649,253 +706,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
 
     public function resolveThrowsExceptionDataProvider(): array
     {
-        $invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
-
         return [
-            'NonRetrievableDataProviderException: test.data references data provider that cannot be loaded' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            '',
-                            'data_provider_name'
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
-                    'data_provider_name' => 'DataProvider/non-existent.yml',
-                ]),
-                'expectedException' => NonRetrievableDataProviderException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve data provider "data_provider_name" from "DataProvider/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'NonRetrievableDataProviderException: test.data references data provider containing invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            '',
-                            'data_provider_name'
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
-                    'data_provider_name' => $invalidYamlPath,
-                ]),
-                'expectedException' => NonRetrievableDataProviderException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve data provider "data_provider_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'NonRetrievablePageException: config.url references page that does not exist' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'page_import_name.url'),
-                    []
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => 'Page/non-existent.yml',
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                ])
-            ],
-            'NonRetrievablePageException: config.url references page that contains invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'page_import_name.url'),
-                    []
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => $invalidYamlPath,
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve page "page_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                ])
-            ],
-            'NonRetrievablePageException: assertion string references page that does not exist' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [],
-                            [
-                                (AssertionFactory::createFactory())
-                                    ->createFromAssertionString('page_import_name.elements.element_name exists')
-                            ]
-                        )
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => 'Page/non-existent.yml',
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
-                ])
-            ],
-            'NonRetrievablePageException: assertion string references page that contains invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [],
-                            [
-                                (AssertionFactory::createFactory())
-                                    ->createFromAssertionString('page_import_name.elements.element_name exists')
-                            ]
-                        )
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => $invalidYamlPath,
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve page "page_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
-                ])
-            ],
-            'NonRetrievablePageException: action string references page that does not exist' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [
-                                (ActionFactory::createFactory())
-                                    ->createFromActionString('click page_import_name.elements.element_name')
-                            ],
-                            []
-                        )
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => 'Page/non-existent.yml',
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve page "page_import_name" from "Page/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
-                ])
-            ],
-            'NonRetrievablePageException: action string references page that contains invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [
-                                (ActionFactory::createFactory())
-                                    ->createFromActionString('click page_import_name.elements.element_name')
-                            ],
-                            []
-                        )
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => $invalidYamlPath,
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievablePageException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve page "page_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
-                ])
-            ],
-            'NonRetrievableStepException: step.uses references step that does not exist' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            'step_import_name',
-                            ''
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => 'Step/non-existent.yml',
-                ]),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievableStepException::class,
-                'expectedExceptionMessage' => 'Cannot retrieve step "step_import_name" from "Step/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'NonRetrievableStepException: step.uses references step contains invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            'step_import_name',
-                            ''
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => StepProviderFactory::createFactory()->createDeferredStepProvider([
-                    'step_import_name' => $invalidYamlPath,
-                ]),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => NonRetrievableStepException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve step "step_import_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
             'UnknownDataProviderException: test.data references a data provider that has not been defined' => [
                 'test' => new Test(
                     'test name',
@@ -909,7 +720,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
@@ -1003,7 +814,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()
@@ -1032,7 +843,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()
@@ -1062,7 +873,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()
@@ -1098,60 +909,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedExceptionContext' =>  new ExceptionContext([
                     ExceptionContextInterface::KEY_TEST_NAME => 'test name',
                     ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'InvalidPageElementIdentifierException: action string references invalid element identifier in page' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [
-                                (ActionFactory::createFactory())
-                                    ->createFromActionString('click page_import_name.elements.element_name')
-                            ],
-                            []
-                        ),
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => InvalidPageElementIdentifierException::class,
-                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'click page_import_name.elements.element_name',
-                ])
-            ],
-            'InvalidPageElementIdentifierException: assertion string references invalid element identifier in page' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new Step(
-                            [],
-                            [
-                                (AssertionFactory::createFactory())
-                                    ->createFromAssertionString('page_import_name.elements.element_name exists'),
-                            ]
-                        ),
-                    ]
-                ),
-                'pageProvider' => PageProviderFactory::createFactory()->createDeferredPageProvider([
-                    'page_import_name' => FixturePathFinder::find('Page/example.com.non-elemental-identifier.yml'),
-                ]),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => InvalidPageElementIdentifierException::class,
-                'expectedExceptionMessage' => 'Invalid page element identifier "".selector".attribute_name"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ExceptionContextInterface::KEY_CONTENT => 'page_import_name.elements.element_name exists',
                 ])
             ],
             'UnknownElementException: action element parameter references unknown step element' => [

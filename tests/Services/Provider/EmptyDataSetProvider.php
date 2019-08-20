@@ -1,9 +1,11 @@
 <?php
+/** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Provider\DataSet;
+namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 
 class EmptyDataSetProvider implements DataSetProviderInterface
 {

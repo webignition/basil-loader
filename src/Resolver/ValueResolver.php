@@ -10,9 +10,6 @@ use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
@@ -43,9 +40,6 @@ class ValueResolver
      *
      * @return ValueInterface
      *
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievablePageException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException

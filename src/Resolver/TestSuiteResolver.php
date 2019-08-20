@@ -4,12 +4,7 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
@@ -45,11 +40,6 @@ class TestSuiteResolver
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
