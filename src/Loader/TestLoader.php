@@ -22,7 +22,7 @@ use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class TestLoader
@@ -160,6 +160,6 @@ class TestLoader
             }
         }
 
-        return new PopulatedStepProvider($steps);
+        return new StepProvider($steps);
     }
 }

@@ -39,7 +39,7 @@ use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
+use webignition\BasilParser\Provider\Step\StepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
@@ -258,7 +258,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click ".action-selector"'),
@@ -313,7 +313,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('click $elements.action_selector'),
@@ -366,7 +366,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -430,7 +430,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step(
                         [
                             $actionFactory->createFromActionString('set ".action-selector" to $data.key1'),
@@ -520,7 +520,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new PendingImportResolutionStep(
                         new Step([], []),
                         'deferred',
@@ -593,7 +593,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])
                     ),
                 ]),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new PendingImportResolutionStep(
                         new Step([], []),
                         'deferred',
@@ -720,7 +720,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
                 'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new PopulatedStepProvider([
+                'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),

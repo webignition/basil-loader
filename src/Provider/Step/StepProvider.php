@@ -5,7 +5,7 @@ namespace webignition\BasilParser\Provider\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilParser\Exception\UnknownStepException;
 
-class PopulatedStepProvider implements StepProviderInterface
+class StepProvider implements StepProviderInterface
 {
     private $steps = [];
 
