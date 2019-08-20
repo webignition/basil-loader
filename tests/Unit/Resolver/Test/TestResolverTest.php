@@ -30,7 +30,7 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
-use webignition\BasilParser\Exception\UnknownDataProviderException;
+use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;

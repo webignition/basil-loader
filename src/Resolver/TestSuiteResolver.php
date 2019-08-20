@@ -4,8 +4,8 @@ namespace webignition\BasilParser\Resolver;
 
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
+use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
