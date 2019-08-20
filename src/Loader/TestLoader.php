@@ -6,24 +6,24 @@ use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
+use webignition\BasilModelProvider\DataSet\DataSetProvider;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
+use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
+use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Page\PageProvider;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\Step\StepProvider;
+use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Exception\YamlLoaderException;
-use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\DataSetProvider;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PageProvider;
-use webignition\BasilParser\Provider\Step\StepProvider;
-use webignition\BasilParser\Provider\Step\StepProviderInterface;
 
 class TestLoader
 {

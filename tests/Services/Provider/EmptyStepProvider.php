@@ -3,8 +3,8 @@
 namespace webignition\BasilParser\Tests\Services\Provider;
 
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilParser\Exception\UnknownStepException;
-use webignition\BasilParser\Provider\Step\StepProviderInterface;
+use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Step\StepProviderInterface;
 
 class EmptyStepProvider implements StepProviderInterface
 {

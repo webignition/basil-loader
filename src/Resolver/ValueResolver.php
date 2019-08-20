@@ -10,10 +10,10 @@ use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueInterface;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ValueResolver
 {

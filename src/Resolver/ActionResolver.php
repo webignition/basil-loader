@@ -7,10 +7,10 @@ use webignition\BasilModel\Action\InputActionInterface;
 use webignition\BasilModel\Action\InteractionActionInterface;
 use webignition\BasilModel\Identifier\IdentifierCollectionInterface;
 use webignition\BasilModel\Identifier\IdentifierInterface;
+use webignition\BasilModelProvider\Exception\UnknownPageException;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Exception\UnknownPageException;
-use webignition\BasilParser\Provider\Page\PageProviderInterface;
 
 class ActionResolver
 {

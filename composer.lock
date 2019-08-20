@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94bd96b21c26fa2e89b59046a9c40b69",
+    "content-hash": "c7689c8c930c3d88f489558fe1d0ec5e",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -469,17 +469,62 @@
             "time": "2019-08-14T09:32:40+00:00"
         },
         {
-            "name": "webignition/php-basil-models",
-            "version": "0.58",
+            "name": "webignition/php-basil-model-provider",
+            "version": "0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webignition/php-basil-models.git",
-                "reference": "7325fe4e5206b7c3690fe727aa5dd70a03b6fc16"
+                "url": "https://github.com/webignition/php-basil-model-provider.git",
+                "reference": "a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/7325fe4e5206b7c3690fe727aa5dd70a03b6fc16",
-                "reference": "7325fe4e5206b7c3690fe727aa5dd70a03b6fc16",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-provider/zipball/a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369",
+                "reference": "a5a72f2871155f07f3c7e68eedeeaaa5cc0a8369",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "webignition/php-basil-context-aware-exception": ">=0.1,<1",
+                "webignition/php-basil-models": ">=0.59,<1"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.1",
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilModelProvider\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Providers for basil models",
+            "homepage": "https://github.com/webignition/php-basil-model-provider",
+            "time": "2019-08-20T15:48:45+00:00"
+        },
+        {
+            "name": "webignition/php-basil-models",
+            "version": "0.59",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/php-basil-models.git",
+                "reference": "75310b3b01ae6c3e6b4c519d3cd04f7b70a98cdb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/75310b3b01ae6c3e6b4c519d3cd04f7b70a98cdb",
+                "reference": "75310b3b01ae6c3e6b4c519d3cd04f7b70a98cdb",
                 "shasum": ""
             },
             "require": {
@@ -512,7 +557,7 @@
             ],
             "description": "Models for basil language objects",
             "homepage": "https://github.com/webignition/php-basil-models",
-            "time": "2019-08-16T14:54:34+00:00"
+            "time": "2019-08-16T18:09:50+00:00"
         }
     ],
     "packages-dev": [
