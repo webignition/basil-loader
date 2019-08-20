@@ -24,7 +24,7 @@ use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilParser\Resolver\AssertionResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class AssertionResolverTest extends \PHPUnit\Framework\TestCase
 {

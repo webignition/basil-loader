@@ -33,7 +33,7 @@ use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\Provider\EmptyStepProvider;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestBuilderTest extends \PHPUnit\Framework\TestCase
 {

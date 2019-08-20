@@ -25,7 +25,7 @@ use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Loader\TestLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {

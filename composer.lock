@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7689c8c930c3d88f489558fe1d0ec5e",
+    "content-hash": "75d832d99dfbb969d2b44e3eb0d8afcb",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -3279,6 +3279,49 @@
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
             "time": "2019-04-04T09:56:43+00:00"
+        },
+        {
+            "name": "webignition/php-basil-test-identifier-factory",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/php-basil-test-identifier-factory.git",
+                "reference": "375c7e8747657f30df049b519762ff2624d25e47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/php-basil-test-identifier-factory/zipball/375c7e8747657f30df049b519762ff2624d25e47",
+                "reference": "375c7e8747657f30df049b519762ff2624d25e47",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "webignition/php-basil-models": ">=0.59,<1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilTestIdentifierFactory\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Factory for creating webignition/php-basil-models::IdentifierInterface instances for tests",
+            "homepage": "https://github.com/webignition/php-basil-test-identifier-factory",
+            "time": "2019-08-20T17:29:51+00:00"
         },
         {
             "name": "webmozart/assert",

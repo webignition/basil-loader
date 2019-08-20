@@ -10,7 +10,7 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilParser\Loader\PageLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {

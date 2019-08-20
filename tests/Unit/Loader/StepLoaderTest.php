@@ -15,7 +15,7 @@ use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilParser\Loader\StepLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
+use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
