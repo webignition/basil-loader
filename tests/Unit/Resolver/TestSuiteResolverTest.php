@@ -27,7 +27,7 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
@@ -108,7 +108,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([

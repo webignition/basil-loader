@@ -34,7 +34,7 @@ use webignition\BasilParser\Exception\UnknownElementException;
 use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\StepResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
@@ -173,7 +173,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
             $namedCssElementIdentifier,
         ]);
 
-        $pageProvider = new PopulatedPageProvider([
+        $pageProvider = new PageProvider([
             'page_import_name' => new Page(
                 new Uri('http://example.com/'),
                 $identifierCollection
@@ -276,7 +276,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new Step([
                     $actionFactory->createFromActionString('set page_import_name.elements.element_name to "value"'),
                 ], []),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -299,7 +299,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         'set ".identifier-selector" to page_import_name.elements.element_name'
                     ),
                 ], []),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -322,7 +322,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => new Step([], [
                     $assertionFactory->createFromAssertionString('page_import_name.elements.element_name exists'),
                 ]),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -344,7 +344,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         '".examined-selector" is page_import_name.elements.element_name '
                     ),
                 ]),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -596,7 +596,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'step' => (new Step([], []))->withIdentifierCollection(new IdentifierCollection([
                     $unresolvedElementIdentifier,
                 ])),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -613,7 +613,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ->withIdentifierCollection(new IdentifierCollection([
                         $unresolvedElementIdentifier,
                     ])),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -673,7 +673,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         'page_import_name.elements.element_name'
                     )
                 ], []),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('https://example.com'),
                         new IdentifierCollection()
@@ -698,7 +698,7 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                         AssertionComparisons::EXISTS
                     )
                 ]),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('https://example.com'),
                         new IdentifierCollection()

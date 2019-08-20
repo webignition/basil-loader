@@ -21,7 +21,7 @@ use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\AssertionResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
@@ -124,7 +124,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                 'assertion' => $assertionFactory->createFromAssertionString(
                     'page_import_name.elements.element_name exists'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -145,7 +145,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                 'assertion' => $assertionFactory->createFromAssertionString(
                     '".examined-selector" is page_import_name.elements.element_name'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([
@@ -169,7 +169,7 @@ class AssertionResolverTest extends \PHPUnit\Framework\TestCase
                 'assertion' => $assertionFactory->createFromAssertionString(
                     'page_import_name.elements.examined is page_import_name.elements.expected'
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com/'),
                         new IdentifierCollection([

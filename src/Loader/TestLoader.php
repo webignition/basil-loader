@@ -21,7 +21,7 @@ use webignition\BasilParser\Exception\YamlLoaderException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
 
 class TestLoader
@@ -136,6 +136,6 @@ class TestLoader
             }
         }
 
-        return new PopulatedPageProvider($pages);
+        return new PageProvider($pages);
     }
 }

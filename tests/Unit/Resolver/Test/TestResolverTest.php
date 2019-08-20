@@ -39,7 +39,7 @@ use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
@@ -138,7 +138,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     new Configuration('', 'page_import_name.url'),
                     []
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(new Uri('http://example.com/'), new IdentifierCollection()),
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
@@ -217,7 +217,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
@@ -307,7 +307,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection([
@@ -510,7 +510,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('https://example.com'),
                         new IdentifierCollection([
@@ -563,7 +563,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('https://example.com'),
                         new IdentifierCollection([
@@ -819,7 +819,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ])),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()
@@ -848,7 +848,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()
@@ -878,7 +878,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ),
                     ]
                 ),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         new Uri('http://example.com'),
                         new IdentifierCollection()

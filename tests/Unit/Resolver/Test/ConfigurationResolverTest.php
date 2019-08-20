@@ -10,7 +10,7 @@ use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\ConfigurationInterface;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
+use webignition\BasilParser\Provider\Page\PageProvider;
 use webignition\BasilParser\Resolver\Test\ConfigurationResolver;
 use webignition\BasilParser\Tests\Services\Provider\EmptyPageProvider;
 
@@ -61,7 +61,7 @@ class ConfigurationResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'well-formed page url reference' => [
                 'configuration' => new Configuration('chrome', 'page_import_name.url'),
-                'pageProvider' => new PopulatedPageProvider([
+                'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(new Uri('http://page.example.com/'), new IdentifierCollection()),
                 ]),
                 'expectedConfiguration' => new Configuration('chrome', 'http://page.example.com/'),
