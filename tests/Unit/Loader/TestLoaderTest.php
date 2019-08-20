@@ -4,29 +4,46 @@
 
 namespace webignition\BasilParser\Tests\Unit\Loader;
 
+use webignition\BasilModel\Action\ActionTypes;
+use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\DataSet\DataSet;
+use webignition\BasilModel\DataSet\DataSetCollection;
+use webignition\BasilModel\Identifier\ElementIdentifier;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Loader\TestLoader;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @var TestLoader
+     */
+    private $testLoader;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->testLoader = TestLoader::createLoader();
+    }
+
+    /**
      * @dataProvider loadDataProvider
      */
     public function testLoad(string $path, TestInterface $expectedTest)
     {
-        $testLoader = TestLoader::createLoader();
-
-        $test = $testLoader->load($path);
+        $test = $this->testLoader->load($path);
 
         $this->assertEquals($expectedTest, $test);
     }
@@ -92,6 +109,67 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'import step with data parameters' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
+                'expectedTest' => new Test(
+                    FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
+                    new Configuration('chrome', 'https://example.com'),
+                    [
+                        'data parameters step' => (new Step(
+                            [
+                                new InteractionAction(
+                                    'click ".button"',
+                                    ActionTypes::CLICK,
+                                    new ElementIdentifier(
+                                        LiteralValue::createCssSelectorValue('.button')
+                                    ),
+                                    '".button"'
+                                )
+                            ],
+                            [
+                                new Assertion(
+                                    '".heading" includes $data.expected_title',
+                                    new ElementValue(
+                                        new ElementIdentifier(
+                                            LiteralValue::createCssSelectorValue('.heading')
+                                        )
+                                    ),
+                                    AssertionComparisons::INCLUDES,
+                                    new ObjectValue(
+                                        ValueTypes::DATA_PARAMETER,
+                                        '$data.expected_title',
+                                        ObjectNames::DATA,
+                                        'expected_title'
+                                    )
+                                ),
+                            ]
+                        ))->withDataSetCollection(new DataSetCollection([
+                            new DataSet('0', [
+                                'expected_title' => 'Foo',
+                            ]),
+                            new DataSet('1', [
+                                'expected_title' => 'Bar',
+                            ]),
+                        ]))
+                    ]
+                ),
+            ],
         ];
+    }
+
+    public function testLoadForNonRetrievableDataProvider()
+    {
+        $expectedInvalidDataProviderPath = sprintf(
+            '%s/DataProvider/file-does-not-exist.yml',
+            str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
+        );
+
+        $this->expectException(NonRetrievableDataProviderException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Cannot retrieve data provider "data_provider_import_name" from "%s"',
+            $expectedInvalidDataProviderPath
+        ));
+
+        $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-data-provider.yml'));
     }
 }

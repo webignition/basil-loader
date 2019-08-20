@@ -9,7 +9,6 @@ use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
@@ -59,7 +58,6 @@ class TestResolver
      * @throws CircularStepImportException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException
@@ -96,7 +94,6 @@ class TestResolver
 
                 $resolvedSteps[$stepName] = $resolvedStep;
             } catch (InvalidPageElementIdentifierException |
-                NonRetrievableDataProviderException |
                 NonRetrievablePageException |
                 NonRetrievableStepException |
                 UnknownDataProviderException |

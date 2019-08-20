@@ -25,8 +25,7 @@ use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -34,6 +33,7 @@ use webignition\BasilParser\Provider\Step\EmptyStepProvider;
 use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\TestSuiteResolver;
+use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
@@ -162,7 +162,7 @@ class TestSuiteResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     ),
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'foo' => 'bar',

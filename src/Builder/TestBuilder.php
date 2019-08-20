@@ -15,7 +15,6 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
@@ -51,7 +50,6 @@ class TestBuilder
      * @throws CircularStepImportException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws UnknownDataProviderException

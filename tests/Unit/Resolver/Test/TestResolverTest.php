@@ -31,7 +31,6 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilModelFactory\Action\ActionFactory;
 use webignition\BasilModelFactory\AssertionFactory;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
 use webignition\BasilParser\Exception\UnknownDataProviderException;
@@ -40,8 +39,7 @@ use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownPageException;
 use webignition\BasilParser\Exception\UnknownStepException;
 use webignition\BasilParser\Provider\DataSet\DataSetProviderInterface;
-use webignition\BasilParser\Provider\DataSet\EmptyDataSetProvider;
-use webignition\BasilParser\Provider\DataSet\PopulatedDataSetProvider;
+use webignition\BasilParser\Provider\DataSet\DataSetProvider;
 use webignition\BasilParser\Provider\Page\EmptyPageProvider;
 use webignition\BasilParser\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\Provider\Page\PopulatedPageProvider;
@@ -50,9 +48,9 @@ use webignition\BasilParser\Provider\Step\PopulatedStepProvider;
 use webignition\BasilParser\Provider\Step\StepProviderInterface;
 use webignition\BasilParser\Resolver\Test\TestResolver;
 use webignition\BasilParser\Tests\Services\FixturePathFinder;
-use webignition\BasilParser\Provider\DataSet\Factory as DataSetProviderFactory;
 use webignition\BasilParser\Provider\Page\Factory as PageProviderFactory;
 use webignition\BasilParser\Provider\Step\Factory as StepProviderFactory;
+use webignition\BasilParser\Tests\Services\Provider\EmptyDataSetProvider;
 use webignition\BasilParser\Tests\Services\TestIdentifierFactory;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
@@ -448,7 +446,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ]
                     )
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',
@@ -571,7 +569,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'Step/elemental_action_and_assertion_with_data_parameters.yml'
                     ),
                 ]),
-                'dataSetProvider' => new PopulatedDataSetProvider([
+                'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
                         new DataSet('0', [
                             'key1' => 'key1value1',
@@ -652,56 +650,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
         $invalidYamlPath = FixturePathFinder::find('invalid-yaml.yml');
 
         return [
-            'NonRetrievableDataProviderException: test.data references data provider that cannot be loaded' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            '',
-                            'data_provider_name'
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
-                    'data_provider_name' => 'DataProvider/non-existent.yml',
-                ]),
-                'expectedException' => NonRetrievableDataProviderException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve data provider "data_provider_name" from "DataProvider/non-existent.yml"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
-            'NonRetrievableDataProviderException: test.data references data provider containing invalid yaml' => [
-                'test' => new Test(
-                    'test name',
-                    new Configuration('chrome', 'http://example.com'),
-                    [
-                        'step name' => new PendingImportResolutionStep(
-                            new Step([], []),
-                            '',
-                            'data_provider_name'
-                        )
-                    ]
-                ),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => DataSetProviderFactory::createFactory()->createDeferredDataSetProvider([
-                    'data_provider_name' => $invalidYamlPath,
-                ]),
-                'expectedException' => NonRetrievableDataProviderException::class,
-                'expectedExceptionMessage' =>
-                    'Cannot retrieve data provider "data_provider_name" from "' . $invalidYamlPath . '"',
-                'expectedExceptionContext' =>  new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => 'test name',
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                ])
-            ],
             'NonRetrievablePageException: config.url references page that does not exist' => [
                 'test' => new Test(
                     'test name',
