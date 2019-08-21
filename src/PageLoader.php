@@ -1,13 +1,13 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilLoader;
 
-use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilDataStructure\Page as PageData;
+use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\PageFactory;
-use webignition\BasilParser\Exception\YamlLoaderException;
 
 class PageLoader
 {

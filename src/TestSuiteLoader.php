@@ -1,11 +1,16 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilLoader;
 
+use webignition\BasilDataStructure\ImportList;
 use webignition\BasilDataStructure\PathResolver;
+use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
+use webignition\BasilLoader\Exception\NonRetrievablePageException;
+use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\UnknownTestException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
-use webignition\BasilDataStructure\ImportList;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
@@ -14,11 +19,6 @@ use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModelResolver\CircularStepImportException;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\UnknownTestException;
-use webignition\BasilParser\Exception\YamlLoaderException;
 
 class TestSuiteLoader
 {

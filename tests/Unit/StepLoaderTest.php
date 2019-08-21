@@ -2,8 +2,10 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
+use webignition\BasilLoader\StepLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
@@ -13,8 +15,6 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilParser\Loader\StepLoader;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase

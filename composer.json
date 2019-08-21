@@ -1,8 +1,8 @@
 {
-    "name": "webignition/php-basil-parser",
-    "description": "Parser for basil language",
+    "name": "webignition/php-basil-loader",
+    "description": "Loader for basil language files",
     "keywords": [],
-    "homepage": "https://github.com/webignition/php-basil-parser",
+    "homepage": "https://github.com/webignition/php-basil-loader",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,12 +13,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "webignition\\BasilParser\\": "src"
+            "webignition\\BasilLoader\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "webignition\\BasilParser\\Tests\\": "tests"
+            "webignition\\BasilLoader\\Tests\\": "tests"
         }
     },
     "scripts": {

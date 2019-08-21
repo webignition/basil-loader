@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Exception;
+namespace webignition\BasilLoader\Exception;
 
 class NonRetrievableStepException extends AbstractNonRetrievableImportException
 {

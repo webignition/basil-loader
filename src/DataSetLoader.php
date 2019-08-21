@@ -1,11 +1,11 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilLoader;
 
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
-use webignition\BasilParser\Exception\YamlLoaderException;
 
 class DataSetLoader
 {

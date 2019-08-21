@@ -2,9 +2,12 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilDataStructure\PathResolver;
+use webignition\BasilLoader\Exception\UnknownTestException;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\TestSuiteLoader;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Step\Step;
@@ -16,9 +19,6 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\UnknownTestException;
-use webignition\BasilParser\Loader\TestSuiteLoader;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -140,7 +140,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
     {
         $expectedUnknownTestPath = (PathResolver::create())->resolve(
             __DIR__,
-            '../../../Fixtures/Test/example.com.path-does-not-exist.yml'
+            '../../Fixtures/Test/example.com.path-does-not-exist.yml'
         );
 
         $path = FixturePathFinder::find('TestSuite/example.com-path-does-not-exist.yml');

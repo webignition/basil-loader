@@ -1,12 +1,12 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilLoader;
 
+use webignition\BasilDataStructure\Step as StepData;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\StepFactory;
-use webignition\BasilDataStructure\Step as StepData;
-use webignition\BasilParser\Exception\YamlLoaderException;
 
 class StepLoader
 {

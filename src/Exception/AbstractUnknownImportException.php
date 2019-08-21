@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Exception;
+namespace webignition\BasilLoader\Exception;
 
 use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
 use webignition\BasilContextAwareException\ContextAwareExceptionTrait;

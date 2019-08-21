@@ -2,8 +2,13 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
+use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
+use webignition\BasilLoader\Exception\NonRetrievablePageException;
+use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\TestLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
 use webignition\BasilModel\Assertion\Assertion;
@@ -20,11 +25,6 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Loader\TestLoader;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
