@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilLoader\Loader;
+namespace webignition\BasilLoader;
 
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilDataStructure\Page as PageData;

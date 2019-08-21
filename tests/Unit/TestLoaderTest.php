@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilLoader\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
@@ -23,7 +23,7 @@ use webignition\BasilModel\Value\ValueTypes;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
-use webignition\BasilLoader\Loader\TestLoader;
+use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 

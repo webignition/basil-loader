@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilLoader\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
@@ -13,7 +13,7 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilLoader\Loader\StepLoader;
+use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 

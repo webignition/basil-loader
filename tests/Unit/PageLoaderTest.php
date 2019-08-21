@@ -2,13 +2,13 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilLoader\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit;
 
 use Nyholm\Psr7\Uri;
+use webignition\BasilLoader\PageLoader;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilLoader\Loader\PageLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilLoader\Loader;
+namespace webignition\BasilLoader;
 
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\TestSuite\TestSuite;

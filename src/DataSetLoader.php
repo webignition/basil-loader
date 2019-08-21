@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilLoader\Loader;
+namespace webignition\BasilLoader;
 
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
