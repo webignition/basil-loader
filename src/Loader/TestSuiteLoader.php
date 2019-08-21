@@ -11,12 +11,12 @@ use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
-use webignition\BasilParser\Exception\CircularStepImportException;
+use webignition\BasilModelResolver\CircularStepImportException;
+use webignition\BasilModelResolver\UnknownElementException;
+use webignition\BasilModelResolver\UnknownPageElementException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\UnknownElementException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\UnknownTestException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 
