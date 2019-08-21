@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Exception;
+namespace webignition\BasilLoader\Exception;
 
 class UnknownTestException extends AbstractUnknownImportException
 {

@@ -1,7 +1,7 @@
 <?php
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Services;
+namespace webignition\BasilLoader\Tests\Services;
 
 class FixturePathFinder
 {

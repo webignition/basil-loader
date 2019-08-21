@@ -1,6 +1,6 @@
 <?php
 
-namespace webignition\BasilParser\Loader;
+namespace webignition\BasilLoader\Loader;
 
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Test\TestInterface;
@@ -21,10 +21,10 @@ use webignition\BasilModelResolver\TestResolver;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
 use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
-use webignition\BasilParser\Exception\NonRetrievablePageException;
-use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\YamlLoaderException;
+use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
+use webignition\BasilLoader\Exception\NonRetrievablePageException;
+use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class TestLoader
 {

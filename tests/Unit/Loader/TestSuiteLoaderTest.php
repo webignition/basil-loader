@@ -2,7 +2,7 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit\Loader;
 
 use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Assertion\Assertion;
@@ -16,9 +16,9 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilParser\Exception\UnknownTestException;
-use webignition\BasilParser\Loader\TestSuiteLoader;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\Exception\UnknownTestException;
+use webignition\BasilLoader\Loader\TestSuiteLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {

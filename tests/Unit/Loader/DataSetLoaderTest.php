@@ -2,13 +2,13 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Loader;
+namespace webignition\BasilLoader\Tests\Unit\Loader;
 
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
-use webignition\BasilParser\Loader\DataSetLoader;
-use webignition\BasilParser\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\Loader\DataSetLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 
 class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
 {

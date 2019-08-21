@@ -2,11 +2,11 @@
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection PhpDocSignatureInspection */
 
-namespace webignition\BasilParser\Tests\Unit\Exception;
+namespace webignition\BasilLoader\Tests\Unit\Exception;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use Symfony\Component\Yaml\Exception\ParseException;
-use webignition\BasilParser\Exception\YamlLoaderException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
 {
