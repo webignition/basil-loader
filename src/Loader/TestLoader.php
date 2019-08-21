@@ -15,14 +15,14 @@ use webignition\BasilModelProvider\Page\PageProvider;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
+use webignition\BasilModelResolver\CircularStepImportException;
+use webignition\BasilModelResolver\UnknownElementException;
+use webignition\BasilModelResolver\UnknownPageElementException;
 use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilParser\Exception\CircularStepImportException;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
 use webignition\BasilParser\Exception\NonRetrievableStepException;
-use webignition\BasilParser\Exception\UnknownElementException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
 use webignition\BasilParser\Exception\YamlLoaderException;
 
 class TestLoader

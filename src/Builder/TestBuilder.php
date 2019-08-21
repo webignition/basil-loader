@@ -12,10 +12,10 @@ use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
-use webignition\BasilParser\Exception\CircularStepImportException;
-use webignition\BasilParser\Exception\UnknownElementException;
-use webignition\BasilParser\Exception\UnknownPageElementException;
-use webignition\BasilParser\Resolver\Test\TestResolver;
+use webignition\BasilModelResolver\CircularStepImportException;
+use webignition\BasilModelResolver\TestResolver;
+use webignition\BasilModelResolver\UnknownElementException;
+use webignition\BasilModelResolver\UnknownPageElementException;
 
 class TestBuilder
 {
