@@ -6,6 +6,7 @@ use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
+use webignition\BasilModelFactory\Test\TestFactory;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
@@ -16,9 +17,9 @@ use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilModelResolver\CircularStepImportException;
+use webignition\BasilModelResolver\TestResolver;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
-use webignition\BasilParser\Builder\TestBuilder;
 use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilParser\Exception\NonRetrievableDataProviderException;
 use webignition\BasilParser\Exception\NonRetrievablePageException;
@@ -28,37 +29,41 @@ use webignition\BasilParser\Exception\YamlLoaderException;
 class TestLoader
 {
     private $yamlLoader;
-    private $testBuilder;
     private $pathResolver;
     private $dataSetLoader;
     private $pageLoader;
     private $stepLoader;
+    private $testResolver;
+    private $testFactory;
 
     public function __construct(
         YamlLoader $yamlLoader,
-        TestBuilder $testBuilder,
         PathResolver $pathResolver,
         DataSetLoader $dataSetLoader,
         PageLoader $pageLoader,
-        StepLoader $stepLoader
+        StepLoader $stepLoader,
+        TestResolver $testResolver,
+        TestFactory $testFactory
     ) {
         $this->yamlLoader = $yamlLoader;
-        $this->testBuilder = $testBuilder;
         $this->pathResolver = $pathResolver;
         $this->dataSetLoader = $dataSetLoader;
         $this->pageLoader = $pageLoader;
         $this->stepLoader = $stepLoader;
+        $this->testResolver = $testResolver;
+        $this->testFactory = $testFactory;
     }
 
     public static function createLoader(): TestLoader
     {
         return new TestLoader(
             YamlLoader::createLoader(),
-            TestBuilder::createBuilder(),
             PathResolver::create(),
             DataSetLoader::createLoader(),
             PageLoader::createLoader(),
-            StepLoader::createLoader()
+            StepLoader::createLoader(),
+            TestResolver::createResolver(),
+            TestFactory::createFactory()
         );
     }
 
@@ -91,7 +96,9 @@ class TestLoader
         $pageProvider = $this->createPageProvider($imports->getPagePaths());
         $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
 
-        return $this->testBuilder->build($testData, $pageProvider, $stepProvider, $dataSetProvider);
+        $unresolvedTest = $this->testFactory->createFromTestData($testData->getPath(), $testData);
+
+        return $this->testResolver->resolve($unresolvedTest, $pageProvider, $stepProvider, $dataSetProvider);
     }
 
     /**
