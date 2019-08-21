@@ -5,10 +5,10 @@
 namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilLoader\DataSetLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
-use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 
 class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
 {

@@ -6,10 +6,10 @@ namespace webignition\BasilLoader\Tests\Unit;
 
 use Nyholm\Psr7\Uri;
 use webignition\BasilLoader\PageLoader;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModel\Identifier\IdentifierCollection;
 use webignition\BasilModel\Page\Page;
 use webignition\BasilModel\Page\PageInterface;
-use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase

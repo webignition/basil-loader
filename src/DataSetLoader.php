@@ -2,10 +2,10 @@
 
 namespace webignition\BasilLoader;
 
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
 use webignition\BasilModel\DataSet\DataSetCollectionInterface;
-use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class DataSetLoader
 {

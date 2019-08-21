@@ -5,6 +5,9 @@
 namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilDataStructure\PathResolver;
+use webignition\BasilLoader\Exception\UnknownTestException;
+use webignition\BasilLoader\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\TestSuiteLoader;
 use webignition\BasilModel\Assertion\Assertion;
 use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Step\Step;
@@ -16,9 +19,6 @@ use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectNames;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ValueTypes;
-use webignition\BasilLoader\Exception\UnknownTestException;
-use webignition\BasilLoader\TestSuiteLoader;
-use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {

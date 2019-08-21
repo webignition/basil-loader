@@ -2,12 +2,12 @@
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilDataStructure\Page as PageData;
+use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\PageFactory;
-use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class PageLoader
 {

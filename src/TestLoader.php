@@ -3,6 +3,11 @@
 namespace webignition\BasilLoader;
 
 use webignition\BasilDataStructure\PathResolver;
+use webignition\BasilDataStructure\Test\Test as TestData;
+use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
+use webignition\BasilLoader\Exception\NonRetrievablePageException;
+use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
@@ -20,11 +25,6 @@ use webignition\BasilModelResolver\CircularStepImportException;
 use webignition\BasilModelResolver\TestResolver;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
-use webignition\BasilDataStructure\Test\Test as TestData;
-use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
-use webignition\BasilLoader\Exception\NonRetrievablePageException;
-use webignition\BasilLoader\Exception\NonRetrievableStepException;
-use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class TestLoader
 {
