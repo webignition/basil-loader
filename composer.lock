@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3d41001f1604d72b39e8c11978c166a",
+    "content-hash": "c7226c7019b31786924568b92015b869",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -516,31 +516,31 @@
         },
         {
             "name": "webignition/php-basil-model-resolver",
-            "version": "0.3",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-model-resolver.git",
-                "reference": "3037dd4b26eabd30876186625da67410621c1784"
+                "reference": "2bf05b7af4b1006d3f02bd4f338c18e2a1fdf85a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-model-resolver/zipball/3037dd4b26eabd30876186625da67410621c1784",
-                "reference": "3037dd4b26eabd30876186625da67410621c1784",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-resolver/zipball/2bf05b7af4b1006d3f02bd4f338c18e2a1fdf85a",
+                "reference": "2bf05b7af4b1006d3f02bd4f338c18e2a1fdf85a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2",
                 "webignition/php-basil-context-aware-exception": ">=0.1,<1",
                 "webignition/php-basil-model-provider": ">=0.2,<1",
-                "webignition/php-basil-models": ">=0.66,<1"
+                "webignition/php-basil-models": ">=0.68,<1"
             },
             "require-dev": {
                 "nyholm/psr7": "^1.1",
                 "phpstan/phpstan": "^0.11.5",
                 "phpunit/phpunit": "~8.0",
                 "squizlabs/php_codesniffer": "3.*",
-                "webignition/php-basil-model-factory": ">=0.18,<1",
-                "webignition/php-basil-test-identifier-factory": ">=0.2,<1"
+                "webignition/php-basil-model-factory": ">=0.19,<1",
+                "webignition/php-basil-test-identifier-factory": ">=0.3,<1"
             },
             "type": "library",
             "autoload": {
@@ -560,7 +560,7 @@
             ],
             "description": "Resolves element and value references in basil models",
             "homepage": "https://github.com/webignition/php-basil-model-resolver",
-            "time": "2019-09-10T08:04:11+00:00"
+            "time": "2019-09-10T14:00:47+00:00"
         },
         {
             "name": "webignition/php-basil-models",
