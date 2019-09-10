@@ -20,11 +20,11 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModel\Value\CssSelector;
+use webignition\BasilModel\Value\DataParameter;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\ObjectNames;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModel\Value\PageProperty;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
@@ -73,14 +73,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new Assertion(
                                     '$page.url is "https://example.com"',
-                                    new ObjectValue(
-                                        ValueTypes::PAGE_OBJECT_PROPERTY,
-                                        '$page.url',
-                                        ObjectNames::PAGE,
-                                        'url'
-                                    ),
+                                    new PageProperty('$page.url', 'url'),
                                     AssertionComparisons::IS,
-                                    LiteralValue::createStringValue('https://example.com')
+                                    new LiteralValue('https://example.com')
                                 ),
                             ]
                         )
@@ -98,14 +93,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new Assertion(
                                     '$page.url is "https://example.com"',
-                                    new ObjectValue(
-                                        ValueTypes::PAGE_OBJECT_PROPERTY,
-                                        '$page.url',
-                                        'page',
-                                        'url'
-                                    ),
+                                    new PageProperty('$page.url', 'url'),
                                     AssertionComparisons::IS,
-                                    LiteralValue::createStringValue('https://example.com')
+                                    new LiteralValue('https://example.com')
                                 ),
                             ]
                         )
@@ -124,7 +114,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                     'click ".button"',
                                     ActionTypes::CLICK,
                                     new ElementIdentifier(
-                                        LiteralValue::createCssSelectorValue('.button')
+                                        new CssSelector('.button')
                                     ),
                                     '".button"'
                                 )
@@ -134,16 +124,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                     '".heading" includes $data.expected_title',
                                     new ElementValue(
                                         new ElementIdentifier(
-                                            LiteralValue::createCssSelectorValue('.heading')
+                                            new CssSelector('.heading')
                                         )
                                     ),
                                     AssertionComparisons::INCLUDES,
-                                    new ObjectValue(
-                                        ValueTypes::DATA_PARAMETER,
-                                        '$data.expected_title',
-                                        ObjectNames::DATA,
-                                        'expected_title'
-                                    )
+                                    new DataParameter('$data.expected_title', 'expected_title')
                                 ),
                             ]
                         ))->withDataSetCollection(new DataSetCollection([
@@ -168,7 +153,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 new InteractionAction(
                                     'click $elements.button',
                                     ActionTypes::CLICK,
-                                    TestIdentifierFactory::createCssElementIdentifier('.button', 1, 'button'),
+                                    TestIdentifierFactory::createElementIdentifier(
+                                        new CssSelector('.button'),
+                                        null,
+                                        'button'
+                                    ),
                                     '$elements.button'
                                 )
                             ],
@@ -176,10 +165,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 new Assertion(
                                     '$elements.heading includes "example"',
                                     new ElementValue(
-                                        TestIdentifierFactory::createCssElementIdentifier('.heading', 1, 'heading')
+                                        TestIdentifierFactory::createElementIdentifier(
+                                            new CssSelector('.heading'),
+                                            null,
+                                            'heading'
+                                        )
                                     ),
                                     AssertionComparisons::INCLUDES,
-                                    LiteralValue::createStringValue('example')
+                                    new LiteralValue('example')
                                 ),
                             ]
                         )
