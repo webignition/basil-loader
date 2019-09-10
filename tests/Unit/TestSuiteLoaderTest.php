@@ -16,9 +16,7 @@ use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\ObjectNames;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ValueTypes;
+use webignition\BasilModel\Value\PageProperty;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -65,14 +63,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(
-                                                ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                '$page.url',
-                                                ObjectNames::PAGE,
-                                                'url'
-                                            ),
+                                            new PageProperty('$page.url', 'url'),
                                             AssertionComparisons::IS,
-                                            LiteralValue::createStringValue('https://example.com')
+                                            new LiteralValue('https://example.com')
                                         ),
                                     ]
                                 ),
@@ -95,14 +88,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(
-                                                ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                '$page.url',
-                                                ObjectNames::PAGE,
-                                                'url'
-                                            ),
+                                            new PageProperty('$page.url', 'url'),
                                             AssertionComparisons::IS,
-                                            LiteralValue::createStringValue('https://example.com')
+                                            new LiteralValue('https://example.com')
                                         ),
                                     ]
                                 ),
@@ -117,14 +105,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new Assertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(
-                                                ValueTypes::PAGE_OBJECT_PROPERTY,
-                                                '$page.url',
-                                                ObjectNames::PAGE,
-                                                'url'
-                                            ),
+                                            new PageProperty('$page.url', 'url'),
                                             AssertionComparisons::IS,
-                                            LiteralValue::createStringValue('https://example.com')
+                                            new LiteralValue('https://example.com')
                                         ),
                                     ]
                                 )
