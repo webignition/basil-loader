@@ -13,6 +13,7 @@ use webignition\BasilModel\Assertion\AssertionComparisons;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModel\Value\CssSelector;
 use webignition\BasilModel\Value\ElementValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
@@ -45,7 +46,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new InteractionAction(
                             'click ".button"',
                             ActionTypes::CLICK,
-                            TestIdentifierFactory::createCssElementIdentifier('.button'),
+                            TestIdentifierFactory::createElementIdentifier(new CssSelector('.button')),
                             '".button"'
                         ),
                     ],
@@ -53,10 +54,10 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                         new Assertion(
                             '".heading" includes "example"',
                             new ElementValue(
-                                TestIdentifierFactory::createCssElementIdentifier('.heading')
+                                TestIdentifierFactory::createElementIdentifier(new CssSelector('.heading'))
                             ),
                             AssertionComparisons::INCLUDES,
-                            LiteralValue::createStringValue('example')
+                            new LiteralValue('example')
                         ),
                     ]
                 ),
