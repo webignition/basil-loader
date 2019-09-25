@@ -11,20 +11,21 @@ use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModel\Action\ActionTypes;
 use webignition\BasilModel\Action\InteractionAction;
-use webignition\BasilModel\Assertion\Assertion;
-use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Assertion\AssertionComparison;
+use webignition\BasilModel\Assertion\ComparisonAssertion;
 use webignition\BasilModel\DataSet\DataSet;
 use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\ElementIdentifier;
+use webignition\BasilModel\Identifier\DomIdentifier;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModel\Value\CssSelector;
-use webignition\BasilModel\Value\DataParameter;
-use webignition\BasilModel\Value\ElementValue;
+use webignition\BasilModel\Value\Assertion\ExaminedValue;
+use webignition\BasilModel\Value\Assertion\ExpectedValue;
+use webignition\BasilModel\Value\DomIdentifierValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\PageProperty;
+use webignition\BasilModel\Value\ObjectValue;
+use webignition\BasilModel\Value\ObjectValueType;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
@@ -71,11 +72,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         'verify page is open' => new Step(
                             [],
                             [
-                                new Assertion(
+                                new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new PageProperty('$page.url', 'url'),
-                                    AssertionComparisons::IS,
-                                    new LiteralValue('https://example.com')
+                                    new ExaminedValue(
+                                        new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
+                                    ),
+                                    AssertionComparison::IS,
+                                    new ExpectedValue(
+                                        new LiteralValue('https://example.com')
+                                    )
                                 ),
                             ]
                         )
@@ -91,11 +96,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         'verify page is open' => new Step(
                             [],
                             [
-                                new Assertion(
+                                new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new PageProperty('$page.url', 'url'),
-                                    AssertionComparisons::IS,
-                                    new LiteralValue('https://example.com')
+                                    new ExaminedValue(
+                                        new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
+                                    ),
+                                    AssertionComparison::IS,
+                                    new ExpectedValue(
+                                        new LiteralValue('https://example.com')
+                                    )
                                 ),
                             ]
                         )
@@ -113,22 +122,26 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 new InteractionAction(
                                     'click ".button"',
                                     ActionTypes::CLICK,
-                                    new ElementIdentifier(
-                                        new CssSelector('.button')
-                                    ),
+                                    new DomIdentifier('.button'),
                                     '".button"'
                                 )
                             ],
                             [
-                                new Assertion(
+                                new ComparisonAssertion(
                                     '".heading" includes $data.expected_title',
-                                    new ElementValue(
-                                        new ElementIdentifier(
-                                            new CssSelector('.heading')
+                                    new ExaminedValue(
+                                        new DomIdentifierValue(
+                                            new DomIdentifier('.heading')
                                         )
                                     ),
-                                    AssertionComparisons::INCLUDES,
-                                    new DataParameter('$data.expected_title', 'expected_title')
+                                    AssertionComparison::INCLUDES,
+                                    new ExpectedValue(
+                                        new ObjectValue(
+                                            ObjectValueType::DATA_PARAMETER,
+                                            '$data.expected_title',
+                                            'expected_title'
+                                        )
+                                    )
                                 ),
                             ]
                         ))->withDataSetCollection(new DataSetCollection([
@@ -154,7 +167,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                     'click $elements.button',
                                     ActionTypes::CLICK,
                                     TestIdentifierFactory::createElementIdentifier(
-                                        new CssSelector('.button'),
+                                        '.button',
                                         null,
                                         'button'
                                     ),
@@ -162,17 +175,21 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 )
                             ],
                             [
-                                new Assertion(
+                                new ComparisonAssertion(
                                     '$elements.heading includes "example"',
-                                    new ElementValue(
-                                        TestIdentifierFactory::createElementIdentifier(
-                                            new CssSelector('.heading'),
-                                            null,
-                                            'heading'
+                                    new ExaminedValue(
+                                        new DomIdentifierValue(
+                                            TestIdentifierFactory::createElementIdentifier(
+                                                '.heading',
+                                                null,
+                                                'heading'
+                                            )
                                         )
                                     ),
-                                    AssertionComparisons::INCLUDES,
-                                    new LiteralValue('example')
+                                    AssertionComparison::INCLUDES,
+                                    new ExpectedValue(
+                                        new LiteralValue('example')
+                                    )
                                 ),
                             ]
                         )

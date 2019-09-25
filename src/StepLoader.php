@@ -5,6 +5,10 @@ namespace webignition\BasilLoader;
 use webignition\BasilDataStructure\Step as StepData;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\Step\StepInterface;
+use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
+use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
+use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
+use webignition\BasilModelFactory\Exception\MissingValueException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\StepFactory;
 
@@ -33,7 +37,11 @@ class StepLoader
      *
      * @return StepInterface
      *
+     * @throws EmptyAssertionStringException
+     * @throws InvalidActionTypeException
+     * @throws InvalidIdentifierStringException
      * @throws MalformedPageElementReferenceException
+     * @throws MissingValueException
      * @throws YamlLoaderException
      */
     public function load(string $path): StepInterface

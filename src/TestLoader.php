@@ -8,7 +8,13 @@ use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilModel\Exception\InvalidAssertionExaminedValueException;
+use webignition\BasilModel\Exception\InvalidAssertionExpectedValueException;
 use webignition\BasilModel\Test\TestInterface;
+use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
+use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
+use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
+use webignition\BasilModelFactory\Exception\MissingValueException;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\Test\TestFactory;
@@ -73,8 +79,14 @@ class TestLoader
      * @return TestInterface
      *
      * @throws CircularStepImportException
+     * @throws EmptyAssertionStringException
+     * @throws InvalidActionTypeException
+     * @throws InvalidAssertionExaminedValueException
+     * @throws InvalidAssertionExpectedValueException
+     * @throws InvalidIdentifierStringException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
+     * @throws MissingValueException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
@@ -129,7 +141,6 @@ class TestLoader
      * @return PageProviderInterface
      *
      * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
      * @throws NonRetrievablePageException
      */
     private function createPageProvider(array $importPaths): PageProviderInterface
@@ -154,6 +165,10 @@ class TestLoader
      *
      * @throws MalformedPageElementReferenceException
      * @throws NonRetrievableStepException
+     * @throws EmptyAssertionStringException
+     * @throws InvalidActionTypeException
+     * @throws InvalidIdentifierStringException
+     * @throws MissingValueException
      */
     private function createStepProvider(array $importPaths): StepProviderInterface
     {

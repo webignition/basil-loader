@@ -8,15 +8,18 @@ use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
-use webignition\BasilModel\Assertion\Assertion;
-use webignition\BasilModel\Assertion\AssertionComparisons;
+use webignition\BasilModel\Assertion\AssertionComparison;
+use webignition\BasilModel\Assertion\ComparisonAssertion;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\TestSuite\TestSuite;
 use webignition\BasilModel\TestSuite\TestSuiteInterface;
+use webignition\BasilModel\Value\Assertion\ExaminedValue;
+use webignition\BasilModel\Value\Assertion\ExpectedValue;
 use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\PageProperty;
+use webignition\BasilModel\Value\ObjectValue;
+use webignition\BasilModel\Value\ObjectValueType;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -61,11 +64,15 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new Assertion(
+                                        new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new PageProperty('$page.url', 'url'),
-                                            AssertionComparisons::IS,
-                                            new LiteralValue('https://example.com')
+                                            new ExaminedValue(
+                                                new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
+                                            ),
+                                            AssertionComparison::IS,
+                                            new ExpectedValue(
+                                                new LiteralValue('https://example.com')
+                                            )
                                         ),
                                     ]
                                 ),
@@ -86,11 +93,15 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new Assertion(
+                                        new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new PageProperty('$page.url', 'url'),
-                                            AssertionComparisons::IS,
-                                            new LiteralValue('https://example.com')
+                                            new ExaminedValue(
+                                                new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
+                                            ),
+                                            AssertionComparison::IS,
+                                            new ExpectedValue(
+                                                new LiteralValue('https://example.com')
+                                            )
                                         ),
                                     ]
                                 ),
@@ -103,11 +114,15 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new Assertion(
+                                        new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new PageProperty('$page.url', 'url'),
-                                            AssertionComparisons::IS,
-                                            new LiteralValue('https://example.com')
+                                            new ExaminedValue(
+                                                new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
+                                            ),
+                                            AssertionComparison::IS,
+                                            new ExpectedValue(
+                                                new LiteralValue('https://example.com')
+                                            )
                                         ),
                                     ]
                                 )
