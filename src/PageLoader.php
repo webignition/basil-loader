@@ -6,7 +6,6 @@ use webignition\BasilDataStructure\Page as PageData;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModel\Page\PageInterface;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelFactory\PageFactory;
 
 class PageLoader
@@ -34,7 +33,6 @@ class PageLoader
      * @return PageInterface
      *
      * @throws YamlLoaderException
-     * @throws MalformedPageElementReferenceException
      * @throws InvalidPageElementIdentifierException
      */
     public function load(string $path): PageInterface
