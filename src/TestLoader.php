@@ -8,8 +8,6 @@ use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModel\Exception\InvalidAssertionExaminedValueException;
-use webignition\BasilModel\Exception\InvalidAssertionExpectedValueException;
 use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
 use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
@@ -81,8 +79,6 @@ class TestLoader
      * @throws CircularStepImportException
      * @throws EmptyAssertionStringException
      * @throws InvalidActionTypeException
-     * @throws InvalidAssertionExaminedValueException
-     * @throws InvalidAssertionExpectedValueException
      * @throws InvalidIdentifierStringException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException

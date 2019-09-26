@@ -20,8 +20,6 @@ use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Test\Configuration;
 use webignition\BasilModel\Test\Test;
 use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModel\Value\Assertion\ExaminedValue;
-use webignition\BasilModel\Value\Assertion\ExpectedValue;
 use webignition\BasilModel\Value\DomIdentifierValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
@@ -74,13 +72,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new ExaminedValue(
-                                        new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
-                                    ),
+                                    new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
                                     AssertionComparison::IS,
-                                    new ExpectedValue(
-                                        new LiteralValue('https://example.com')
-                                    )
+                                    new LiteralValue('https://example.com')
                                 ),
                             ]
                         )
@@ -98,13 +92,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new ExaminedValue(
-                                        new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url')
-                                    ),
+                                    new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
                                     AssertionComparison::IS,
-                                    new ExpectedValue(
-                                        new LiteralValue('https://example.com')
-                                    )
+                                    new LiteralValue('https://example.com')
                                 ),
                             ]
                         )
@@ -129,18 +119,12 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '".heading" includes $data.expected_title',
-                                    new ExaminedValue(
-                                        new DomIdentifierValue(
-                                            new DomIdentifier('.heading')
-                                        )
-                                    ),
+                                    DomIdentifierValue::create('.heading'),
                                     AssertionComparison::INCLUDES,
-                                    new ExpectedValue(
-                                        new ObjectValue(
-                                            ObjectValueType::DATA_PARAMETER,
-                                            '$data.expected_title',
-                                            'expected_title'
-                                        )
+                                    new ObjectValue(
+                                        ObjectValueType::DATA_PARAMETER,
+                                        '$data.expected_title',
+                                        'expected_title'
                                     )
                                 ),
                             ]
@@ -177,19 +161,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '$elements.heading includes "example"',
-                                    new ExaminedValue(
-                                        new DomIdentifierValue(
-                                            TestIdentifierFactory::createElementIdentifier(
-                                                '.heading',
-                                                null,
-                                                'heading'
-                                            )
+                                    new DomIdentifierValue(
+                                        TestIdentifierFactory::createElementIdentifier(
+                                            '.heading',
+                                            null,
+                                            'heading'
                                         )
                                     ),
                                     AssertionComparison::INCLUDES,
-                                    new ExpectedValue(
-                                        new LiteralValue('example')
-                                    )
+                                    new LiteralValue('example')
                                 ),
                             ]
                         )

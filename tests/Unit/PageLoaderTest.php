@@ -28,7 +28,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
-        $parentIdentifier = TestIdentifierFactory::createElementIdentifier('.form', 1, 'form');
+        $parentIdentifier = TestIdentifierFactory::createElementIdentifier('.form', null, 'form');
 
         return [
             'empty' => [

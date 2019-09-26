@@ -13,8 +13,6 @@ use webignition\BasilModel\Assertion\ComparisonAssertion;
 use webignition\BasilModel\Step\PendingImportResolutionStep;
 use webignition\BasilModel\Step\Step;
 use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModel\Value\Assertion\ExaminedValue;
-use webignition\BasilModel\Value\Assertion\ExpectedValue;
 use webignition\BasilModel\Value\DomIdentifierValue;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
@@ -54,15 +52,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         new ComparisonAssertion(
                             '".heading" includes "example"',
-                            new ExaminedValue(
-                                new DomIdentifierValue(
-                                    TestIdentifierFactory::createElementIdentifier('.heading')
-                                )
-                            ),
+                            DomIdentifierValue::create('.heading'),
                             AssertionComparison::INCLUDES,
-                            new ExpectedValue(
-                                new LiteralValue('example')
-                            )
+                            new LiteralValue('example')
                         ),
                     ]
                 ),
