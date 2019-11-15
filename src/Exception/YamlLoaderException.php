@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\BasilLoader\Exception;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 
 class YamlLoaderException extends \Exception
 {
-    const MESSAGE_DATA_IS_NOT_AN_ARRAY = 'Data is not an array';
-    const CODE_DATA_IS_NOT_AN_ARRAY = 100;
+    public const MESSAGE_DATA_IS_NOT_AN_ARRAY = 'Data is not an array';
+    public const CODE_DATA_IS_NOT_AN_ARRAY = 100;
 
     public static function fromYamlParseException(ParseException $parseException): YamlLoaderException
     {
