@@ -1,8 +1,8 @@
 {
-    "name": "webignition/php-basil-loader",
+    "name": "webignition/basil-loader",
     "description": "Loader for basil language files",
     "keywords": [],
-    "homepage": "https://github.com/webignition/php-basil-loader",
+    "homepage": "https://github.com/webignition/basil-loader",
     "type": "library",
     "license": "MIT",
     "authors": [
