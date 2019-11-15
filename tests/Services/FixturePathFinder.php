@@ -1,11 +1,12 @@
 <?php
-/** @noinspection PhpDocSignatureInspection */
+
+declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Services;
 
 class FixturePathFinder
 {
-    const FIXTURES_RELATIVE_PATH = '/../Fixtures';
+    private const FIXTURES_RELATIVE_PATH = '/../Fixtures';
 
     public static function find(string $path): string
     {

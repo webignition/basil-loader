@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\BasilLoader\Exception;
 
 class NonRetrievableDataProviderException extends AbstractNonRetrievableImportException
