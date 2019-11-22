@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-//use webignition\BasilDataStructure\ImportList;
-//use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
