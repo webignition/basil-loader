@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilDataStructure\PathResolver;
-use webignition\BasilDataStructure\Test\Test as TestData;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
@@ -14,6 +12,7 @@ use webignition\BasilModel\Test\TestInterface;
 use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
 use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
 use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
+use webignition\BasilModelFactory\Exception\MissingComparisonException;
 use webignition\BasilModelFactory\Exception\MissingValueException;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
@@ -31,32 +30,33 @@ use webignition\BasilModelResolver\CircularStepImportException;
 use webignition\BasilModelResolver\TestResolver;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
+use webignition\BasilParser\Test\TestParser;
 
 class TestLoader
 {
     private $yamlLoader;
-    private $pathResolver;
     private $dataSetLoader;
     private $pageLoader;
     private $stepLoader;
     private $testResolver;
+    private $testParser;
     private $testFactory;
 
     public function __construct(
         YamlLoader $yamlLoader,
-        PathResolver $pathResolver,
         DataSetLoader $dataSetLoader,
         PageLoader $pageLoader,
         StepLoader $stepLoader,
         TestResolver $testResolver,
+        TestParser $testParser,
         TestFactory $testFactory
     ) {
         $this->yamlLoader = $yamlLoader;
-        $this->pathResolver = $pathResolver;
         $this->dataSetLoader = $dataSetLoader;
         $this->pageLoader = $pageLoader;
         $this->stepLoader = $stepLoader;
         $this->testResolver = $testResolver;
+        $this->testParser = $testParser;
         $this->testFactory = $testFactory;
     }
 
@@ -64,11 +64,11 @@ class TestLoader
     {
         return new TestLoader(
             YamlLoader::createLoader(),
-            PathResolver::create(),
             DataSetLoader::createLoader(),
             PageLoader::createLoader(),
             StepLoader::createLoader(),
             TestResolver::createResolver(),
+            TestParser::create(),
             TestFactory::createFactory()
         );
     }
@@ -84,6 +84,7 @@ class TestLoader
      * @throws InvalidIdentifierStringException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
+     * @throws MissingComparisonException
      * @throws MissingValueException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -97,8 +98,10 @@ class TestLoader
      */
     public function load(string $path): TestInterface
     {
+        $basePath = dirname($path) . '/';
         $data = $this->yamlLoader->loadArray($path);
-        $testData = new TestData($this->pathResolver, $data, $path);
+
+        $testData = $this->testParser->parse($basePath, $path, $data);
 
         $imports = $testData->getImports();
 
@@ -161,12 +164,13 @@ class TestLoader
      *
      * @return StepProviderInterface
      *
-     * @throws MalformedPageElementReferenceException
-     * @throws NonRetrievableStepException
      * @throws EmptyAssertionStringException
      * @throws InvalidActionTypeException
      * @throws InvalidIdentifierStringException
+     * @throws MalformedPageElementReferenceException
+     * @throws MissingComparisonException
      * @throws MissingValueException
+     * @throws NonRetrievableStepException
      */
     private function createStepProvider(array $importPaths): StepProviderInterface
     {

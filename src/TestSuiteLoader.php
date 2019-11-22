@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilDataStructure\ImportList;
-use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
@@ -16,6 +14,7 @@ use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
 use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
 use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
+use webignition\BasilModelFactory\Exception\MissingComparisonException;
 use webignition\BasilModelFactory\Exception\MissingValueException;
 use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
 use webignition\BasilModelFactory\MalformedPageElementReferenceException;
@@ -25,6 +24,7 @@ use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModelResolver\CircularStepImportException;
 use webignition\BasilModelResolver\UnknownElementException;
 use webignition\BasilModelResolver\UnknownPageElementException;
+use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoader
 {
@@ -32,8 +32,11 @@ class TestSuiteLoader
     private $testLoader;
     private $pathResolver;
 
-    public function __construct(YamlLoader $yamlLoader, TestLoader $testLoader, PathResolver $pathResolver)
-    {
+    public function __construct(
+        YamlLoader $yamlLoader,
+        TestLoader $testLoader,
+        PathResolver $pathResolver
+    ) {
         $this->yamlLoader = $yamlLoader;
         $this->testLoader = $testLoader;
         $this->pathResolver = $pathResolver;
@@ -44,7 +47,7 @@ class TestSuiteLoader
         return new TestSuiteLoader(
             YamlLoader::createLoader(),
             TestLoader::createLoader(),
-            PathResolver::create()
+            new PathResolver()
         );
     }
 
@@ -59,6 +62,7 @@ class TestSuiteLoader
      * @throws InvalidIdentifierStringException
      * @throws InvalidPageElementIdentifierException
      * @throws MalformedPageElementReferenceException
+     * @throws MissingComparisonException
      * @throws MissingValueException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
@@ -73,12 +77,14 @@ class TestSuiteLoader
      */
     public function load(string $path): TestSuiteInterface
     {
+        $basePath = dirname($path) . '/';
         $data = $this->yamlLoader->loadArray($path);
-        $importList = new ImportList($this->pathResolver, dirname($path) . DIRECTORY_SEPARATOR, $data);
+        $paths = $this->sanitizeData($data);
+        $resolvedPaths = $this->resolvePaths($basePath, $paths);
 
         $tests = [];
 
-        foreach ($importList->getPaths() as $testImportIndex => $testImportPath) {
+        foreach ($resolvedPaths as $testImportPath) {
             $testImportPath = (string) $testImportPath;
 
             try {
@@ -95,5 +101,26 @@ class TestSuiteLoader
         }
 
         return new TestSuite($path, $tests);
+    }
+
+    private function sanitizeData($data): array
+    {
+        if (!is_array($data)) {
+            return [];
+        }
+
+        return array_filter($data, function ($item) {
+            return is_string($item);
+        });
+    }
+
+    private function resolvePaths(string $basePath, array $paths): array
+    {
+        return array_map(
+            function ($path) use ($basePath) {
+                return $this->pathResolver->resolve($basePath, $path);
+            },
+            $paths
+        );
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e42f2087e409353a0d7f7819bf34f66",
+    "content-hash": "4976752ae2829efda9fadefa6c615457",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -339,16 +339,16 @@
         },
         {
             "name": "webignition/basil-data-structures",
-            "version": "0.3",
+            "version": "0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-data-structures.git",
-                "reference": "4d97e081bf0762302fc74c09b555c132c44cb048"
+                "reference": "1a3f4a237ca7c52b632ebb381185b5e18417d3d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-data-structures/zipball/4d97e081bf0762302fc74c09b555c132c44cb048",
-                "reference": "4d97e081bf0762302fc74c09b555c132c44cb048",
+                "url": "https://api.github.com/repos/webignition/basil-data-structures/zipball/1a3f4a237ca7c52b632ebb381185b5e18417d3d9",
+                "reference": "1a3f4a237ca7c52b632ebb381185b5e18417d3d9",
                 "shasum": ""
             },
             "require": {
@@ -377,7 +377,51 @@
             ],
             "description": "Data structures for basil language",
             "homepage": "https://github.com/webignition/basil-data-structures",
-            "time": "2019-11-19T17:35:31+00:00"
+            "time": "2019-11-22T12:50:58+00:00"
+        },
+        {
+            "name": "webignition/basil-parser",
+            "version": "0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/basil-parser.git",
+                "reference": "59cd81a4ee9b28a07c1e4e3dbd91737c3fc51351"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/59cd81a4ee9b28a07c1e4e3dbd91737c3fc51351",
+                "reference": "59cd81a4ee9b28a07c1e4e3dbd91737c3fc51351",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.2",
+                "webignition/basil-data-structures": ">=0.13,<1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilParser\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Parses raw basil data into basic data structures",
+            "homepage": "https://github.com/webignition/basil-parser",
+            "time": "2019-11-22T13:04:50+00:00"
         },
         {
             "name": "webignition/php-basil-context-aware-exception",
@@ -422,69 +466,26 @@
             "time": "2019-07-13T14:46:44+00:00"
         },
         {
-            "name": "webignition/php-basil-data-structures",
-            "version": "0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webignition/basil-data-structures.git",
-                "reference": "4d97e081bf0762302fc74c09b555c132c44cb048"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-data-structures/zipball/4d97e081bf0762302fc74c09b555c132c44cb048",
-                "reference": "4d97e081bf0762302fc74c09b555c132c44cb048",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "phpstan/phpstan": "^0.11.5",
-                "phpunit/phpunit": "~8.0",
-                "squizlabs/php_codesniffer": "3.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "webignition\\BasilDataStructure\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jon Cram",
-                    "email": "webignition@gmail.com"
-                }
-            ],
-            "description": "Data structures for basil language",
-            "homepage": "https://github.com/webignition/basil-data-structures",
-            "abandoned": "webignition/basil-data-structures",
-            "time": "2019-11-19T17:35:31+00:00"
-        },
-        {
             "name": "webignition/php-basil-model-factory",
-            "version": "0.33",
+            "version": "0.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-model-factory.git",
-                "reference": "889c5bd80651028e08454d62d779ef59cc17c212"
+                "reference": "4962b47006399080f7470825935a8da49a3c94a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-model-factory/zipball/889c5bd80651028e08454d62d779ef59cc17c212",
-                "reference": "889c5bd80651028e08454d62d779ef59cc17c212",
+                "url": "https://api.github.com/repos/webignition/php-basil-model-factory/zipball/4962b47006399080f7470825935a8da49a3c94a9",
+                "reference": "4962b47006399080f7470825935a8da49a3c94a9",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "nyholm/psr7": "^1.1",
                 "php": ">=7.2",
+                "webignition/basil-data-structures": ">=0.13,<1",
                 "webignition/php-basil-context-aware-exception": "^0.1.0",
-                "webignition/php-basil-data-structures": ">=0.2,<1",
-                "webignition/php-basil-models": ">=0.87,<1"
+                "webignition/php-basil-models": ">=0.89,<1"
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
@@ -493,6 +494,7 @@
                 "phpstan/phpstan-mockery": "^0.11.3",
                 "phpunit/phpunit": "~8.0",
                 "squizlabs/php_codesniffer": "3.*",
+                "webignition/basil-parser": ">=0.4,<1",
                 "webignition/php-basil-test-identifier-factory": ">=0.6,<1"
             },
             "type": "library",
@@ -513,7 +515,7 @@
             ],
             "description": "Factories to create basil models",
             "homepage": "https://github.com/webignition/php-basil-model-factory",
-            "time": "2019-09-26T18:15:22+00:00"
+            "time": "2019-11-22T14:16:30+00:00"
         },
         {
             "name": "webignition/php-basil-model-provider",
@@ -610,16 +612,16 @@
         },
         {
             "name": "webignition/php-basil-models",
-            "version": "0.88",
+            "version": "0.91",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-basil-models.git",
-                "reference": "e294f944997edd2e30cf98abb8e35d0589b1b6e0"
+                "reference": "a7bbda2e31722992893bac16bf1e11afa657dedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/e294f944997edd2e30cf98abb8e35d0589b1b6e0",
-                "reference": "e294f944997edd2e30cf98abb8e35d0589b1b6e0",
+                "url": "https://api.github.com/repos/webignition/php-basil-models/zipball/a7bbda2e31722992893bac16bf1e11afa657dedf",
+                "reference": "a7bbda2e31722992893bac16bf1e11afa657dedf",
                 "shasum": ""
             },
             "require": {
@@ -653,7 +655,7 @@
             ],
             "description": "Models for basil language objects",
             "homepage": "https://github.com/webignition/php-basil-models",
-            "time": "2019-09-26T18:24:08+00:00"
+            "time": "2019-11-11T08:33:34+00:00"
         },
         {
             "name": "webignition/php-dom-element-locator",
@@ -696,6 +698,53 @@
             "description": "Model for identifying the location of an element within a DOM",
             "homepage": "https://github.com/webignition/php-dom-element-locator",
             "time": "2019-09-25T16:49:40+00:00"
+        },
+        {
+            "name": "webignition/php-path-resolver",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/php-path-resolver.git",
+                "reference": "2e41e8d0644797566674ce02f673ddbfba7d15b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/php-path-resolver/zipball/2e41e8d0644797566674ce02f673ddbfba7d15b3",
+                "reference": "2e41e8d0644797566674ce02f673ddbfba7d15b3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\PathResolver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Resolve a relative directory path against a base directory path",
+            "homepage": "https://github.com/webignition/php-path-resolver",
+            "keywords": [
+                "directory",
+                "path",
+                "resolver"
+            ],
+            "time": "2019-11-22T15:49:36+00:00"
         }
     ],
     "packages-dev": [
