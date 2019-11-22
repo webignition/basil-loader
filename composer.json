@@ -38,7 +38,6 @@
         "nyholm/psr7": "^1.1",
         "symfony/yaml": "^4.2",
         "webignition/php-basil-models": ">=0.91,<1",
-        "webignition/basil-data-structures": ">=0.13,<1",
         "webignition/php-basil-context-aware-exception": "^0.1.0",
         "webignition/php-basil-model-factory": ">=0.36,<1",
         "webignition/php-basil-model-provider": ">=0.2,<1",
