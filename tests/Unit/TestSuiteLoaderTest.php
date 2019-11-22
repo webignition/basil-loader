@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
-use webignition\BasilDataStructure\PathResolver;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
@@ -18,6 +17,7 @@ use webignition\BasilModel\TestSuite\TestSuiteInterface;
 use webignition\BasilModel\Value\LiteralValue;
 use webignition\BasilModel\Value\ObjectValue;
 use webignition\BasilModel\Value\ObjectValueType;
+use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -122,9 +122,11 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadTestImportPathDoesNotExist()
     {
-        $expectedUnknownTestPath = (PathResolver::create())->resolve(
+        $pathResolver = new PathResolver();
+
+        $expectedUnknownTestPath = $pathResolver->resolve(
             __DIR__,
-            '../../Fixtures/Test/example.com.path-does-not-exist.yml'
+            '../Fixtures/Test/example.com.path-does-not-exist.yml'
         );
 
         $path = FixturePathFinder::find('TestSuite/example.com-path-does-not-exist.yml');
