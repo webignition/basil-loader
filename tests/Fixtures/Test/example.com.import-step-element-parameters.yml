@@ -11,5 +11,5 @@ imports:
 "element parameters step":
   use: element_parameters
   elements:
-    button: page_import_name.elements.button
-    heading: page_import_name.elements.heading
+    button: $page_import_name.elements.button
+    heading: $page_import_name.elements.heading

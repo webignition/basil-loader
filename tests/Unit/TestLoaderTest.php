@@ -9,22 +9,13 @@ use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
-use webignition\BasilModel\Action\ActionTypes;
-use webignition\BasilModel\Action\InteractionAction;
-use webignition\BasilModel\Assertion\AssertionComparison;
-use webignition\BasilModel\Assertion\ComparisonAssertion;
-use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\Identifier\DomIdentifier;
-use webignition\BasilModel\Step\Step;
-use webignition\BasilModel\Test\Configuration;
-use webignition\BasilModel\Test\Test;
-use webignition\BasilModel\Test\TestInterface;
-use webignition\BasilModel\Value\DomIdentifierValue;
-use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ObjectValueType;
-use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
+use webignition\BasilModels\Action\InteractionAction;
+use webignition\BasilModels\Assertion\ComparisonAssertion;
+use webignition\BasilModels\DataSet\DataSetCollection;
+use webignition\BasilModels\Step\Step;
+use webignition\BasilModels\Test\Configuration;
+use webignition\BasilModels\Test\Test;
+use webignition\BasilModels\Test\TestInterface;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -43,7 +34,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, TestInterface $expectedTest)
+    public function testLoadSuccess(string $path, TestInterface $expectedTest)
     {
         $test = $this->testLoader->load($path);
 
@@ -72,9 +63,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
-                                    AssertionComparison::IS,
-                                    new LiteralValue('https://example.com')
+                                    '$page.url',
+                                    'is',
+                                    '"https://example.com"'
                                 ),
                             ]
                         )
@@ -92,9 +83,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new ComparisonAssertion(
                                     '$page.url is "https://example.com"',
-                                    new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
-                                    AssertionComparison::IS,
-                                    new LiteralValue('https://example.com')
+                                    '$page.url',
+                                    'is',
+                                    '"https://example.com"'
                                 ),
                             ]
                         )
@@ -110,31 +101,27 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         'data parameters step' => (new Step(
                             [
                                 new InteractionAction(
-                                    'click ".button"',
-                                    ActionTypes::CLICK,
-                                    new DomIdentifier('.button'),
-                                    '".button"'
+                                    'click $".button"',
+                                    'click',
+                                    '$".button"',
+                                    '$".button"'
                                 )
                             ],
                             [
                                 new ComparisonAssertion(
-                                    '".heading" includes $data.expected_title',
-                                    DomIdentifierValue::create('.heading'),
-                                    AssertionComparison::INCLUDES,
-                                    new ObjectValue(
-                                        ObjectValueType::DATA_PARAMETER,
-                                        '$data.expected_title',
-                                        'expected_title'
-                                    )
+                                    '$".heading" includes $data.expected_title',
+                                    '$".heading"',
+                                    'includes',
+                                    '$data.expected_title'
                                 ),
                             ]
-                        ))->withDataSetCollection(new DataSetCollection([
-                            new DataSet('0', [
+                        ))->withData(new DataSetCollection([
+                            '0' => [
                                 'expected_title' => 'Foo',
-                            ]),
-                            new DataSet('1', [
+                            ],
+                            '1' => [
                                 'expected_title' => 'Bar',
-                            ]),
+                            ],
                         ]))
                     ]
                 ),
@@ -149,27 +136,17 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                                 new InteractionAction(
                                     'click $elements.button',
-                                    ActionTypes::CLICK,
-                                    TestIdentifierFactory::createElementIdentifier(
-                                        '.button',
-                                        null,
-                                        'button'
-                                    ),
-                                    '$elements.button'
+                                    'click',
+                                    '$elements.button',
+                                    '$".button"'
                                 )
                             ],
                             [
                                 new ComparisonAssertion(
                                     '$elements.heading includes "example"',
-                                    new DomIdentifierValue(
-                                        TestIdentifierFactory::createElementIdentifier(
-                                            '.heading',
-                                            null,
-                                            'heading'
-                                        )
-                                    ),
-                                    AssertionComparison::INCLUDES,
-                                    new LiteralValue('example')
+                                    '$".heading"',
+                                    'includes',
+                                    '"example"'
                                 ),
                             ]
                         )
