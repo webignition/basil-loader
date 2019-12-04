@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8c330b99a29066415307cfe6e0a7f3a",
+    "content-hash": "311d21e49580b73aaeae4dc66b11431f",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -125,16 +125,16 @@
         },
         {
             "name": "webignition/basil-models",
-            "version": "0.14",
+            "version": "0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-models.git",
-                "reference": "ddf0bf274448786a8c041996c996b3410eb68c3a"
+                "reference": "4078fb2236634b8a93cd81c6e8fd4672deaa9216"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-models/zipball/ddf0bf274448786a8c041996c996b3410eb68c3a",
-                "reference": "ddf0bf274448786a8c041996c996b3410eb68c3a",
+                "url": "https://api.github.com/repos/webignition/basil-models/zipball/4078fb2236634b8a93cd81c6e8fd4672deaa9216",
+                "reference": "4078fb2236634b8a93cd81c6e8fd4672deaa9216",
                 "shasum": ""
             },
             "require": {
@@ -162,7 +162,7 @@
                 }
             ],
             "homepage": "https://github.com/webignition/basil-models",
-            "time": "2019-12-03T19:10:17+00:00"
+            "time": "2019-12-04T13:50:13+00:00"
         },
         {
             "name": "webignition/basil-parser",

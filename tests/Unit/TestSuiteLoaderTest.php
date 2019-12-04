@@ -7,16 +7,12 @@ namespace webignition\BasilLoader\Tests\Unit;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
-use webignition\BasilModel\Assertion\AssertionComparison;
-use webignition\BasilModel\Assertion\ComparisonAssertion;
-use webignition\BasilModel\Step\Step;
-use webignition\BasilModel\Test\Configuration;
-use webignition\BasilModel\Test\Test;
-use webignition\BasilModel\TestSuite\TestSuite;
-use webignition\BasilModel\TestSuite\TestSuiteInterface;
-use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilModel\Value\ObjectValue;
-use webignition\BasilModel\Value\ObjectValueType;
+use webignition\BasilModels\Assertion\ComparisonAssertion;
+use webignition\BasilModels\Step\Step;
+use webignition\BasilModels\Test\Configuration;
+use webignition\BasilModels\Test\Test;
+use webignition\BasilModels\TestSuite\TestSuite;
+use webignition\BasilModels\TestSuite\TestSuiteInterface;
 use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
@@ -64,9 +60,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
-                                            AssertionComparison::IS,
-                                            new LiteralValue('https://example.com')
+                                            '$page.url',
+                                            'is',
+                                            '"https://example.com"'
                                         ),
                                     ]
                                 ),
@@ -89,9 +85,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
-                                            AssertionComparison::IS,
-                                            new LiteralValue('https://example.com')
+                                            '$page.url',
+                                            'is',
+                                            '"https://example.com"'
                                         ),
                                     ]
                                 ),
@@ -106,9 +102,9 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     [
                                         new ComparisonAssertion(
                                             '$page.url is "https://example.com"',
-                                            new ObjectValue(ObjectValueType::PAGE_PROPERTY, '$page.url', 'url'),
-                                            AssertionComparison::IS,
-                                            new LiteralValue('https://example.com')
+                                            '$page.url',
+                                            'is',
+                                            '"https://example.com"'
                                         ),
                                     ]
                                 )
