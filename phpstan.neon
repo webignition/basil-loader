@@ -1,2 +1,5 @@
+parameters:
+  inferPrivatePropertyTypeFromConstructor: true
+
 includes:
   - vendor/phpstan/phpstan-mockery/extension.neon
