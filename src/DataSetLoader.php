@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModel\DataSet\DataSet;
-use webignition\BasilModel\DataSet\DataSetCollection;
-use webignition\BasilModel\DataSet\DataSetCollectionInterface;
+use webignition\BasilModels\DataSet\DataSetCollection;
+use webignition\BasilModels\DataSet\DataSetCollectionInterface;
 
 class DataSetLoader
 {
@@ -36,14 +35,6 @@ class DataSetLoader
     {
         $data = $this->yamlLoader->loadArray($path);
 
-        $dataSetCollection = new DataSetCollection();
-
-        foreach ($data as $dataSetName => $dataSetData) {
-            if (is_array($dataSetData)) {
-                $dataSetCollection->addDataSet(new DataSet((string) $dataSetName, $dataSetData));
-            }
-        }
-
-        return $dataSetCollection;
+        return new DataSetCollection($data);
     }
 }

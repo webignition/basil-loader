@@ -5,35 +5,31 @@ declare(strict_types=1);
 namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
-use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
-use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
-use webignition\BasilModelFactory\Exception\MissingComparisonException;
-use webignition\BasilModelFactory\Exception\MissingValueException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
-use webignition\BasilModelFactory\StepFactory;
+use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilParser\Exception\EmptyActionException;
+use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
+use webignition\BasilParser\Exception\EmptyAssertionException;
+use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
+use webignition\BasilParser\Exception\EmptyAssertionValueException;
+use webignition\BasilParser\Exception\EmptyInputActionValueException;
 use webignition\BasilParser\StepParser;
 
 class StepLoader
 {
     private $yamlLoader;
     private $stepParser;
-    private $stepFactory;
 
-    public function __construct(YamlLoader $yamlLoader, StepParser $stepParser, StepFactory $stepFactory)
+    public function __construct(YamlLoader $yamlLoader, StepParser $stepParser)
     {
         $this->yamlLoader = $yamlLoader;
         $this->stepParser = $stepParser;
-        $this->stepFactory = $stepFactory;
     }
 
     public static function createLoader(): StepLoader
     {
         return new StepLoader(
             YamlLoader::createLoader(),
-            StepParser::create(),
-            StepFactory::createFactory()
+            StepParser::create()
         );
     }
 
@@ -43,19 +39,18 @@ class StepLoader
      *
      * @return StepInterface
      *
-     * @throws EmptyAssertionStringException
-     * @throws InvalidActionTypeException
-     * @throws InvalidIdentifierStringException
-     * @throws MalformedPageElementReferenceException
-     * @throws MissingComparisonException
-     * @throws MissingValueException
+     * @throws EmptyActionException
+     * @throws EmptyAssertionComparisonException
+     * @throws EmptyAssertionException
+     * @throws EmptyAssertionIdentifierException
+     * @throws EmptyAssertionValueException
+     * @throws EmptyInputActionValueException
      * @throws YamlLoaderException
      */
     public function load(string $path): StepInterface
     {
         $data = $this->yamlLoader->loadArray($path);
-        $stepData = $this->stepParser->parse($data);
 
-        return $this->stepFactory->createFromStepData($stepData);
+        return $this->stepParser->parse($data);
     }
 }

@@ -6,16 +6,10 @@ namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
-use webignition\BasilModel\Action\ActionTypes;
-use webignition\BasilModel\Action\InteractionAction;
-use webignition\BasilModel\Assertion\AssertionComparison;
-use webignition\BasilModel\Assertion\ComparisonAssertion;
-use webignition\BasilModel\Step\PendingImportResolutionStep;
-use webignition\BasilModel\Step\Step;
-use webignition\BasilModel\Step\StepInterface;
-use webignition\BasilModel\Value\DomIdentifierValue;
-use webignition\BasilModel\Value\LiteralValue;
-use webignition\BasilTestIdentifierFactory\TestIdentifierFactory;
+use webignition\BasilModels\Action\InteractionAction;
+use webignition\BasilModels\Assertion\ComparisonAssertion;
+use webignition\BasilModels\Step\Step;
+use webignition\BasilModels\Step\StepInterface;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -43,29 +37,26 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedStep' => new Step(
                     [
                         new InteractionAction(
-                            'click ".button"',
-                            ActionTypes::CLICK,
-                            TestIdentifierFactory::createElementIdentifier('.button'),
-                            '".button"'
+                            'click $".button"',
+                            'click',
+                            '$".button"',
+                            '$".button"'
                         ),
                     ],
                     [
                         new ComparisonAssertion(
-                            '".heading" includes "example"',
-                            DomIdentifierValue::create('.heading'),
-                            AssertionComparison::INCLUDES,
-                            new LiteralValue('example')
+                            '$".heading" includes "example"',
+                            '$".heading"',
+                            'includes',
+                            '"example"'
                         ),
                     ]
                 ),
             ],
             'deferred import' => [
                 'path' => FixturePathFinder::find('Step/deferred_import.yml'),
-                'expectedStep' => new PendingImportResolutionStep(
-                    new Step([], []),
-                    'no_parameters_import_name',
-                    ''
-                ),
+                'expectedStep' => (new Step([], []))
+                    ->withImportName('no_parameters_import_name'),
             ],
         ];
     }

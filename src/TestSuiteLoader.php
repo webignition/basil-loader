@@ -9,21 +9,20 @@ use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModel\TestSuite\TestSuite;
-use webignition\BasilModel\TestSuite\TestSuiteInterface;
-use webignition\BasilModelFactory\Exception\EmptyAssertionStringException;
-use webignition\BasilModelFactory\Exception\InvalidActionTypeException;
-use webignition\BasilModelFactory\Exception\InvalidIdentifierStringException;
-use webignition\BasilModelFactory\Exception\MissingComparisonException;
-use webignition\BasilModelFactory\Exception\MissingValueException;
-use webignition\BasilModelFactory\InvalidPageElementIdentifierException;
-use webignition\BasilModelFactory\MalformedPageElementReferenceException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
-use webignition\BasilModelResolver\CircularStepImportException;
-use webignition\BasilModelResolver\UnknownElementException;
-use webignition\BasilModelResolver\UnknownPageElementException;
+use webignition\BasilModels\TestSuite\TestSuite;
+use webignition\BasilModels\TestSuite\TestSuiteInterface;
+use webignition\BasilParser\Exception\EmptyActionException;
+use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
+use webignition\BasilParser\Exception\EmptyAssertionException;
+use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
+use webignition\BasilParser\Exception\EmptyAssertionValueException;
+use webignition\BasilParser\Exception\EmptyInputActionValueException;
+use webignition\BasilResolver\CircularStepImportException;
+use webignition\BasilResolver\UnknownElementException;
+use webignition\BasilResolver\UnknownPageElementException;
 use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoader
@@ -57,13 +56,12 @@ class TestSuiteLoader
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
-     * @throws EmptyAssertionStringException
-     * @throws InvalidActionTypeException
-     * @throws InvalidIdentifierStringException
-     * @throws InvalidPageElementIdentifierException
-     * @throws MalformedPageElementReferenceException
-     * @throws MissingComparisonException
-     * @throws MissingValueException
+     * @throws EmptyActionException
+     * @throws EmptyAssertionComparisonException
+     * @throws EmptyAssertionException
+     * @throws EmptyAssertionIdentifierException
+     * @throws EmptyAssertionValueException
+     * @throws EmptyInputActionValueException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
