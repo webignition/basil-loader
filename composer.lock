@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9935b4a837ed141063e5c79b2e8ff203",
+    "content-hash": "26862598730f6290717dc622055f5633",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -122,6 +122,94 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2019-11-12T14:51:11+00:00"
+        },
+        {
+            "name": "webignition/basil-data-validator",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/basil-data-validator.git",
+                "reference": "163d8372b92e4e4495d9c07340f62e72f00f29ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/basil-data-validator/zipball/163d8372b92e4e4495d9c07340f62e72f00f29ce",
+                "reference": "163d8372b92e4e4495d9c07340f62e72f00f29ce",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.2",
+                "webignition/basil-identifier-analyser": ">=0.1,<1",
+                "webignition/basil-models": ">=0.18,<1",
+                "webignition/basil-validation-result": ">=0.1,<1"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*",
+                "webignition/basil-parser": ">=0.8,<1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilDataValidator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Validator for source data for basil language",
+            "homepage": "https://github.com/webignition/basil-data-validator",
+            "time": "2019-12-06T11:08:15+00:00"
+        },
+        {
+            "name": "webignition/basil-identifier-analyser",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/basil-identifier-analyser.git",
+                "reference": "541c15611e3592577f3deaf06f49023a5331f58c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/basil-identifier-analyser/zipball/541c15611e3592577f3deaf06f49023a5331f58c",
+                "reference": "541c15611e3592577f3deaf06f49023a5331f58c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilIdentifierAnalyser\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "homepage": "https://github.com/webignition/basil-identifier-analyser",
+            "time": "2019-12-04T14:46:54+00:00"
         },
         {
             "name": "webignition/basil-models",
@@ -253,6 +341,48 @@
             ],
             "homepage": "https://github.com/webignition/basil-resolver",
             "time": "2019-12-04T11:24:30+00:00"
+        },
+        {
+            "name": "webignition/basil-validation-result",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/basil-validation-result.git",
+                "reference": "d7d35e2b60c5f8aa8e6ad0dab12f6d937698c13d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/basil-validation-result/zipball/d7d35e2b60c5f8aa8e6ad0dab12f6d937698c13d",
+                "reference": "d7d35e2b60c5f8aa8e6ad0dab12f6d937698c13d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\BasilValidationResult\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "Models for the result of basil validators",
+            "homepage": "https://github.com/webignition/basil-validation-result",
+            "time": "2019-11-20T10:51:00+00:00"
         },
         {
             "name": "webignition/php-basil-context-aware-exception",

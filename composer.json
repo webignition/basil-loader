@@ -40,7 +40,8 @@
         "webignition/basil-parser": ">=0.9,<1",
         "webignition/php-path-resolver": ">=0.1,<1",
         "webignition/basil-resolver": ">=0.1,<1",
-        "webignition/basil-models": ">=0.18,<1"
+        "webignition/basil-models": ">=0.19,<1",
+        "webignition/basil-data-validator": ">=0.1,<1"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0",
