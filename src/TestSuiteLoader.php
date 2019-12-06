@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
+use webignition\BasilLoader\Exception\InvalidPageException;
+use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
@@ -62,6 +64,8 @@ class TestSuiteLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidPageException
+     * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
