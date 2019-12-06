@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "270ba795d6d70f922d15ad41b5d17820",
+    "content-hash": "9935b4a837ed141063e5c79b2e8ff203",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -125,16 +125,16 @@
         },
         {
             "name": "webignition/basil-models",
-            "version": "0.15",
+            "version": "0.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-models.git",
-                "reference": "4078fb2236634b8a93cd81c6e8fd4672deaa9216"
+                "reference": "8c3f2ced0613c028127d59d1c3aaee705fa97f56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-models/zipball/4078fb2236634b8a93cd81c6e8fd4672deaa9216",
-                "reference": "4078fb2236634b8a93cd81c6e8fd4672deaa9216",
+                "url": "https://api.github.com/repos/webignition/basil-models/zipball/8c3f2ced0613c028127d59d1c3aaee705fa97f56",
+                "reference": "8c3f2ced0613c028127d59d1c3aaee705fa97f56",
                 "shasum": ""
             },
             "require": {
@@ -162,26 +162,26 @@
                 }
             ],
             "homepage": "https://github.com/webignition/basil-models",
-            "time": "2019-12-04T13:50:13+00:00"
+            "time": "2019-12-06T11:43:22+00:00"
         },
         {
             "name": "webignition/basil-parser",
-            "version": "0.7",
+            "version": "0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-parser.git",
-                "reference": "aa945a6d20aba0357b53fc6415d6fccccc07e810"
+                "reference": "db0920a8d212ee0b0f4d667fe4f0046dafe08274"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/aa945a6d20aba0357b53fc6415d6fccccc07e810",
-                "reference": "aa945a6d20aba0357b53fc6415d6fccccc07e810",
+                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/db0920a8d212ee0b0f4d667fe4f0046dafe08274",
+                "reference": "db0920a8d212ee0b0f4d667fe4f0046dafe08274",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "php": ">=7.2",
-                "webignition/basil-models": ">=0.3,<1",
+                "webignition/basil-models": ">=0.19,<1",
                 "webignition/php-path-resolver": ">=0.1,<1"
             },
             "require-dev": {
@@ -207,7 +207,7 @@
             ],
             "description": "Parses raw basil data into basic data structures",
             "homepage": "https://github.com/webignition/basil-parser",
-            "time": "2019-11-29T18:18:06+00:00"
+            "time": "2019-12-06T11:51:08+00:00"
         },
         {
             "name": "webignition/basil-resolver",

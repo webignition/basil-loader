@@ -28,16 +28,17 @@ class PageLoader
     }
 
     /**
+     * @param string $importName
      * @param string $path
      *
      * @return PageInterface
      *
      * @throws YamlLoaderException
      */
-    public function load(string $path): PageInterface
+    public function load(string $importName, string $path): PageInterface
     {
         $data = $this->yamlLoader->loadArray($path);
 
-        return $this->pageParser->parse($data);
+        return $this->pageParser->parse($importName, $data);
     }
 }

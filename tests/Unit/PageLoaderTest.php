@@ -14,11 +14,11 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, PageInterface $expectedPage)
+    public function testLoad(string $importName, string $path, PageInterface $expectedPage)
     {
         $pageLoader = PageLoader::createLoader();
 
-        $page = $pageLoader->load($path);
+        $page = $pageLoader->load($importName, $path);
 
         $this->assertEquals($expectedPage, $page);
     }
@@ -27,16 +27,20 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'empty' => [
+                'importName' => 'import_name',
                 'path' => FixturePathFinder::find('Empty/empty.yml'),
-                'expectedPage' => new Page(''),
+                'expectedPage' => new Page('import_name', ''),
             ],
             'url only' => [
+                'importName' => 'import_name',
                 'path' => FixturePathFinder::find('Page/example.com.url-only.yml'),
-                'expectedPage' => new Page('https://example.com'),
+                'expectedPage' => new Page('import_name', 'https://example.com'),
             ],
             'url and element references' => [
+                'importName' => 'import_name',
                 'path' => FixturePathFinder::find('Page/example.com.form.yml'),
                 'expectedPage' => new Page(
+                    'import_name',
                     'https://example.com',
                     [
                         'form' => '$".form"',
