@@ -14,7 +14,6 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
-use webignition\BasilModels\TestSuite\TestSuite;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
 use webignition\BasilParser\Exception\EmptyActionException;
 use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
@@ -22,33 +21,37 @@ use webignition\BasilParser\Exception\EmptyAssertionException;
 use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
 use webignition\BasilParser\Exception\EmptyAssertionValueException;
 use webignition\BasilParser\Exception\EmptyInputActionValueException;
+use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
-use webignition\PathResolver\PathResolver;
 
-class TestSuiteLoader
+class SourceLoader
 {
     private $yamlLoader;
+    private $testParser;
     private $testLoader;
-    private $pathResolver;
+    private $testSuiteLoader;
 
     public function __construct(
         YamlLoader $yamlLoader,
+        TestParser $testParser,
         TestLoader $testLoader,
-        PathResolver $pathResolver
+        TestSuiteLoader $testSuiteLoader
     ) {
         $this->yamlLoader = $yamlLoader;
+        $this->testParser = $testParser;
         $this->testLoader = $testLoader;
-        $this->pathResolver = $pathResolver;
+        $this->testSuiteLoader = $testSuiteLoader;
     }
 
-    public static function createLoader(): TestSuiteLoader
+    public static function createLoader(): SourceLoader
     {
-        return new TestSuiteLoader(
+        return new SourceLoader(
             YamlLoader::createLoader(),
+            TestParser::create(),
             TestLoader::createLoader(),
-            new PathResolver()
+            TestSuiteLoader::createLoader()
         );
     }
 
@@ -82,79 +85,27 @@ class TestSuiteLoader
         $basePath = dirname($path) . '/';
         $data = $this->yamlLoader->loadArray($path);
 
-        return $this->loadFromTestPathList($path, $basePath, $data);
-    }
-
-    /**
-     * @param string $path
-     * @param string $basePath
-     * @param string[] $data
-     *
-     * @return TestSuiteInterface
-     *
-     * @throws CircularStepImportException
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidPageException
-     * @throws InvalidTestException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
-     * @throws UnknownDataProviderException
-     * @throws UnknownElementException
-     * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws UnknownStepException
-     * @throws UnknownTestException
-     */
-    public function loadFromTestPathList(string $path, string $basePath, array $data): TestSuiteInterface
-    {
-        $paths = $this->sanitizeData($data);
-        $resolvedPaths = $this->resolvePaths($basePath, $paths);
-
-        $tests = [];
-
-        foreach ($resolvedPaths as $testImportPath) {
-            $testImportPath = (string) $testImportPath;
-
-            try {
-                $tests[] = $this->testLoader->load($testImportPath);
-            } catch (YamlLoaderException $yamlLoaderException) {
-                $isFileCannotBeOpenedException =
-                    $yamlLoaderException->isFileDoesNotExistException() ||
-                    $yamlLoaderException->isFileCannotBeReadException();
-
-                if ($isFileCannotBeOpenedException && $testImportPath === $yamlLoaderException->getPath()) {
-                    throw new UnknownTestException($testImportPath);
-                }
-            }
+        if (!$this->isTestPathList($data)) {
+            $data = [
+                0 => $path,
+            ];
         }
 
-        return new TestSuite($path, $tests);
+        return $this->testSuiteLoader->loadFromTestPathList($path, $basePath, $data);
     }
 
-    private function sanitizeData($data): array
+    private function isTestPathList(array $data): bool
     {
-        if (!is_array($data)) {
-            return [];
-        }
-
-        return array_filter($data, function ($item) {
-            return is_string($item);
+        $keysAreAllIntegers = array_reduce(array_keys($data), function ($result, $value) {
+            return false === $result ? false : is_int($value);
         });
-    }
 
-    private function resolvePaths(string $basePath, array $paths): array
-    {
-        return array_map(
-            function ($path) use ($basePath) {
-                return $this->pathResolver->resolve($basePath, $path);
-            },
-            $paths
-        );
+        if (false === $keysAreAllIntegers) {
+            return false;
+        }
+
+        return array_reduce(array_values($data), function ($result, $value) {
+            return false === $result ? false : is_string($value);
+        });
     }
 }
