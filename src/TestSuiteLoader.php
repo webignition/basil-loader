@@ -86,7 +86,7 @@ class TestSuiteLoader
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @param string $basePath
      * @param string[] $data
      *
@@ -111,7 +111,7 @@ class TestSuiteLoader
      * @throws UnknownStepException
      * @throws UnknownTestException
      */
-    public function loadFromTestPathList($path, string $basePath, array $data): TestSuiteInterface
+    public function loadFromTestPathList(string $path, string $basePath, array $data): TestSuiteInterface
     {
         $paths = $this->sanitizeData($data);
         $resolvedPaths = $this->resolvePaths($basePath, $paths);
