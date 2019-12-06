@@ -140,7 +140,7 @@ class TestLoader
 
         foreach ($importPaths as $importName => $importPath) {
             try {
-                $pages[$importName] = $this->pageLoader->load($importPath);
+                $pages[$importName] = $this->pageLoader->load($importName, $importPath);
             } catch (YamlLoaderException $yamlLoaderException) {
                 throw new NonRetrievablePageException($importName, $importPath, $yamlLoaderException);
             }
