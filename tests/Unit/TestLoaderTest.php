@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use webignition\BasilDataValidator\ResultType;
+use webignition\BasilDataValidator\Test\ConfigurationValidator;
+use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
@@ -16,6 +20,7 @@ use webignition\BasilModels\Step\Step;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\Test\TestInterface;
+use webignition\BasilValidationResult\InvalidResult;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -32,7 +37,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider loadDataProvider
+     * @dataProvider loadSuccessDataProvider
      */
     public function testLoadSuccess(string $path, TestInterface $expectedTest)
     {
@@ -41,17 +46,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedTest, $test);
     }
 
-    public function loadDataProvider(): array
+    public function loadSuccessDataProvider(): array
     {
         return [
-            'empty' => [
-                'path' => FixturePathFinder::find('Empty/empty.yml'),
-                'expectedTest' => new Test(
-                    FixturePathFinder::find('Empty/empty.yml'),
-                    new Configuration('', ''),
-                    []
-                ),
-            ],
             'non-empty' => [
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                 'expectedTest' => new Test(
@@ -203,5 +200,36 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ));
 
         $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-step-provider.yml'));
+    }
+
+    public function testLoadThrowsInvalidTestException()
+    {
+        $path = FixturePathFinder::find('Empty/empty.yml');
+
+        try {
+            $this->testLoader->load($path);
+
+            $this->fail('Exception not thrown');
+        } catch (InvalidTestException $invalidTestException) {
+            $expectedException = new InvalidTestException(
+                $path,
+                new InvalidResult(
+                    new Test(
+                        $path,
+                        new Configuration('', ''),
+                        []
+                    ),
+                    ResultType::TEST,
+                    TestValidator::REASON_CONFIGURATION_INVALID,
+                    new InvalidResult(
+                        new Configuration('', ''),
+                        ResultType::TEST_CONFIGURATION,
+                        ConfigurationValidator::REASON_BROWSER_EMPTY
+                    )
+                )
+            );
+
+            $this->assertEquals($expectedException, $invalidTestException);
+        }
     }
 }

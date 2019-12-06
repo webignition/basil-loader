@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
+use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Exception\InvalidPageException;
+use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
@@ -29,6 +32,7 @@ use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\TestResolver;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
+use webignition\BasilValidationResult\InvalidResultInterface;
 
 class TestLoader
 {
@@ -38,6 +42,7 @@ class TestLoader
     private $stepLoader;
     private $testResolver;
     private $testParser;
+    private $testValidator;
 
     public function __construct(
         YamlLoader $yamlLoader,
@@ -45,7 +50,8 @@ class TestLoader
         PageLoader $pageLoader,
         StepLoader $stepLoader,
         TestResolver $testResolver,
-        TestParser $testParser
+        TestParser $testParser,
+        TestValidator $testValidator
     ) {
         $this->yamlLoader = $yamlLoader;
         $this->dataSetLoader = $dataSetLoader;
@@ -53,6 +59,7 @@ class TestLoader
         $this->stepLoader = $stepLoader;
         $this->testResolver = $testResolver;
         $this->testParser = $testParser;
+        $this->testValidator = $testValidator;
     }
 
     public static function createLoader(): TestLoader
@@ -63,7 +70,8 @@ class TestLoader
             PageLoader::createLoader(),
             StepLoader::createLoader(),
             TestResolver::createResolver(),
-            TestParser::create()
+            TestParser::create(),
+            TestValidator::create()
         );
     }
 
@@ -79,6 +87,8 @@ class TestLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidPageException
+     * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
@@ -102,7 +112,14 @@ class TestLoader
         $pageProvider = $this->createPageProvider($imports->getPagePaths());
         $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
 
-        return $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
+        $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
+
+        $validationResult = $this->testValidator->validate($resolvedTest);
+        if ($validationResult instanceof InvalidResultInterface) {
+            throw new InvalidTestException($path, $validationResult);
+        }
+
+        return $resolvedTest;
     }
 
     /**
@@ -132,6 +149,7 @@ class TestLoader
      *
      * @return PageProviderInterface
      *
+     * @throws InvalidPageException
      * @throws NonRetrievablePageException
      */
     private function createPageProvider(array $importPaths): PageProviderInterface
