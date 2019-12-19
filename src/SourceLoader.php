@@ -94,6 +94,11 @@ class SourceLoader
         return $this->testSuiteLoader->loadFromTestPathList($path, $basePath, $data);
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return bool
+     */
     private function isTestPathList(array $data): bool
     {
         $keysAreAllIntegers = array_reduce(array_keys($data), function ($result, $value) {
