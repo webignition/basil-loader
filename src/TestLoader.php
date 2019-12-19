@@ -123,7 +123,7 @@ class TestLoader
     }
 
     /**
-     * @param array $importPaths
+     * @param array<string, string> $importPaths
      *
      * @return DataSetProviderInterface
      *
@@ -145,7 +145,7 @@ class TestLoader
     }
 
     /**
-     * @param array $importPaths
+     * @param array<string, string> $importPaths
      *
      * @return PageProviderInterface
      *
@@ -168,7 +168,7 @@ class TestLoader
     }
 
     /**
-     * @param array $importPaths
+     * @param array<string, string> $importPaths
      *
      * @return StepProviderInterface
      *

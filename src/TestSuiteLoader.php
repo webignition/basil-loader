@@ -137,6 +137,11 @@ class TestSuiteLoader
         return new TestSuite($path, $tests);
     }
 
+    /**
+     * @param mixed $data
+     *
+     * @return array<mixed>
+     */
     private function sanitizeData($data): array
     {
         if (!is_array($data)) {
@@ -148,6 +153,12 @@ class TestSuiteLoader
         });
     }
 
+    /**
+     * @param string $basePath
+     * @param array<mixed> $paths
+     *
+     * @return string[]
+     */
     private function resolvePaths(string $basePath, array $paths): array
     {
         return array_map(
