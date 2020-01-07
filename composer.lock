@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2aabda1b91d04d673c92047e91168ab1",
+    "content-hash": "044e346ad810dc5ac6afe236de812c75",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -125,22 +125,23 @@
         },
         {
             "name": "webignition/basil-data-validator",
-            "version": "0.2",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-data-validator.git",
-                "reference": "809e9777290ba1f27f028d4b47c06ea6dc5b5b3e"
+                "reference": "99a2eb9084d9d12e044b0dd1c7df8da55c3ad20e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-data-validator/zipball/809e9777290ba1f27f028d4b47c06ea6dc5b5b3e",
-                "reference": "809e9777290ba1f27f028d4b47c06ea6dc5b5b3e",
+                "url": "https://api.github.com/repos/webignition/basil-data-validator/zipball/99a2eb9084d9d12e044b0dd1c7df8da55c3ad20e",
+                "reference": "99a2eb9084d9d12e044b0dd1c7df8da55c3ad20e",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "php": ">=7.2",
                 "webignition/basil-dom-identifier-factory": ">=0.6,<1",
+                "webignition/basil-identifier-analyser": ">=0.3,<1",
                 "webignition/basil-models": ">=0.24,<1",
                 "webignition/basil-validation-result": ">=0.1,<1"
             },
@@ -169,7 +170,7 @@
             ],
             "description": "Validator for source data for basil language",
             "homepage": "https://github.com/webignition/basil-data-validator",
-            "time": "2020-01-07T11:18:58+00:00"
+            "time": "2020-01-07T18:23:36+00:00"
         },
         {
             "name": "webignition/basil-dom-identifier-factory",
@@ -218,16 +219,16 @@
         },
         {
             "name": "webignition/basil-identifier-analyser",
-            "version": "0.2",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-identifier-analyser.git",
-                "reference": "c7e941bfd68caf26745642113463c473bbfeafa6"
+                "reference": "1b1373c5abcbf90f397fc13136d9f353784bac21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-identifier-analyser/zipball/c7e941bfd68caf26745642113463c473bbfeafa6",
-                "reference": "c7e941bfd68caf26745642113463c473bbfeafa6",
+                "url": "https://api.github.com/repos/webignition/basil-identifier-analyser/zipball/1b1373c5abcbf90f397fc13136d9f353784bac21",
+                "reference": "1b1373c5abcbf90f397fc13136d9f353784bac21",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +256,7 @@
                 }
             ],
             "homepage": "https://github.com/webignition/basil-identifier-analyser",
-            "time": "2019-12-17T10:28:56+00:00"
+            "time": "2020-01-07T18:12:46+00:00"
         },
         {
             "name": "webignition/basil-models",
