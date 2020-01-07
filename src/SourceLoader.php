@@ -21,6 +21,7 @@ use webignition\BasilParser\Exception\EmptyAssertionException;
 use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
 use webignition\BasilParser\Exception\EmptyAssertionValueException;
 use webignition\BasilParser\Exception\EmptyInputActionValueException;
+use webignition\BasilParser\Exception\InvalidActionIdentifierException;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
@@ -67,6 +68,7 @@ class SourceLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
