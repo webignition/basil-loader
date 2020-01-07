@@ -22,6 +22,7 @@ use webignition\BasilParser\Exception\EmptyAssertionException;
 use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
 use webignition\BasilParser\Exception\EmptyAssertionValueException;
 use webignition\BasilParser\Exception\EmptyInputActionValueException;
+use webignition\BasilParser\Exception\InvalidActionIdentifierException;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
@@ -64,6 +65,7 @@ class TestSuiteLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
@@ -99,6 +101,7 @@ class TestSuiteLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException

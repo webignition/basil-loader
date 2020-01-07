@@ -12,6 +12,7 @@ use webignition\BasilParser\Exception\EmptyAssertionException;
 use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
 use webignition\BasilParser\Exception\EmptyAssertionValueException;
 use webignition\BasilParser\Exception\EmptyInputActionValueException;
+use webignition\BasilParser\Exception\InvalidActionIdentifierException;
 use webignition\BasilParser\StepParser;
 
 class StepLoader
@@ -45,6 +46,7 @@ class StepLoader
      * @throws EmptyAssertionIdentifierException
      * @throws EmptyAssertionValueException
      * @throws EmptyInputActionValueException
+     * @throws InvalidActionIdentifierException
      * @throws YamlLoaderException
      */
     public function load(string $path): StepInterface
