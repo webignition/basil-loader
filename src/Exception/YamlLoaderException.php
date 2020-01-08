@@ -5,20 +5,39 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Exception;
 
 use Symfony\Component\Yaml\Exception\ParseException;
+use Throwable;
 
 class YamlLoaderException extends \Exception
 {
     public const MESSAGE_DATA_IS_NOT_AN_ARRAY = 'Data is not an array';
     public const CODE_DATA_IS_NOT_AN_ARRAY = 100;
 
-    public static function fromYamlParseException(ParseException $parseException): YamlLoaderException
+    private $path;
+
+    public function __construct(string $message, int $code, string $path, Throwable $previous = null)
     {
-        return new YamlLoaderException($parseException->getMessage(), $parseException->getCode(), $parseException);
+        parent::__construct($message, $code, $previous);
+
+        $this->path = $path;
     }
 
-    public static function createDataIsNotAnArrayException(): YamlLoaderException
+    public static function fromYamlParseException(ParseException $parseException, string $path): YamlLoaderException
     {
-        return new YamlLoaderException(self::MESSAGE_DATA_IS_NOT_AN_ARRAY, self::CODE_DATA_IS_NOT_AN_ARRAY);
+        return new YamlLoaderException(
+            $parseException->getMessage(),
+            $parseException->getCode(),
+            $path,
+            $parseException
+        );
+    }
+
+    public static function createDataIsNotAnArrayException(string $path): YamlLoaderException
+    {
+        return new YamlLoaderException(
+            self::MESSAGE_DATA_IS_NOT_AN_ARRAY,
+            self::CODE_DATA_IS_NOT_AN_ARRAY,
+            $path
+        );
     }
 
     public function isFileDoesNotExistException(): bool
@@ -59,15 +78,6 @@ class YamlLoaderException extends \Exception
 
     public function getPath(): ?string
     {
-        if ($this->isFileDoesNotExistException() || $this->isFileCannotBeReadException()) {
-            $matches = [];
-            preg_match('/".+"/', $this->getMessage(), $matches);
-
-            if (count($matches)) {
-                return trim($matches[0], '""');
-            }
-        }
-
-        return null;
+        return $this->path;
     }
 }

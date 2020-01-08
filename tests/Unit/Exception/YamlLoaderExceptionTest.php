@@ -18,7 +18,7 @@ class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
         $parseException = $this->createFileDoesNotExistParseException($path);
 
         if ($parseException instanceof ParseException) {
-            $yamlLoaderException = YamlLoaderException::fromYamlParseException($parseException);
+            $yamlLoaderException = YamlLoaderException::fromYamlParseException($parseException, $path);
 
             $this->assertSame($path, $yamlLoaderException->getPath());
         }

@@ -36,7 +36,7 @@ class YamlLoader
         try {
             $data = $this->yamlParser->parseFile($path);
         } catch (ParseException $parseException) {
-            throw YamlLoaderException::fromYamlParseException($parseException);
+            throw YamlLoaderException::fromYamlParseException($parseException, $path);
         }
 
         if (is_string($data) && '' === trim($data)) {
@@ -48,7 +48,7 @@ class YamlLoader
         }
 
         if (!is_array($data)) {
-            throw YamlLoaderException::createDataIsNotAnArrayException();
+            throw YamlLoaderException::createDataIsNotAnArrayException($path);
         }
 
         return $data;
