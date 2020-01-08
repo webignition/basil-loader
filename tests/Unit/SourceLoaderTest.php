@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\SourceLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\TestSuite\TestSuite;
@@ -116,5 +117,13 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                 ),
             ],
         ];
+    }
+
+    public function testLoadEmptyFile()
+    {
+        $path = FixturePathFinder::find('Empty/empty.yml');
+        $this->expectExceptionObject(new EmptyTestException($path));
+
+        $this->sourceLoader->load($path);
     }
 }
