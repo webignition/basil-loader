@@ -113,6 +113,7 @@ class TestSuiteLoader
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws UnknownTestException
+     * @throws YamlLoaderException
      */
     public function loadFromTestPathList(string $path, string $basePath, array $data): TestSuiteInterface
     {
@@ -134,6 +135,8 @@ class TestSuiteLoader
                 if ($isFileCannotBeOpenedException && $testImportPath === $yamlLoaderException->getPath()) {
                     throw new UnknownTestException($testImportPath);
                 }
+
+                throw $yamlLoaderException;
             }
         }
 

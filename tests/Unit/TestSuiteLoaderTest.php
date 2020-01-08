@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilLoader\Exception\UnknownTestException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
 use webignition\BasilModels\Assertion\ComparisonAssertion;
@@ -131,5 +132,17 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Unknown test "' . $expectedUnknownTestPath . '"');
 
         $this->testSuiteLoader->load($path);
+    }
+
+    public function testLoadFromTestPathsListReThrowsYamlLoaderException()
+    {
+        $path = FixturePathFinder::find('TestSuite/imports-invalid.yml');
+        $basePath = FixturePathFinder::find('TestSuite');
+
+        $this->expectException(YamlLoaderException::class);
+
+        $this->testSuiteLoader->loadFromTestPathList($path, $basePath, [
+            '../invalid-yaml.yml',
+        ]);
     }
 }
