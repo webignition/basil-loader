@@ -16,13 +16,8 @@ use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModels\TestSuite\TestSuite;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\Exception\EmptyActionException;
-use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
-use webignition\BasilParser\Exception\EmptyAssertionException;
-use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
-use webignition\BasilParser\Exception\EmptyAssertionValueException;
-use webignition\BasilParser\Exception\EmptyInputActionValueException;
-use webignition\BasilParser\Exception\InvalidActionIdentifierException;
+use webignition\BasilParser\Exception\UnparseableStepException;
+use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
@@ -59,13 +54,6 @@ class TestSuiteLoader
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
@@ -77,6 +65,8 @@ class TestSuiteLoader
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws UnknownTestException
+     * @throws UnparseableStepException
+     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function load(string $path): TestSuiteInterface
@@ -95,13 +85,6 @@ class TestSuiteLoader
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
@@ -113,6 +96,8 @@ class TestSuiteLoader
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws UnknownTestException
+     * @throws UnparseableStepException
+     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function loadFromTestPathList(string $path, string $basePath, array $data): TestSuiteInterface
