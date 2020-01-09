@@ -45,7 +45,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedTestSuite' => new TestSuite(
                     FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                     [
-                        $testParser->parse('', FixturePathFinder::find('Test/example.com.verify-open-literal.yml'), [
+                        $testParser->parse([
                             'config' => [
                                 'browser' => 'chrome',
                                 'url' => 'https://example.com',
@@ -55,7 +55,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                                     '$page.url is "https://example.com"'
                                 ],
                             ],
-                        ]),
+                        ])->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
                     ]
                 ),
             ],
@@ -64,7 +64,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedTestSuite' => new TestSuite(
                     FixturePathFinder::find('TestSuite/example.com-verify-open-literal.yml'),
                     [
-                        $testParser->parse('', FixturePathFinder::find('Test/example.com.verify-open-literal.yml'), [
+                        $testParser->parse([
                             'config' => [
                                 'browser' => 'chrome',
                                 'url' => 'https://example.com',
@@ -74,7 +74,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                                     '$page.url is "https://example.com"'
                                 ],
                             ],
-                        ]),
+                        ])->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
                     ]
                 ),
             ],
@@ -84,8 +84,6 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                     FixturePathFinder::find('TestSuite/example.com-all.yml'),
                     [
                         $testParser->parse(
-                            '',
-                            FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                             [
                                 'config' => [
                                     'browser' => 'chrome',
@@ -97,10 +95,8 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                                     ],
                                 ],
                             ]
-                        ),
+                        )->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
                         $testParser->parse(
-                            '',
-                            FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
                             [
                                 'config' => [
                                     'browser' => 'chrome',
@@ -112,7 +108,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                                     ],
                                 ],
                             ]
-                        ),
+                        )->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
                     ]
                 ),
             ],

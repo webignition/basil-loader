@@ -23,6 +23,7 @@ use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilModels\Test\TestInterface;
 use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\Exception\UnparseableTestException;
+use webignition\BasilParser\Test\ImportsParser;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\TestResolver;
@@ -32,6 +33,8 @@ use webignition\BasilValidationResult\InvalidResultInterface;
 
 class TestLoader
 {
+    private const DATA_KEY_IMPORTS = 'imports';
+
     private $yamlLoader;
     private $dataSetLoader;
     private $pageLoader;
@@ -39,6 +42,7 @@ class TestLoader
     private $testResolver;
     private $testParser;
     private $testValidator;
+    private $importsParser;
 
     public function __construct(
         YamlLoader $yamlLoader,
@@ -47,7 +51,8 @@ class TestLoader
         StepLoader $stepLoader,
         TestResolver $testResolver,
         TestParser $testParser,
-        TestValidator $testValidator
+        TestValidator $testValidator,
+        ImportsParser $importsParser
     ) {
         $this->yamlLoader = $yamlLoader;
         $this->dataSetLoader = $dataSetLoader;
@@ -56,6 +61,7 @@ class TestLoader
         $this->testResolver = $testResolver;
         $this->testParser = $testParser;
         $this->testValidator = $testValidator;
+        $this->importsParser = $importsParser;
     }
 
     public static function createLoader(): TestLoader
@@ -67,7 +73,8 @@ class TestLoader
             StepLoader::createLoader(),
             TestResolver::createResolver(),
             TestParser::create(),
-            TestValidator::create()
+            TestValidator::create(),
+            ImportsParser::create()
         );
     }
 
@@ -96,9 +103,10 @@ class TestLoader
         $basePath = dirname($path) . '/';
         $data = $this->yamlLoader->loadArray($path);
 
-        $test = $this->testParser->parse($basePath, $path, $data);
+        $test = $this->testParser->parse($data);
+        $test = $test->withPath($path);
 
-        $imports = $test->getImports();
+        $imports = $this->importsParser->parse($basePath, $data[self::DATA_KEY_IMPORTS] ?? []);
 
         $stepProvider = $this->createStepProvider($imports->getStepPaths());
         $pageProvider = $this->createPageProvider($imports->getPagePaths());

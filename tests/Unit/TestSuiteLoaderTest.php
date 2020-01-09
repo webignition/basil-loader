@@ -52,8 +52,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedTestSuite' => new TestSuite(
                     FixturePathFinder::find('TestSuite/example.com-verify-open-literal.yml'),
                     [
-                        new Test(
-                            FixturePathFinder::find('/Test/example.com.verify-open-literal.yml'),
+                        (new Test(
                             new Configuration('chrome', 'https://example.com'),
                             [
                                 'verify page is open' => new Step(
@@ -68,7 +67,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     ]
                                 ),
                             ]
-                        )
+                        ))->withPath(FixturePathFinder::find('/Test/example.com.verify-open-literal.yml'))
                     ]
                 ),
             ],
@@ -77,8 +76,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedTestSuite' => new TestSuite(
                     FixturePathFinder::find('TestSuite/example.com-all.yml'),
                     [
-                        new Test(
-                            FixturePathFinder::find('/Test/example.com.verify-open-literal.yml'),
+                        (new Test(
                             new Configuration('chrome', 'https://example.com'),
                             [
                                 'verify page is open' => new Step(
@@ -93,9 +91,8 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     ]
                                 ),
                             ]
-                        ),
-                        new Test(
-                            FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
+                        ))->withPath(FixturePathFinder::find('/Test/example.com.verify-open-literal.yml')),
+                        (new Test(
                             new Configuration('chrome', 'https://example.com'),
                             [
                                 'verify page is open' => new Step(
@@ -110,7 +107,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                     ]
                                 )
                             ]
-                        ),
+                        ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
                     ]
                 ),
             ],
