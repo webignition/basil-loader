@@ -9,6 +9,7 @@ use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
@@ -16,8 +17,6 @@ use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModels\TestSuite\TestSuite;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\Exception\UnparseableStepException;
-use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
@@ -59,14 +58,13 @@ class TestSuiteLoader
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
+     * @throws ParseException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws UnknownTestException
-     * @throws UnparseableStepException
-     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function load(string $path): TestSuiteInterface
@@ -90,14 +88,13 @@ class TestSuiteLoader
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
+     * @throws ParseException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
      * @throws UnknownTestException
-     * @throws UnparseableStepException
-     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function loadFromTestPathList(string $path, string $basePath, array $data): TestSuiteInterface

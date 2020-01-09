@@ -11,6 +11,7 @@ use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\Action\InteractionAction;
@@ -226,5 +227,43 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
 
             $this->assertEquals($expectedException, $invalidTestException);
         }
+    }
+
+    /**
+     * @dataProvider loadThrowsParseExceptionDataProvider
+     */
+    public function testLoadThrowsParseException(
+        string $path,
+        bool $expectedIsUnparseableTestException,
+        bool $expectedIsUnparseableStepException,
+        string $expectedExceptionPath
+    ) {
+        try {
+            $this->testLoader->load($path);
+
+            $this->fail('ParseException not thrown');
+        } catch (ParseException $parseException) {
+            $this->assertSame($expectedIsUnparseableTestException, $parseException->isUnparseableTestException());
+            $this->assertSame($expectedIsUnparseableStepException, $parseException->isUnparseableStepException());
+            $this->assertSame($expectedExceptionPath, $parseException->getPath());
+        }
+    }
+
+    public function loadThrowsParseExceptionDataProvider(): array
+    {
+        return [
+            'test contains unparseable action' => [
+                'path' => FixturePathFinder::find('Test/invalid.empty-action.yml'),
+                'expectedIsUnparseableTestException' => true,
+                'expectedIsUnparseableStepException' => false,
+                'expectedExceptionPath' => FixturePathFinder::find('Test/invalid.empty-action.yml')
+            ],
+            'imported step contains unparseable action' => [
+                'path' => FixturePathFinder::find('Test/invalid.import-empty-action.yml'),
+                'expectedIsUnparseableTestException' => false,
+                'expectedIsUnparseableStepException' => true,
+                'expectedExceptionPath' => FixturePathFinder::find('Step/invalid.empty-action.yml')
+            ],
+        ];
     }
 }

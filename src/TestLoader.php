@@ -10,6 +10,7 @@ use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
@@ -89,13 +90,12 @@ class TestLoader
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
+     * @throws ParseException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
-     * @throws UnparseableStepException
-     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function load(string $path): TestInterface
@@ -103,7 +103,12 @@ class TestLoader
         $basePath = dirname($path) . '/';
         $data = $this->yamlLoader->loadArray($path);
 
-        $test = $this->testParser->parse($data);
+        try {
+            $test = $this->testParser->parse($data);
+        } catch (UnparseableTestException $unparseableTestException) {
+            throw new ParseException($path, $unparseableTestException);
+        }
+
         $test = $test->withPath($path);
 
         $imports = $this->importsParser->parse($basePath, $data[self::DATA_KEY_IMPORTS] ?? []);
@@ -173,7 +178,7 @@ class TestLoader
      * @return StepProviderInterface
      *
      * @throws NonRetrievableStepException
-     * @throws UnparseableStepException
+     * @throws ParseException
      */
     private function createStepProvider(array $importPaths): StepProviderInterface
     {
@@ -184,6 +189,8 @@ class TestLoader
                 $steps[$importName] = $this->stepLoader->load($importPath);
             } catch (YamlLoaderException $yamlLoaderException) {
                 throw new NonRetrievableStepException($importName, $importPath, $yamlLoaderException);
+            } catch (UnparseableStepException $unparseableStepException) {
+                throw new ParseException($importPath, $unparseableStepException);
             }
         }
 
