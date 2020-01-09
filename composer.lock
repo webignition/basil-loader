@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0cbac2e53a4aff14576f4628dd3b15fa",
+    "content-hash": "828a4ec54f40a63ebd3cb2b6c21bc887",
     "packages": [
         {
             "name": "symfony/polyfill-ctype",
@@ -301,16 +301,16 @@
         },
         {
             "name": "webignition/basil-parser",
-            "version": "0.17",
+            "version": "0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-parser.git",
-                "reference": "203c1250e43a47af2956c00ba37bbc38390e4dfd"
+                "reference": "ca2447625bbc380e6641f8ad1ab06187a2ef2174"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/203c1250e43a47af2956c00ba37bbc38390e4dfd",
-                "reference": "203c1250e43a47af2956c00ba37bbc38390e4dfd",
+                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/ca2447625bbc380e6641f8ad1ab06187a2ef2174",
+                "reference": "ca2447625bbc380e6641f8ad1ab06187a2ef2174",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +343,7 @@
             ],
             "description": "Parses raw basil data into basic data structures",
             "homepage": "https://github.com/webignition/basil-parser",
-            "time": "2020-01-09T13:20:45+00:00"
+            "time": "2020-01-09T17:16:19+00:00"
         },
         {
             "name": "webignition/basil-resolver",
