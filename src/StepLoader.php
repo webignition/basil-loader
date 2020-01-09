@@ -6,13 +6,7 @@ namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModels\Step\StepInterface;
-use webignition\BasilParser\Exception\EmptyActionException;
-use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
-use webignition\BasilParser\Exception\EmptyAssertionException;
-use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
-use webignition\BasilParser\Exception\EmptyAssertionValueException;
-use webignition\BasilParser\Exception\EmptyInputActionValueException;
-use webignition\BasilParser\Exception\InvalidActionIdentifierException;
+use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\StepParser;
 
 class StepLoader
@@ -40,13 +34,7 @@ class StepLoader
      *
      * @return StepInterface
      *
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidActionIdentifierException
+     * @throws UnparseableStepException
      * @throws YamlLoaderException
      */
     public function load(string $path): StepInterface

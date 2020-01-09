@@ -16,13 +16,8 @@ use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\Exception\EmptyActionException;
-use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
-use webignition\BasilParser\Exception\EmptyAssertionException;
-use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
-use webignition\BasilParser\Exception\EmptyAssertionValueException;
-use webignition\BasilParser\Exception\EmptyInputActionValueException;
-use webignition\BasilParser\Exception\InvalidActionIdentifierException;
+use webignition\BasilParser\Exception\UnparseableStepException;
+use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
@@ -63,14 +58,7 @@ class SourceLoader
      * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
      * @throws EmptyTestException
-     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
@@ -83,6 +71,8 @@ class SourceLoader
      * @throws UnknownStepException
      * @throws UnknownTestException
      * @throws YamlLoaderException
+     * @throws UnparseableStepException
+     * @throws UnparseableTestException
      */
     public function load(string $path): TestSuiteInterface
     {

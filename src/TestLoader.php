@@ -21,13 +21,8 @@ use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilModelProvider\Step\StepProvider;
 use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilModels\Test\TestInterface;
-use webignition\BasilParser\Exception\EmptyActionException;
-use webignition\BasilParser\Exception\EmptyAssertionComparisonException;
-use webignition\BasilParser\Exception\EmptyAssertionException;
-use webignition\BasilParser\Exception\EmptyAssertionIdentifierException;
-use webignition\BasilParser\Exception\EmptyAssertionValueException;
-use webignition\BasilParser\Exception\EmptyInputActionValueException;
-use webignition\BasilParser\Exception\InvalidActionIdentifierException;
+use webignition\BasilParser\Exception\UnparseableStepException;
+use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\TestResolver;
@@ -82,13 +77,6 @@ class TestLoader
      * @return TestInterface
      *
      * @throws CircularStepImportException
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidActionIdentifierException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableDataProviderException
@@ -99,6 +87,8 @@ class TestLoader
      * @throws UnknownPageElementException
      * @throws UnknownPageException
      * @throws UnknownStepException
+     * @throws UnparseableStepException
+     * @throws UnparseableTestException
      * @throws YamlLoaderException
      */
     public function load(string $path): TestInterface
@@ -174,14 +164,8 @@ class TestLoader
      *
      * @return StepProviderInterface
      *
-     * @throws EmptyActionException
-     * @throws EmptyAssertionComparisonException
-     * @throws EmptyAssertionException
-     * @throws EmptyAssertionIdentifierException
-     * @throws EmptyAssertionValueException
-     * @throws EmptyInputActionValueException
-     * @throws InvalidActionIdentifierException
      * @throws NonRetrievableStepException
+     * @throws UnparseableStepException
      */
     private function createStepProvider(array $importPaths): StepProviderInterface
     {
