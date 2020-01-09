@@ -10,14 +10,13 @@ use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
 use webignition\BasilLoader\Exception\NonRetrievablePageException;
 use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
 use webignition\BasilModelProvider\Exception\UnknownPageException;
 use webignition\BasilModelProvider\Exception\UnknownStepException;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\Exception\UnparseableStepException;
-use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
@@ -64,6 +63,7 @@ class SourceLoader
      * @throws NonRetrievableDataProviderException
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
+     * @throws ParseException
      * @throws UnknownDataProviderException
      * @throws UnknownElementException
      * @throws UnknownPageElementException
@@ -71,8 +71,6 @@ class SourceLoader
      * @throws UnknownStepException
      * @throws UnknownTestException
      * @throws YamlLoaderException
-     * @throws UnparseableStepException
-     * @throws UnparseableTestException
      */
     public function load(string $path): TestSuiteInterface
     {
