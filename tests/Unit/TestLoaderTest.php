@@ -51,8 +51,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         return [
             'non-empty' => [
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
-                'expectedTest' => new Test(
-                    FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
+                'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
                     [
                         'verify page is open' => new Step(
@@ -67,12 +66,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             ]
                         )
                     ]
-                ),
+                ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
             ],
             'import step verify open literal' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
-                'expectedTest' => new Test(
-                    FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
+                'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
                     [
                         'verify page is open' => new Step(
@@ -87,12 +85,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             ]
                         )
                     ]
-                ),
+                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
             ],
             'import step with data parameters' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
-                'expectedTest' => new Test(
-                    FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
+                'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
                     [
                         'data parameters step' => (new Step(
@@ -121,12 +118,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             ],
                         ]))
                     ]
-                ),
+                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml')),
             ],
             'import step with element parameters and imported page' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
-                'expectedTest' => new Test(
-                    FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
+                'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
                     [
                         'element parameters step' => new Step(
@@ -148,7 +144,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             ]
                         )
                     ]
-                ),
+                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')),
             ],
         ];
     }
@@ -214,11 +210,10 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
             $expectedException = new InvalidTestException(
                 $path,
                 new InvalidResult(
-                    new Test(
-                        $path,
+                    (new Test(
                         new Configuration('', ''),
                         []
-                    ),
+                    ))->withPath($path),
                     ResultType::TEST,
                     TestValidator::REASON_CONFIGURATION_INVALID,
                     new InvalidResult(
