@@ -8,10 +8,9 @@ use webignition\BasilDataValidator\ResultType;
 use webignition\BasilDataValidator\Test\ConfigurationValidator;
 use webignition\BasilDataValidator\Test\TestValidator;
 use webignition\BasilLoader\Exception\InvalidTestException;
-use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
-use webignition\BasilLoader\Exception\NonRetrievablePageException;
-use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
+use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\Action\InteractionAction;
@@ -150,53 +149,58 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsNonRetrievableDataProvider()
-    {
-        $expectedInvalidPath = sprintf(
-            '%s/DataProvider/file-does-not-exist.yml',
-            str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
-        );
+    /**
+     * @dataProvider loadThrowsNonRetrievableImportExceptionDataProvider
+     */
+    public function testLoadThrowsNonRetrievableImportException(
+        string $path,
+        string $expectedFailedImportPath,
+        string $expectedExceptionType,
+        string $expectedExceptionImportName
+    ) {
+        try {
+            $this->testLoader->load($path);
 
-        $this->expectException(NonRetrievableDataProviderException::class);
-        $this->expectExceptionMessage(sprintf(
-            'Cannot retrieve data provider "data_provider_import_name" from "%s"',
-            $expectedInvalidPath
-        ));
-
-        $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-data-provider.yml'));
+            $this->fail('NonRetrievableImportException not thrown');
+        } catch (NonRetrievableImportException $nonRetrievableImportException) {
+            $this->assertSame($expectedFailedImportPath, $nonRetrievableImportException->getPath());
+            $this->assertSame($expectedExceptionType, $nonRetrievableImportException->getType());
+            $this->assertSame($expectedExceptionImportName, $nonRetrievableImportException->getName());
+            $this->assertInstanceOf(YamlLoaderException::class, $nonRetrievableImportException->getPrevious());
+        }
     }
 
-
-    public function testLoadThrowsNonRetrievablePageException()
+    public function loadThrowsNonRetrievableImportExceptionDataProvider(): array
     {
-        $expectedInvalidPath = sprintf(
-            '%s/Page/file-does-not-exist.yml',
-            str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
-        );
-
-        $this->expectException(NonRetrievablePageException::class);
-        $this->expectExceptionMessage(sprintf(
-            'Cannot retrieve page "page_import_name" from "%s"',
-            $expectedInvalidPath
-        ));
-
-        $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-page-provider.yml'));
-    }
-
-    public function testLoadThrowsNonRetrievableStepException()
-    {
-        $expectedInvalidPath = sprintf(
-            '%s/Step/file-does-not-exist.yml',
-            str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
-        );
-
-        $this->expectException(NonRetrievableStepException::class);
-        $this->expectExceptionMessage(sprintf(
-            'Cannot retrieve step "step_import_name" from "%s"',
-            $expectedInvalidPath
-        ));
-
-        $this->testLoader->load(FixturePathFinder::find('Test/example.com.import-non-retrievable-step-provider.yml'));
+        return [
+            'step' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-non-retrievable-step-provider.yml'),
+                'expectedFailedImportPath' => sprintf(
+                    '%s/Step/file-does-not-exist.yml',
+                    str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
+                ),
+                'expectedExceptionType' => NonRetrievableImportException::TYPE_STEP,
+                'expectedExceptionImportName' => 'step_import_name',
+            ],
+            'page' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-non-retrievable-page-provider.yml'),
+                'expectedFailedImportPath' => sprintf(
+                    '%s/Page/file-does-not-exist.yml',
+                    str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
+                ),
+                'expectedExceptionType' => NonRetrievableImportException::TYPE_PAGE,
+                'expectedExceptionImportName' => 'page_import_name',
+            ],
+            'data provider' => [
+                'path' => FixturePathFinder::find('Test/example.com.import-non-retrievable-data-provider.yml'),
+                'expectedFailedImportPath' => sprintf(
+                    '%s/DataProvider/file-does-not-exist.yml',
+                    str_replace('/Services/../', '/', FixturePathFinder::getBasePath())
+                ),
+                'expectedExceptionType' => NonRetrievableImportException::TYPE_DATA_PROVIDER,
+                'expectedExceptionImportName' => 'data_provider_import_name',
+            ],
+        ];
     }
 
     public function testLoadThrowsInvalidTestException()

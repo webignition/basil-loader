@@ -7,9 +7,7 @@ namespace webignition\BasilLoader;
 use webignition\BasilDataValidator\Test\TestValidator;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
-use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
-use webignition\BasilLoader\Exception\NonRetrievablePageException;
-use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
@@ -83,9 +81,7 @@ class TestLoader
      * @throws CircularStepImportException
      * @throws InvalidPageException
      * @throws InvalidTestException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
+     * @throws NonRetrievableImportException
      * @throws ParseException
      * @throws UnknownElementException
      * @throws UnknownItemException
@@ -126,17 +122,22 @@ class TestLoader
      *
      * @return ProviderInterface
      *
-     * @throws NonRetrievableDataProviderException
+     * @throws NonRetrievableImportException
      */
     private function createDataSetProvider(array $importPaths): ProviderInterface
     {
         $dataSetCollections = [];
 
-        foreach ($importPaths as $importName => $importPath) {
+        foreach ($importPaths as $name => $path) {
             try {
-                $dataSetCollections[$importName] = $this->dataSetLoader->load($importPath);
+                $dataSetCollections[$name] = $this->dataSetLoader->load($path);
             } catch (YamlLoaderException $yamlLoaderException) {
-                throw new NonRetrievableDataProviderException($importName, $importPath, $yamlLoaderException);
+                throw new NonRetrievableImportException(
+                    NonRetrievableImportException::TYPE_DATA_PROVIDER,
+                    $name,
+                    $path,
+                    $yamlLoaderException
+                );
             }
         }
 
@@ -149,17 +150,22 @@ class TestLoader
      * @return ProviderInterface
      *
      * @throws InvalidPageException
-     * @throws NonRetrievablePageException
+     * @throws NonRetrievableImportException
      */
     private function createPageProvider(array $importPaths): ProviderInterface
     {
         $pages = [];
 
-        foreach ($importPaths as $importName => $importPath) {
+        foreach ($importPaths as $name => $path) {
             try {
-                $pages[$importName] = $this->pageLoader->load($importName, $importPath);
+                $pages[$name] = $this->pageLoader->load($name, $path);
             } catch (YamlLoaderException $yamlLoaderException) {
-                throw new NonRetrievablePageException($importName, $importPath, $yamlLoaderException);
+                throw new NonRetrievableImportException(
+                    NonRetrievableImportException::TYPE_PAGE,
+                    $name,
+                    $path,
+                    $yamlLoaderException
+                );
             }
         }
 
@@ -171,20 +177,25 @@ class TestLoader
      *
      * @return ProviderInterface
      *
-     * @throws NonRetrievableStepException
+     * @throws NonRetrievableImportException
      * @throws ParseException
      */
     private function createStepProvider(array $importPaths): ProviderInterface
     {
         $steps = [];
 
-        foreach ($importPaths as $importName => $importPath) {
+        foreach ($importPaths as $name => $path) {
             try {
-                $steps[$importName] = $this->stepLoader->load($importPath);
+                $steps[$name] = $this->stepLoader->load($path);
             } catch (YamlLoaderException $yamlLoaderException) {
-                throw new NonRetrievableStepException($importName, $importPath, $yamlLoaderException);
+                throw new NonRetrievableImportException(
+                    NonRetrievableImportException::TYPE_STEP,
+                    $name,
+                    $path,
+                    $yamlLoaderException
+                );
             } catch (UnparseableStepException $unparseableStepException) {
-                throw new ParseException($importPath, $unparseableStepException);
+                throw new ParseException($path, $unparseableStepException);
             }
         }
 

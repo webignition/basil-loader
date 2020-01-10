@@ -6,9 +6,7 @@ namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
-use webignition\BasilLoader\Exception\NonRetrievableDataProviderException;
-use webignition\BasilLoader\Exception\NonRetrievablePageException;
-use webignition\BasilLoader\Exception\NonRetrievableStepException;
+use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
@@ -53,9 +51,7 @@ class TestSuiteLoader
      * @throws CircularStepImportException
      * @throws InvalidPageException
      * @throws InvalidTestException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
+     * @throws NonRetrievableImportException
      * @throws ParseException
      * @throws UnknownElementException
      * @throws UnknownItemException
@@ -81,9 +77,7 @@ class TestSuiteLoader
      * @throws CircularStepImportException
      * @throws InvalidPageException
      * @throws InvalidTestException
-     * @throws NonRetrievableDataProviderException
-     * @throws NonRetrievablePageException
-     * @throws NonRetrievableStepException
+     * @throws NonRetrievableImportException
      * @throws ParseException
      * @throws UnknownElementException
      * @throws UnknownItemException
