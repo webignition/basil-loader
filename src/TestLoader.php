@@ -13,14 +13,10 @@ use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
-use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
-use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
-use webignition\BasilModelProvider\Exception\UnknownPageException;
-use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Exception\UnknownItemException;
 use webignition\BasilModelProvider\Page\PageProvider;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModelProvider\ProviderInterface;
 use webignition\BasilModelProvider\Step\StepProvider;
-use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilModels\Test\TestInterface;
 use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\Exception\UnparseableTestException;
@@ -91,11 +87,9 @@ class TestLoader
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws ParseException
-     * @throws UnknownDataProviderException
      * @throws UnknownElementException
+     * @throws UnknownItemException
      * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws UnknownStepException
      * @throws YamlLoaderException
      */
     public function load(string $path): TestInterface
@@ -130,11 +124,11 @@ class TestLoader
     /**
      * @param array<string, string> $importPaths
      *
-     * @return DataSetProviderInterface
+     * @return ProviderInterface
      *
      * @throws NonRetrievableDataProviderException
      */
-    private function createDataSetProvider(array $importPaths): DataSetProviderInterface
+    private function createDataSetProvider(array $importPaths): ProviderInterface
     {
         $dataSetCollections = [];
 
@@ -152,12 +146,12 @@ class TestLoader
     /**
      * @param array<string, string> $importPaths
      *
-     * @return PageProviderInterface
+     * @return ProviderInterface
      *
      * @throws InvalidPageException
      * @throws NonRetrievablePageException
      */
-    private function createPageProvider(array $importPaths): PageProviderInterface
+    private function createPageProvider(array $importPaths): ProviderInterface
     {
         $pages = [];
 
@@ -175,12 +169,12 @@ class TestLoader
     /**
      * @param array<string, string> $importPaths
      *
-     * @return StepProviderInterface
+     * @return ProviderInterface
      *
      * @throws NonRetrievableStepException
      * @throws ParseException
      */
-    private function createStepProvider(array $importPaths): StepProviderInterface
+    private function createStepProvider(array $importPaths): ProviderInterface
     {
         $steps = [];
 

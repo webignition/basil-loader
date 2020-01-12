@@ -13,9 +13,7 @@ use webignition\BasilLoader\Exception\NonRetrievableStepException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModelProvider\Exception\UnknownDataProviderException;
-use webignition\BasilModelProvider\Exception\UnknownPageException;
-use webignition\BasilModelProvider\Exception\UnknownStepException;
+use webignition\BasilModelProvider\Exception\UnknownItemException;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
 use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
@@ -64,11 +62,9 @@ class SourceLoader
      * @throws NonRetrievablePageException
      * @throws NonRetrievableStepException
      * @throws ParseException
-     * @throws UnknownDataProviderException
      * @throws UnknownElementException
+     * @throws UnknownItemException
      * @throws UnknownPageElementException
-     * @throws UnknownPageException
-     * @throws UnknownStepException
      * @throws UnknownTestException
      * @throws YamlLoaderException
      */
