@@ -7,6 +7,7 @@ namespace webignition\BasilLoader\Tests\Unit;
 use webignition\BasilDataValidator\ResultType;
 use webignition\BasilDataValidator\Test\ConfigurationValidator;
 use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
@@ -269,5 +270,18 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedExceptionPath' => FixturePathFinder::find('Step/invalid.empty-action.yml')
             ],
         ];
+    }
+
+    public function testLoadThrowsInvalidPageException()
+    {
+        $path = FixturePathFinder::find('Test/invalid.invalid-page.yml');
+
+        try {
+            $this->testLoader->load($path);
+
+            $this->fail('InvalidPageException not thrown');
+        } catch (InvalidPageException $invalidPageException) {
+            $this->assertSame($path, $invalidPageException->getTestPath());
+        }
     }
 }

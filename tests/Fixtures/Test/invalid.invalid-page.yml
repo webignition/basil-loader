@@ -1,0 +1,11 @@
+config:
+  browser: chrome
+  url: https://example.com
+
+imports:
+  pages:
+    page_import_name: "../Empty/empty.yml"
+
+"step name":
+  assertions:
+    - $page.title is $page_import_name.elements.element_name.attribute_name

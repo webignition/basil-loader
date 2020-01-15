@@ -103,8 +103,15 @@ class TestLoader
 
         $imports = $this->importsParser->parse($basePath, $data[self::DATA_KEY_IMPORTS] ?? []);
 
+        try {
+            $pageProvider = $this->createPageProvider($imports->getPagePaths());
+        } catch (InvalidPageException $invalidPageException) {
+            $invalidPageException->setTestPath($path);
+
+            throw $invalidPageException;
+        }
+
         $stepProvider = $this->createStepProvider($imports->getStepPaths());
-        $pageProvider = $this->createPageProvider($imports->getPagePaths());
         $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
 
         $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);

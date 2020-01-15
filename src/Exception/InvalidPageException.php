@@ -12,6 +12,11 @@ class InvalidPageException extends \Exception
     private $path;
     private $validationResult;
 
+    /**
+     * @var string|null
+     */
+    private $testPath;
+
     public function __construct(string $importName, string $path, InvalidResultInterface $validationResult)
     {
         parent::__construct(sprintf(
@@ -39,5 +44,15 @@ class InvalidPageException extends \Exception
     public function getValidationResult(): InvalidResultInterface
     {
         return $this->validationResult;
+    }
+
+    public function getTestPath(): ?string
+    {
+        return $this->testPath;
+    }
+
+    public function setTestPath(string $testPath): void
+    {
+        $this->testPath = $testPath;
     }
 }
