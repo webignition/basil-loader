@@ -168,6 +168,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
             $this->assertSame($expectedExceptionType, $nonRetrievableImportException->getType());
             $this->assertSame($expectedExceptionImportName, $nonRetrievableImportException->getName());
             $this->assertInstanceOf(YamlLoaderException::class, $nonRetrievableImportException->getPrevious());
+            $this->assertSame($path, $nonRetrievableImportException->getTestPath());
         }
     }
 

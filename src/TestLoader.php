@@ -105,14 +105,17 @@ class TestLoader
 
         try {
             $pageProvider = $this->createPageProvider($imports->getPagePaths());
+            $stepProvider = $this->createStepProvider($imports->getStepPaths());
+            $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
+        } catch (NonRetrievableImportException $nonRetrievableImportException) {
+            $nonRetrievableImportException->setTestPath($path);
+
+            throw $nonRetrievableImportException;
         } catch (InvalidPageException $invalidPageException) {
             $invalidPageException->setTestPath($path);
 
             throw $invalidPageException;
         }
-
-        $stepProvider = $this->createStepProvider($imports->getStepPaths());
-        $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
 
         $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
 
