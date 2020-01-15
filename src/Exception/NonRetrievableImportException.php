@@ -22,6 +22,11 @@ class NonRetrievableImportException extends \Exception implements ContextAwareEx
     private $yamlLoaderException;
     private $exceptionContext;
 
+    /**
+     * @var string|null
+     */
+    private $testPath;
+
     public function __construct(
         string $type,
         string $name,
@@ -59,5 +64,15 @@ class NonRetrievableImportException extends \Exception implements ContextAwareEx
     public function getYamlLoaderException(): YamlLoaderException
     {
         return $this->yamlLoaderException;
+    }
+
+    public function getTestPath(): ?string
+    {
+        return $this->testPath;
+    }
+
+    public function setTestPath(string $testPath): void
+    {
+        $this->testPath = $testPath;
     }
 }
