@@ -242,7 +242,8 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         string $path,
         bool $expectedIsUnparseableTestException,
         bool $expectedIsUnparseableStepException,
-        string $expectedExceptionPath
+        string $expectedExceptionTestPath,
+        string $expectedExceptionSubjectPath
     ) {
         try {
             $this->testLoader->load($path);
@@ -251,7 +252,8 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         } catch (ParseException $parseException) {
             $this->assertSame($expectedIsUnparseableTestException, $parseException->isUnparseableTestException());
             $this->assertSame($expectedIsUnparseableStepException, $parseException->isUnparseableStepException());
-            $this->assertSame($expectedExceptionPath, $parseException->getPath());
+            $this->assertSame($expectedExceptionTestPath, $parseException->getTestPath());
+            $this->assertSame($expectedExceptionSubjectPath, $parseException->getSubjectPath());
         }
     }
 
@@ -262,13 +264,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/invalid.empty-action.yml'),
                 'expectedIsUnparseableTestException' => true,
                 'expectedIsUnparseableStepException' => false,
-                'expectedExceptionPath' => FixturePathFinder::find('Test/invalid.empty-action.yml')
+                'expectedExceptionTestPath' => FixturePathFinder::find('Test/invalid.empty-action.yml'),
+                'expectedExceptionSubjectPath' => FixturePathFinder::find('Test/invalid.empty-action.yml')
             ],
             'imported step contains unparseable action' => [
                 'path' => FixturePathFinder::find('Test/invalid.import-empty-action.yml'),
                 'expectedIsUnparseableTestException' => false,
                 'expectedIsUnparseableStepException' => true,
-                'expectedExceptionPath' => FixturePathFinder::find('Step/invalid.empty-action.yml')
+                'expectedExceptionTestPath' => FixturePathFinder::find('Test/invalid.import-empty-action.yml'),
+                'expectedExceptionSubjectPath' => FixturePathFinder::find('Step/invalid.empty-action.yml')
             ],
         ];
     }

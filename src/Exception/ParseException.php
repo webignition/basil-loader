@@ -10,24 +10,34 @@ use webignition\BasilParser\Exception\UnparseableTestException;
 
 class ParseException extends \Exception
 {
-    private $path;
+    private $testPath;
+    private $subjectPath;
     private $unparseableDataException;
 
-    public function __construct(string $path, UnparseableDataExceptionInterface $unparseableDataException)
-    {
+    public function __construct(
+        string $testPath,
+        string $path,
+        UnparseableDataExceptionInterface $unparseableDataException
+    ) {
         parent::__construct(
             sprintf('Parse error when loading: %s', $unparseableDataException->getMessage()),
             0,
             $unparseableDataException
         );
 
-        $this->path = $path;
+        $this->testPath = $testPath;
+        $this->subjectPath = $path;
         $this->unparseableDataException = $unparseableDataException;
     }
 
-    public function getPath(): string
+    public function getTestPath(): string
     {
-        return $this->path;
+        return $this->testPath;
+    }
+
+    public function getSubjectPath(): string
+    {
+        return $this->subjectPath;
     }
 
     public function getUnparseableDataException(): UnparseableDataExceptionInterface
