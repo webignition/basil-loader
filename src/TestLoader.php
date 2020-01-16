@@ -96,7 +96,7 @@ class TestLoader
         try {
             $test = $this->testParser->parse($data);
         } catch (UnparseableTestException $unparseableTestException) {
-            throw new ParseException($path, $unparseableTestException);
+            throw new ParseException($path, $path, $unparseableTestException);
         }
 
         $test = $test->withPath($path);
@@ -105,7 +105,7 @@ class TestLoader
 
         try {
             $pageProvider = $this->createPageProvider($imports->getPagePaths());
-            $stepProvider = $this->createStepProvider($imports->getStepPaths());
+            $stepProvider = $this->createStepProvider($path, $imports->getStepPaths());
             $dataSetProvider = $this->createDataSetProvider($imports->getDataProviderPaths());
         } catch (NonRetrievableImportException $nonRetrievableImportException) {
             $nonRetrievableImportException->setTestPath($path);
@@ -183,6 +183,7 @@ class TestLoader
     }
 
     /**
+     * @param string $testPath
      * @param array<string, string> $importPaths
      *
      * @return ProviderInterface
@@ -190,7 +191,7 @@ class TestLoader
      * @throws NonRetrievableImportException
      * @throws ParseException
      */
-    private function createStepProvider(array $importPaths): ProviderInterface
+    private function createStepProvider(string $testPath, array $importPaths): ProviderInterface
     {
         $steps = [];
 
@@ -205,7 +206,7 @@ class TestLoader
                     $yamlLoaderException
                 );
             } catch (UnparseableStepException $unparseableStepException) {
-                throw new ParseException($path, $unparseableStepException);
+                throw new ParseException($testPath, $path, $unparseableStepException);
             }
         }
 
