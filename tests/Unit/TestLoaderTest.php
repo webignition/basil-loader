@@ -15,6 +15,7 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\Action\InteractionAction;
+use webignition\BasilModels\Assertion\Assertion;
 use webignition\BasilModels\Assertion\ComparisonAssertion;
 use webignition\BasilModels\DataSet\DataSetCollection;
 use webignition\BasilModels\Step\Step;
@@ -146,6 +147,30 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         )
                     ]
                 ))->withPath(FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')),
+            ],
+            'import step with descendant element parameters' => [
+                'path' => FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml'),
+                'expectedTest' => (new Test(
+                    new Configuration('chrome', 'https://example.com'),
+                    [
+                        'descendant element parameters step' => new Step(
+                            [
+                            ],
+                            [
+                                new Assertion(
+                                    '$page_import_name.elements.form exists',
+                                    '$".form"',
+                                    'exists'
+                                ),
+                                new Assertion(
+                                    '$page_import_name.elements.input exists',
+                                    '$".form" >> $".input"',
+                                    'exists'
+                                ),
+                            ]
+                        )
+                    ]
+                ))->withPath(FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')),
             ],
         ];
     }
