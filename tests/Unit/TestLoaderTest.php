@@ -14,14 +14,15 @@ use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
-use webignition\BasilModels\Action\InteractionAction;
-use webignition\BasilModels\Assertion\Assertion;
-use webignition\BasilModels\Assertion\ComparisonAssertion;
+use webignition\BasilModels\Action\ResolvedAction;
+use webignition\BasilModels\Assertion\ResolvedAssertion;
 use webignition\BasilModels\DataSet\DataSetCollection;
 use webignition\BasilModels\Step\Step;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\Test\TestInterface;
+use webignition\BasilParser\ActionParser;
+use webignition\BasilParser\AssertionParser;
 use webignition\BasilValidationResult\InvalidResult;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
@@ -47,6 +48,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadSuccessDataProvider(): array
     {
+        $actionParser = ActionParser::create();
+        $assertionParser = AssertionParser::create();
+
         return [
             'non-empty' => [
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
@@ -56,12 +60,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         'verify page is open' => new Step(
                             [],
                             [
-                                new ComparisonAssertion(
-                                    '$page.url is "https://example.com"',
-                                    '$page.url',
-                                    'is',
-                                    '"https://example.com"'
-                                ),
+                                $assertionParser->parse('$page.url is "https://example.com"'),
                             ]
                         )
                     ]
@@ -75,12 +74,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                         'verify page is open' => new Step(
                             [],
                             [
-                                new ComparisonAssertion(
-                                    '$page.url is "https://example.com"',
-                                    '$page.url',
-                                    'is',
-                                    '"https://example.com"'
-                                ),
+                                $assertionParser->parse('$page.url is "https://example.com"'),
                             ]
                         )
                     ]
@@ -93,20 +87,10 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         'data parameters step' => (new Step(
                             [
-                                new InteractionAction(
-                                    'click $".button"',
-                                    'click',
-                                    '$".button"',
-                                    '$".button"'
-                                )
+                                $actionParser->parse('click $".button"'),
                             ],
                             [
-                                new ComparisonAssertion(
-                                    '$".heading" includes $data.expected_title',
-                                    '$".heading"',
-                                    'includes',
-                                    '$data.expected_title'
-                                ),
+                                $assertionParser->parse('$".heading" includes $data.expected_title'),
                             ]
                         ))->withData(new DataSetCollection([
                             '0' => [
@@ -126,18 +110,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         'element parameters step' => new Step(
                             [
-                                new InteractionAction(
-                                    'click $elements.button',
-                                    'click',
-                                    '$elements.button',
+                                new ResolvedAction(
+                                    $actionParser->parse('click $elements.button'),
                                     '$".button"'
-                                )
+                                ),
                             ],
                             [
-                                new ComparisonAssertion(
-                                    '$elements.heading includes "example"',
+                                new ResolvedAssertion(
+                                    $assertionParser->parse('$elements.heading includes "example"'),
                                     '$".heading"',
-                                    'includes',
                                     '"example"'
                                 ),
                             ]
@@ -154,15 +135,13 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                             [
                             ],
                             [
-                                new Assertion(
-                                    '$page_import_name.elements.form exists',
-                                    '$".form"',
-                                    'exists'
+                                new ResolvedAssertion(
+                                    $assertionParser->parse('$page_import_name.elements.form exists'),
+                                    '$".form"'
                                 ),
-                                new Assertion(
-                                    '$page_import_name.elements.input exists',
-                                    '$".form" >> $".input"',
-                                    'exists'
+                                new ResolvedAssertion(
+                                    $assertionParser->parse('$page_import_name.elements.input exists'),
+                                    '$".form" >> $".input"'
                                 ),
                             ]
                         )

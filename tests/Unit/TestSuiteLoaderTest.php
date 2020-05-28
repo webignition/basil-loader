@@ -8,12 +8,12 @@ use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
-use webignition\BasilModels\Assertion\ComparisonAssertion;
 use webignition\BasilModels\Step\Step;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\TestSuite\TestSuite;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
+use webignition\BasilParser\AssertionParser;
 use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
@@ -39,6 +39,8 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
+        $assertionParser = AssertionParser::create();
+
         return [
             'empty' => [
                 'path' => FixturePathFinder::find('Empty/empty.yml'),
@@ -55,12 +57,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new ComparisonAssertion(
-                                            '$page.url is "https://example.com"',
-                                            '$page.url',
-                                            'is',
-                                            '"https://example.com"'
-                                        ),
+                                        $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 ),
                             ]
@@ -79,12 +76,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new ComparisonAssertion(
-                                            '$page.url is "https://example.com"',
-                                            '$page.url',
-                                            'is',
-                                            '"https://example.com"'
-                                        ),
+                                        $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 ),
                             ]
@@ -95,12 +87,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                                 'verify page is open' => new Step(
                                     [],
                                     [
-                                        new ComparisonAssertion(
-                                            '$page.url is "https://example.com"',
-                                            '$page.url',
-                                            'is',
-                                            '"https://example.com"'
-                                        ),
+                                        $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 )
                             ]

@@ -6,10 +6,10 @@ namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
-use webignition\BasilModels\Action\InteractionAction;
-use webignition\BasilModels\Assertion\ComparisonAssertion;
 use webignition\BasilModels\Step\Step;
 use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilParser\ActionParser;
+use webignition\BasilParser\AssertionParser;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,6 +27,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function loadDataProvider(): array
     {
+        $actionParser = ActionParser::create();
+        $assertionParser = AssertionParser::create();
+
         return [
             'empty' => [
                 'path' => FixturePathFinder::find('Empty/empty.yml'),
@@ -36,20 +39,10 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Step/no-parameters.yml'),
                 'expectedStep' => new Step(
                     [
-                        new InteractionAction(
-                            'click $".button"',
-                            'click',
-                            '$".button"',
-                            '$".button"'
-                        ),
+                        $actionParser->parse('click $".button"'),
                     ],
                     [
-                        new ComparisonAssertion(
-                            '$".heading" includes "example"',
-                            '$".heading"',
-                            'includes',
-                            '"example"'
-                        ),
+                        $assertionParser->parse('$".heading" includes "example"'),
                     ]
                 ),
             ],
