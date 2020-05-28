@@ -11,8 +11,8 @@ use webignition\BasilParser\StepParser;
 
 class StepLoader
 {
-    private $yamlLoader;
-    private $stepParser;
+    private YamlLoader $yamlLoader;
+    private StepParser $stepParser;
 
     public function __construct(YamlLoader $yamlLoader, StepParser $stepParser)
     {

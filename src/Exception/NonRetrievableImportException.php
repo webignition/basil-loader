@@ -7,6 +7,7 @@ namespace webignition\BasilLoader\Exception;
 use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
 use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 
 class NonRetrievableImportException extends \Exception implements ContextAwareExceptionInterface
 {
@@ -16,16 +17,12 @@ class NonRetrievableImportException extends \Exception implements ContextAwareEx
     public const TYPE_PAGE = 'page';
     public const TYPE_STEP = 'step';
 
-    private $type;
-    private $name;
-    private $path;
-    private $yamlLoaderException;
-    private $exceptionContext;
-
-    /**
-     * @var string|null
-     */
-    private $testPath;
+    private string $type;
+    private string $name;
+    private string $path;
+    private YamlLoaderException $yamlLoaderException;
+    private ExceptionContextInterface $exceptionContext;
+    private ?string $testPath;
 
     public function __construct(
         string $type,

@@ -10,7 +10,7 @@ use webignition\BasilModels\DataSet\DataSetCollectionInterface;
 
 class DataSetLoader
 {
-    private $yamlLoader;
+    private YamlLoader $yamlLoader;
 
     public function __construct(YamlLoader $yamlLoader)
     {

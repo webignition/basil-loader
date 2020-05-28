@@ -10,7 +10,7 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class YamlLoader
 {
-    private $yamlParser;
+    private YamlParser $yamlParser;
 
     public function __construct(YamlParser $yamlParser)
     {

@@ -13,10 +13,7 @@ use webignition\BasilParser\Test\TestParser;
 
 class SourceLoaderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var SourceLoader
-     */
-    private $sourceLoader;
+    private SourceLoader $sourceLoader;
 
     protected function setUp(): void
     {

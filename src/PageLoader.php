@@ -13,9 +13,9 @@ use webignition\BasilValidationResult\InvalidResultInterface;
 
 class PageLoader
 {
-    private $yamlLoader;
-    private $pageParser;
-    private $pageValidator;
+    private YamlLoader $yamlLoader;
+    private PageParser $pageParser;
+    private PageValidator $pageValidator;
 
     public function __construct(YamlLoader $yamlLoader, PageParser $pageParser, PageValidator $pageValidator)
     {

@@ -8,14 +8,10 @@ use webignition\BasilValidationResult\InvalidResultInterface;
 
 class InvalidPageException extends \Exception
 {
-    private $importName;
-    private $path;
-    private $validationResult;
-
-    /**
-     * @var string|null
-     */
-    private $testPath;
+    private string $importName;
+    private string $path;
+    private InvalidResultInterface $validationResult;
+    private ?string $testPath;
 
     public function __construct(string $importName, string $path, InvalidResultInterface $validationResult)
     {

@@ -20,10 +20,10 @@ use webignition\BasilResolver\UnknownPageElementException;
 
 class SourceLoader
 {
-    private $yamlLoader;
-    private $testParser;
-    private $testLoader;
-    private $testSuiteLoader;
+    private YamlLoader $yamlLoader;
+    private TestParser $testParser;
+    private TestLoader $testLoader;
+    private TestSuiteLoader $testSuiteLoader;
 
     public function __construct(
         YamlLoader $yamlLoader,

@@ -8,8 +8,8 @@ use webignition\BasilValidationResult\InvalidResultInterface;
 
 class InvalidTestException extends \Exception
 {
-    private $path;
-    private $validationResult;
+    private string $path;
+    private InvalidResultInterface $validationResult;
 
     public function __construct(string $path, InvalidResultInterface $validationResult)
     {
