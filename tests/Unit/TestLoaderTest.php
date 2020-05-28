@@ -26,10 +26,7 @@ use webignition\BasilValidationResult\InvalidResult;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var TestLoader
-     */
-    private $testLoader;
+    private TestLoader $testLoader;
 
     protected function setUp(): void
     {

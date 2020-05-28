@@ -18,10 +18,7 @@ use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var TestSuiteLoader
-     */
-    private $testSuiteLoader;
+    private TestSuiteLoader $testSuiteLoader;
 
     protected function setUp(): void
     {

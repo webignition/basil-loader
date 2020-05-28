@@ -30,14 +30,14 @@ class TestLoader
 {
     private const DATA_KEY_IMPORTS = 'imports';
 
-    private $yamlLoader;
-    private $dataSetLoader;
-    private $pageLoader;
-    private $stepLoader;
-    private $testResolver;
-    private $testParser;
-    private $testValidator;
-    private $importsParser;
+    private YamlLoader $yamlLoader;
+    private DataSetLoader $dataSetLoader;
+    private PageLoader $pageLoader;
+    private StepLoader $stepLoader;
+    private TestResolver $testResolver;
+    private TestParser $testParser;
+    private TestValidator $testValidator;
+    private ImportsParser $importsParser;
 
     public function __construct(
         YamlLoader $yamlLoader,

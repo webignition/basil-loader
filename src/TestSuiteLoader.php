@@ -20,9 +20,9 @@ use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoader
 {
-    private $yamlLoader;
-    private $testLoader;
-    private $pathResolver;
+    private YamlLoader $yamlLoader;
+    private TestLoader $testLoader;
+    private PathResolver $pathResolver;
 
     public function __construct(
         YamlLoader $yamlLoader,

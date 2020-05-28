@@ -7,14 +7,15 @@ namespace webignition\BasilLoader\Exception;
 use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
 use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 
 abstract class AbstractNonRetrievableImportException extends \Exception implements ContextAwareExceptionInterface
 {
     use ContextAwareExceptionTrait;
 
-    private $importName;
-    private $importPath;
-    private $exceptionContext;
+    private string $importName;
+    private string $importPath;
+    private ExceptionContextInterface $exceptionContext;
 
     public function __construct(string $importName, string $importPath, string $message, \Throwable $previous)
     {

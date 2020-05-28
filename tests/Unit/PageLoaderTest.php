@@ -15,10 +15,7 @@ use webignition\BasilValidationResult\InvalidResult;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var PageLoader
-     */
-    private $loader;
+    private PageLoader $loader;
 
     protected function setUp(): void
     {

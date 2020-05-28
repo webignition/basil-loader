@@ -12,7 +12,7 @@ abstract class AbstractUnknownImportException extends \Exception implements Cont
 {
     use ContextAwareExceptionTrait;
 
-    private $importName;
+    private string $importName;
 
     public function __construct(string $importName, string $message)
     {
