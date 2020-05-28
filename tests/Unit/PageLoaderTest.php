@@ -53,7 +53,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
                     'https://example.com',
                     [
                         'form' => '$".form"',
-                        'input' => '$"{{ form }} .input"',
+                        'input' => '$form >> $".input"',
                     ]
                 ),
             ],
