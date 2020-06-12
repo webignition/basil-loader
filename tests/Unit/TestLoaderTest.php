@@ -18,6 +18,7 @@ use webignition\BasilModels\Action\ResolvedAction;
 use webignition\BasilModels\Assertion\ResolvedAssertion;
 use webignition\BasilModels\DataSet\DataSetCollection;
 use webignition\BasilModels\Step\Step;
+use webignition\BasilModels\Step\StepCollection;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\Test\TestInterface;
@@ -56,35 +57,35 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                 'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
-                    [
+                    new StepCollection([
                         'verify page is open' => new Step(
                             [],
                             [
                                 $assertionParser->parse('$page.url is "https://example.com"'),
                             ]
                         )
-                    ]
+                    ])
                 ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
             ],
             'import step verify open literal' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
                 'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
-                    [
+                    new StepCollection([
                         'verify page is open' => new Step(
                             [],
                             [
                                 $assertionParser->parse('$page.url is "https://example.com"'),
                             ]
                         )
-                    ]
+                    ])
                 ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
             ],
             'import step with data parameters' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
                 'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
-                    [
+                    new StepCollection([
                         'data parameters step' => (new Step(
                             [
                                 $actionParser->parse('click $".button"'),
@@ -100,14 +101,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 'expected_title' => 'Bar',
                             ],
                         ]))
-                    ]
+                    ])
                 ))->withPath(FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml')),
             ],
             'import step with element parameters and imported page' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
                 'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
-                    [
+                    new StepCollection([
                         'element parameters step' => new Step(
                             [
                                 new ResolvedAction(
@@ -123,14 +124,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 ),
                             ]
                         )
-                    ]
+                    ])
                 ))->withPath(FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')),
             ],
             'import step with descendant element parameters' => [
                 'path' => FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml'),
                 'expectedTest' => (new Test(
                     new Configuration('chrome', 'https://example.com'),
-                    [
+                    new StepCollection([
                         'descendant element parameters step' => new Step(
                             [
                             ],
@@ -145,7 +146,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                                 ),
                             ]
                         )
-                    ]
+                    ])
                 ))->withPath(FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')),
             ],
         ];
@@ -220,7 +221,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 new InvalidResult(
                     (new Test(
                         new Configuration('', ''),
-                        []
+                        new StepCollection([])
                     ))->withPath($path),
                     ResultType::TEST,
                     TestValidator::REASON_CONFIGURATION_INVALID,

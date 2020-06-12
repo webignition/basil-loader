@@ -9,6 +9,7 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\TestSuiteLoader;
 use webignition\BasilModels\Step\Step;
+use webignition\BasilModels\Step\StepCollection;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\TestSuite\TestSuite;
@@ -53,14 +54,14 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         (new Test(
                             new Configuration('chrome', 'https://example.com'),
-                            [
+                            new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
                                     [
                                         $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 ),
-                            ]
+                            ])
                         ))->withPath(FixturePathFinder::find('/Test/example.com.verify-open-literal.yml'))
                     ]
                 ),
@@ -72,25 +73,25 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         (new Test(
                             new Configuration('chrome', 'https://example.com'),
-                            [
+                            new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
                                     [
                                         $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 ),
-                            ]
+                            ])
                         ))->withPath(FixturePathFinder::find('/Test/example.com.verify-open-literal.yml')),
                         (new Test(
                             new Configuration('chrome', 'https://example.com'),
-                            [
+                            new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
                                     [
                                         $assertionParser->parse('$page.url is "https://example.com"'),
                                     ]
                                 )
-                            ]
+                            ])
                         ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
                     ]
                 ),
