@@ -13,7 +13,6 @@ use webignition\BasilLoader\Exception\UnknownTestException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\Exception\UnknownItemException;
 use webignition\BasilModels\TestSuite\TestSuiteInterface;
-use webignition\BasilParser\Test\TestParser;
 use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
@@ -21,19 +20,11 @@ use webignition\BasilResolver\UnknownPageElementException;
 class SourceLoader
 {
     private YamlLoader $yamlLoader;
-    private TestParser $testParser;
-    private TestLoader $testLoader;
     private TestSuiteLoader $testSuiteLoader;
 
-    public function __construct(
-        YamlLoader $yamlLoader,
-        TestParser $testParser,
-        TestLoader $testLoader,
-        TestSuiteLoader $testSuiteLoader
-    ) {
+    public function __construct(YamlLoader $yamlLoader, TestSuiteLoader $testSuiteLoader)
+    {
         $this->yamlLoader = $yamlLoader;
-        $this->testParser = $testParser;
-        $this->testLoader = $testLoader;
         $this->testSuiteLoader = $testSuiteLoader;
     }
 
@@ -41,8 +32,6 @@ class SourceLoader
     {
         return new SourceLoader(
             YamlLoader::createLoader(),
-            TestParser::create(),
-            TestLoader::createLoader(),
             TestSuiteLoader::createLoader()
         );
     }
