@@ -53,7 +53,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                     FixturePathFinder::find('TestSuite/example.com-verify-open-literal.yml'),
                     [
                         (new Test(
-                            new Configuration('chrome', 'https://example.com'),
+                            new Configuration(['chrome'], 'https://example.com'),
                             new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
@@ -72,7 +72,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                     FixturePathFinder::find('TestSuite/example.com-all.yml'),
                     [
                         (new Test(
-                            new Configuration('chrome', 'https://example.com'),
+                            new Configuration(['chrome'], 'https://example.com'),
                             new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
@@ -83,7 +83,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                             ])
                         ))->withPath(FixturePathFinder::find('/Test/example.com.verify-open-literal.yml')),
                         (new Test(
-                            new Configuration('chrome', 'https://example.com'),
+                            new Configuration(['chrome'], 'https://example.com'),
                             new StepCollection([
                                 'verify page is open' => new Step(
                                     [],
