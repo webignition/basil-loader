@@ -76,7 +76,7 @@ class TestLoader
     /**
      * @param string $path
      *
-     * @return TestInterface
+     * @return TestInterface[]
      *
      * @throws CircularStepImportException
      * @throws InvalidPageException
@@ -88,10 +88,42 @@ class TestLoader
      * @throws UnknownPageElementException
      * @throws YamlLoaderException
      */
-    public function load(string $path): TestInterface
+    public function load(string $path): array
+    {
+        $data = $this->yamlLoader->loadArray($path);
+
+        $singleBrowserDataSets = $this->createSingleBrowserDataSets($data);
+        if ([] === $singleBrowserDataSets) {
+            $singleBrowserDataSets = [$data];
+        }
+
+        $tests = [];
+
+        foreach ($singleBrowserDataSets as $data) {
+            $tests[] = $this->createTest($path, $data);
+        }
+
+        return $tests;
+    }
+
+    /**
+     * @param string $path
+     * @param array<mixed> $data
+     *
+     * @return TestInterface
+     *
+     * @throws CircularStepImportException
+     * @throws InvalidPageException
+     * @throws InvalidTestException
+     * @throws NonRetrievableImportException
+     * @throws ParseException
+     * @throws UnknownElementException
+     * @throws UnknownItemException
+     * @throws UnknownPageElementException
+     */
+    private function createTest(string $path, array $data): TestInterface
     {
         $basePath = dirname($path) . '/';
-        $data = $this->yamlLoader->loadArray($path);
 
         try {
             $test = $this->testParser->parse($data);
@@ -211,5 +243,34 @@ class TestLoader
         }
 
         return new StepProvider($steps);
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
+    private function createSingleBrowserDataSets(array $data): array
+    {
+        $configData = $data['config'] ?? [];
+        $configData = is_array($configData) ? $configData : [];
+
+        $browsers = $configData['browsers'] ?? [];
+        $browsers = is_array($browsers) ? $browsers : [];
+
+        $url = $configData['url'] ?? '';
+
+        $browserSpecificDataSets = [];
+        foreach ($browsers as $browser) {
+            $browserSpecificData = $data;
+            $browserSpecificData['config'] = [
+                'browser' => $browser,
+                'url' => $url,
+            ];
+
+            $browserSpecificDataSets[] = $browserSpecificData;
+        }
+
+        return $browserSpecificDataSets;
     }
 }
