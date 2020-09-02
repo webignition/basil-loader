@@ -1,5 +1,6 @@
 config:
-  browser: chrome
+  browsers:
+    - chrome
   url: https://example.com
 
 imports:
