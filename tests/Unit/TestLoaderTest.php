@@ -39,12 +39,15 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider loadSuccessDataProvider
+     *
+     * @param string $path
+     * @param TestInterface[] $expectedTests
      */
-    public function testLoadSuccess(string $path, TestInterface $expectedTest)
+    public function testLoadSuccess(string $path, array $expectedTests)
     {
-        $test = $this->testLoader->load($path);
+        $tests = $this->testLoader->load($path);
 
-        $this->assertEquals($expectedTest, $test);
+        $this->assertEquals($expectedTests, $tests);
     }
 
     public function loadSuccessDataProvider(): array
@@ -55,99 +58,136 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         return [
             'non-empty' => [
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
-                'expectedTest' => (new Test(
-                    new Configuration('chrome', 'https://example.com'),
-                    new StepCollection([
-                        'verify page is open' => new Step(
-                            [],
-                            [
-                                $assertionParser->parse('$page.url is "https://example.com"'),
-                            ]
-                        )
-                    ])
-                ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal.yml')),
+                ],
             ],
             'import step verify open literal' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
-                'expectedTest' => (new Test(
-                    new Configuration('chrome', 'https://example.com'),
-                    new StepCollection([
-                        'verify page is open' => new Step(
-                            [],
-                            [
-                                $assertionParser->parse('$page.url is "https://example.com"'),
-                            ]
-                        )
-                    ])
-                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')),
+                ],
             ],
             'import step with data parameters' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
-                'expectedTest' => (new Test(
-                    new Configuration('chrome', 'https://example.com'),
-                    new StepCollection([
-                        'data parameters step' => (new Step(
-                            [
-                                $actionParser->parse('click $".button"'),
-                            ],
-                            [
-                                $assertionParser->parse('$".heading" includes $data.expected_title'),
-                            ]
-                        ))->withData(new DataSetCollection([
-                            '0' => [
-                                'expected_title' => 'Foo',
-                            ],
-                            '1' => [
-                                'expected_title' => 'Bar',
-                            ],
-                        ]))
-                    ])
-                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml')),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'data parameters step' => (new Step(
+                                [
+                                    $actionParser->parse('click $".button"'),
+                                ],
+                                [
+                                    $assertionParser->parse('$".heading" includes $data.expected_title'),
+                                ]
+                            ))->withData(new DataSetCollection([
+                                '0' => [
+                                    'expected_title' => 'Foo',
+                                ],
+                                '1' => [
+                                    'expected_title' => 'Bar',
+                                ],
+                            ]))
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml')),
+                ],
             ],
             'import step with element parameters and imported page' => [
                 'path' => FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
-                'expectedTest' => (new Test(
-                    new Configuration('chrome', 'https://example.com'),
-                    new StepCollection([
-                        'element parameters step' => new Step(
-                            [
-                                new ResolvedAction(
-                                    $actionParser->parse('click $elements.button'),
-                                    '$".button"'
-                                ),
-                            ],
-                            [
-                                new ResolvedAssertion(
-                                    $assertionParser->parse('$elements.heading includes "example"'),
-                                    '$".heading"',
-                                    '"example"'
-                                ),
-                            ]
-                        )
-                    ])
-                ))->withPath(FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'element parameters step' => new Step(
+                                [
+                                    new ResolvedAction(
+                                        $actionParser->parse('click $elements.button'),
+                                        '$".button"'
+                                    ),
+                                ],
+                                [
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$elements.heading includes "example"'),
+                                        '$".heading"',
+                                        '"example"'
+                                    ),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')),
+                ],
             ],
             'import step with descendant element parameters' => [
                 'path' => FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml'),
-                'expectedTest' => (new Test(
-                    new Configuration('chrome', 'https://example.com'),
-                    new StepCollection([
-                        'descendant element parameters step' => new Step(
-                            [
-                            ],
-                            [
-                                new ResolvedAssertion(
-                                    $assertionParser->parse('$page_import_name.elements.form exists'),
-                                    '$".form"'
-                                ),
-                                new ResolvedAssertion(
-                                    $assertionParser->parse('$page_import_name.elements.input exists'),
-                                    '$".form" >> $".input"'
-                                ),
-                            ]
-                        )
-                    ])
-                ))->withPath(FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'descendant element parameters step' => new Step(
+                                [
+                                ],
+                                [
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$page_import_name.elements.form exists'),
+                                        '$".form"'
+                                    ),
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$page_import_name.elements.input exists'),
+                                        '$".form" >> $".input"'
+                                    ),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')),
+                ],
+            ],
+            'verify open literal with multiple browsers' => [
+                'path' => FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml'),
+                'expectedTests' => [
+                    (new Test(
+                        new Configuration('chrome', 'https://example.com'),
+                        new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml')),
+                    (new Test(
+                        new Configuration('firefox', 'https://example.com'),
+                        new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])
+                    ))->withPath(FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml'))
+                ],
             ],
         ];
     }

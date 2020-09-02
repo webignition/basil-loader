@@ -96,7 +96,7 @@ class TestSuiteLoader
             $testImportPath = (string) $testImportPath;
 
             try {
-                $tests[] = $this->testLoader->load($testImportPath);
+                $tests = array_merge($tests, $this->testLoader->load($testImportPath));
             } catch (YamlLoaderException $yamlLoaderException) {
                 $isFileCannotBeOpenedException =
                     $yamlLoaderException->isFileDoesNotExistException() ||

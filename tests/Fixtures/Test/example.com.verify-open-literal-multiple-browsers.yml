@@ -1,11 +1,8 @@
 config:
   browsers:
     - chrome
+    - firefox
   url: https://example.com
-
-imports:
-  data_providers:
-    data_provider_import_name: "../DataProvider/file-does-not-exist.yml"
 
 "verify page is open":
   assertions:
