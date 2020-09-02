@@ -44,7 +44,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         $testParser->parse([
                             'config' => [
-                                'browsers' => ['chrome'],
+                                'browser' => 'chrome',
                                 'url' => 'https://example.com',
                             ],
                             'verify page is open' => [
@@ -63,7 +63,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                     [
                         $testParser->parse([
                             'config' => [
-                                'browsers' => ['chrome'],
+                                'browser' => 'chrome',
                                 'url' => 'https://example.com',
                             ],
                             'verify page is open' => [
@@ -83,7 +83,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                         $testParser->parse(
                             [
                                 'config' => [
-                                    'browsers' => ['chrome'],
+                                    'browser' => 'chrome',
                                     'url' => 'https://example.com',
                                 ],
                                 'verify page is open' => [
@@ -96,7 +96,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                         $testParser->parse(
                             [
                                 'config' => [
-                                    'browsers' => ['chrome'],
+                                    'browser' => 'chrome',
                                     'url' => 'https://example.com',
                                 ],
                                 'verify page is open' => [
