@@ -96,6 +96,40 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'example verify open literal with multiple browsers' => [
+                'path' => FixturePathFinder::find('TestSuite/example.com-verify-open-literal-multiple-browsers.yml'),
+                'expectedTestSuite' => new TestSuite(
+                    FixturePathFinder::find('TestSuite/example.com-verify-open-literal-multiple-browsers.yml'),
+                    [
+                        (new Test(
+                            new Configuration('chrome', 'https://example.com'),
+                            new StepCollection([
+                                'verify page is open' => new Step(
+                                    [],
+                                    [
+                                        $assertionParser->parse('$page.url is "https://example.com"'),
+                                    ]
+                                ),
+                            ])
+                        ))->withPath(FixturePathFinder::find(
+                            'Test/example.com.verify-open-literal-multiple-browsers.yml'
+                        )),
+                        (new Test(
+                            new Configuration('firefox', 'https://example.com'),
+                            new StepCollection([
+                                'verify page is open' => new Step(
+                                    [],
+                                    [
+                                        $assertionParser->parse('$page.url is "https://example.com"'),
+                                    ]
+                                ),
+                            ])
+                        ))->withPath(FixturePathFinder::find(
+                            'Test/example.com.verify-open-literal-multiple-browsers.yml'
+                        )),
+                    ]
+                ),
+            ],
         ];
     }
 
