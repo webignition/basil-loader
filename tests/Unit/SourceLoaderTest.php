@@ -109,6 +109,44 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
                     ]
                 ),
             ],
+            'verify open literal with multiple browsers' => [
+                'path' => FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml'),
+                'expectedTestSuite' => new TestSuite(
+                    FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml'),
+                    [
+                        $testParser->parse(
+                            [
+                                'config' => [
+                                    'browser' => 'chrome',
+                                    'url' => 'https://example.com',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"'
+                                    ],
+                                ],
+                            ]
+                        )->withPath(FixturePathFinder::find(
+                            'Test/example.com.verify-open-literal-multiple-browsers.yml'
+                        )),
+                        $testParser->parse(
+                            [
+                                'config' => [
+                                    'browser' => 'firefox',
+                                    'url' => 'https://example.com',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"'
+                                    ],
+                                ],
+                            ]
+                        )->withPath(FixturePathFinder::find(
+                            'Test/example.com.verify-open-literal-multiple-browsers.yml'
+                        )),
+                    ]
+                ),
+            ],
         ];
     }
 
