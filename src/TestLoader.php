@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace webignition\BasilLoader;
 
 use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
@@ -79,6 +80,7 @@ class TestLoader
      * @return TestInterface[]
      *
      * @throws CircularStepImportException
+     * @throws EmptyTestException
      * @throws InvalidPageException
      * @throws InvalidTestException
      * @throws NonRetrievableImportException
@@ -91,6 +93,9 @@ class TestLoader
     public function load(string $path): array
     {
         $data = $this->yamlLoader->loadArray($path);
+        if ([] === $data) {
+            throw new EmptyTestException($path);
+        }
 
         $singleBrowserDataSets = $this->createSingleBrowserDataSets($data);
         if ([] === $singleBrowserDataSets) {
