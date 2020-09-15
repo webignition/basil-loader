@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\Test\ConfigurationValidator;
 use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
@@ -249,7 +249,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadThrowsInvalidTestException()
     {
-        $path = FixturePathFinder::find('Empty/empty.yml');
+        $path = FixturePathFinder::find('Test/invalid.no-steps.yml');
 
         try {
             $this->testLoader->load($path);
@@ -260,16 +260,11 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 $path,
                 new InvalidResult(
                     (new Test(
-                        new Configuration('', ''),
+                        new Configuration('chrome', 'https://example.com'),
                         new StepCollection([])
                     ))->withPath($path),
                     ResultType::TEST,
-                    TestValidator::REASON_CONFIGURATION_INVALID,
-                    new InvalidResult(
-                        new Configuration('', ''),
-                        ResultType::TEST_CONFIGURATION,
-                        ConfigurationValidator::REASON_BROWSER_EMPTY
-                    )
+                    TestValidator::REASON_NO_STEPS
                 )
             );
 
@@ -330,5 +325,13 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         } catch (InvalidPageException $invalidPageException) {
             $this->assertSame($path, $invalidPageException->getTestPath());
         }
+    }
+
+    public function testLoadThrowsEmptyTestException()
+    {
+        $path = FixturePathFinder::find('Empty/empty.yml');
+        $this->expectExceptionObject(new EmptyTestException($path));
+
+        $this->testLoader->load($path);
     }
 }
