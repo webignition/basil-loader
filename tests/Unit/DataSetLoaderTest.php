@@ -14,7 +14,7 @@ class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, DataSetCollectionInterface $expectedDataSetCollection)
+    public function testLoad(string $path, DataSetCollectionInterface $expectedDataSetCollection): void
     {
         $dataSetLoader = DataSetLoader::createLoader();
 
@@ -23,6 +23,9 @@ class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedDataSetCollection, $dataSetCollection);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadDataProvider(): array
     {
         return [

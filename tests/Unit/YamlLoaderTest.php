@@ -12,7 +12,7 @@ use webignition\BasilLoader\YamlLoader;
 
 class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 {
-    public function testLoadArrayYamlParserThrowsException()
+    public function testLoadArrayYamlParserThrowsException(): void
     {
         $path = 'file.yml';
         $exceptionMessage = 'exception message content';
@@ -33,7 +33,7 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
         $yamlLoader->loadArray($path);
     }
 
-    public function testLoadArrayThrowsDataIsNotAnArrayException()
+    public function testLoadArrayThrowsDataIsNotAnArrayException(): void
     {
         $path = 'file.yml';
 
@@ -55,7 +55,7 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadArrayWithEmptyContentDataProvider
      */
-    public function testLoadArrayWithEmptyContent(string $path)
+    public function testLoadArrayWithEmptyContent(string $path): void
     {
         $yamlLoader = YamlLoader::createLoader();
 
@@ -64,6 +64,9 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([], $data);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadArrayWithEmptyContentDataProvider(): array
     {
         return [

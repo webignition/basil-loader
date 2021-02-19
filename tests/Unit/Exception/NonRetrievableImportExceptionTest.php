@@ -11,7 +11,7 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class NonRetrievableImportExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGetExceptionContext()
+    public function testGetExceptionContext(): void
     {
         $exception = new NonRetrievableImportException(
             'page',

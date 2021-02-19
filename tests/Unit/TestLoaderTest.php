@@ -43,13 +43,16 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
      * @param string $path
      * @param TestInterface[] $expectedTests
      */
-    public function testLoadSuccess(string $path, array $expectedTests)
+    public function testLoadSuccess(string $path, array $expectedTests): void
     {
         $tests = $this->testLoader->load($path);
 
         $this->assertEquals($expectedTests, $tests);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadSuccessDataProvider(): array
     {
         $actionParser = ActionParser::create();
@@ -200,7 +203,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         string $expectedFailedImportPath,
         string $expectedExceptionType,
         string $expectedExceptionImportName
-    ) {
+    ): void {
         try {
             $this->testLoader->load($path);
 
@@ -214,6 +217,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function loadThrowsNonRetrievableImportExceptionDataProvider(): array
     {
         return [
@@ -247,7 +253,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsInvalidTestException()
+    public function testLoadThrowsInvalidTestException(): void
     {
         $path = FixturePathFinder::find('Test/invalid.no-steps.yml');
 
@@ -281,7 +287,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         bool $expectedIsUnparseableStepException,
         string $expectedExceptionTestPath,
         string $expectedExceptionSubjectPath
-    ) {
+    ): void {
         try {
             $this->testLoader->load($path);
 
@@ -294,6 +300,9 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function loadThrowsParseExceptionDataProvider(): array
     {
         return [
@@ -314,7 +323,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsInvalidPageException()
+    public function testLoadThrowsInvalidPageException(): void
     {
         $path = FixturePathFinder::find('Test/invalid.invalid-page.yml');
 
@@ -327,7 +336,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testLoadThrowsEmptyTestException()
+    public function testLoadThrowsEmptyTestException(): void
     {
         $path = FixturePathFinder::find('Empty/empty.yml');
         $this->expectExceptionObject(new EmptyTestException($path));

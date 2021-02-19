@@ -90,7 +90,7 @@ class SourceLoader
             return false;
         }
 
-        return array_reduce(array_values($data), function ($result, $value) {
+        return (bool) array_reduce(array_values($data), function ($result, $value) {
             return false === $result ? false : is_string($value);
         });
     }
