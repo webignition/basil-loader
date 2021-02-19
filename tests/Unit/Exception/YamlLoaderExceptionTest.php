@@ -13,7 +13,7 @@ class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider getPathForFileDoesNotExistExceptionDataProvider
      */
-    public function testGetPathForFileDoesNotExistException(string $path)
+    public function testGetPathForFileDoesNotExistException(string $path): void
     {
         $parseException = $this->createFileDoesNotExistParseException($path);
 
@@ -24,6 +24,9 @@ class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function getPathForFileDoesNotExistExceptionDataProvider(): array
     {
         return [

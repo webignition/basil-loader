@@ -27,13 +27,16 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadSuccessDataProvider
      */
-    public function testLoadSuccess(string $importName, string $path, PageInterface $expectedPage)
+    public function testLoadSuccess(string $importName, string $path, PageInterface $expectedPage): void
     {
         $page = $this->loader->load($importName, $path);
 
         $this->assertEquals($expectedPage, $page);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadSuccessDataProvider(): array
     {
         return [
@@ -57,7 +60,7 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsInvalidPageException()
+    public function testLoadThrowsInvalidPageException(): void
     {
         $importName = 'page_import_name';
         $path = FixturePathFinder::find('Empty/empty.yml');

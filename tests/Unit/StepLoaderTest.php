@@ -16,7 +16,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, StepInterface $expectedStep)
+    public function testLoad(string $path, StepInterface $expectedStep): void
     {
         $stepLoader = StepLoader::createLoader();
 
@@ -25,6 +25,9 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedStep, $step);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadDataProvider(): array
     {
         $actionParser = ActionParser::create();

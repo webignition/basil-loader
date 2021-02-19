@@ -31,13 +31,16 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoadSuccess(string $path, TestSuiteInterface $expectedTestSuite)
+    public function testLoadSuccess(string $path, TestSuiteInterface $expectedTestSuite): void
     {
         $testSuite = $this->testSuiteLoader->load($path);
 
         $this->assertEquals($expectedTestSuite, $testSuite);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadDataProvider(): array
     {
         $assertionParser = AssertionParser::create();
@@ -133,7 +136,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadTestImportPathDoesNotExist()
+    public function testLoadTestImportPathDoesNotExist(): void
     {
         $pathResolver = new PathResolver();
 
@@ -150,7 +153,7 @@ class TestSuiteLoaderTest extends \PHPUnit\Framework\TestCase
         $this->testSuiteLoader->load($path);
     }
 
-    public function testLoadFromTestPathsListReThrowsYamlLoaderException()
+    public function testLoadFromTestPathsListReThrowsYamlLoaderException(): void
     {
         $path = FixturePathFinder::find('TestSuite/imports-invalid.yml');
         $basePath = FixturePathFinder::find('TestSuite');

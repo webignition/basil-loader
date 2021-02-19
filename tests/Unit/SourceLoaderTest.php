@@ -25,13 +25,16 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadDataProvider
      */
-    public function testLoad(string $path, TestSuiteInterface $expectedTestSuite)
+    public function testLoad(string $path, TestSuiteInterface $expectedTestSuite): void
     {
         $testSuite = $this->sourceLoader->load($path);
 
         $this->assertEquals($expectedTestSuite, $testSuite);
     }
 
+    /**
+     * @return array[]
+     */
     public function loadDataProvider(): array
     {
         $testParser = TestParser::create();
@@ -150,7 +153,7 @@ class SourceLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadEmptyFile()
+    public function testLoadEmptyFile(): void
     {
         $path = FixturePathFinder::find('Empty/empty.yml');
         $this->expectExceptionObject(new EmptyTestException($path));
