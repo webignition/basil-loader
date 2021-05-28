@@ -12,13 +12,9 @@ class YamlLoaderException extends \Exception
     public const MESSAGE_DATA_IS_NOT_AN_ARRAY = 'Data is not an array';
     public const CODE_DATA_IS_NOT_AN_ARRAY = 100;
 
-    private string $path;
-
-    public function __construct(string $message, int $code, string $path, Throwable $previous = null)
+    public function __construct(string $message, int $code, private string $path, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
-
-        $this->path = $path;
     }
 
     public static function fromYamlParseException(ParseException $parseException, string $path): YamlLoaderException

@@ -20,18 +20,11 @@ use webignition\PathResolver\PathResolver;
 
 class TestSuiteLoader
 {
-    private YamlLoader $yamlLoader;
-    private TestLoader $testLoader;
-    private PathResolver $pathResolver;
-
     public function __construct(
-        YamlLoader $yamlLoader,
-        TestLoader $testLoader,
-        PathResolver $pathResolver
+        private YamlLoader $yamlLoader,
+        private TestLoader $testLoader,
+        private PathResolver $pathResolver
     ) {
-        $this->yamlLoader = $yamlLoader;
-        $this->testLoader = $testLoader;
-        $this->pathResolver = $pathResolver;
     }
 
     public static function createLoader(): TestSuiteLoader
@@ -44,10 +37,6 @@ class TestSuiteLoader
     }
 
     /**
-     * @param string $path
-     *
-     * @return TestSuiteInterface
-     *
      * @throws CircularStepImportException
      * @throws InvalidPageException
      * @throws InvalidTestException
@@ -68,11 +57,7 @@ class TestSuiteLoader
     }
 
     /**
-     * @param string $path
-     * @param string $basePath
      * @param string[] $data
-     *
-     * @return TestSuiteInterface
      *
      * @throws CircularStepImportException
      * @throws InvalidPageException
@@ -130,9 +115,7 @@ class TestSuiteLoader
     }
 
     /**
-     * @param string $basePath
      * @param array<mixed> $paths
-     *
      * @return string[]
      */
     private function resolvePaths(string $basePath, array $paths): array

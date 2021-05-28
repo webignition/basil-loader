@@ -19,13 +19,10 @@ use webignition\BasilResolver\UnknownPageElementException;
 
 class SourceLoader
 {
-    private YamlLoader $yamlLoader;
-    private TestSuiteLoader $testSuiteLoader;
-
-    public function __construct(YamlLoader $yamlLoader, TestSuiteLoader $testSuiteLoader)
-    {
-        $this->yamlLoader = $yamlLoader;
-        $this->testSuiteLoader = $testSuiteLoader;
+    public function __construct(
+        private YamlLoader $yamlLoader,
+        private TestSuiteLoader $testSuiteLoader
+    ) {
     }
 
     public static function createLoader(): SourceLoader
@@ -37,10 +34,6 @@ class SourceLoader
     }
 
     /**
-     * @param string $path
-     *
-     * @return TestSuiteInterface
-     *
      * @throws CircularStepImportException
      * @throws EmptyTestException
      * @throws InvalidPageException
@@ -73,8 +66,6 @@ class SourceLoader
 
     /**
      * @param array<mixed> $data
-     *
-     * @return bool
      */
     private function isTestPathList(array $data): bool
     {
