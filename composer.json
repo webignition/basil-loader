@@ -40,7 +40,7 @@
         ]
     },
     "require": {
-        "php": ">=7.4|^8",
+        "php": ">=8",
         "ext-mbstring": "*",
         "symfony/yaml": "^4.4|^5.0",
         "webignition/basil-data-validator": ">=0.16,<1",
