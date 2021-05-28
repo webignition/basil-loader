@@ -25,7 +25,6 @@ class StepLoader
         );
     }
 
-
     /**
      * @throws UnparseableStepException
      * @throws YamlLoaderException

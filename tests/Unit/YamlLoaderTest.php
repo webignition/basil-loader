@@ -12,6 +12,13 @@ use webignition\BasilLoader\YamlLoader;
 
 class YamlLoaderTest extends \PHPUnit\Framework\TestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        \Mockery::close();
+    }
+
     public function testLoadArrayYamlParserThrowsException(): void
     {
         $path = 'file.yml';
@@ -23,7 +30,8 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
         $yamlParser
             ->shouldReceive('parseFile')
             ->with($path)
-            ->andThrow($parseException);
+            ->andThrow($parseException)
+        ;
 
         $yamlLoader = new YamlLoader($yamlParser);
 
@@ -41,7 +49,8 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
         $yamlParser
             ->shouldReceive('parseFile')
             ->with($path)
-            ->andReturn(1);
+            ->andReturn(1)
+        ;
 
         $yamlLoader = new YamlLoader($yamlParser);
 
@@ -83,12 +92,5 @@ class YamlLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Empty/null-non-canonical.yml'),
             ],
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        \Mockery::close();
     }
 }

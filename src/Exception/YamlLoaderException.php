@@ -64,11 +64,11 @@ class YamlLoaderException extends \Exception
     public function isInvalidYamlException(): bool
     {
         return !(
-            $this->isFileDoesNotExistException() ||
-            $this->isFileCannotBeReadException() ||
-            $this->isInvalidUtf8Exception() ||
-            $this->isUnableToParseException() ||
-            $this->isDataIsNotAnArrayException()
+            $this->isFileDoesNotExistException()
+            || $this->isFileCannotBeReadException()
+            || $this->isInvalidUtf8Exception()
+            || $this->isUnableToParseException()
+            || $this->isDataIsNotAnArrayException()
         );
     }
 

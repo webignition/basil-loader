@@ -84,8 +84,8 @@ class TestSuiteLoader
                 $tests = array_merge($tests, $this->testLoader->load($testImportPath));
             } catch (YamlLoaderException $yamlLoaderException) {
                 $isFileCannotBeOpenedException =
-                    $yamlLoaderException->isFileDoesNotExistException() ||
-                    $yamlLoaderException->isFileCannotBeReadException();
+                    $yamlLoaderException->isFileDoesNotExistException()
+                    || $yamlLoaderException->isFileCannotBeReadException();
 
                 if ($isFileCannotBeOpenedException && $testImportPath === $yamlLoaderException->getPath()) {
                     throw new UnknownTestException($testImportPath);
@@ -116,6 +116,7 @@ class TestSuiteLoader
 
     /**
      * @param array<mixed> $paths
+     *
      * @return string[]
      */
     private function resolvePaths(string $basePath, array $paths): array
