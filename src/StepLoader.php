@@ -11,13 +11,10 @@ use webignition\BasilParser\StepParser;
 
 class StepLoader
 {
-    private YamlLoader $yamlLoader;
-    private StepParser $stepParser;
-
-    public function __construct(YamlLoader $yamlLoader, StepParser $stepParser)
-    {
-        $this->yamlLoader = $yamlLoader;
-        $this->stepParser = $stepParser;
+    public function __construct(
+        private YamlLoader $yamlLoader,
+        private StepParser $stepParser
+    ) {
     }
 
     public static function createLoader(): StepLoader
@@ -30,10 +27,6 @@ class StepLoader
 
 
     /**
-     * @param string $path
-     *
-     * @return StepInterface
-     *
      * @throws UnparseableStepException
      * @throws YamlLoaderException
      */

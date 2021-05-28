@@ -13,15 +13,11 @@ use webignition\BasilValidationResult\InvalidResultInterface;
 
 class PageLoader
 {
-    private YamlLoader $yamlLoader;
-    private PageParser $pageParser;
-    private PageValidator $pageValidator;
-
-    public function __construct(YamlLoader $yamlLoader, PageParser $pageParser, PageValidator $pageValidator)
-    {
-        $this->yamlLoader = $yamlLoader;
-        $this->pageParser = $pageParser;
-        $this->pageValidator = $pageValidator;
+    public function __construct(
+        private YamlLoader $yamlLoader,
+        private PageParser $pageParser,
+        private PageValidator $pageValidator
+    ) {
     }
 
     public static function createLoader(): PageLoader
@@ -34,11 +30,6 @@ class PageLoader
     }
 
     /**
-     * @param string $importName
-     * @param string $path
-     *
-     * @return PageInterface
-     *
      * @throws YamlLoaderException
      * @throws InvalidPageException
      */

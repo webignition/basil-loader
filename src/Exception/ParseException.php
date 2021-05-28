@@ -10,13 +10,11 @@ use webignition\BasilParser\Exception\UnparseableTestException;
 
 class ParseException extends \Exception
 {
-    private string $testPath;
-    private string $subjectPath;
     private UnparseableDataExceptionInterface $unparseableDataException;
 
     public function __construct(
-        string $testPath,
-        string $path,
+        private string $testPath,
+        private string $subjectPath,
         UnparseableDataExceptionInterface $unparseableDataException
     ) {
         parent::__construct(
@@ -24,9 +22,6 @@ class ParseException extends \Exception
             0,
             $unparseableDataException
         );
-
-        $this->testPath = $testPath;
-        $this->subjectPath = $path;
         $this->unparseableDataException = $unparseableDataException;
     }
 

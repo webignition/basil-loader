@@ -40,7 +40,7 @@
         ]
     },
     "require": {
-        "php": ">=7.4|^8",
+        "php": ">=8",
         "ext-mbstring": "*",
         "symfony/yaml": "^4.4|^5.0",
         "webignition/basil-data-validator": ">=0.16,<1",
@@ -57,7 +57,7 @@
         "phpstan/phpstan": "^0.12.77",
         "phpstan/phpstan-mockery": "^0.12.12",
         "phpunit/phpunit": "^9.5",
-        "squizlabs/php_codesniffer": "^3.5",
+        "squizlabs/php_codesniffer": "^3.6",
         "symplify/easy-coding-standard": "^9.1"
     },
     "config": {

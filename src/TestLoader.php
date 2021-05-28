@@ -31,33 +31,16 @@ class TestLoader
 {
     private const DATA_KEY_IMPORTS = 'imports';
 
-    private YamlLoader $yamlLoader;
-    private DataSetLoader $dataSetLoader;
-    private PageLoader $pageLoader;
-    private StepLoader $stepLoader;
-    private TestResolver $testResolver;
-    private TestParser $testParser;
-    private TestValidator $testValidator;
-    private ImportsParser $importsParser;
-
     public function __construct(
-        YamlLoader $yamlLoader,
-        DataSetLoader $dataSetLoader,
-        PageLoader $pageLoader,
-        StepLoader $stepLoader,
-        TestResolver $testResolver,
-        TestParser $testParser,
-        TestValidator $testValidator,
-        ImportsParser $importsParser
+        private YamlLoader $yamlLoader,
+        private DataSetLoader $dataSetLoader,
+        private PageLoader $pageLoader,
+        private StepLoader $stepLoader,
+        private TestResolver $testResolver,
+        private TestParser $testParser,
+        private TestValidator $testValidator,
+        private ImportsParser $importsParser
     ) {
-        $this->yamlLoader = $yamlLoader;
-        $this->dataSetLoader = $dataSetLoader;
-        $this->pageLoader = $pageLoader;
-        $this->stepLoader = $stepLoader;
-        $this->testResolver = $testResolver;
-        $this->testParser = $testParser;
-        $this->testValidator = $testValidator;
-        $this->importsParser = $importsParser;
     }
 
     public static function createLoader(): TestLoader
@@ -75,8 +58,6 @@ class TestLoader
     }
 
     /**
-     * @param string $path
-     *
      * @return TestInterface[]
      *
      * @throws CircularStepImportException
@@ -112,10 +93,7 @@ class TestLoader
     }
 
     /**
-     * @param string $path
      * @param array<mixed> $data
-     *
-     * @return TestInterface
      *
      * @throws CircularStepImportException
      * @throws InvalidPageException
@@ -167,8 +145,6 @@ class TestLoader
     /**
      * @param array<string, string> $importPaths
      *
-     * @return ProviderInterface
-     *
      * @throws NonRetrievableImportException
      */
     private function createDataSetProvider(array $importPaths): ProviderInterface
@@ -194,8 +170,6 @@ class TestLoader
     /**
      * @param array<string, string> $importPaths
      *
-     * @return ProviderInterface
-     *
      * @throws InvalidPageException
      * @throws NonRetrievableImportException
      */
@@ -220,10 +194,7 @@ class TestLoader
     }
 
     /**
-     * @param string $testPath
      * @param array<string, string> $importPaths
-     *
-     * @return ProviderInterface
      *
      * @throws NonRetrievableImportException
      * @throws ParseException

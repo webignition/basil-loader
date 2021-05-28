@@ -10,11 +10,9 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class YamlLoader
 {
-    private YamlParser $yamlParser;
-
-    public function __construct(YamlParser $yamlParser)
-    {
-        $this->yamlParser = $yamlParser;
+    public function __construct(
+        private YamlParser $yamlParser
+    ) {
     }
 
     public static function createLoader(): YamlLoader
@@ -25,13 +23,11 @@ class YamlLoader
     }
 
     /**
-     * @param string $path
-     *
-     * @return mixed
-     *
      * @throws YamlLoaderException
+     *
+      * @return array<mixed>
      */
-    public function loadArray(string $path)
+    public function loadArray(string $path): array
     {
         try {
             $data = $this->yamlParser->parseFile($path);

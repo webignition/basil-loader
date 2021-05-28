@@ -40,7 +40,6 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider loadSuccessDataProvider
      *
-     * @param string $path
      * @param TestInterface[] $expectedTests
      */
     public function testLoadSuccess(string $path, array $expectedTests): void
