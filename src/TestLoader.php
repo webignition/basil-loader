@@ -58,8 +58,6 @@ class TestLoader
     }
 
     /**
-     * @return TestInterface[]
-     *
      * @throws CircularStepImportException
      * @throws EmptyTestException
      * @throws InvalidPageException
@@ -70,6 +68,8 @@ class TestLoader
      * @throws UnknownItemException
      * @throws UnknownPageElementException
      * @throws YamlLoaderException
+     *
+     * @return TestInterface[]
      */
     public function load(string $path): array
     {
