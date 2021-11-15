@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1db7ba1a9a6f947cd80abb589b9b048",
+    "content-hash": "867ca52b3c7ad7852a726ab9fcc4dbf6",
     "packages": [
         {
             "name": "symfony/deprecation-contracts",
@@ -477,31 +477,31 @@
         },
         {
             "name": "webignition/basil-parser",
-            "version": "0.26",
+            "version": "1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-parser.git",
-                "reference": "c0533896db45f80b516ccd9cead97a84d0612b6c"
+                "reference": "f4a519af6692241bf41f3394095f59f5fb3f5c60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/c0533896db45f80b516ccd9cead97a84d0612b6c",
-                "reference": "c0533896db45f80b516ccd9cead97a84d0612b6c",
+                "url": "https://api.github.com/repos/webignition/basil-parser/zipball/f4a519af6692241bf41f3394095f59f5fb3f5c60",
+                "reference": "f4a519af6692241bf41f3394095f59f5fb3f5c60",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "php": ">=7.4|^8",
+                "php": ">=8",
                 "webignition/basil-dom-identifier-factory": ">=0.14,<1",
                 "webignition/basil-models": ">=0.58,<1",
                 "webignition/basil-value-extractor": ">=0.5,<1",
                 "webignition/php-path-resolver": ">=0.3,<1"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12.77",
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "phpstan/phpstan": "^1.1",
                 "phpunit/phpunit": "^9.5",
-                "squizlabs/php_codesniffer": "^3.5",
-                "symplify/easy-coding-standard": "^9.1"
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
             "autoload": {
@@ -523,9 +523,9 @@
             "homepage": "https://github.com/webignition/basil-parser",
             "support": {
                 "issues": "https://github.com/webignition/basil-parser/issues",
-                "source": "https://github.com/webignition/basil-parser/tree/0.26"
+                "source": "https://github.com/webignition/basil-parser/tree/1.1"
             },
-            "time": "2021-02-19T12:18:10+00:00"
+            "time": "2021-11-12T18:33:14+00:00"
         },
         {
             "name": "webignition/basil-resolver",
@@ -5126,5 +5126,5 @@
         "ext-mbstring": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
