@@ -26,7 +26,7 @@ class StepLoaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function loadDataProvider(): array
     {

@@ -25,7 +25,7 @@ class YamlLoaderExceptionTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function getPathForFileDoesNotExistExceptionDataProvider(): array
     {

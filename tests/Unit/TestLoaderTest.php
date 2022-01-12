@@ -50,7 +50,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function loadSuccessDataProvider(): array
     {
@@ -217,7 +217,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function loadThrowsNonRetrievableImportExceptionDataProvider(): array
     {
@@ -300,7 +300,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<mixed>
      */
     public function loadThrowsParseExceptionDataProvider(): array
     {
