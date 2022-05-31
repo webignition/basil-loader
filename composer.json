@@ -45,7 +45,6 @@
         "webignition/basil-model-provider": ">=0.9,<1",
         "webignition/basil-models": ">=0.58,<1",
         "webignition/basil-parser": "^1",
-        "webignition/basil-resolver": ">=0.12,<1",
         "webignition/php-basil-context-aware-exception": ">=0.4,<1",
         "webignition/php-path-resolver": ">=0.3,<1"
     },
