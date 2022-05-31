@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilDataValidator\Test\TestValidator;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
 use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownItemException;
@@ -27,7 +28,6 @@ use webignition\BasilResolver\CircularStepImportException;
 use webignition\BasilResolver\TestResolver;
 use webignition\BasilResolver\UnknownElementException;
 use webignition\BasilResolver\UnknownPageElementException;
-use webignition\BasilValidationResult\InvalidResultInterface;
 
 class TestLoader
 {

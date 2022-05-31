@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Exception;
 
-use webignition\BasilValidationResult\InvalidResultInterface;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
 
 class InvalidPageException extends \Exception
 {

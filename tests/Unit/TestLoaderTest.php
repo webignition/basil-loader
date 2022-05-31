@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\Test\TestValidator;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
@@ -14,6 +12,9 @@ use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModels\Action\ResolvedAction;
 use webignition\BasilModels\Assertion\ResolvedAssertion;
 use webignition\BasilModels\DataSet\DataSetCollection;
@@ -24,7 +25,6 @@ use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\Test\TestInterface;
 use webignition\BasilParser\ActionParser;
 use webignition\BasilParser\AssertionParser;
-use webignition\BasilValidationResult\InvalidResult;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
