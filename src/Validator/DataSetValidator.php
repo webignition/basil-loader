@@ -6,9 +6,6 @@ namespace webignition\BasilLoader\Validator;
 
 use webignition\BasilModels\DataParameter\DataParameterInterface;
 use webignition\BasilModels\DataSet\DataSetInterface;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\ResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class DataSetValidator
 {

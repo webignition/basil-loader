@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Validator;
 
 use webignition\BasilModels\Page\PageInterface;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\ResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 use webignition\BasilValueExtractor\DescendantIdentifierExtractor;
 use webignition\BasilValueExtractor\ElementIdentifierExtractor;
 

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
-use webignition\BasilDataValidator\DataSetValidator;
-use webignition\BasilDataValidator\DataValidator;
-use webignition\BasilDataValidator\ResultType;
+use webignition\BasilLoader\Validator\DataSetValidator;
+use webignition\BasilLoader\Validator\DataValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\DataParameter\DataParameter;
 use webignition\BasilModels\DataParameter\DataParameterInterface;
 use webignition\BasilModels\DataSet\DataSet;
 use webignition\BasilModels\DataSet\DataSetCollection;
 use webignition\BasilModels\DataSet\DataSetCollectionInterface;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class DataValidatorTest extends \PHPUnit\Framework\TestCase
 {

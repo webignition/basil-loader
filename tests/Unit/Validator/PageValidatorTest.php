@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
-use webignition\BasilDataValidator\PageValidator;
-use webignition\BasilDataValidator\ResultType;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\PageValidator;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Page\Page;
 use webignition\BasilModels\Page\PageInterface;
 use webignition\BasilResolver\PageResolver;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class PageValidatorTest extends \PHPUnit\Framework\TestCase
 {

@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Test;
 
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\Step\StepValidator;
-use webignition\BasilDataValidator\Test\ConfigurationValidator;
-use webignition\BasilDataValidator\Test\TestValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\Step\StepValidator;
+use webignition\BasilLoader\Validator\Test\ConfigurationValidator;
+use webignition\BasilLoader\Validator\Test\TestValidator;
+use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Step\Step;
 use webignition\BasilModels\Step\StepCollection;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\Test;
 use webignition\BasilModels\Test\TestInterface;
 use webignition\BasilParser\Test\TestParser;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class TestValidatorTest extends \PHPUnit\Framework\TestCase
 {

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Action;
 
-use webignition\BasilDataValidator\Action\ActionValidator;
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\ValueValidator;
+use webignition\BasilLoader\Validator\Action\ActionValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Action\Action;
 use webignition\BasilModels\Action\ActionInterface;
 use webignition\BasilParser\ActionParser;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class ActionValidatorTest extends \PHPUnit\Framework\TestCase
 {

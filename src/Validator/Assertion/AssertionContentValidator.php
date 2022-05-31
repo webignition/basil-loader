@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Validator\Assertion;
 
-use webignition\BasilDataValidator\ValueValidator;
 use webignition\BasilIdentifierAnalyser\IdentifierTypeAnalyser;
-use webignition\BasilValidationResult\ResultInterface;
-use webignition\BasilValidationResult\ValidResult;
+use webignition\BasilLoader\Validator\ResultInterface;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 
 class AssertionContentValidator
 {

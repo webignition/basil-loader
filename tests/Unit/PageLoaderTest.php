@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
-use webignition\BasilDataValidator\PageValidator;
-use webignition\BasilDataValidator\ResultType;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\PageLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\PageValidator;
+use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilModels\Page\Page;
 use webignition\BasilModels\Page\PageInterface;
-use webignition\BasilValidationResult\InvalidResult;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {

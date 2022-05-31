@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
-use webignition\BasilDataValidator\LiteralValueIdentifier;
+use webignition\BasilLoader\Validator\LiteralValueIdentifier;
 
 class LiteralValueIdentifierTest extends \PHPUnit\Framework\TestCase
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\ValueValidator;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\ValidResult;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 
 class ValueValidatorTest extends \PHPUnit\Framework\TestCase
 {

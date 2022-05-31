@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Validator\Action;
 
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\ValueValidator;
 use webignition\BasilIdentifierAnalyser\IdentifierTypeAnalyser;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Action\ActionInterface;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class ActionValidator
 {

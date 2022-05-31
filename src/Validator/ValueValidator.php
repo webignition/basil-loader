@@ -7,9 +7,6 @@ namespace webignition\BasilLoader\Validator;
 use webignition\BasilIdentifierAnalyser\IdentifierTypeAnalyser;
 use webignition\BasilModels\BrowserProperty\BrowserProperty;
 use webignition\BasilModels\PageProperty\PageProperty;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\ResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class ValueValidator
 {

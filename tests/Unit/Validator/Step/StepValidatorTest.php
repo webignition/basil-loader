@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Step;
 
-use webignition\BasilDataValidator\Action\ActionValidator;
-use webignition\BasilDataValidator\Assertion\AssertionValidator;
-use webignition\BasilDataValidator\DataSetValidator;
-use webignition\BasilDataValidator\DataValidator;
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\Step\StepValidator;
-use webignition\BasilDataValidator\ValueValidator;
+use webignition\BasilLoader\Validator\Action\ActionValidator;
+use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
+use webignition\BasilLoader\Validator\DataSetValidator;
+use webignition\BasilLoader\Validator\DataValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\Step\StepValidator;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\DataSet\DataSet;
 use webignition\BasilModels\DataSet\DataSetCollection;
 use webignition\BasilModels\Step\StepInterface;
 use webignition\BasilParser\ActionParser;
 use webignition\BasilParser\AssertionParser;
 use webignition\BasilParser\StepParser;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class StepValidatorTest extends \PHPUnit\Framework\TestCase
 {

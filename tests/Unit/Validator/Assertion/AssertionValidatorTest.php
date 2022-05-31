@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Assertion;
 
-use webignition\BasilDataValidator\Assertion\AssertionValidator;
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\ValueValidator;
+use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Assertion\Assertion;
 use webignition\BasilModels\Assertion\AssertionInterface;
 use webignition\BasilParser\AssertionParser;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
 {

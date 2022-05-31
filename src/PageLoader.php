@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilDataValidator\PageValidator;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\PageValidator;
 use webignition\BasilModels\Page\PageInterface;
 use webignition\BasilParser\PageParser;
-use webignition\BasilValidationResult\InvalidResultInterface;
 
 class PageLoader
 {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Test;
 
-use webignition\BasilDataValidator\ResultType;
-use webignition\BasilDataValidator\Test\ConfigurationValidator;
+use webignition\BasilLoader\Validator\InvalidResult;
+use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
+use webignition\BasilLoader\Validator\Test\ConfigurationValidator;
+use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Test\Configuration;
 use webignition\BasilModels\Test\ConfigurationInterface;
-use webignition\BasilValidationResult\InvalidResult;
-use webignition\BasilValidationResult\InvalidResultInterface;
-use webignition\BasilValidationResult\ValidResult;
 
 class ConfigurationValidatorTest extends \PHPUnit\Framework\TestCase
 {

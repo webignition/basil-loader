@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
-use webignition\BasilDataValidator\ValueValidator;
+use webignition\BasilLoader\Validator\ValueValidator;
 
 trait ValueDataProviderTrait
 {
