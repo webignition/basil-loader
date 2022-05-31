@@ -9,8 +9,8 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Test\ConfigurationValidator;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\Test\Configuration;
-use webignition\BasilModels\Test\ConfigurationInterface;
+use webignition\BasilModels\Model\Test\Configuration;
+use webignition\BasilModels\Model\Test\ConfigurationInterface;
 
 class ConfigurationValidatorTest extends \PHPUnit\Framework\TestCase
 {

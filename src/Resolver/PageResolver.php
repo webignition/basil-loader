@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\PageInterface;
 
 class PageResolver
 {

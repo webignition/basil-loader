@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Validator;
 
-use webignition\BasilModels\DataParameter\DataParameterInterface;
-use webignition\BasilModels\DataSet\DataSetCollectionInterface;
-use webignition\BasilModels\DataSet\DataSetInterface;
+use webignition\BasilModels\Model\DataParameter\DataParameterInterface;
+use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
+use webignition\BasilModels\Model\DataSet\DataSetInterface;
 
 class DataValidator
 {

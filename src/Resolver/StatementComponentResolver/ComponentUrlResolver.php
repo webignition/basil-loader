@@ -6,9 +6,9 @@ namespace webignition\BasilLoader\Resolver\StatementComponentResolver;
 
 use webignition\BasilLoader\Resolver\ImportedUrlResolver;
 use webignition\BasilLoader\Resolver\ResolvedComponent;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\ProviderInterface;
-use webignition\BasilModels\PageProperty\PageProperty;
+use webignition\BasilModels\Model\PageProperty\PageProperty;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\ProviderInterface;
 
 class ComponentUrlResolver implements StatementComponentResolverInterface
 {

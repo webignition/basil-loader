@@ -7,15 +7,15 @@ namespace webignition\BasilLoader\Resolver;
 use webignition\BasilLoader\Resolver\StatementComponentResolver\ComponentElementResolver;
 use webignition\BasilLoader\Resolver\StatementComponentResolver\ComponentUrlResolver;
 use webignition\BasilLoader\Resolver\StatementComponentResolver\StatementComponentResolverInterface;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Identifier\IdentifierProviderInterface;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
-use webignition\BasilModels\Action\ActionInterface;
-use webignition\BasilModels\Action\ResolvedAction;
-use webignition\BasilModels\Assertion\AssertionInterface;
-use webignition\BasilModels\Assertion\ResolvedAssertion;
-use webignition\BasilModels\EncapsulatingStatementInterface;
-use webignition\BasilModels\StatementInterface;
+use webignition\BasilModels\Model\Action\ActionInterface;
+use webignition\BasilModels\Model\Action\ResolvedAction;
+use webignition\BasilModels\Model\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
+use webignition\BasilModels\Model\EncapsulatingStatementInterface;
+use webignition\BasilModels\Model\StatementInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Identifier\IdentifierProviderInterface;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
 class StatementResolver
 {

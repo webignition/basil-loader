@@ -8,7 +8,7 @@ use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\PageValidator;
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\PageInterface;
 use webignition\BasilParser\PageParser;
 
 class PageLoader

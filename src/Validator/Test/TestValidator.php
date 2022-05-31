@@ -10,8 +10,8 @@ use webignition\BasilLoader\Validator\ResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Step\StepValidator;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\Step\StepInterface;
-use webignition\BasilModels\Test\TestInterface;
+use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Model\Test\TestInterface;
 
 class TestValidator
 {

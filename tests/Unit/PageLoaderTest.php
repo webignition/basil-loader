@@ -10,8 +10,8 @@ use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\PageValidator;
 use webignition\BasilLoader\Validator\ResultType;
-use webignition\BasilModels\Page\Page;
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Page\PageInterface;
 
 class PageLoaderTest extends \PHPUnit\Framework\TestCase
 {

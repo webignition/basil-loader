@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\ProviderInterface;
-use webignition\BasilModels\Test\Configuration;
-use webignition\BasilModels\Test\ConfigurationInterface;
+use webignition\BasilModels\Model\Test\Configuration;
+use webignition\BasilModels\Model\Test\ConfigurationInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\ProviderInterface;
 
 class TestConfigurationResolver
 {

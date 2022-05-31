@@ -10,8 +10,8 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\PageValidator;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\Page\Page;
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Page\PageInterface;
 
 class PageValidatorTest extends \PHPUnit\Framework\TestCase
 {

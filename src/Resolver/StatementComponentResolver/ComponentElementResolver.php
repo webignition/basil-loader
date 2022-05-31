@@ -8,9 +8,9 @@ use webignition\BasilLoader\Resolver\ElementResolver;
 use webignition\BasilLoader\Resolver\ResolvedComponent;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Identifier\IdentifierProviderInterface;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Identifier\IdentifierProviderInterface;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
 class ComponentElementResolver implements StatementComponentResolverInterface
 {

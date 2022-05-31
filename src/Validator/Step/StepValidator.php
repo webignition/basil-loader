@@ -12,11 +12,11 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\DataParameter\DataParameter;
-use webignition\BasilModels\DataParameter\DataParameterInterface;
-use webignition\BasilModels\DataSet\DataSetCollection;
-use webignition\BasilModels\StatementInterface;
-use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilModels\Model\DataParameter\DataParameter;
+use webignition\BasilModels\Model\DataParameter\DataParameterInterface;
+use webignition\BasilModels\Model\DataSet\DataSetCollection;
+use webignition\BasilModels\Model\StatementInterface;
+use webignition\BasilModels\Model\Step\StepInterface;
 
 class StepValidator
 {

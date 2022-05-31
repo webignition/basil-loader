@@ -10,8 +10,8 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
-use webignition\BasilModels\Action\Action;
-use webignition\BasilModels\Action\ActionInterface;
+use webignition\BasilModels\Model\Action\Action;
+use webignition\BasilModels\Model\Action\ActionInterface;
 use webignition\BasilParser\ActionParser;
 
 class ActionValidatorTest extends \PHPUnit\Framework\TestCase

@@ -11,7 +11,7 @@ use webignition\BasilLoader\Validator\ResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
-use webignition\BasilModels\Action\ActionInterface;
+use webignition\BasilModels\Model\Action\ActionInterface;
 
 class ActionValidator
 {

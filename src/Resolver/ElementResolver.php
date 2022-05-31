@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Identifier\IdentifierProviderInterface;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
-use webignition\BasilModels\AttributeReference\AttributeReference;
-use webignition\BasilModels\ElementReference\ElementReference;
-use webignition\BasilModels\PageElementReference\PageElementReference;
+use webignition\BasilModels\Model\AttributeReference\AttributeReference;
+use webignition\BasilModels\Model\ElementReference\ElementReference;
+use webignition\BasilModels\Model\PageElementReference\PageElementReference;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Identifier\IdentifierProviderInterface;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
 class ElementResolver
 {

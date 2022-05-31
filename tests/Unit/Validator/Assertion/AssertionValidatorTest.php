@@ -10,8 +10,8 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
-use webignition\BasilModels\Assertion\Assertion;
-use webignition\BasilModels\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Assertion\Assertion;
+use webignition\BasilModels\Model\Assertion\AssertionInterface;
 use webignition\BasilParser\AssertionParser;
 
 class AssertionValidatorTest extends \PHPUnit\Framework\TestCase

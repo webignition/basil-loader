@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Validator;
 
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\PageInterface;
 use webignition\BasilValueExtractor\DescendantIdentifierExtractor;
 use webignition\BasilValueExtractor\ElementIdentifierExtractor;
 

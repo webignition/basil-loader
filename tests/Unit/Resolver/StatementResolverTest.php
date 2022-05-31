@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
 use webignition\BasilLoader\Resolver\StatementResolver;
-use webignition\BasilModelProvider\Identifier\EmptyIdentifierProvider;
-use webignition\BasilModelProvider\Identifier\IdentifierProvider;
-use webignition\BasilModelProvider\Identifier\IdentifierProviderInterface;
-use webignition\BasilModelProvider\Page\EmptyPageProvider;
-use webignition\BasilModelProvider\Page\PageProvider;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
-use webignition\BasilModels\Action\ResolvedAction;
-use webignition\BasilModels\Assertion\ResolvedAssertion;
-use webignition\BasilModels\Page\Page;
-use webignition\BasilModels\StatementInterface;
+use webignition\BasilModels\Model\Action\ResolvedAction;
+use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\StatementInterface;
+use webignition\BasilModels\Provider\Identifier\EmptyIdentifierProvider;
+use webignition\BasilModels\Provider\Identifier\IdentifierProvider;
+use webignition\BasilModels\Provider\Identifier\IdentifierProviderInterface;
+use webignition\BasilModels\Provider\Page\EmptyPageProvider;
+use webignition\BasilModels\Provider\Page\PageProvider;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
 use webignition\BasilParser\ActionParser;
 use webignition\BasilParser\AssertionParser;
 

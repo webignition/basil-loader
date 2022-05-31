@@ -6,9 +6,9 @@ namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
 use webignition\BasilLoader\Resolver\PageElementReferenceResolver;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
-use webignition\BasilModelProvider\Page\PageProvider;
-use webignition\BasilModelProvider\ProviderInterface;
-use webignition\BasilModels\Page\Page;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Provider\Page\PageProvider;
+use webignition\BasilModels\Provider\ProviderInterface;
 
 class PageElementReferenceResolverTest extends \PHPUnit\Framework\TestCase
 {

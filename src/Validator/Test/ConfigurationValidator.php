@@ -8,9 +8,9 @@ use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\ResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\PageUrlReference\PageUrlReference;
-use webignition\BasilModels\Test\Configuration;
-use webignition\BasilModels\Test\ConfigurationInterface;
+use webignition\BasilModels\Model\PageUrlReference\PageUrlReference;
+use webignition\BasilModels\Model\Test\Configuration;
+use webignition\BasilModels\Model\Test\ConfigurationInterface;
 
 class ConfigurationValidator
 {
