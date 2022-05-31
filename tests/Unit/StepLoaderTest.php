@@ -6,8 +6,8 @@ namespace webignition\BasilLoader\Tests\Unit;
 
 use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
-use webignition\BasilModels\Step\Step;
-use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilModels\Model\Step\Step;
+use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilParser\ActionParser;
 use webignition\BasilParser\AssertionParser;
 

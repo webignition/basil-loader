@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModels\DataSet\DataSetCollection;
-use webignition\BasilModels\DataSet\DataSetCollectionInterface;
+use webignition\BasilModels\Model\DataSet\DataSetCollection;
+use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
 
 class DataSetLoader
 {

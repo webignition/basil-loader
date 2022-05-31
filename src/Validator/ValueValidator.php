@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Validator;
 
 use webignition\BasilIdentifierAnalyser\IdentifierTypeAnalyser;
-use webignition\BasilModels\BrowserProperty\BrowserProperty;
-use webignition\BasilModels\PageProperty\PageProperty;
+use webignition\BasilModels\Model\BrowserProperty\BrowserProperty;
+use webignition\BasilModels\Model\PageProperty\PageProperty;
 
 class ValueValidator
 {

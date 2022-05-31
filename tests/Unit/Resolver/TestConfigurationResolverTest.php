@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
 use webignition\BasilLoader\Resolver\TestConfigurationResolver;
-use webignition\BasilModelProvider\Page\EmptyPageProvider;
-use webignition\BasilModelProvider\Page\PageProvider;
-use webignition\BasilModelProvider\ProviderInterface;
-use webignition\BasilModels\Page\Page;
-use webignition\BasilModels\Test\Configuration;
-use webignition\BasilModels\Test\ConfigurationInterface;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Test\Configuration;
+use webignition\BasilModels\Model\Test\ConfigurationInterface;
+use webignition\BasilModels\Provider\Page\EmptyPageProvider;
+use webignition\BasilModels\Provider\Page\PageProvider;
+use webignition\BasilModels\Provider\ProviderInterface;
 
 class TestConfigurationResolverTest extends \PHPUnit\Framework\TestCase
 {

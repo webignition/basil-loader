@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Resolver;
 
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
-use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
-use webignition\BasilModelProvider\Step\StepProviderInterface;
-use webignition\BasilModels\Step\StepCollection;
-use webignition\BasilModels\Step\StepInterface;
-use webignition\BasilModels\Test\Test;
-use webignition\BasilModels\Test\TestInterface;
+use webignition\BasilModels\Model\Step\StepCollection;
+use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Model\Test\Test;
+use webignition\BasilModels\Model\Test\TestInterface;
+use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
+use webignition\BasilModels\Provider\Step\StepProviderInterface;
 
 class TestResolver
 {
@@ -58,9 +58,6 @@ class TestResolver
 
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
-            // todo: can remove in #79
-            $stepName = is_string($stepName) ? $stepName : null;
-
             if ($step instanceof StepInterface) {
                 try {
                     $resolvedStep = $this->stepImportResolver->resolveStepImport($step, $stepProvider);

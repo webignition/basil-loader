@@ -10,11 +10,11 @@ use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\DataParameter\DataParameter;
-use webignition\BasilModels\DataParameter\DataParameterInterface;
-use webignition\BasilModels\DataSet\DataSet;
-use webignition\BasilModels\DataSet\DataSetCollection;
-use webignition\BasilModels\DataSet\DataSetCollectionInterface;
+use webignition\BasilModels\Model\DataParameter\DataParameter;
+use webignition\BasilModels\Model\DataParameter\DataParameterInterface;
+use webignition\BasilModels\Model\DataSet\DataSet;
+use webignition\BasilModels\Model\DataSet\DataSetCollection;
+use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
 
 class DataValidatorTest extends \PHPUnit\Framework\TestCase
 {

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Resolver;
 
 use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Identifier\EmptyIdentifierProvider;
-use webignition\BasilModelProvider\Identifier\IdentifierProvider;
-use webignition\BasilModelProvider\Page\PageProviderInterface;
-use webignition\BasilModels\Action\ActionInterface;
-use webignition\BasilModels\Assertion\AssertionInterface;
-use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilModels\Model\Action\ActionInterface;
+use webignition\BasilModels\Model\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Identifier\EmptyIdentifierProvider;
+use webignition\BasilModels\Provider\Identifier\IdentifierProvider;
+use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
 class StepResolver
 {

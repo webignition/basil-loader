@@ -6,8 +6,8 @@ namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
 use webignition\BasilLoader\Resolver\PageResolver;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
-use webignition\BasilModels\Page\Page;
-use webignition\BasilModels\Page\PageInterface;
+use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Page\PageInterface;
 use webignition\BasilParser\PageParser;
 
 class PageResolverTest extends \PHPUnit\Framework\TestCase

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
-use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\StepParser;
 

@@ -11,11 +11,11 @@ use webignition\BasilLoader\Validator\Step\StepValidator;
 use webignition\BasilLoader\Validator\Test\ConfigurationValidator;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\Step\Step;
-use webignition\BasilModels\Step\StepCollection;
-use webignition\BasilModels\Test\Configuration;
-use webignition\BasilModels\Test\Test;
-use webignition\BasilModels\Test\TestInterface;
+use webignition\BasilModels\Model\Step\Step;
+use webignition\BasilModels\Model\Step\StepCollection;
+use webignition\BasilModels\Model\Test\Configuration;
+use webignition\BasilModels\Model\Test\Test;
+use webignition\BasilModels\Model\Test\TestInterface;
 use webignition\BasilParser\Test\TestParser;
 
 class TestValidatorTest extends \PHPUnit\Framework\TestCase

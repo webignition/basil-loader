@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\ProviderInterface;
-use webignition\BasilModels\Page\PageInterface;
-use webignition\BasilModels\PageUrlReference\PageUrlReference;
+use webignition\BasilModels\Model\Page\PageInterface;
+use webignition\BasilModels\Model\PageUrlReference\PageUrlReference;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\ProviderInterface;
 
 class ImportedUrlResolver
 {

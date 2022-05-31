@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
-use webignition\BasilModelProvider\Exception\UnknownItemException;
-use webignition\BasilModelProvider\Step\StepProviderInterface;
-use webignition\BasilModels\Step\StepInterface;
+use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
+use webignition\BasilModels\Provider\Step\StepProviderInterface;
 
 class StepImportResolver
 {
