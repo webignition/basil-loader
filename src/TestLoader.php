@@ -10,6 +10,10 @@ use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilLoader\Resolver\CircularStepImportException;
+use webignition\BasilLoader\Resolver\TestResolver;
+use webignition\BasilLoader\Resolver\UnknownElementException;
+use webignition\BasilLoader\Resolver\UnknownPageElementException;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
@@ -24,10 +28,6 @@ use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\Exception\UnparseableTestException;
 use webignition\BasilParser\Test\ImportsParser;
 use webignition\BasilParser\Test\TestParser;
-use webignition\BasilResolver\CircularStepImportException;
-use webignition\BasilResolver\TestResolver;
-use webignition\BasilResolver\UnknownElementException;
-use webignition\BasilResolver\UnknownPageElementException;
 
 class TestLoader
 {
