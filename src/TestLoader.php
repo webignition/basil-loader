@@ -12,10 +12,12 @@ use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModelProvider\DataSet\DataSetProvider;
+use webignition\BasilModelProvider\DataSet\DataSetProviderInterface;
 use webignition\BasilModelProvider\Exception\UnknownItemException;
 use webignition\BasilModelProvider\Page\PageProvider;
-use webignition\BasilModelProvider\ProviderInterface;
+use webignition\BasilModelProvider\Page\PageProviderInterface;
 use webignition\BasilModelProvider\Step\StepProvider;
+use webignition\BasilModelProvider\Step\StepProviderInterface;
 use webignition\BasilModels\Test\TestInterface;
 use webignition\BasilParser\Exception\UnparseableStepException;
 use webignition\BasilParser\Exception\UnparseableTestException;
@@ -147,7 +149,7 @@ class TestLoader
      *
      * @throws NonRetrievableImportException
      */
-    private function createDataSetProvider(array $importPaths): ProviderInterface
+    private function createDataSetProvider(array $importPaths): DataSetProviderInterface
     {
         $dataSetCollections = [];
 
@@ -173,7 +175,7 @@ class TestLoader
      * @throws InvalidPageException
      * @throws NonRetrievableImportException
      */
-    private function createPageProvider(array $importPaths): ProviderInterface
+    private function createPageProvider(array $importPaths): PageProviderInterface
     {
         $pages = [];
 
@@ -199,7 +201,7 @@ class TestLoader
      * @throws NonRetrievableImportException
      * @throws ParseException
      */
-    private function createStepProvider(string $testPath, array $importPaths): ProviderInterface
+    private function createStepProvider(string $testPath, array $importPaths): StepProviderInterface
     {
         $steps = [];
 
