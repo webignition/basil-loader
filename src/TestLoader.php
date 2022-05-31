@@ -118,7 +118,10 @@ class TestLoader
 
         $test = $test->withPath($path);
 
-        $imports = $this->importsParser->parse($basePath, $data[self::DATA_KEY_IMPORTS] ?? []);
+        $importsData = $data[self::DATA_KEY_IMPORTS] ?? [];
+        $importsData = is_array($importsData) ? $importsData : [];
+
+        $imports = $this->importsParser->parse($basePath, $importsData);
 
         try {
             $pageProvider = $this->createPageProvider($imports->getPagePaths());
@@ -226,7 +229,7 @@ class TestLoader
     /**
      * @param array<mixed> $data
      *
-     * @return array<mixed>
+     * @return array<array<mixed>>
      */
     private function createSingleBrowserDataSets(array $data): array
     {
