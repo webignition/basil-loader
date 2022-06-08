@@ -114,18 +114,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test(new Configuration('', ''), new StepCollection([])),
             ],
-            'empty test with path' => [
-                'test' => $testParser->parse([])->withPath('test.yml'),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => (
-                    new Test(
-                        new Configuration('', ''),
-                        new StepCollection([])
-                    )
-                )->withPath('test.yml'),
-            ],
             'configuration is resolved' => [
                 'test' => $testParser->parse([
                     'config' => [
@@ -554,7 +542,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         'use' => 'step_import_name',
                         'data' => 'data_provider_import_name',
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new StepProvider([
                     'step_import_name' => new Step([], []),
@@ -563,7 +551,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedException' => $this->applyContextToException(
                     new UnknownItemException(UnknownItemException::TYPE_DATASET, 'data_provider_import_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                     ]
                 ),
@@ -573,16 +560,11 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'config' => [
                         'url' => '$page_import_name.url',
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
-                    [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
-                    ]
-                ),
+                'expectedException' => new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
             ],
             'UnknownPageException: assertion string references page not defined within a collection' => [
                 'test' => $testParser->parse([
@@ -591,14 +573,13 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             '$page_import_name.elements.element_name exists'
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => $this->applyContextToException(
                     new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => '$page_import_name.elements.element_name exists',
                     ]
@@ -611,14 +592,13 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'click $page_import_name.elements.element_name'
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => $this->applyContextToException(
                     new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => 'click $page_import_name.elements.element_name',
                     ]
@@ -631,7 +611,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'non_existent' => '$page_import_name.elements.non_existent',
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com')
                 ]),
@@ -640,7 +620,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedException' => $this->applyContextToException(
                     new UnknownPageElementException('page_import_name', 'non_existent'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                     ]
                 ),
@@ -652,7 +631,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             '$page_import_name.elements.non_existent exists',
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com')
                 ]),
@@ -661,7 +640,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedException' => $this->applyContextToException(
                     new UnknownPageElementException('page_import_name', 'non_existent'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => '$page_import_name.elements.non_existent exists',
                     ]
@@ -674,7 +652,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'click $page_import_name.elements.non_existent',
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com')
                 ]),
@@ -683,7 +661,6 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'expectedException' => $this->applyContextToException(
                     new UnknownPageElementException('page_import_name', 'non_existent'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => 'click $page_import_name.elements.non_existent',
                     ]
@@ -694,14 +671,13 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'step name' => [
                         'use' => 'step_import_name',
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => $this->applyContextToException(
                     new UnknownItemException(UnknownItemException::TYPE_STEP, 'step_import_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                     ]
                 ),
@@ -713,14 +689,13 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             'click $elements.element_name',
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => $this->applyContextToException(
                     new UnknownElementException('element_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => 'click $elements.element_name',
                     ]
@@ -733,14 +708,13 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                             '$elements.element_name exists',
                         ],
                     ],
-                ])->withPath('test.yml'),
+                ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => $this->applyContextToException(
                     new UnknownElementException('element_name'),
                     [
-                        ExceptionContextInterface::KEY_TEST_NAME => 'test.yml',
                         ExceptionContextInterface::KEY_STEP_NAME => 'step name',
                         ExceptionContextInterface::KEY_CONTENT => '$elements.element_name exists',
                     ]

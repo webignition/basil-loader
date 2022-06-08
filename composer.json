@@ -42,8 +42,8 @@
         "ext-mbstring": "*",
         "symfony/yaml": "^6.0",
         "webignition/basil-identifier-analyser": "^0.9.0",
-        "webignition/basil-models": "^2.0",
-        "webignition/basil-parser": "^3.0",
+        "webignition/basil-models": "^4.0",
+        "webignition/basil-parser": "^5.0",
         "webignition/php-basil-context-aware-exception": ">=0.4,<1",
         "webignition/php-path-resolver": ">=0.3,<1"
     },
