@@ -44,17 +44,7 @@ class TestResolver
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider
     ): TestInterface {
-        $testName = $test->getPath();
-
-        try {
-            $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
-        } catch (UnknownItemException $contextAwareException) {
-            $contextAwareException->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $testName,
-            ]);
-
-            throw $contextAwareException;
-        }
+        $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
 
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
@@ -75,7 +65,6 @@ class TestResolver
                     UnknownPageElementException $contextAwareException
                 ) {
                     $contextAwareException->applyExceptionContext([
-                        ExceptionContextInterface::KEY_TEST_NAME => (string) $testName,
                         ExceptionContextInterface::KEY_STEP_NAME => (string) $stepName,
                     ]);
 
@@ -84,13 +73,6 @@ class TestResolver
             }
         }
 
-        $resolvedTest = new Test($configuration, new StepCollection($resolvedSteps));
-        $testPath = $test->getPath();
-
-        if (null !== $testPath) {
-            $resolvedTest = $resolvedTest->withPath($testPath);
-        }
-
-        return $resolvedTest;
+        return new Test($configuration, new StepCollection($resolvedSteps));
     }
 }

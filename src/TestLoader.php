@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
+use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
+use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
@@ -16,7 +18,8 @@ use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\Test\TestValidator;
-use webignition\BasilModels\Model\Test\TestInterface;
+use webignition\BasilModels\Model\Test\NamedTest;
+use webignition\BasilModels\Model\Test\NamedTestInterface;
 use webignition\BasilModels\Provider\DataSet\DataSetProvider;
 use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilModels\Provider\Exception\UnknownItemException;
@@ -60,6 +63,8 @@ class TestLoader
     }
 
     /**
+     * @param non-empty-string $path
+     *
      * @throws CircularStepImportException
      * @throws EmptyTestException
      * @throws InvalidPageException
@@ -71,7 +76,7 @@ class TestLoader
      * @throws UnknownPageElementException
      * @throws YamlLoaderException
      *
-     * @return TestInterface[]
+     * @return NamedTestInterface[]
      */
     public function load(string $path): array
     {
@@ -95,7 +100,8 @@ class TestLoader
     }
 
     /**
-     * @param array<mixed> $data
+     * @param non-empty-string $path
+     * @param array<mixed>     $data
      *
      * @throws CircularStepImportException
      * @throws InvalidPageException
@@ -106,7 +112,7 @@ class TestLoader
      * @throws UnknownItemException
      * @throws UnknownPageElementException
      */
-    private function createTest(string $path, array $data): TestInterface
+    private function createTest(string $path, array $data): NamedTestInterface
     {
         $basePath = dirname($path) . '/';
 
@@ -115,8 +121,6 @@ class TestLoader
         } catch (UnparseableTestException $unparseableTestException) {
             throw new ParseException($path, $path, $unparseableTestException);
         }
-
-        $test = $test->withPath($path);
 
         $importsData = $data[self::DATA_KEY_IMPORTS] ?? [];
         $importsData = is_array($importsData) ? $importsData : [];
@@ -137,14 +141,22 @@ class TestLoader
             throw $invalidPageException;
         }
 
-        $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
+        try {
+            $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
+        } catch (ContextAwareExceptionInterface $exception) {
+            $exception->applyExceptionContext([
+                ExceptionContextInterface::KEY_TEST_NAME => $path,
+            ]);
+
+            throw $exception;
+        }
 
         $validationResult = $this->testValidator->validate($resolvedTest);
         if ($validationResult instanceof InvalidResultInterface) {
             throw new InvalidTestException($path, $validationResult);
         }
 
-        return $resolvedTest;
+        return new NamedTest($resolvedTest, $path);
     }
 
     /**

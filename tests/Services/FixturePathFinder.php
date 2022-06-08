@@ -8,6 +8,11 @@ class FixturePathFinder
 {
     private const FIXTURES_RELATIVE_PATH = '/../Fixtures';
 
+    /**
+     * @param non-empty-string $path
+     *
+     * @return non-empty-string
+     */
     public static function find(string $path): string
     {
         $realpath = realpath(self::getBasePath() . '/' . $path);
