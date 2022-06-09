@@ -23,7 +23,6 @@ use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
-use webignition\BasilModels\Model\Test\Configuration;
 use webignition\BasilModels\Model\Test\NamedTest;
 use webignition\BasilModels\Model\Test\NamedTestInterface;
 use webignition\BasilModels\Model\Test\Test;
@@ -68,17 +67,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'verify page is open' => new Step(
-                                    [],
-                                    [
-                                        $assertionParser->parse('$page.url is "https://example.com"'),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal.yml')
                     ),
                 ],
@@ -87,17 +83,14 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'verify page is open' => new Step(
-                                    [],
-                                    [
-                                        $assertionParser->parse('$page.url is "https://example.com"'),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')
                     ),
                 ],
@@ -106,26 +99,23 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'data parameters step' => (new Step(
-                                    [
-                                        $actionParser->parse('click $".button"'),
-                                    ],
-                                    [
-                                        $assertionParser->parse('$".heading" includes $data.expected_title'),
-                                    ]
-                                ))->withData(new DataSetCollection([
-                                    '0' => [
-                                        'expected_title' => 'Foo',
-                                    ],
-                                    '1' => [
-                                        'expected_title' => 'Bar',
-                                    ],
-                                ]))
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'data parameters step' => (new Step(
+                                [
+                                    $actionParser->parse('click $".button"'),
+                                ],
+                                [
+                                    $assertionParser->parse('$".heading" includes $data.expected_title'),
+                                ]
+                            ))->withData(new DataSetCollection([
+                                '0' => [
+                                    'expected_title' => 'Foo',
+                                ],
+                                '1' => [
+                                    'expected_title' => 'Bar',
+                                ],
+                            ]))
+                        ])),
                         FixturePathFinder::find('Test/example.com.import-step-data-parameters.yml')
                     ),
                 ],
@@ -134,26 +124,23 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'element parameters step' => new Step(
-                                    [
-                                        new ResolvedAction(
-                                            $actionParser->parse('click $elements.button'),
-                                            '$".button"'
-                                        ),
-                                    ],
-                                    [
-                                        new ResolvedAssertion(
-                                            $assertionParser->parse('$elements.heading includes "example"'),
-                                            '$".heading"',
-                                            '"example"'
-                                        ),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'element parameters step' => new Step(
+                                [
+                                    new ResolvedAction(
+                                        $actionParser->parse('click $elements.button'),
+                                        '$".button"'
+                                    ),
+                                ],
+                                [
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$elements.heading includes "example"'),
+                                        '$".heading"',
+                                        '"example"'
+                                    ),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')
                     ),
                 ],
@@ -162,25 +149,22 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'descendant element parameters step' => new Step(
-                                    [
-                                    ],
-                                    [
-                                        new ResolvedAssertion(
-                                            $assertionParser->parse('$page_import_name.elements.form exists'),
-                                            '$".form"'
-                                        ),
-                                        new ResolvedAssertion(
-                                            $assertionParser->parse('$page_import_name.elements.input exists'),
-                                            '$".form" >> $".input"'
-                                        ),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'descendant element parameters step' => new Step(
+                                [
+                                ],
+                                [
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$page_import_name.elements.form exists'),
+                                        '$".form"'
+                                    ),
+                                    new ResolvedAssertion(
+                                        $assertionParser->parse('$page_import_name.elements.input exists'),
+                                        '$".form" >> $".input"'
+                                    ),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')
                     ),
                 ],
@@ -189,31 +173,25 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'path' => FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml'),
                 'expectedTests' => [
                     new NamedTest(
-                        new Test(
-                            new Configuration('chrome', 'https://example.com'),
-                            new StepCollection([
-                                'verify page is open' => new Step(
-                                    [],
-                                    [
-                                        $assertionParser->parse('$page.url is "https://example.com"'),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('chrome', 'https://example.com', new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml')
                     ),
                     new NamedTest(
-                        new Test(
-                            new Configuration('firefox', 'https://example.com'),
-                            new StepCollection([
-                                'verify page is open' => new Step(
-                                    [],
-                                    [
-                                        $assertionParser->parse('$page.url is "https://example.com"'),
-                                    ]
-                                )
-                            ])
-                        ),
+                        new Test('firefox', 'https://example.com', new StepCollection([
+                            'verify page is open' => new Step(
+                                [],
+                                [
+                                    $assertionParser->parse('$page.url is "https://example.com"'),
+                                ]
+                            )
+                        ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml')
                     ),
                 ],
@@ -293,10 +271,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
             $expectedException = new InvalidTestException(
                 $path,
                 new InvalidResult(
-                    new Test(
-                        new Configuration('chrome', 'https://example.com'),
-                        new StepCollection([])
-                    ),
+                    new Test('chrome', 'https://example.com', new StepCollection([])),
                     ResultType::TEST,
                     TestValidator::REASON_NO_STEPS
                 )

@@ -10,42 +10,46 @@ use webignition\BasilLoader\Validator\ResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Step\StepValidator;
 use webignition\BasilLoader\Validator\ValidResult;
+use webignition\BasilModels\Model\PageUrlReference\PageUrlReference;
 use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Model\Test\TestInterface;
 
 class TestValidator
 {
-    public const REASON_CONFIGURATION_INVALID = 'test-configuration-invalid';
+    public const REASON_BROWSER_EMPTY = 'test-configuration-browser-empty';
+    public const REASON_URL_EMPTY = 'test-configuration-url-empty';
+    public const REASON_URL_IS_PAGE_URL_REFERENCE = 'test-configuration-url-is-page-url-reference';
     public const REASON_NO_STEPS = 'test-no-steps';
     public const REASON_STEP_INVALID = 'test-step-invalid';
     public const CONTEXT_STEP_NAME = 'step-name';
 
-    private ConfigurationValidator $configurationValidator;
     private StepValidator $stepValidator;
 
-    public function __construct(ConfigurationValidator $configurationValidator, StepValidator $stepValidator)
+    public function __construct(StepValidator $stepValidator)
     {
-        $this->configurationValidator = $configurationValidator;
         $this->stepValidator = $stepValidator;
     }
 
     public static function create(): TestValidator
     {
         return new TestValidator(
-            ConfigurationValidator::create(),
             StepValidator::create()
         );
     }
 
     public function validate(TestInterface $test): ResultInterface
     {
-        $configurationValidationResult = $this->configurationValidator->validate($test->getConfiguration());
-        if ($configurationValidationResult instanceof InvalidResultInterface) {
-            return $this->createInvalidResult(
-                $test,
-                self::REASON_CONFIGURATION_INVALID,
-                $configurationValidationResult
-            );
+        if ('' === trim($test->getBrowser())) {
+            return $this->createInvalidResult($test, self::REASON_BROWSER_EMPTY);
+        }
+
+        if ('' === trim($test->getUrl())) {
+            return $this->createInvalidResult($test, self::REASON_URL_EMPTY);
+        }
+
+        $pageUrlReference = new PageUrlReference($test->getUrl());
+        if ($pageUrlReference->isValid()) {
+            return $this->createInvalidResult($test, self::REASON_URL_IS_PAGE_URL_REFERENCE);
         }
 
         $steps = $test->getSteps();
