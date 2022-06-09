@@ -17,7 +17,7 @@ use webignition\BasilModels\Provider\Step\StepProviderInterface;
 class TestResolver
 {
     public function __construct(
-        private TestConfigurationResolver $configurationResolver,
+        private ImportedUrlResolver $importedUrlResolver,
         private StepResolver $stepResolver,
         private StepImportResolver $stepImportResolver
     ) {
@@ -26,7 +26,7 @@ class TestResolver
     public static function createResolver(): TestResolver
     {
         return new TestResolver(
-            TestConfigurationResolver::createResolver(),
+            ImportedUrlResolver::createResolver(),
             StepResolver::createResolver(),
             StepImportResolver::createResolver()
         );
@@ -44,8 +44,6 @@ class TestResolver
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider
     ): TestInterface {
-        $configuration = $this->configurationResolver->resolve($test->getConfiguration(), $pageProvider);
-
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
             if ($step instanceof StepInterface) {
@@ -73,6 +71,10 @@ class TestResolver
             }
         }
 
-        return new Test($configuration, new StepCollection($resolvedSteps));
+        return new Test(
+            $test->getBrowser(),
+            $this->importedUrlResolver->resolve($test->getUrl(), $pageProvider),
+            new StepCollection($resolvedSteps)
+        );
     }
 }
