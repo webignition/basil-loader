@@ -9,14 +9,14 @@ use webignition\BasilModels\Model\Action\ResolvedAction;
 use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Model\StatementInterface;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
 use webignition\BasilModels\Provider\Identifier\EmptyIdentifierProvider;
 use webignition\BasilModels\Provider\Identifier\IdentifierProvider;
 use webignition\BasilModels\Provider\Identifier\IdentifierProviderInterface;
 use webignition\BasilModels\Provider\Page\EmptyPageProvider;
 use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
 
 class StatementResolverTest extends \PHPUnit\Framework\TestCase
 {

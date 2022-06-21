@@ -17,9 +17,9 @@ use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Model\DataSet\DataSet;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\Step\StepInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
-use webignition\BasilParser\StepParser;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
+use webignition\BasilModels\Parser\StepParser;
 
 class StepValidatorTest extends \PHPUnit\Framework\TestCase
 {
