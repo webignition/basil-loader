@@ -9,15 +9,15 @@ use webignition\BasilLoader\Resolver\StepImportResolver;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
+use webignition\BasilModels\Parser\StepParser;
 use webignition\BasilModels\Provider\DataSet\DataSetProvider;
 use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilModels\Provider\DataSet\EmptyDataSetProvider;
 use webignition\BasilModels\Provider\Step\EmptyStepProvider;
 use webignition\BasilModels\Provider\Step\StepProvider;
 use webignition\BasilModels\Provider\Step\StepProviderInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
-use webignition\BasilParser\StepParser;
 
 class StepImportResolverTest extends \PHPUnit\Framework\TestCase
 {

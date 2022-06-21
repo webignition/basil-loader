@@ -14,13 +14,13 @@ use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepInterface;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
+use webignition\BasilModels\Parser\StepParser;
 use webignition\BasilModels\Provider\Exception\UnknownItemException;
 use webignition\BasilModels\Provider\Page\EmptyPageProvider;
 use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\Page\PageProviderInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
-use webignition\BasilParser\StepParser;
 
 class StepResolverTest extends \PHPUnit\Framework\TestCase
 {

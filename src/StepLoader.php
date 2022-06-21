@@ -6,8 +6,8 @@ namespace webignition\BasilLoader;
 
 use webignition\BasilLoader\Exception\YamlLoaderException;
 use webignition\BasilModels\Model\Step\StepInterface;
-use webignition\BasilParser\Exception\UnparseableStepException;
-use webignition\BasilParser\StepParser;
+use webignition\BasilModels\Parser\Exception\UnparseableStepException;
+use webignition\BasilModels\Parser\StepParser;
 
 class StepLoader
 {

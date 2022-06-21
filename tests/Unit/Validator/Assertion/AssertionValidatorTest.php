@@ -12,7 +12,7 @@ use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Model\Assertion\Assertion;
 use webignition\BasilModels\Model\Assertion\AssertionInterface;
-use webignition\BasilParser\AssertionParser;
+use webignition\BasilModels\Parser\AssertionParser;
 
 class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
 {

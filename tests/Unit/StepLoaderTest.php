@@ -8,8 +8,8 @@ use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
 
 class StepLoaderTest extends \PHPUnit\Framework\TestCase
 {

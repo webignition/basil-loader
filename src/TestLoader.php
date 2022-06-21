@@ -20,6 +20,10 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModels\Model\Test\NamedTest;
 use webignition\BasilModels\Model\Test\NamedTestInterface;
+use webignition\BasilModels\Parser\Exception\UnparseableStepException;
+use webignition\BasilModels\Parser\Exception\UnparseableTestException;
+use webignition\BasilModels\Parser\Test\ImportsParser;
+use webignition\BasilModels\Parser\Test\TestParser;
 use webignition\BasilModels\Provider\DataSet\DataSetProvider;
 use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilModels\Provider\Exception\UnknownItemException;
@@ -27,10 +31,6 @@ use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\Page\PageProviderInterface;
 use webignition\BasilModels\Provider\Step\StepProvider;
 use webignition\BasilModels\Provider\Step\StepProviderInterface;
-use webignition\BasilParser\Exception\UnparseableStepException;
-use webignition\BasilParser\Exception\UnparseableTestException;
-use webignition\BasilParser\Test\ImportsParser;
-use webignition\BasilParser\Test\TestParser;
 
 class TestLoader
 {

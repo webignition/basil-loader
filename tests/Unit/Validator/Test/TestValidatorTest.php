@@ -16,7 +16,7 @@ use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\Test;
 use webignition\BasilModels\Model\Test\TestInterface;
-use webignition\BasilParser\Test\TestParser;
+use webignition\BasilModels\Parser\Test\TestParser;
 
 class TestValidatorTest extends \PHPUnit\Framework\TestCase
 {

@@ -12,7 +12,7 @@ use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
 use webignition\BasilModels\Model\Action\Action;
 use webignition\BasilModels\Model\Action\ActionInterface;
-use webignition\BasilParser\ActionParser;
+use webignition\BasilModels\Parser\ActionParser;
 
 class ActionValidatorTest extends \PHPUnit\Framework\TestCase
 {

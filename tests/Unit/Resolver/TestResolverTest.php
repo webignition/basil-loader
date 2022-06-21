@@ -19,6 +19,10 @@ use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\Test;
 use webignition\BasilModels\Model\Test\TestInterface;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
+use webignition\BasilModels\Parser\StepParser;
+use webignition\BasilModels\Parser\Test\TestParser;
 use webignition\BasilModels\Provider\DataSet\DataSetProvider;
 use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
 use webignition\BasilModels\Provider\DataSet\EmptyDataSetProvider;
@@ -29,10 +33,6 @@ use webignition\BasilModels\Provider\Page\PageProviderInterface;
 use webignition\BasilModels\Provider\Step\EmptyStepProvider;
 use webignition\BasilModels\Provider\Step\StepProvider;
 use webignition\BasilModels\Provider\Step\StepProviderInterface;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
-use webignition\BasilParser\StepParser;
-use webignition\BasilParser\Test\TestParser;
 
 class TestResolverTest extends \PHPUnit\Framework\TestCase
 {

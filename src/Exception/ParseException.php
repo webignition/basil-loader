@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Exception;
 
-use webignition\BasilParser\Exception\UnparseableDataExceptionInterface;
-use webignition\BasilParser\Exception\UnparseableStepException;
-use webignition\BasilParser\Exception\UnparseableTestException;
+use webignition\BasilModels\Parser\Exception\UnparseableDataExceptionInterface;
+use webignition\BasilModels\Parser\Exception\UnparseableStepException;
+use webignition\BasilModels\Parser\Exception\UnparseableTestException;
 
 class ParseException extends \Exception
 {

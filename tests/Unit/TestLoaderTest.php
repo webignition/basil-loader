@@ -26,8 +26,8 @@ use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\NamedTest;
 use webignition\BasilModels\Model\Test\NamedTestInterface;
 use webignition\BasilModels\Model\Test\Test;
-use webignition\BasilParser\ActionParser;
-use webignition\BasilParser\AssertionParser;
+use webignition\BasilModels\Parser\ActionParser;
+use webignition\BasilModels\Parser\AssertionParser;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
