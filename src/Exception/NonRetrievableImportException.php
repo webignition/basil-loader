@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Exception;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
-
-class NonRetrievableImportException extends \Exception implements ContextAwareExceptionInterface
+class NonRetrievableImportException extends \Exception
 {
-    use ContextAwareExceptionTrait;
-
     public const TYPE_DATA_PROVIDER = 'data-provider';
     public const TYPE_PAGE = 'page';
     public const TYPE_STEP = 'step';
@@ -38,7 +32,6 @@ class NonRetrievableImportException extends \Exception implements ContextAwareEx
         $this->name = $name;
         $this->path = $path;
         $this->yamlLoaderException = $previous;
-        $this->exceptionContext = new ExceptionContext();
     }
 
     public function getType(): string
