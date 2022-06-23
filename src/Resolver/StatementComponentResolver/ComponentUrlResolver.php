@@ -32,17 +32,14 @@ class ComponentUrlResolver implements StatementComponentResolverInterface
         ProviderInterface $pageProvider,
         ProviderInterface $identifierProvider
     ): ?ResolvedComponent {
-        if (is_string($data) && false === PageProperty::is($data)) {
-            $resolvedData = $this->importedUrlResolver->resolve($data, $pageProvider);
+        if (is_string($data) && false === PageProperty::is($data) && '' !== trim($data)) {
+            $resolvedData = $this->importedUrlResolver->resolve(trim($data), $pageProvider);
 
             if ($data !== $resolvedData) {
                 $resolvedData = '"' . $resolvedData . '"';
             }
 
-            return new ResolvedComponent(
-                $data,
-                $resolvedData
-            );
+            return new ResolvedComponent($data, $resolvedData);
         }
 
         return null;

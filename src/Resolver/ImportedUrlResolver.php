@@ -18,6 +18,10 @@ class ImportedUrlResolver
 
     /**
      * @throws UnknownItemException
+     *
+     * @param non-empty-string $url
+     *
+     * @return non-empty-string
      */
     public function resolve(string $url, ProviderInterface $pageProvider): string
     {
