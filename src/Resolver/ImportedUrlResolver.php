@@ -17,9 +17,9 @@ class ImportedUrlResolver
     }
 
     /**
-     * @throws UnknownItemException
-     *
      * @param non-empty-string $url
+     *
+     * @throws UnknownItemException
      *
      * @return non-empty-string
      */

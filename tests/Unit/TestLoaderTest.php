@@ -457,7 +457,6 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
                 'expectedExceptionTestName' => FixturePathFinder::find('Test/invalid.missing-element.yml'),
                 'expectedExceptionStepName' => 'step referencing undefined element',
                 'expectedExceptionContent' => 'click $elements.element_name',
-
             ],
             'test resolver throws unknown page element exception' => [
                 'path' => FixturePathFinder::find('Test/invalid.missing-page-element.yml'),

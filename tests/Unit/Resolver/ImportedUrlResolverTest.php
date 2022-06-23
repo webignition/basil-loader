@@ -23,6 +23,8 @@ class ImportedUrlResolverTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider resolveDataProvider
+     *
+     * @param non-empty-string $url
      */
     public function testResolve(string $url, ProviderInterface $pageProvider, string $expectedUrl): void
     {
