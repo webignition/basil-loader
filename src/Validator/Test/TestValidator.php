@@ -39,14 +39,6 @@ class TestValidator
 
     public function validate(TestInterface $test): ResultInterface
     {
-        if ('' === trim($test->getBrowser())) {
-            return $this->createInvalidResult($test, self::REASON_BROWSER_EMPTY);
-        }
-
-        if ('' === trim($test->getUrl())) {
-            return $this->createInvalidResult($test, self::REASON_URL_EMPTY);
-        }
-
         $pageUrlReference = new PageUrlReference($test->getUrl());
         if ($pageUrlReference->isValid()) {
             return $this->createInvalidResult($test, self::REASON_URL_IS_PAGE_URL_REFERENCE);

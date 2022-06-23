@@ -57,38 +57,6 @@ class TestValidatorTest extends \PHPUnit\Framework\TestCase
         $validStepCollection = new StepCollection(['step name' => $validStep]);
 
         return [
-            'invalid configuration: browser empty' => [
-                'test' => new Test('', 'http://example.com/', $validStepCollection),
-                'expectedResult' => new InvalidResult(
-                    new Test('', 'http://example.com/', $validStepCollection),
-                    ResultType::TEST,
-                    TestValidator::REASON_BROWSER_EMPTY
-                ),
-            ],
-            'invalid configuration: browser whitespace-only' => [
-                'test' => new Test('  ', 'http://example.com/', $validStepCollection),
-                'expectedResult' => new InvalidResult(
-                    new Test('  ', 'http://example.com/', $validStepCollection),
-                    ResultType::TEST,
-                    TestValidator::REASON_BROWSER_EMPTY
-                ),
-            ],
-            'invalid configuration: url empty' => [
-                'test' => new Test('chrome', '', $validStepCollection),
-                'expectedResult' => new InvalidResult(
-                    new Test('chrome', '', $validStepCollection),
-                    ResultType::TEST,
-                    TestValidator::REASON_URL_EMPTY
-                ),
-            ],
-            'invalid configuration: url whitespace-only' => [
-                'test' => new Test('chrome', '   ', $validStepCollection),
-                'expectedResult' => new InvalidResult(
-                    new Test('chrome', '   ', $validStepCollection),
-                    ResultType::TEST,
-                    TestValidator::REASON_URL_EMPTY
-                ),
-            ],
             'invalid configuration: url is page reference' => [
                 'test' => new Test('chrome', '$page_import_name.url', $validStepCollection),
                 'expectedResult' => new InvalidResult(
