@@ -42,7 +42,7 @@
         "ext-mbstring": "*",
         "symfony/yaml": "^6.0",
         "webignition/basil-identifier-analyser": "^2.0",
-        "webignition/basil-models": "^6.0",
+        "webignition/basil-models": "6.0",
         "webignition/php-basil-context-aware-exception": ">=0.4,<1",
         "webignition/php-path-resolver": "^1.0"
     },
