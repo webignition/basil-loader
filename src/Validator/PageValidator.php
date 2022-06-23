@@ -36,15 +36,6 @@ class PageValidator
 
     public function validate(PageInterface $page): ResultInterface
     {
-        $url = trim($page->getUrl());
-        if ('' === $url) {
-            return new InvalidResult(
-                $page,
-                ResultType::PAGE,
-                self::REASON_URL_EMPTY
-            );
-        }
-
         $identifiers = $page->getIdentifiers();
 
         foreach ($identifiers as $name => $identifier) {

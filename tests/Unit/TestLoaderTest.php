@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
 use webignition\BasilLoader\Exception\NonRetrievableImportException;
 use webignition\BasilLoader\Exception\ParseException;
 use webignition\BasilLoader\Exception\YamlLoaderException;
+use webignition\BasilLoader\Resolver\UnknownElementException;
+use webignition\BasilLoader\Resolver\UnknownPageElementException;
 use webignition\BasilLoader\TestLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\Validator\InvalidResult;
@@ -28,6 +27,7 @@ use webignition\BasilModels\Model\Test\NamedTestInterface;
 use webignition\BasilModels\Model\Test\Test;
 use webignition\BasilModels\Parser\ActionParser;
 use webignition\BasilModels\Parser\AssertionParser;
+use webignition\BasilModels\Provider\Exception\UnknownItemException;
 
 class TestLoaderTest extends \PHPUnit\Framework\TestCase
 {
@@ -259,26 +259,87 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsInvalidTestException(): void
+    /**
+     * @dataProvider loadThrowsInvalidTestExceptionDataProvider
+     *
+     * @param non-empty-string $path
+     */
+    public function testLoadThrowsInvalidTestException(string $path, InvalidTestException $expected): void
     {
-        $path = FixturePathFinder::find('Test/invalid.no-steps.yml');
-
         try {
             $this->testLoader->load($path);
 
             $this->fail('Exception not thrown');
         } catch (InvalidTestException $invalidTestException) {
-            $expectedException = new InvalidTestException(
-                $path,
-                new InvalidResult(
-                    new Test('chrome', 'https://example.com', new StepCollection([])),
-                    ResultType::TEST,
-                    TestValidator::REASON_NO_STEPS
-                )
-            );
-
-            $this->assertEquals($expectedException, $invalidTestException);
+            $this->assertEquals($expected, $invalidTestException);
         }
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function loadThrowsInvalidTestExceptionDataProvider(): array
+    {
+        return [
+            'parser invalid test exception: empty browser' => [
+                'path' => FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                    new InvalidResult(
+                        [
+                            'path' => FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                            'data' => [
+                                'config' => [
+                                    'url' => 'https://example.com',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        ResultType::TEST,
+                        TestValidator::REASON_BROWSER_EMPTY
+                    )
+                ),
+            ],
+            'parser invalid test exception: empty url' => [
+                'path' => FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                    new InvalidResult(
+                        [
+                            'path' => FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                            'data' => [
+                                'config' => [
+                                    'browser' => 'chrome',
+                                    'url' => '',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        ResultType::TEST,
+                        TestValidator::REASON_URL_EMPTY
+                    )
+                ),
+            ],
+            'no steps' => [
+                'path' => FixturePathFinder::find('Test/invalid.no-steps.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.no-steps.yml'),
+                    new InvalidResult(
+                        new Test('chrome', 'https://example.com', new StepCollection([])),
+                        ResultType::TEST,
+                        TestValidator::REASON_NO_STEPS
+                    )
+                ),
+            ],
+        ];
     }
 
     /**
@@ -356,12 +417,22 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testAddTestNameToResolverThrownException(
         string $path,
-        ExceptionContextInterface $expectedExceptionContext
+        string $expectedExceptionClass,
+        string $expectedExceptionMessage,
+        string $expectedExceptionTestName,
+        string $expectedExceptionStepName,
+        ?string $expectedExceptionContent,
     ): void {
         try {
             $this->testLoader->load($path);
-        } catch (ContextAwareExceptionInterface $exception) {
-            self::assertEquals($expectedExceptionContext, $exception->getExceptionContext());
+
+            self::fail($expectedExceptionClass . ' not thrown');
+        } catch (UnknownItemException | UnknownElementException | UnknownPageElementException $exception) {
+            self::assertSame($expectedExceptionClass, $exception::class);
+            self::assertSame($expectedExceptionMessage, $exception->getMessage());
+            self::assertSame($expectedExceptionTestName, $exception->getTestName());
+            self::assertSame($expectedExceptionStepName, $exception->getStepName());
+            self::assertSame($expectedExceptionContent, $exception->getContent());
         }
     }
 
@@ -373,32 +444,27 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         return [
             'test resolver throws unknown item exception' => [
                 'path' => FixturePathFinder::find('Test/invalid.missing-data-provider.yml'),
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => FixturePathFinder::find(
-                        'Test/invalid.missing-data-provider.yml'
-                    ),
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step referencing missing data provider',
-                ]),
+                'expectedExceptionClass' => UnknownItemException::class,
+                'expectedExceptionMessage' => 'Unknown dataset "data_provider_import_name"',
+                'expectedExceptionTestName' => FixturePathFinder::find('Test/invalid.missing-data-provider.yml'),
+                'expectedExceptionStepName' => 'step referencing missing data provider',
+                'expectedExceptionContent' => null,
             ],
             'test resolver throws unknown element exception' => [
                 'path' => FixturePathFinder::find('Test/invalid.missing-element.yml'),
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => FixturePathFinder::find(
-                        'Test/invalid.missing-element.yml'
-                    ),
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step referencing undefined element',
-                    ExceptionContextInterface::KEY_CONTENT => 'click $elements.element_name'
-                ]),
+                'expectedExceptionClass' => UnknownElementException::class,
+                'expectedExceptionMessage' => 'Unknown element "element_name"',
+                'expectedExceptionTestName' => FixturePathFinder::find('Test/invalid.missing-element.yml'),
+                'expectedExceptionStepName' => 'step referencing undefined element',
+                'expectedExceptionContent' => 'click $elements.element_name',
             ],
             'test resolver throws unknown page element exception' => [
                 'path' => FixturePathFinder::find('Test/invalid.missing-page-element.yml'),
-                'expectedExceptionContext' => new ExceptionContext([
-                    ExceptionContextInterface::KEY_TEST_NAME => FixturePathFinder::find(
-                        'Test/invalid.missing-page-element.yml'
-                    ),
-                    ExceptionContextInterface::KEY_STEP_NAME => 'step referencing missing page element',
-                    ExceptionContextInterface::KEY_CONTENT => 'click $page_import_name.elements.missing'
-                ]),
+                'expectedExceptionClass' => UnknownPageElementException::class,
+                'expectedExceptionMessage' => 'Unknown page element "missing" in page "page_import_name"',
+                'expectedExceptionTestName' => FixturePathFinder::find('Test/invalid.missing-page-element.yml'),
+                'expectedExceptionStepName' => 'step referencing missing page element',
+                'expectedExceptionContent' => 'click $page_import_name.elements.missing',
             ],
         ];
     }

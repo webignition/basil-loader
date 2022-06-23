@@ -71,7 +71,11 @@ class PageLoaderTest extends \PHPUnit\Framework\TestCase
             $this->fail('Exception not thrown');
         } catch (InvalidPageException $invalidPageException) {
             $expectedException = new InvalidPageException($importName, $path, new InvalidResult(
-                new Page('page_import_name', ''),
+                [
+                    'import_name' => $importName,
+                    'path' => $path,
+                    'data' => [],
+                ],
                 ResultType::PAGE,
                 PageValidator::REASON_URL_EMPTY
             ));

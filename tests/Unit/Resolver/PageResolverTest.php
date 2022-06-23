@@ -41,41 +41,44 @@ class PageResolverTest extends \PHPUnit\Framework\TestCase
         $pageParser = PageParser::create();
 
         return [
-            'empty page' => [
-                'page' => $pageParser->parse('import_name', []),
-                'expectedPage' => new Page('import_name', '', []),
+            'no elements' => [
+                'page' => $pageParser->parse('import_name', ['url' => 'http://example.com']),
+                'expectedPage' => new Page('import_name', 'http://example.com', []),
             ],
-            'identifiers require no resolution' => [
+            'element identifiers require no resolution' => [
                 'page' => $pageParser->parse('import_name', [
+                    'url' => 'http://example.com',
                     'elements' => [
                         'form' => '$".form"',
                     ],
                 ]),
-                'expectedPage' => new Page('import_name', '', [
+                'expectedPage' => new Page('import_name', 'http://example.com', [
                     'form' => '$".form"',
                 ]),
             ],
             'direct parent reference' => [
                 'page' => $pageParser->parse('import_name', [
+                    'url' => 'http://example.com',
                     'elements' => [
                         'form' => '$".form"',
                         'form_container' => '$form >> $".container"',
                     ],
                 ]),
-                'expectedPage' => new Page('import_name', '', [
+                'expectedPage' => new Page('import_name', 'http://example.com', [
                     'form' => '$".form"',
                     'form_container' => '$".form" >> $".container"',
                 ]),
             ],
             'indirect parent reference, defined in order' => [
                 'page' => $pageParser->parse('import_name', [
+                    'url' => 'http://example.com',
                     'elements' => [
                         'form' => '$".form"',
                         'form_container' => '$form >> $".container"',
                         'form_input' => '$form_container >> $".input"',
                     ],
                 ]),
-                'expectedPage' => new Page('import_name', '', [
+                'expectedPage' => new Page('import_name', 'http://example.com', [
                     'form' => '$".form"',
                     'form_container' => '$".form" >> $".container"',
                     'form_input' => '$".form" >> $".container" >> $".input"',
@@ -83,13 +86,14 @@ class PageResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'indirect parent reference, defined in out of order' => [
                 'page' => $pageParser->parse('import_name', [
+                    'url' => 'http://example.com',
                     'elements' => [
                         'form' => '$".form"',
                         'form_input' => '$".form" >> $".container" >> $".input"',
                         'form_container' => '$".form" >> $".container"',
                     ],
                 ]),
-                'expectedPage' => new Page('import_name', '', [
+                'expectedPage' => new Page('import_name', 'http://example.com', [
                     'form' => '$".form"',
                     'form_container' => '$".form" >> $".container"',
                     'form_input' => '$".form" >> $".container" >> $".input"',
@@ -103,6 +107,7 @@ class PageResolverTest extends \PHPUnit\Framework\TestCase
         $pageParser = PageParser::create();
 
         $page = $pageParser->parse('import_name', [
+            'url' => 'http://example.com',
             'elements' => [
                 'form' => '$".form"',
                 'unresolvable' => '$missing >> $".button"',

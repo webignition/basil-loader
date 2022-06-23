@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Model\Test\Test;
@@ -17,9 +16,9 @@ use webignition\BasilModels\Provider\Step\StepProviderInterface;
 class TestResolver
 {
     public function __construct(
-        private ImportedUrlResolver $importedUrlResolver,
-        private StepResolver $stepResolver,
-        private StepImportResolver $stepImportResolver
+        private readonly ImportedUrlResolver $importedUrlResolver,
+        private readonly StepResolver $stepResolver,
+        private readonly StepImportResolver $stepImportResolver
     ) {
     }
 
@@ -57,16 +56,10 @@ class TestResolver
                     $resolvedStep = $resolvedStep->withIdentifiers([]);
 
                     $resolvedSteps[$stepName] = $resolvedStep;
-                } catch (
-                    UnknownElementException |
-                    UnknownItemException |
-                    UnknownPageElementException $contextAwareException
-                ) {
-                    $contextAwareException->applyExceptionContext([
-                        ExceptionContextInterface::KEY_STEP_NAME => (string) $stepName,
-                    ]);
+                } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
+                    $exception->setStepName((string) $stepName);
 
-                    throw $contextAwareException;
+                    throw $exception;
                 }
             }
         }

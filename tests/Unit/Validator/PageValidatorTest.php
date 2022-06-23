@@ -84,14 +84,6 @@ class PageValidatorTest extends \PHPUnit\Framework\TestCase
     public function validateNotValidDataProvider(): array
     {
         return [
-            'url empty' => [
-                'page' => new Page('import_name', ''),
-                'expectedResult' => new InvalidResult(
-                    new Page('import_name', ''),
-                    ResultType::PAGE,
-                    PageValidator::REASON_URL_EMPTY
-                ),
-            ],
             'invalid identifiers: attribute identifier' => [
                 'page' => new Page('import_name', 'http://example.com', [
                     'name' => '$".selector".attribute_name',

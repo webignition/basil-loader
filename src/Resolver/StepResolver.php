@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilModels\Model\Action\ActionInterface;
 use webignition\BasilModels\Model\Assertion\AssertionInterface;
 use webignition\BasilModels\Model\Step\StepInterface;
@@ -16,8 +15,8 @@ use webignition\BasilModels\Provider\Page\PageProviderInterface;
 class StepResolver
 {
     public function __construct(
-        private StatementResolver $statementResolver,
-        private ElementResolver $elementResolver
+        private readonly StatementResolver $statementResolver,
+        private readonly ElementResolver $elementResolver
     ) {
     }
 
@@ -82,18 +81,12 @@ class StepResolver
             foreach ($step->getActions() as $action) {
                 $resolvedActions[] = $this->statementResolver->resolve($action, $pageProvider, $identifierProvider);
             }
-        } catch (
-            UnknownElementException |
-            UnknownPageElementException |
-            UnknownItemException $contextAwareException
-        ) {
+        } catch (UnknownElementException | UnknownPageElementException | UnknownItemException $exception) {
             if ($action instanceof ActionInterface) {
-                $contextAwareException->applyExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => $action->getSource(),
-                ]);
+                $exception->setContent($action->getSource());
             }
 
-            throw $contextAwareException;
+            throw $exception;
         }
 
         $resolvedActions = array_filter($resolvedActions, function ($item) {
@@ -122,18 +115,12 @@ class StepResolver
                     $identifierProvider
                 );
             }
-        } catch (
-            UnknownElementException |
-            UnknownPageElementException |
-            UnknownItemException $contextAwareException
-        ) {
+        } catch (UnknownElementException | UnknownPageElementException | UnknownItemException $exception) {
             if ($assertion instanceof AssertionInterface) {
-                $contextAwareException->applyExceptionContext([
-                    ExceptionContextInterface::KEY_CONTENT => $assertion->getSource(),
-                ]);
+                $exception->setContent($assertion->getSource());
             }
 
-            throw $contextAwareException;
+            throw $exception;
         }
 
         $resolvedAssertions = array_filter($resolvedAssertions, function ($item) {

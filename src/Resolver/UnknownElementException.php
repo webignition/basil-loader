@@ -4,26 +4,51 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ContextAwareExceptionTrait;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContext;
-
-class UnknownElementException extends \Exception implements ContextAwareExceptionInterface
+class UnknownElementException extends \Exception
 {
-    use ContextAwareExceptionTrait;
+    private ?string $testName = null;
+    private ?string $stepName = null;
+    private ?string $content = null;
 
-    private string $elementName;
-
-    public function __construct(string $elementName, ?string $message = null)
-    {
+    public function __construct(
+        private readonly string $elementName,
+        ?string $message = null
+    ) {
         parent::__construct($message ?? 'Unknown element "' . $elementName . '"');
-
-        $this->elementName = $elementName;
-        $this->exceptionContext = new ExceptionContext();
     }
 
     public function getElementName(): string
     {
         return $this->elementName;
+    }
+
+    public function getTestName(): ?string
+    {
+        return $this->testName;
+    }
+
+    public function setTestName(string $testName): void
+    {
+        $this->testName = $testName;
+    }
+
+    public function getStepName(): ?string
+    {
+        return $this->stepName;
+    }
+
+    public function setStepName(string $stepName): void
+    {
+        $this->stepName = $stepName;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
     }
 }

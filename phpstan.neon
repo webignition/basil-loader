@@ -4,3 +4,11 @@ parameters:
     - src
     - tests
   inferPrivatePropertyTypeFromConstructor: true
+  exceptions:
+    check:
+      missingCheckedExceptionInThrows: true
+      tooWideThrowType: true
+  ignoreErrors:
+    -
+      message: '#Method .+ throws checked exception#'
+      path: tests

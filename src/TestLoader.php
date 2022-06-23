@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
@@ -16,10 +14,13 @@ use webignition\BasilLoader\Resolver\CircularStepImportException;
 use webignition\BasilLoader\Resolver\TestResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
+use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModels\Model\Test\NamedTest;
 use webignition\BasilModels\Model\Test\NamedTestInterface;
+use webignition\BasilModels\Parser\Exception\InvalidTestException as ParserInvalidTestException;
 use webignition\BasilModels\Parser\Exception\UnparseableStepException;
 use webignition\BasilModels\Parser\Exception\UnparseableTestException;
 use webignition\BasilModels\Parser\Test\ImportsParser;
@@ -37,14 +38,14 @@ class TestLoader
     private const DATA_KEY_IMPORTS = 'imports';
 
     public function __construct(
-        private YamlLoader $yamlLoader,
-        private DataSetLoader $dataSetLoader,
-        private PageLoader $pageLoader,
-        private StepLoader $stepLoader,
-        private TestResolver $testResolver,
-        private TestParser $testParser,
-        private TestValidator $testValidator,
-        private ImportsParser $importsParser
+        private readonly YamlLoader $yamlLoader,
+        private readonly DataSetLoader $dataSetLoader,
+        private readonly PageLoader $pageLoader,
+        private readonly StepLoader $stepLoader,
+        private readonly TestResolver $testResolver,
+        private readonly TestParser $testParser,
+        private readonly TestValidator $testValidator,
+        private readonly ImportsParser $importsParser
     ) {
     }
 
@@ -120,6 +121,21 @@ class TestLoader
             $test = $this->testParser->parse($data);
         } catch (UnparseableTestException $unparseableTestException) {
             throw new ParseException($path, $path, $unparseableTestException);
+        } catch (ParserInvalidTestException $e) {
+            $invalidResultReason = ParserInvalidTestException::CODE_BROWSER_EMPTY === $e->getCode()
+                ? TestValidator::REASON_BROWSER_EMPTY
+                : TestValidator::REASON_URL_EMPTY;
+
+            $invalidResult = new InvalidResult(
+                [
+                    'path' => $path,
+                    'data' => $data,
+                ],
+                ResultType::TEST,
+                $invalidResultReason
+            );
+
+            throw new InvalidTestException($path, $invalidResult);
         }
 
         $importsData = $data[self::DATA_KEY_IMPORTS] ?? [];
@@ -143,10 +159,8 @@ class TestLoader
 
         try {
             $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
-        } catch (ContextAwareExceptionInterface $exception) {
-            $exception->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $path,
-            ]);
+        } catch (UnknownPageElementException | UnknownElementException | UnknownItemException $exception) {
+            $exception->setTestName($path);
 
             throw $exception;
         }
