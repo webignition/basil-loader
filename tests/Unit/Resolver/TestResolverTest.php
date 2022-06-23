@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Resolver\TestResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
@@ -68,7 +66,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
 
-        $expectedResolvedDataTest = new Test('', '', new StepCollection([
+        $expectedResolvedDataTest = new Test('chrome', 'http://example.com/', new StepCollection([
             'step name' => (new Step(
                 [
                     new Action(
@@ -103,27 +101,22 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
         $stepParser = StepParser::create();
 
         return [
-            'empty test' => [
-                'test' => $testParser->parse([]),
-                'pageProvider' => new EmptyPageProvider(),
-                'stepProvider' => new EmptyStepProvider(),
-                'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([])),
-            ],
             'literal url is unchanged' => [
                 'test' => $testParser->parse([
                     'config' => [
+                        'browser' => 'chrome',
                         'url' => 'http://example.com/',
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', 'http://example.com/', new StepCollection([])),
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([])),
             ],
             'page import url reference is resolved' => [
                 'test' => $testParser->parse([
                     'config' => [
+                        'browser' => 'chrome',
                         'url' => '$page_import_name.url',
                     ],
                 ]),
@@ -132,21 +125,29 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', 'http://example.com/', new StepCollection([])),
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([])),
             ],
             'empty step' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step([], []),
                 ])),
             ],
             'no imports, actions and assertions require no resolution' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'actions' => [
                             'click $".action-selector"',
@@ -159,7 +160,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
                         [
                             new Action(
@@ -181,6 +182,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'actions and assertions require resolution of page imports' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'actions' => [
                             'click $page_import_name.elements.action_selector',
@@ -202,7 +207,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
                         [
                             new ResolvedAction(
@@ -221,6 +226,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'empty step imports step, imported actions and assertions require no resolution' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                     ],
@@ -237,7 +246,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
                         [
                             new Action(
@@ -259,6 +268,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'empty step imports step, imported actions and assertions require element resolution' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'elements' => [
@@ -288,7 +301,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
                         [
                             new ResolvedAction(
@@ -307,6 +320,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'empty step imports step, imported actions and assertions use inline data' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'data' => [
@@ -337,6 +354,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'empty step imports step, imported actions and assertions use imported data' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'data' => 'data_provider_import_name',
@@ -369,6 +390,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'deferred step import, imported actions and assertions require element resolution' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'elements' => [
@@ -401,7 +426,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     ]),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
                         [
                             new ResolvedAction(
@@ -420,6 +445,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'deferred step import, imported actions and assertions use imported data' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'data' => 'data_provider_import_name',
@@ -464,7 +493,7 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                         ],
                     ]),
                 ]),
-                'expectedTest' => new Test('', '', new StepCollection([
+                'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => (new Step(
                         [
                             new ResolvedAction(
@@ -503,14 +532,14 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
         PageProviderInterface $pageProvider,
         StepProviderInterface $stepProvider,
         DataSetProviderInterface $dataSetProvider,
-        ContextAwareExceptionInterface $expectedException
+        \Exception $expectedException
     ): void {
         try {
             $this->resolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
 
             $this->fail('Exception not thrown');
-        } catch (ContextAwareExceptionInterface $contextAwareException) {
-            $this->assertEquals($expectedException, $contextAwareException);
+        } catch (\Exception $exception) {
+            $this->assertEquals($expectedException, $exception);
         }
     }
 
@@ -524,6 +553,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
         return [
             'UnknownDataProviderException: test.data references a data provider that has not been defined' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                         'data' => 'data_provider_import_name',
@@ -534,16 +567,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                     'step_import_name' => new Step([], []),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownItemException(UnknownItemException::TYPE_DATASET, 'data_provider_import_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(
+                        UnknownItemException::TYPE_DATASET,
+                        'data_provider_import_name'
+                    );
+                    $exception->setStepName('step name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageException: config.url references page not defined within a collection' => [
                 'test' => $testParser->parse([
                     'config' => [
+                        'browser' => 'chrome',
                         'url' => '$page_import_name.url',
                     ],
                 ]),
@@ -554,6 +591,10 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
             ],
             'UnknownPageException: assertion string references page not defined within a collection' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'assertions' => [
                             '$page_import_name.elements.element_name exists'
@@ -563,16 +604,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => '$page_import_name.elements.element_name exists',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name');
+                    $exception->setStepName('step name');
+                    $exception->setContent('$page_import_name.elements.element_name exists');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageException: action string references page not defined within a collection' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'actions' => [
                             'click $page_import_name.elements.element_name'
@@ -582,16 +627,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => 'click $page_import_name.elements.element_name',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name');
+                    $exception->setStepName('step name');
+                    $exception->setContent('click $page_import_name.elements.element_name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageElementException: test.elements references element that does not exist within a page' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'elements' => [
                             'non_existent' => '$page_import_name.elements.non_existent',
@@ -603,15 +652,19 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownPageElementException('page_import_name', 'non_existent'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownPageElementException('page_import_name', 'non_existent');
+                    $exception->setStepName('step name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageElementException: assertion string references element that does not exist within a page' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'assertions' => [
                             '$page_import_name.elements.non_existent exists',
@@ -623,16 +676,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownPageElementException('page_import_name', 'non_existent'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => '$page_import_name.elements.non_existent exists',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownPageElementException('page_import_name', 'non_existent');
+                    $exception->setStepName('step name');
+                    $exception->setContent('$page_import_name.elements.non_existent exists');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageElementException: action string references element that does not exist within a page' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'actions' => [
                             'click $page_import_name.elements.non_existent',
@@ -644,16 +701,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownPageElementException('page_import_name', 'non_existent'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => 'click $page_import_name.elements.non_existent',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownPageElementException('page_import_name', 'non_existent');
+                    $exception->setStepName('step name');
+                    $exception->setContent('click $page_import_name.elements.non_existent');
+
+                    return $exception;
+                })(),
             ],
             'UnknownStepException: step.use references step not defined within a collection' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'use' => 'step_import_name',
                     ],
@@ -661,15 +722,19 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownItemException(UnknownItemException::TYPE_STEP, 'step_import_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(UnknownItemException::TYPE_STEP, 'step_import_name');
+                    $exception->setStepName('step name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownElementException: action element parameter references unknown step element' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'actions' => [
                             'click $elements.element_name',
@@ -679,16 +744,20 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownElementException('element_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => 'click $elements.element_name',
-                    ]
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownElementException('element_name');
+                    $exception->setStepName('step name');
+                    $exception->setContent('click $elements.element_name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownElementException: assertion element parameter references unknown step element' => [
                 'test' => $testParser->parse([
+                    'config' => [
+                        'browser' => 'chrome',
+                        'url' => 'http://example.com/',
+                    ],
                     'step name' => [
                         'assertions' => [
                             '$elements.element_name exists',
@@ -698,26 +767,14 @@ class TestResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedException' => $this->applyContextToException(
-                    new UnknownElementException('element_name'),
-                    [
-                        ExceptionContextInterface::KEY_STEP_NAME => 'step name',
-                        ExceptionContextInterface::KEY_CONTENT => '$elements.element_name exists',
-                    ]
-                )
+                'expectedException' => (function () {
+                    $exception = new UnknownElementException('element_name');
+                    $exception->setStepName('step name');
+                    $exception->setContent('$elements.element_name exists');
+
+                    return $exception;
+                })(),
             ],
         ];
-    }
-
-    /**
-     * @param array<string, string> $context
-     */
-    private function applyContextToException(
-        ContextAwareExceptionInterface $contextAwareException,
-        array $context
-    ): ContextAwareExceptionInterface {
-        $contextAwareException->applyExceptionContext($context);
-
-        return $contextAwareException;
     }
 }
