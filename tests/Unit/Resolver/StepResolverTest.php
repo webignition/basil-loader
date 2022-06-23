@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Resolver\StepResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
@@ -437,13 +435,13 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     public function testResolvePageElementReferencesThrowsException(
         StepInterface $step,
         PageProviderInterface $pageProvider,
-        ContextAwareExceptionInterface $expectedException
+        \Exception $expectedException
     ): void {
         try {
             $this->resolver->resolve($step, $pageProvider);
 
             $this->fail('Exception not thrown');
-        } catch (ContextAwareExceptionInterface $contextAwareException) {
+        } catch (\Exception $contextAwareException) {
             $this->assertEquals($expectedException, $contextAwareException);
         }
     }
@@ -463,10 +461,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com/'),
                 ]),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownPageElementException('page_import_name', 'element_name'),
-                    'click $page_import_name.elements.element_name'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownPageElementException('page_import_name', 'element_name');
+                    $exception->setContent('click $page_import_name.elements.element_name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageElementException: assertion has page element reference, referenced page lacks element' => [
                 'step' => $this->createStep([
@@ -477,10 +477,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com/'),
                 ]),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownPageElementException('page_import_name', 'element_name'),
-                    '$page_import_name.elements.element_name exists'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownPageElementException('page_import_name', 'element_name');
+                    $exception->setContent('$page_import_name.elements.element_name exists');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageException: action has page element reference, page does not exist' => [
                 'step' => $this->createStep([
@@ -489,10 +491,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
-                    'click $page_import_name.elements.element_name'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name');
+                    $exception->setContent('click $page_import_name.elements.element_name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownPageException: assertion has page element reference, page does not exist' => [
                 'step' => $this->createStep([
@@ -501,10 +505,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name'),
-                    '$page_import_name.elements.element_name exists'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownItemException(UnknownItemException::TYPE_PAGE, 'page_import_name');
+                    $exception->setContent('$page_import_name.elements.element_name exists');
+
+                    return $exception;
+                })(),
             ],
             'UnknownElementException: action has element reference, element missing' => [
                 'step' => $this->createStep([
@@ -513,10 +519,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownElementException('element_name'),
-                    'click $elements.element_name'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownElementException('element_name');
+                    $exception->setContent('click $elements.element_name');
+
+                    return $exception;
+                })(),
             ],
             'UnknownElementException: assertion has page element reference, referenced page invalid' => [
                 'step' => $this->createStep([
@@ -525,10 +533,12 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedException' => $this->applyContentToException(
-                    new UnknownElementException('element_name'),
-                    '$elements.element_name exists'
-                ),
+                'expectedException' => (function () {
+                    $exception = new UnknownElementException('element_name');
+                    $exception->setContent('$elements.element_name exists');
+
+                    return $exception;
+                })(),
             ],
         ];
     }
@@ -539,16 +549,5 @@ class StepResolverTest extends \PHPUnit\Framework\TestCase
     private function createStep(array $stepData): StepInterface
     {
         return StepParser::create()->parse($stepData);
-    }
-
-    private function applyContentToException(
-        ContextAwareExceptionInterface $contextAwareException,
-        string $content
-    ): ContextAwareExceptionInterface {
-        $contextAwareException->applyExceptionContext([
-            ExceptionContextInterface::KEY_CONTENT => $content,
-        ]);
-
-        return $contextAwareException;
     }
 }
