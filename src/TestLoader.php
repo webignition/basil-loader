@@ -14,10 +14,13 @@ use webignition\BasilLoader\Resolver\CircularStepImportException;
 use webignition\BasilLoader\Resolver\TestResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
+use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
+use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilModels\Model\Test\NamedTest;
 use webignition\BasilModels\Model\Test\NamedTestInterface;
+use webignition\BasilModels\Parser\Exception\InvalidTestException as ParserInvalidTestException;
 use webignition\BasilModels\Parser\Exception\UnparseableStepException;
 use webignition\BasilModels\Parser\Exception\UnparseableTestException;
 use webignition\BasilModels\Parser\Test\ImportsParser;
@@ -118,6 +121,21 @@ class TestLoader
             $test = $this->testParser->parse($data);
         } catch (UnparseableTestException $unparseableTestException) {
             throw new ParseException($path, $path, $unparseableTestException);
+        } catch (ParserInvalidTestException $e) {
+            $invalidResultReason = ParserInvalidTestException::CODE_BROWSER_EMPTY === $e->getCode()
+                ? TestValidator::REASON_BROWSER_EMPTY
+                : TestValidator::REASON_URL_EMPTY;
+
+            $invalidResult = new InvalidResult(
+                [
+                    'path' => $path,
+                    'data' => $data,
+                ],
+                ResultType::TEST,
+                $invalidResultReason
+            );
+
+            throw new InvalidTestException($path, $invalidResult);
         }
 
         $importsData = $data[self::DATA_KEY_IMPORTS] ?? [];

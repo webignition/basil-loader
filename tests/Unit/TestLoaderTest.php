@@ -259,26 +259,87 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testLoadThrowsInvalidTestException(): void
+    /**
+     * @dataProvider loadThrowsInvalidTestExceptionDataProvider
+     *
+     * @param non-empty-string $path
+     */
+    public function testLoadThrowsInvalidTestException(string $path, InvalidTestException $expected): void
     {
-        $path = FixturePathFinder::find('Test/invalid.no-steps.yml');
-
         try {
             $this->testLoader->load($path);
 
             $this->fail('Exception not thrown');
         } catch (InvalidTestException $invalidTestException) {
-            $expectedException = new InvalidTestException(
-                $path,
-                new InvalidResult(
-                    new Test('chrome', 'https://example.com', new StepCollection([])),
-                    ResultType::TEST,
-                    TestValidator::REASON_NO_STEPS
-                )
-            );
-
-            $this->assertEquals($expectedException, $invalidTestException);
+            $this->assertEquals($expected, $invalidTestException);
         }
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function loadThrowsInvalidTestExceptionDataProvider(): array
+    {
+        return [
+            'parser invalid test exception: empty browser' => [
+                'path' => FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                    new InvalidResult(
+                        [
+                            'path' => FixturePathFinder::find('Test/invalid.missing-config-browser.yml'),
+                            'data' => [
+                                'config' => [
+                                    'url' => 'https://example.com',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        ResultType::TEST,
+                        TestValidator::REASON_BROWSER_EMPTY
+                    )
+                ),
+            ],
+            'parser invalid test exception: empty url' => [
+                'path' => FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                    new InvalidResult(
+                        [
+                            'path' => FixturePathFinder::find('Test/invalid.missing-config-url.yml'),
+                            'data' => [
+                                'config' => [
+                                    'browser' => 'chrome',
+                                    'url' => '',
+                                ],
+                                'verify page is open' => [
+                                    'assertions' => [
+                                        '$page.url is "https://example.com"',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        ResultType::TEST,
+                        TestValidator::REASON_URL_EMPTY
+                    )
+                ),
+            ],
+            'no steps' => [
+                'path' => FixturePathFinder::find('Test/invalid.no-steps.yml'),
+                'expected' => new InvalidTestException(
+                    FixturePathFinder::find('Test/invalid.no-steps.yml'),
+                    new InvalidResult(
+                        new Test('chrome', 'https://example.com', new StepCollection([])),
+                        ResultType::TEST,
+                        TestValidator::REASON_NO_STEPS
+                    )
+                ),
+            ],
+        ];
     }
 
     /**
