@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-
-class UnknownPageElementException extends UnknownElementException implements ContextAwareExceptionInterface
+class UnknownPageElementException extends UnknownElementException
 {
     private string $importName;
 

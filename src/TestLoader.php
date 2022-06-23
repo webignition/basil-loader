@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader;
 
-use webignition\BasilContextAwareException\ContextAwareExceptionInterface;
-use webignition\BasilContextAwareException\ExceptionContext\ExceptionContextInterface;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
@@ -37,14 +35,14 @@ class TestLoader
     private const DATA_KEY_IMPORTS = 'imports';
 
     public function __construct(
-        private YamlLoader $yamlLoader,
-        private DataSetLoader $dataSetLoader,
-        private PageLoader $pageLoader,
-        private StepLoader $stepLoader,
-        private TestResolver $testResolver,
-        private TestParser $testParser,
-        private TestValidator $testValidator,
-        private ImportsParser $importsParser
+        private readonly YamlLoader $yamlLoader,
+        private readonly DataSetLoader $dataSetLoader,
+        private readonly PageLoader $pageLoader,
+        private readonly StepLoader $stepLoader,
+        private readonly TestResolver $testResolver,
+        private readonly TestParser $testParser,
+        private readonly TestValidator $testValidator,
+        private readonly ImportsParser $importsParser
     ) {
     }
 
@@ -143,10 +141,8 @@ class TestLoader
 
         try {
             $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
-        } catch (ContextAwareExceptionInterface $exception) {
-            $exception->applyExceptionContext([
-                ExceptionContextInterface::KEY_TEST_NAME => $path,
-            ]);
+        } catch (UnknownPageElementException | UnknownElementException | UnknownItemException $exception) {
+            $exception->setTestName($path);
 
             throw $exception;
         }
