@@ -66,6 +66,8 @@ class TestLoader
     /**
      * @param non-empty-string $path
      *
+     * @return NamedTestInterface[]
+     *
      * @throws CircularStepImportException
      * @throws EmptyTestException
      * @throws InvalidPageException
@@ -76,8 +78,6 @@ class TestLoader
      * @throws UnknownItemException
      * @throws UnknownPageElementException
      * @throws YamlLoaderException
-     *
-     * @return NamedTestInterface[]
      */
     public function load(string $path): array
     {
@@ -159,7 +159,7 @@ class TestLoader
 
         try {
             $resolvedTest = $this->testResolver->resolve($test, $pageProvider, $stepProvider, $dataSetProvider);
-        } catch (UnknownPageElementException | UnknownElementException | UnknownItemException $exception) {
+        } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             $exception->setTestName($path);
 
             throw $exception;

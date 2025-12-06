@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Assertion;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Tests\Unit\Validator\ValueDataProviderTrait;
 use webignition\BasilLoader\Validator\Assertion\AssertionContentValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 
-class AssertionContentValidatorTest extends \PHPUnit\Framework\TestCase
+class AssertionContentValidatorTest extends TestCase
 {
     use ValueDataProviderTrait;
 

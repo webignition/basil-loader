@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Action;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Action\ActionValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
@@ -14,7 +15,7 @@ use webignition\BasilModels\Model\Action\Action;
 use webignition\BasilModels\Model\Action\ActionInterface;
 use webignition\BasilModels\Parser\ActionParser;
 
-class ActionValidatorTest extends \PHPUnit\Framework\TestCase
+class ActionValidatorTest extends TestCase
 {
     private ActionValidator $actionValidator;
 

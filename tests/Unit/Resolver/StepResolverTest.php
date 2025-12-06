@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StepResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
@@ -20,7 +21,7 @@ use webignition\BasilModels\Provider\Page\EmptyPageProvider;
 use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
-class StepResolverTest extends \PHPUnit\Framework\TestCase
+class StepResolverTest extends TestCase
 {
     private StepResolver $resolver;
 

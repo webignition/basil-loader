@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
 
-class ValueValidatorTest extends \PHPUnit\Framework\TestCase
+class ValueValidatorTest extends TestCase
 {
     use ValueDataProviderTrait;
 

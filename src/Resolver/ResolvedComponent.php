@@ -6,10 +6,6 @@ namespace webignition\BasilLoader\Resolver;
 
 class ResolvedComponent
 {
-    /**
-     * @param null|string $source
-     * @param null|string $resolved
-     */
     public function __construct(
         private ?string $source,
         private ?string $resolved

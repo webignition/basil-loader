@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\PageLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
@@ -13,7 +14,7 @@ use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Model\Page\PageInterface;
 
-class PageLoaderTest extends \PHPUnit\Framework\TestCase
+class PageLoaderTest extends TestCase
 {
     private PageLoader $loader;
 

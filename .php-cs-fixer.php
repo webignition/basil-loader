@@ -18,4 +18,7 @@ return $config->setRules([
         'space' => 'none',
         'space_multiple_catch' => 'single',
     ],
+    // Following configuration added to allow CI builds to pass
+    // @todo remove in #525
+    'single_line_empty_body' => false,
 ])->setFinder($finder);

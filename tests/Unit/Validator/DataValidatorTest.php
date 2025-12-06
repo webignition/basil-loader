@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\DataSetValidator;
 use webignition\BasilLoader\Validator\DataValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
@@ -16,7 +17,7 @@ use webignition\BasilModels\Model\DataSet\DataSet;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
 
-class DataValidatorTest extends \PHPUnit\Framework\TestCase
+class DataValidatorTest extends TestCase
 {
     private DataValidator $validator;
 

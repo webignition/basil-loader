@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\PageResolver;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Model\Page\PageInterface;
 use webignition\BasilModels\Parser\PageParser;
 
-class PageResolverTest extends \PHPUnit\Framework\TestCase
+class PageResolverTest extends TestCase
 {
     private PageResolver $resolver;
 

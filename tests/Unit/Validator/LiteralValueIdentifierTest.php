@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\LiteralValueIdentifier;
 
-class LiteralValueIdentifierTest extends \PHPUnit\Framework\TestCase
+class LiteralValueIdentifierTest extends TestCase
 {
     private LiteralValueIdentifier $literalValueIdentifier;
 

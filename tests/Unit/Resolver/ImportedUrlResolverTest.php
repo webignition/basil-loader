@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\ImportedUrlResolver;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Provider\Page\EmptyPageProvider;
 use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\ProviderInterface;
 
-class ImportedUrlResolverTest extends \PHPUnit\Framework\TestCase
+class ImportedUrlResolverTest extends TestCase
 {
     private ImportedUrlResolver $resolver;
 

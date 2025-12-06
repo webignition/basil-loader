@@ -43,11 +43,11 @@ class PageValidator
             $elementIdentifier = $this->elementIdentifierExtractor->extract($identifier);
 
             $isDescendantDomIdentifier = null !== $descendantIdentifier;
-            $isElementIdentifier =
-                false === $isDescendantDomIdentifier
+            $isElementIdentifier
+                = false === $isDescendantDomIdentifier
                 && null !== $elementIdentifier;
-            $isAttributeIdentifier =
-                $isElementIdentifier && $this->isAttributeIdentifierMatch((string) $elementIdentifier);
+            $isAttributeIdentifier
+                = $isElementIdentifier && $this->isAttributeIdentifierMatch((string) $elementIdentifier);
             $isElementIdentifier = $isElementIdentifier && !$isAttributeIdentifier;
 
             if (!$isElementIdentifier && !$isDescendantDomIdentifier) {
