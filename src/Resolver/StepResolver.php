@@ -17,8 +17,7 @@ class StepResolver
     public function __construct(
         private readonly StatementResolver $statementResolver,
         private readonly ElementResolver $elementResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): StepResolver
     {

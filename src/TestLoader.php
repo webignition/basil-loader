@@ -46,8 +46,7 @@ class TestLoader
         private readonly TestParser $testParser,
         private readonly TestValidator $testValidator,
         private readonly ImportsParser $importsParser
-    ) {
-    }
+    ) {}
 
     public static function createLoader(): TestLoader
     {

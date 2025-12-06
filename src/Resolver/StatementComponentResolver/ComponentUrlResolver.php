@@ -14,8 +14,7 @@ class ComponentUrlResolver implements StatementComponentResolverInterface
 {
     public function __construct(
         private ImportedUrlResolver $importedUrlResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): self
     {

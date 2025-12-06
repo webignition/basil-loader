@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 return $config->setRules([
-    '@PSR12' => true,
+    '@PER-CS' => true,
     '@PhpCsFixer' => true,
     'concat_space' => [
         'spacing' => 'one',
@@ -18,7 +18,4 @@ return $config->setRules([
         'space' => 'none',
         'space_multiple_catch' => 'single',
     ],
-    // Following configuration added to allow CI builds to pass
-    // @todo remove in #525
-    'single_line_empty_body' => false,
 ])->setFinder($finder);

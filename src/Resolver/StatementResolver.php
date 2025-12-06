@@ -24,8 +24,7 @@ class StatementResolver
      */
     final public function __construct(
         private array $componentResolvers
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): static
     {

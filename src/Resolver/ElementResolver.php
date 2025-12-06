@@ -15,8 +15,7 @@ class ElementResolver
 {
     public function __construct(
         private PageElementReferenceResolver $pageElementReferenceResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): ElementResolver
     {

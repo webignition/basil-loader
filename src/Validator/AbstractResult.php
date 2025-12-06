@@ -9,8 +9,7 @@ abstract class AbstractResult implements ResultInterface
     public function __construct(
         private bool $isValid,
         private mixed $subject
-    ) {
-    }
+    ) {}
 
     public function getIsValid(): bool
     {
