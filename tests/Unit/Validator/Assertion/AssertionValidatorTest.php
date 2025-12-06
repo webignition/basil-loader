@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Assertion;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
@@ -14,7 +15,7 @@ use webignition\BasilModels\Model\Assertion\Assertion;
 use webignition\BasilModels\Model\Assertion\AssertionInterface;
 use webignition\BasilModels\Parser\AssertionParser;
 
-class AssertionValidatorTest extends \PHPUnit\Framework\TestCase
+class AssertionValidatorTest extends TestCase
 {
     private AssertionValidator $validator;
 

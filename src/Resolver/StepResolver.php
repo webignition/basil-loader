@@ -81,7 +81,7 @@ class StepResolver
             foreach ($step->getActions() as $action) {
                 $resolvedActions[] = $this->statementResolver->resolve($action, $pageProvider, $identifierProvider);
             }
-        } catch (UnknownElementException | UnknownPageElementException | UnknownItemException $exception) {
+        } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             if ($action instanceof ActionInterface) {
                 $exception->setContent($action->getSource());
             }
@@ -115,7 +115,7 @@ class StepResolver
                     $identifierProvider
                 );
             }
-        } catch (UnknownElementException | UnknownPageElementException | UnknownItemException $exception) {
+        } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             if ($assertion instanceof AssertionInterface) {
                 $exception->setContent($assertion->getSource());
             }

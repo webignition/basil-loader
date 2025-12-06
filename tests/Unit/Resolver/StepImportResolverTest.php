@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\CircularStepImportException;
 use webignition\BasilLoader\Resolver\StepImportResolver;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
@@ -19,7 +20,7 @@ use webignition\BasilModels\Provider\Step\EmptyStepProvider;
 use webignition\BasilModels\Provider\Step\StepProvider;
 use webignition\BasilModels\Provider\Step\StepProviderInterface;
 
-class StepImportResolverTest extends \PHPUnit\Framework\TestCase
+class StepImportResolverTest extends TestCase
 {
     private StepImportResolver $resolver;
 

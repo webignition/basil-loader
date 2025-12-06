@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit\Validator\Test;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
@@ -18,7 +19,7 @@ use webignition\BasilModels\Model\Test\Test;
 use webignition\BasilModels\Model\Test\TestInterface;
 use webignition\BasilModels\Parser\Test\TestParser;
 
-class TestValidatorTest extends \PHPUnit\Framework\TestCase
+class TestValidatorTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

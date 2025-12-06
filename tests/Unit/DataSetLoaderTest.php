@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\DataSetLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
 
-class DataSetLoaderTest extends \PHPUnit\Framework\TestCase
+class DataSetLoaderTest extends TestCase
 {
     /**
      * @dataProvider loadDataProvider

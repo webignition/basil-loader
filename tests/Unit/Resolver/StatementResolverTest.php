@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StatementResolver;
 use webignition\BasilModels\Model\Action\ResolvedAction;
 use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
@@ -18,7 +19,7 @@ use webignition\BasilModels\Provider\Page\EmptyPageProvider;
 use webignition\BasilModels\Provider\Page\PageProvider;
 use webignition\BasilModels\Provider\Page\PageProviderInterface;
 
-class StatementResolverTest extends \PHPUnit\Framework\TestCase
+class StatementResolverTest extends TestCase
 {
     private StatementResolver $resolver;
 

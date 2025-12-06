@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Step;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Action\ActionValidator;
 use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
 use webignition\BasilLoader\Validator\DataSetValidator;
@@ -21,7 +22,7 @@ use webignition\BasilModels\Parser\ActionParser;
 use webignition\BasilModels\Parser\AssertionParser;
 use webignition\BasilModels\Parser\StepParser;
 
-class StepValidatorTest extends \PHPUnit\Framework\TestCase
+class StepValidatorTest extends TestCase
 {
     private StepValidator $validator;
 

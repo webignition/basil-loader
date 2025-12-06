@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\Exception\InvalidTestException;
@@ -29,7 +30,7 @@ use webignition\BasilModels\Parser\ActionParser;
 use webignition\BasilModels\Parser\AssertionParser;
 use webignition\BasilModels\Provider\Exception\UnknownItemException;
 
-class TestLoaderTest extends \PHPUnit\Framework\TestCase
+class TestLoaderTest extends TestCase
 {
     private TestLoader $testLoader;
 
@@ -427,7 +428,7 @@ class TestLoaderTest extends \PHPUnit\Framework\TestCase
             $this->testLoader->load($path);
 
             self::fail($expectedExceptionClass . ' not thrown');
-        } catch (UnknownItemException | UnknownElementException | UnknownPageElementException $exception) {
+        } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             self::assertSame($expectedExceptionClass, $exception::class);
             self::assertSame($expectedExceptionMessage, $exception->getMessage());
             self::assertSame($expectedExceptionTestName, $exception->getTestName());

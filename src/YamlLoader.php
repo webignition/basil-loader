@@ -23,9 +23,9 @@ class YamlLoader
     }
 
     /**
-     * @throws YamlLoaderException
-     *
      * @return array<mixed>
+     *
+     * @throws YamlLoaderException
      */
     public function loadArray(string $path): array
     {

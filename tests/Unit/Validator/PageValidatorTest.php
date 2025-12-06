@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\PageResolver;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
@@ -13,7 +14,7 @@ use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Model\Page\Page;
 use webignition\BasilModels\Model\Page\PageInterface;
 
-class PageValidatorTest extends \PHPUnit\Framework\TestCase
+class PageValidatorTest extends TestCase
 {
     private PageValidator $validator;
 
