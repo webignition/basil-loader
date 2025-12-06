@@ -16,8 +16,7 @@ class ComponentElementResolver implements StatementComponentResolverInterface
 {
     public function __construct(
         private ElementResolver $elementResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): self
     {

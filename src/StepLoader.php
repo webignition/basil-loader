@@ -14,8 +14,7 @@ class StepLoader
     public function __construct(
         private YamlLoader $yamlLoader,
         private StepParser $stepParser
-    ) {
-    }
+    ) {}
 
     public static function createLoader(): StepLoader
     {

@@ -20,8 +20,7 @@ class PageLoader
         private readonly YamlLoader $yamlLoader,
         private readonly PageParser $pageParser,
         private readonly PageValidator $pageValidator
-    ) {
-    }
+    ) {}
 
     public static function createLoader(): PageLoader
     {

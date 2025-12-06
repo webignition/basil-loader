@@ -12,8 +12,7 @@ class YamlLoader
 {
     public function __construct(
         private YamlParser $yamlParser
-    ) {
-    }
+    ) {}
 
     public static function createLoader(): YamlLoader
     {

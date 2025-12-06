@@ -13,8 +13,7 @@ class PageElementReferenceResolver
 {
     public function __construct(
         private PageResolver $pageResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): PageElementReferenceResolver
     {

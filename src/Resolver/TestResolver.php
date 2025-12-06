@@ -19,8 +19,7 @@ class TestResolver
         private readonly ImportedUrlResolver $importedUrlResolver,
         private readonly StepResolver $stepResolver,
         private readonly StepImportResolver $stepImportResolver
-    ) {
-    }
+    ) {}
 
     public static function createResolver(): TestResolver
     {

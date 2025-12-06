@@ -9,8 +9,7 @@ class ResolvedComponent
     public function __construct(
         private ?string $source,
         private ?string $resolved
-    ) {
-    }
+    ) {}
 
     public function getSource(): ?string
     {

@@ -12,8 +12,7 @@ class DataSetLoader
 {
     public function __construct(
         private YamlLoader $yamlLoader
-    ) {
-    }
+    ) {}
 
     public static function createLoader(): DataSetLoader
     {
