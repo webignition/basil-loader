@@ -38,7 +38,7 @@ class PageLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadSuccessDataProvider(): array
+    public static function loadSuccessDataProvider(): array
     {
         return [
             'url only' => [

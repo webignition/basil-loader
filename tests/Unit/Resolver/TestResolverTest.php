@@ -62,7 +62,7 @@ class TestResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveSuccessDataProvider(): array
+    public static function resolveSuccessDataProvider(): array
     {
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
@@ -547,7 +547,7 @@ class TestResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveThrowsExceptionDataProvider(): array
+    public static function resolveThrowsExceptionDataProvider(): array
     {
         $testParser = TestParser::create();
 

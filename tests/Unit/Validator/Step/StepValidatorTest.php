@@ -44,7 +44,7 @@ class StepValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $stepParser = StepParser::create();
 
@@ -94,7 +94,7 @@ class StepValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidStepDataProvider(): array
+    public static function invalidStepDataProvider(): array
     {
         $stepParser = StepParser::create();
         $actionParser = ActionParser::create();

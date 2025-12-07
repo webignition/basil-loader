@@ -11,7 +11,7 @@ trait ValueDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function invalidValueDataProvider(): array
+    public static function invalidValueDataProvider(): array
     {
         return [
             'element reference' => [
@@ -48,7 +48,7 @@ trait ValueDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function validValueDataProvider(): array
+    public static function validValueDataProvider(): array
     {
         return [
             'quoted literal' => [

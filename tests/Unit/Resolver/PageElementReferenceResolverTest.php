@@ -38,7 +38,7 @@ class PageElementReferenceResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveIsResolvedDataProvider(): array
+    public static function resolveIsResolvedDataProvider(): array
     {
         return [
             'element reference' => [
@@ -87,7 +87,7 @@ class PageElementReferenceResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveThrowsUnknownPageElementExceptionDataProvider(): array
+    public static function resolveThrowsUnknownPageElementExceptionDataProvider(): array
     {
         return [
             'element not present in page' => [

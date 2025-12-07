@@ -29,7 +29,7 @@ class StepLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadDataProvider(): array
+    public static function loadDataProvider(): array
     {
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();

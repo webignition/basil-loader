@@ -29,7 +29,7 @@ class LiteralValueIdentifierTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function isDataProvider(): array
+    public static function isDataProvider(): array
     {
         return [
             'empty' => [

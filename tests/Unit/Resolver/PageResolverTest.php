@@ -37,7 +37,7 @@ class PageResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveSuccessDataProvider(): array
+    public static function resolveSuccessDataProvider(): array
     {
         $pageParser = PageParser::create();
 

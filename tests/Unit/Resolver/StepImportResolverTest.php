@@ -47,7 +47,7 @@ class StepImportResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveStepImportDataProvider(): array
+    public static function resolveStepImportDataProvider(): array
     {
         $stepParser = StepParser::create();
         $actionParser = ActionParser::create();
@@ -164,7 +164,7 @@ class StepImportResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveDataProviderImportDataProvider(): array
+    public static function resolveDataProviderImportDataProvider(): array
     {
         return [
             'non-pending step' => [
@@ -230,7 +230,7 @@ class StepImportResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveStepImportThrowsCircularReferenceExceptionDataProvider(): array
+    public static function resolveStepImportThrowsCircularReferenceExceptionDataProvider(): array
     {
         return [
             'direct self-circular reference' => [

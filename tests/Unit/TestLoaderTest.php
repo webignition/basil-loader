@@ -58,7 +58,7 @@ class TestLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadSuccessDataProvider(): array
+    public static function loadSuccessDataProvider(): array
     {
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
@@ -227,7 +227,7 @@ class TestLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadThrowsNonRetrievableImportExceptionDataProvider(): array
+    public static function loadThrowsNonRetrievableImportExceptionDataProvider(): array
     {
         return [
             'step' => [
@@ -279,7 +279,7 @@ class TestLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadThrowsInvalidTestExceptionDataProvider(): array
+    public static function loadThrowsInvalidTestExceptionDataProvider(): array
     {
         return [
             'parser invalid test exception: empty browser' => [
@@ -370,7 +370,7 @@ class TestLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadThrowsParseExceptionDataProvider(): array
+    public static function loadThrowsParseExceptionDataProvider(): array
     {
         return [
             'test contains unparseable action' => [
@@ -440,7 +440,7 @@ class TestLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function addTestNameToResolverThrownExceptionDataProvider(): array
+    public static function addTestNameToResolverThrownExceptionDataProvider(): array
     {
         return [
             'test resolver throws unknown item exception' => [

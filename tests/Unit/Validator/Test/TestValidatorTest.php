@@ -43,7 +43,7 @@ class TestValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateNotValidDataProvider(): array
+    public static function validateNotValidDataProvider(): array
     {
         $testWithNoSteps = new Test('chrome', 'http://example.com/', new StepCollection([]));
 

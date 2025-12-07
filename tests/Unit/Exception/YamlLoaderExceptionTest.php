@@ -28,7 +28,7 @@ class YamlLoaderExceptionTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function getPathForFileDoesNotExistExceptionDataProvider(): array
+    public static function getPathForFileDoesNotExistExceptionDataProvider(): array
     {
         return [
             'integer-type path' => [

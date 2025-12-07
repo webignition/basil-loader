@@ -27,16 +27,16 @@ class DataSetLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadDataProvider(): array
+    public static function loadDataProvider(): array
     {
         return [
             'empty' => [
                 'path' => FixturePathFinder::find('Empty/empty.yml'),
-                'expectedPage' => new DataSetCollection([]),
+                'expectedDataSetCollection' => new DataSetCollection([]),
             ],
             'non-empty, expected title only' => [
                 'path' => FixturePathFinder::find('DataProvider/expected-title-only.yml'),
-                'expectedPage' => new DataSetCollection([
+                'expectedDataSetCollection' => new DataSetCollection([
                     '0' => [
                         'expected_title' => 'Foo',
                     ],
@@ -47,7 +47,7 @@ class DataSetLoaderTest extends TestCase
             ],
             'non-empty, users' => [
                 'path' => FixturePathFinder::find('DataProvider/users.yml'),
-                'expectedPage' => new DataSetCollection([
+                'expectedDataSetCollection' => new DataSetCollection([
                     'user1' => [
                         'username' => 'user1',
                         'role' => 'user',

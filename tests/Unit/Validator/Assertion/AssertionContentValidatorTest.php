@@ -48,7 +48,7 @@ class AssertionContentValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validAssertionValueDataProvider(): array
+    public static function validAssertionValueDataProvider(): array
     {
         return [
             'descendant element dom identifier' => [

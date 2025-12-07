@@ -36,7 +36,7 @@ class PageValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $pageResolver = PageResolver::createResolver();
 
@@ -82,7 +82,7 @@ class PageValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateNotValidDataProvider(): array
+    public static function validateNotValidDataProvider(): array
     {
         return [
             'invalid identifiers: attribute identifier' => [

@@ -77,7 +77,7 @@ class YamlLoaderTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function loadArrayWithEmptyContentDataProvider(): array
+    public static function loadArrayWithEmptyContentDataProvider(): array
     {
         return [
             'empty' => [

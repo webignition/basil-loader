@@ -37,7 +37,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -155,7 +155,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidInteractionActionDataProvider(): array
+    public static function invalidInteractionActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -246,7 +246,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidInputActionDataProvider(): array
+    public static function invalidInputActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -354,7 +354,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidWaitActionDataProvider(): array
+    public static function invalidWaitActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -378,7 +378,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidActionTypeDataProvider(): array
+    public static function invalidActionTypeDataProvider(): array
     {
         $actionParser = ActionParser::create();
 

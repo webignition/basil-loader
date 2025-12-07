@@ -55,7 +55,7 @@ class DataSetValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidDataSetDataProvider(): array
+    public static function invalidDataSetDataProvider(): array
     {
         return [
             'empty' => [

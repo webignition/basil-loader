@@ -37,7 +37,7 @@ class ImportedUrlResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveDataProvider(): array
+    public static function resolveDataProvider(): array
     {
         return [
             'empty' => [
