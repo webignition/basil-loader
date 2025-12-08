@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\LiteralValueIdentifier;
 
@@ -18,9 +19,7 @@ class LiteralValueIdentifierTest extends TestCase
         $this->literalValueIdentifier = new LiteralValueIdentifier();
     }
 
-    /**
-     * @dataProvider isDataProvider
-     */
+    #[DataProvider('isDataProvider')]
     public function testIs(string $value, bool $expectedIs): void
     {
         $this->assertSame($this->literalValueIdentifier->is($value), $expectedIs);
@@ -29,7 +28,7 @@ class LiteralValueIdentifierTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function isDataProvider(): array
+    public static function isDataProvider(): array
     {
         return [
             'empty' => [

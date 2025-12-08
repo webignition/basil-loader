@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\DataSetValidator;
 use webignition\BasilLoader\Validator\DataValidator;
@@ -48,9 +49,7 @@ class DataValidatorTest extends TestCase
         $this->assertEquals($expectedResult, $this->validator->validate($data, new DataParameter('$data.key2')));
     }
 
-    /**
-     * @dataProvider invalidDataSetDataProvider
-     */
+    #[DataProvider('invalidDataSetDataProvider')]
     public function testValidateNotValid(
         DataSetCollectionInterface $data,
         DataParameterInterface $dataParameter,
@@ -62,7 +61,7 @@ class DataValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidDataSetDataProvider(): array
+    public static function invalidDataSetDataProvider(): array
     {
         return [
             'empty' => [

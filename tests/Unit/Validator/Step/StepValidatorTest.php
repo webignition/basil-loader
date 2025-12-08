@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Step;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Action\ActionValidator;
 use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
@@ -33,9 +34,7 @@ class StepValidatorTest extends TestCase
         $this->validator = StepValidator::create();
     }
 
-    /**
-     * @dataProvider validateIsValidDataProvider
-     */
+    #[DataProvider('validateIsValidDataProvider')]
     public function testValidateIsValid(StepInterface $step): void
     {
         $this->assertEquals(new ValidResult($step), $this->validator->validate($step));
@@ -44,7 +43,7 @@ class StepValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $stepParser = StepParser::create();
 
@@ -83,9 +82,7 @@ class StepValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidStepDataProvider
-     */
+    #[DataProvider('invalidStepDataProvider')]
     public function testValidateNotValid(StepInterface $step, InvalidResultInterface $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->validator->validate($step));
@@ -94,7 +91,7 @@ class StepValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidStepDataProvider(): array
+    public static function invalidStepDataProvider(): array
     {
         $stepParser = StepParser::create();
         $actionParser = ActionParser::create();

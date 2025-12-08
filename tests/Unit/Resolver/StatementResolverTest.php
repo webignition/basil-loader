@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StatementResolver;
 use webignition\BasilModels\Model\Action\ResolvedAction;
@@ -30,10 +31,8 @@ class StatementResolverTest extends TestCase
         $this->resolver = StatementResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveAlreadyResolvedActionDataProvider
-     * @dataProvider resolveAlreadyResolvedAssertionDataProvider
-     */
+    #[DataProvider('resolveAlreadyResolvedActionDataProvider')]
+    #[DataProvider('resolveAlreadyResolvedAssertionDataProvider')]
     public function testResolveAlreadyResolved(StatementInterface $statement): void
     {
         $resolvedStatement = $this->resolver->resolve(
@@ -48,7 +47,7 @@ class StatementResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveAlreadyResolvedActionDataProvider(): array
+    public static function resolveAlreadyResolvedActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -65,24 +64,22 @@ class StatementResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveAlreadyResolvedAssertionDataProvider(): array
+    public static function resolveAlreadyResolvedAssertionDataProvider(): array
     {
         $assertionParser = AssertionParser::create();
 
         return [
             'exists assertion' => [
-                'assertion' => $assertionParser->parse('$".selector" exists'),
+                'statement' => $assertionParser->parse('$".selector" exists'),
             ],
             'comparison assertion' => [
-                'assertion' => $assertionParser->parse('$".selector" is "value"'),
+                'statement' => $assertionParser->parse('$".selector" is "value"'),
             ],
         ];
     }
 
-    /**
-     * @dataProvider resolveIsResolvedActionDataProvider
-     * @dataProvider resolveIsResolvedAssertionDataProvider
-     */
+    #[DataProvider('resolveIsResolvedActionDataProvider')]
+    #[DataProvider('resolveIsResolvedAssertionDataProvider')]
     public function testResolveIsResolved(
         StatementInterface $statement,
         PageProviderInterface $pageProvider,
@@ -97,7 +94,7 @@ class StatementResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveIsResolvedActionDataProvider(): array
+    public static function resolveIsResolvedActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -244,24 +241,24 @@ class StatementResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveIsResolvedAssertionDataProvider(): array
+    public static function resolveIsResolvedAssertionDataProvider(): array
     {
         $assertionParser = AssertionParser::create();
 
         return [
             'exists assertion with element reference identifier' => [
-                'assertion' => $assertionParser->parse('$elements.element_name exists'),
+                'statement' => $assertionParser->parse('$elements.element_name exists'),
                 'pageProvider' => new EmptyPageProvider(),
                 'identifierProvider' => new IdentifierProvider([
                     'element_name' => '$".selector"',
                 ]),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$elements.element_name exists'),
                     '$".selector"'
                 ),
             ],
             'exists assertion with page element reference identifier' => [
-                'assertion' => $assertionParser->parse('$page_import_name.elements.element_name exists'),
+                'statement' => $assertionParser->parse('$page_import_name.elements.element_name exists'),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         'page_import_name',
@@ -272,25 +269,25 @@ class StatementResolverTest extends TestCase
                     ),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$page_import_name.elements.element_name exists'),
                     '$".selector"'
                 ),
             ],
             'is assertion with element reference identifier and literal value' => [
-                'assertion' => $assertionParser->parse('$elements.element_name is "value"'),
+                'statement' => $assertionParser->parse('$elements.element_name is "value"'),
                 'pageProvider' => new EmptyPageProvider(),
                 'identifierProvider' => new IdentifierProvider([
                     'element_name' => '$".selector"',
                 ]),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$elements.element_name is "value"'),
                     '$".selector"',
                     '"value"'
                 ),
             ],
             'is assertion with page element reference identifier and literal value' => [
-                'assertion' => $assertionParser->parse('$page_import_name.elements.element_name is "value"'),
+                'statement' => $assertionParser->parse('$page_import_name.elements.element_name is "value"'),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         'page_import_name',
@@ -301,26 +298,26 @@ class StatementResolverTest extends TestCase
                     ),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$page_import_name.elements.element_name is "value"'),
                     '$".selector"',
                     '"value"'
                 ),
             ],
             'is assertion with dom identifier and element reference value' => [
-                'assertion' => $assertionParser->parse('$".selector" is $elements.element_name'),
+                'statement' => $assertionParser->parse('$".selector" is $elements.element_name'),
                 'pageProvider' => new EmptyPageProvider(),
                 'identifierProvider' => new IdentifierProvider([
                     'element_name' => '$".resolved"',
                 ]),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$".selector" is $elements.element_name'),
                     '$".selector"',
                     '$".resolved"'
                 ),
             ],
             'is assertion with dom identifier and page element reference value' => [
-                'assertion' => $assertionParser->parse('$".selector" is $page_import_name.elements.element_name'),
+                'statement' => $assertionParser->parse('$".selector" is $page_import_name.elements.element_name'),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page(
                         'page_import_name',
@@ -331,27 +328,27 @@ class StatementResolverTest extends TestCase
                     ),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$".selector" is $page_import_name.elements.element_name'),
                     '$".selector"',
                     '$".resolved"'
                 ),
             ],
             'is assertion with element reference identifier and element reference value' => [
-                'assertion' => $assertionParser->parse('$elements.element_one is $elements.element_two'),
+                'statement' => $assertionParser->parse('$elements.element_one is $elements.element_two'),
                 'pageProvider' => new EmptyPageProvider(),
                 'identifierProvider' => new IdentifierProvider([
                     'element_one' => '$".one"',
                     'element_two' => '$".two"',
                 ]),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$elements.element_one is $elements.element_two'),
                     '$".one"',
                     '$".two"'
                 ),
             ],
             'is assertion with page element reference identifier and page element reference value' => [
-                'assertion' => $assertionParser->parse(
+                'statement' => $assertionParser->parse(
                     '$page_import_name.elements.element_one is $page_import_name.elements.element_two'
                 ),
                 'pageProvider' => new PageProvider([
@@ -365,7 +362,7 @@ class StatementResolverTest extends TestCase
                     ),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse(
                         '$page_import_name.elements.element_one is $page_import_name.elements.element_two'
                     ),
@@ -374,24 +371,24 @@ class StatementResolverTest extends TestCase
                 ),
             ],
             'is assertion with literal identifier and imported page url value' => [
-                'assertion' => $assertionParser->parse('$page.url is $page_import_name.url'),
+                'statement' => $assertionParser->parse('$page.url is $page_import_name.url'),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com'),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$page.url is $page_import_name.url'),
                     '$page.url',
                     '"http://example.com"'
                 ),
             ],
             'is assertion with page url identifier and literal value' => [
-                'assertion' => $assertionParser->parse('$page_import_name.url is "http://example.com"'),
+                'statement' => $assertionParser->parse('$page_import_name.url is "http://example.com"'),
                 'pageProvider' => new PageProvider([
                     'page_import_name' => new Page('page_import_name', 'http://example.com'),
                 ]),
                 'identifierProvider' => new EmptyIdentifierProvider(),
-                'expectedAssertion' => new ResolvedAssertion(
+                'expectedStatement' => new ResolvedAssertion(
                     $assertionParser->parse('$page_import_name.url is "http://example.com"'),
                     '"http://example.com"',
                     '"http://example.com"'

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Action;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Action\ActionValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
@@ -26,9 +27,7 @@ class ActionValidatorTest extends TestCase
         $this->actionValidator = ActionValidator::create();
     }
 
-    /**
-     * @dataProvider validateIsValidDataProvider
-     */
+    #[DataProvider('validateIsValidDataProvider')]
     public function testValidateIsValid(ActionInterface $action): void
     {
         $this->assertEquals(new ValidResult($action), $this->actionValidator->validate($action));
@@ -37,7 +36,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -141,12 +140,10 @@ class ActionValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidInteractionActionDataProvider
-     * @dataProvider invalidInputActionDataProvider
-     * @dataProvider invalidWaitActionDataProvider
-     * @dataProvider invalidActionTypeDataProvider
-     */
+    #[DataProvider('invalidInteractionActionDataProvider')]
+    #[DataProvider('invalidInputActionDataProvider')]
+    #[DataProvider('invalidWaitActionDataProvider')]
+    #[DataProvider('invalidActionTypeDataProvider')]
     public function testValidateNotValid(ActionInterface $action, InvalidResultInterface $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->actionValidator->validate($action));
@@ -155,7 +152,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidInteractionActionDataProvider(): array
+    public static function invalidInteractionActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -246,7 +243,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidInputActionDataProvider(): array
+    public static function invalidInputActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -354,7 +351,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidWaitActionDataProvider(): array
+    public static function invalidWaitActionDataProvider(): array
     {
         $actionParser = ActionParser::create();
 
@@ -378,7 +375,7 @@ class ActionValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function invalidActionTypeDataProvider(): array
+    public static function invalidActionTypeDataProvider(): array
     {
         $actionParser = ActionParser::create();
 

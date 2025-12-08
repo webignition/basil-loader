@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StepResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
@@ -32,11 +33,9 @@ class StepResolverTest extends TestCase
         $this->resolver = StepResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveForPendingImportResolutionStepDataProvider
-     * @dataProvider resolveActionsAndAssertionsDataProvider
-     * @dataProvider resolveIdentifierCollectionDataProvider
-     */
+    #[DataProvider('resolveForPendingImportResolutionStepDataProvider')]
+    #[DataProvider('resolveActionsAndAssertionsDataProvider')]
+    #[DataProvider('resolveIdentifierCollectionDataProvider')]
     public function testResolveSuccess(
         StepInterface $step,
         PageProviderInterface $pageProvider,
@@ -50,18 +49,18 @@ class StepResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveForPendingImportResolutionStepDataProvider(): array
+    public static function resolveForPendingImportResolutionStepDataProvider(): array
     {
         return [
             'pending import step: has step import name' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'use' => 'import_name',
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'expectedStep' => (new Step([], []))->withImportName('import_name'),
             ],
             'pending import step: has data provider import name' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'data' => 'data_import_name',
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
@@ -73,12 +72,12 @@ class StepResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveActionsAndAssertionsDataProvider(): array
+    public static function resolveActionsAndAssertionsDataProvider(): array
     {
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
 
-        $nonResolvableStep = $this->createStep([
+        $nonResolvableStep = self::createStep([
             'actions' => [
                 'wait 30',
             ],
@@ -94,7 +93,7 @@ class StepResolverTest extends TestCase
                 'expectedStep' => $nonResolvableStep
             ],
             'page element reference in action identifier' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'set $page_import_name.elements.examined to "value"',
                     ],
@@ -117,7 +116,7 @@ class StepResolverTest extends TestCase
                 ], []),
             ],
             'page element reference in action value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'set $".examined" to $page_import_name.elements.expected',
                     ],
@@ -140,7 +139,7 @@ class StepResolverTest extends TestCase
                 ], []),
             ],
             'page element reference in assertion examined value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$page_import_name.elements.examined exists',
                     ],
@@ -162,7 +161,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'page element reference in assertion expected value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$".examined" is $page_import_name.elements.expected ',
                     ],
@@ -185,7 +184,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'element reference in action identifier' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'set $elements.examined to "value"',
                     ],
@@ -208,7 +207,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'element reference in action value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'set $".examined" to $elements.expected',
                     ],
@@ -231,7 +230,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'attribute reference in action value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'set $".examined" to $elements.expected.attribute_name',
                     ],
@@ -254,7 +253,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'element reference in assertion examined value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$elements.examined exists',
                     ],
@@ -276,7 +275,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'element reference in assertion expected value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$".examined-selector" is $elements.expected',
                     ],
@@ -299,7 +298,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'attribute reference in assertion examined value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$elements.examined.attribute_name exists',
                     ],
@@ -321,7 +320,7 @@ class StepResolverTest extends TestCase
                 ]),
             ],
             'attribute reference in assertion expected value' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$".examined" is $elements.expected.attribute_name',
                     ],
@@ -349,14 +348,14 @@ class StepResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveIdentifierCollectionDataProvider(): array
+    public static function resolveIdentifierCollectionDataProvider(): array
     {
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
 
         return [
             'no resolvable element identifiers' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'elements' => [
                         'name' => '$".selector"',
                     ],
@@ -368,7 +367,7 @@ class StepResolverTest extends TestCase
                     ]),
             ],
             'identifier with page element references, unused by actions or assertions' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'elements' => [
                         'step_element_name' => '$page_import_name.elements.page_element_name',
                     ],
@@ -388,7 +387,7 @@ class StepResolverTest extends TestCase
                     ]),
             ],
             'identifier with page element references, used by actions and assertions' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'click $page_import_name.elements.page_element_name',
                     ],
@@ -430,9 +429,7 @@ class StepResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolvePageElementReferencesThrowsExceptionDataProvider
-     */
+    #[DataProvider('resolvePageElementReferencesThrowsExceptionDataProvider')]
     public function testResolvePageElementReferencesThrowsException(
         StepInterface $step,
         PageProviderInterface $pageProvider,
@@ -450,11 +447,11 @@ class StepResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolvePageElementReferencesThrowsExceptionDataProvider(): array
+    public static function resolvePageElementReferencesThrowsExceptionDataProvider(): array
     {
         return [
             'UnknownPageElementException: action has page element reference, referenced page lacks element' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'click $page_import_name.elements.element_name',
                     ],
@@ -470,7 +467,7 @@ class StepResolverTest extends TestCase
                 })(),
             ],
             'UnknownPageElementException: assertion has page element reference, referenced page lacks element' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$page_import_name.elements.element_name exists',
                     ],
@@ -486,7 +483,7 @@ class StepResolverTest extends TestCase
                 })(),
             ],
             'UnknownPageException: action has page element reference, page does not exist' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'click $page_import_name.elements.element_name',
                     ],
@@ -500,7 +497,7 @@ class StepResolverTest extends TestCase
                 })(),
             ],
             'UnknownPageException: assertion has page element reference, page does not exist' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$page_import_name.elements.element_name exists',
                     ],
@@ -514,7 +511,7 @@ class StepResolverTest extends TestCase
                 })(),
             ],
             'UnknownElementException: action has element reference, element missing' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'actions' => [
                         'click $elements.element_name',
                     ],
@@ -528,7 +525,7 @@ class StepResolverTest extends TestCase
                 })(),
             ],
             'UnknownElementException: assertion has page element reference, referenced page invalid' => [
-                'step' => $this->createStep([
+                'step' => self::createStep([
                     'assertions' => [
                         '$elements.element_name exists',
                     ],
@@ -547,7 +544,7 @@ class StepResolverTest extends TestCase
     /**
      * @param array<mixed> $stepData
      */
-    private function createStep(array $stepData): StepInterface
+    private static function createStep(array $stepData): StepInterface
     {
         return StepParser::create()->parse($stepData);
     }

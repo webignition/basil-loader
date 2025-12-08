@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\ImportedUrlResolver;
 use webignition\BasilModels\Model\Page\Page;
@@ -23,10 +24,9 @@ class ImportedUrlResolverTest extends TestCase
     }
 
     /**
-     * @dataProvider resolveDataProvider
-     *
      * @param non-empty-string $url
      */
+    #[DataProvider('resolveDataProvider')]
     public function testResolve(string $url, ProviderInterface $pageProvider, string $expectedUrl): void
     {
         $resolvedUrl = $this->resolver->resolve($url, $pageProvider);
@@ -37,7 +37,7 @@ class ImportedUrlResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveDataProvider(): array
+    public static function resolveDataProvider(): array
     {
         return [
             'empty' => [

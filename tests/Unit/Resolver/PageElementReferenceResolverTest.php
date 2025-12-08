@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\PageElementReferenceResolver;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
@@ -22,9 +23,7 @@ class PageElementReferenceResolverTest extends TestCase
         $this->resolver = PageElementReferenceResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveIsResolvedDataProvider
-     */
+    #[DataProvider('resolveIsResolvedDataProvider')]
     public function testResolveIsResolved(
         string $pageElementReference,
         ProviderInterface $pageProvider,
@@ -38,7 +37,7 @@ class PageElementReferenceResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveIsResolvedDataProvider(): array
+    public static function resolveIsResolvedDataProvider(): array
     {
         return [
             'element reference' => [
@@ -70,9 +69,7 @@ class PageElementReferenceResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveThrowsUnknownPageElementExceptionDataProvider
-     */
+    #[DataProvider('resolveThrowsUnknownPageElementExceptionDataProvider')]
     public function testResolveThrowsUnknownPageElementException(
         string $pageElementReference,
         ProviderInterface $pageProvider,
@@ -87,7 +84,7 @@ class PageElementReferenceResolverTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function resolveThrowsUnknownPageElementExceptionDataProvider(): array
+    public static function resolveThrowsUnknownPageElementExceptionDataProvider(): array
     {
         return [
             'element not present in page' => [

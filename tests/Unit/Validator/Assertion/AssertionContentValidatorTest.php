@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Assertion;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Tests\Unit\Validator\ValueDataProviderTrait;
 use webignition\BasilLoader\Validator\Assertion\AssertionContentValidator;
@@ -24,9 +25,7 @@ class AssertionContentValidatorTest extends TestCase
         $this->validator = AssertionContentValidator::create();
     }
 
-    /**
-     * @dataProvider invalidValueDataProvider
-     */
+    #[DataProvider('invalidValueDataProvider')]
     public function testValidateNotValid(string $value, string $expectedReason): void
     {
         $expectedResult = new InvalidResult($value, ResultType::VALUE, $expectedReason);
@@ -34,10 +33,8 @@ class AssertionContentValidatorTest extends TestCase
         $this->assertEquals($expectedResult, $this->validator->validate($value));
     }
 
-    /**
-     * @dataProvider validValueDataProvider
-     * @dataProvider validAssertionValueDataProvider
-     */
+    #[DataProvider('validValueDataProvider')]
+    #[DataProvider('validAssertionValueDataProvider')]
     public function testValidateIsValid(string $value): void
     {
         $expectedResult = new ValidResult($value);
@@ -48,7 +45,7 @@ class AssertionContentValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validAssertionValueDataProvider(): array
+    public static function validAssertionValueDataProvider(): array
     {
         return [
             'descendant element dom identifier' => [

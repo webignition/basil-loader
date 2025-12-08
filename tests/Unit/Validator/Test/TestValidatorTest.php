@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Tests\Unit\Validator\Test;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\InvalidResultInterface;
@@ -32,9 +33,7 @@ class TestValidatorTest extends TestCase
         $this->testValidator = TestValidator::create();
     }
 
-    /**
-     * @dataProvider validateNotValidDataProvider
-     */
+    #[DataProvider('validateNotValidDataProvider')]
     public function testValidateNotValid(TestInterface $test, InvalidResultInterface $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->testValidator->validate($test));
@@ -43,7 +42,7 @@ class TestValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateNotValidDataProvider(): array
+    public static function validateNotValidDataProvider(): array
     {
         $testWithNoSteps = new Test('chrome', 'http://example.com/', new StepCollection([]));
 

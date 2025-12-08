@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\PageResolver;
 use webignition\BasilLoader\Validator\InvalidResult;
@@ -25,9 +26,7 @@ class PageValidatorTest extends TestCase
         $this->validator = PageValidator::create();
     }
 
-    /**
-     * @dataProvider validateIsValidDataProvider
-     */
+    #[DataProvider('validateIsValidDataProvider')]
     public function testValidateIsValid(PageInterface $page): void
     {
         $this->assertEquals(new ValidResult($page), $this->validator->validate($page));
@@ -36,7 +35,7 @@ class PageValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateIsValidDataProvider(): array
+    public static function validateIsValidDataProvider(): array
     {
         $pageResolver = PageResolver::createResolver();
 
@@ -71,9 +70,7 @@ class PageValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validateNotValidDataProvider
-     */
+    #[DataProvider('validateNotValidDataProvider')]
     public function testValidateNotValid(PageInterface $page, InvalidResultInterface $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->validator->validate($page));
@@ -82,7 +79,7 @@ class PageValidatorTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function validateNotValidDataProvider(): array
+    public static function validateNotValidDataProvider(): array
     {
         return [
             'invalid identifiers: attribute identifier' => [
