@@ -11,7 +11,6 @@ use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Step\StepValidator;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Model\PageUrlReference\PageUrlReference;
-use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Model\Test\TestInterface;
 
 class TestValidator
@@ -50,18 +49,16 @@ class TestValidator
         }
 
         foreach ($steps as $name => $step) {
-            if ($step instanceof StepInterface) {
-                $stepValidationResult = $this->stepValidator->validate($step);
+            $stepValidationResult = $this->stepValidator->validate($step);
 
-                if ($stepValidationResult instanceof InvalidResultInterface) {
-                    return $this->createInvalidResult(
-                        $test,
-                        self::REASON_STEP_INVALID,
-                        $stepValidationResult
-                    )->withContext([
-                        self::CONTEXT_STEP_NAME => $name,
-                    ]);
-                }
+            if ($stepValidationResult instanceof InvalidResultInterface) {
+                return $this->createInvalidResult(
+                    $test,
+                    self::REASON_STEP_INVALID,
+                    $stepValidationResult
+                )->withContext([
+                    self::CONTEXT_STEP_NAME => $name,
+                ]);
             }
         }
 

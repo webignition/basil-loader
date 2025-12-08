@@ -14,7 +14,7 @@ class NonRetrievableImportException extends \Exception
     private string $name;
     private string $path;
     private YamlLoaderException $yamlLoaderException;
-    private ?string $testPath;
+    private string $testPath;
 
     public function __construct(
         string $type,
