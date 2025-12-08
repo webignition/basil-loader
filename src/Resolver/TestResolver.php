@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace webignition\BasilLoader\Resolver;
 
 use webignition\BasilModels\Model\Step\StepCollection;
-use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Model\Test\Test;
 use webignition\BasilModels\Model\Test\TestInterface;
 use webignition\BasilModels\Provider\DataSet\DataSetProviderInterface;
@@ -44,22 +43,20 @@ class TestResolver
     ): TestInterface {
         $resolvedSteps = [];
         foreach ($test->getSteps() as $stepName => $step) {
-            if ($step instanceof StepInterface) {
-                try {
-                    $resolvedStep = $this->stepImportResolver->resolveStepImport($step, $stepProvider);
-                    $resolvedStep = $this->stepImportResolver->resolveDataProviderImport(
-                        $resolvedStep,
-                        $dataSetProvider
-                    );
-                    $resolvedStep = $this->stepResolver->resolve($resolvedStep, $pageProvider);
-                    $resolvedStep = $resolvedStep->withIdentifiers([]);
+            try {
+                $resolvedStep = $this->stepImportResolver->resolveStepImport($step, $stepProvider);
+                $resolvedStep = $this->stepImportResolver->resolveDataProviderImport(
+                    $resolvedStep,
+                    $dataSetProvider
+                );
+                $resolvedStep = $this->stepResolver->resolve($resolvedStep, $pageProvider);
+                $resolvedStep = $resolvedStep->withIdentifiers([]);
 
-                    $resolvedSteps[$stepName] = $resolvedStep;
-                } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
-                    $exception->setStepName((string) $stepName);
+                $resolvedSteps[$stepName] = $resolvedStep;
+            } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
+                $exception->setStepName((string) $stepName);
 
-                    throw $exception;
-                }
+                throw $exception;
             }
         }
 

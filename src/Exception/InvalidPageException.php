@@ -11,7 +11,7 @@ class InvalidPageException extends \Exception
     private string $importName;
     private string $path;
     private InvalidResultInterface $validationResult;
-    private ?string $testPath;
+    private string $testPath;
 
     public function __construct(string $importName, string $path, InvalidResultInterface $validationResult)
     {

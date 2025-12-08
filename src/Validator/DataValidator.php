@@ -6,7 +6,6 @@ namespace webignition\BasilLoader\Validator;
 
 use webignition\BasilModels\Model\DataParameter\DataParameterInterface;
 use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
-use webignition\BasilModels\Model\DataSet\DataSetInterface;
 
 class DataValidator
 {
@@ -41,17 +40,15 @@ class DataValidator
         }
 
         foreach ($localData as $dataSet) {
-            if ($dataSet instanceof DataSetInterface) {
-                $dataSetValidationResult = $this->dataSetValidator->validate($dataSet, $dataParameter);
+            $dataSetValidationResult = $this->dataSetValidator->validate($dataSet, $dataParameter);
 
-                if ($dataSetValidationResult instanceof InvalidResultInterface) {
-                    return new InvalidResult(
-                        $data,
-                        ResultType::DATA,
-                        self::REASON_DATASET_INVALID,
-                        $dataSetValidationResult
-                    );
-                }
+            if ($dataSetValidationResult instanceof InvalidResultInterface) {
+                return new InvalidResult(
+                    $data,
+                    ResultType::DATA,
+                    self::REASON_DATASET_INVALID,
+                    $dataSetValidationResult
+                );
             }
         }
 
