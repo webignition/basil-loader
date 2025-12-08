@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Exception\InvalidPageException;
 use webignition\BasilLoader\PageLoader;
@@ -25,9 +26,7 @@ class PageLoaderTest extends TestCase
         $this->loader = PageLoader::createLoader();
     }
 
-    /**
-     * @dataProvider loadSuccessDataProvider
-     */
+    #[DataProvider('loadSuccessDataProvider')]
     public function testLoadSuccess(string $importName, string $path, PageInterface $expectedPage): void
     {
         $page = $this->loader->load($importName, $path);

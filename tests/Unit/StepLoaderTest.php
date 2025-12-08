@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\StepLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
@@ -14,9 +15,7 @@ use webignition\BasilModels\Parser\AssertionParser;
 
 class StepLoaderTest extends TestCase
 {
-    /**
-     * @dataProvider loadDataProvider
-     */
+    #[DataProvider('loadDataProvider')]
     public function testLoad(string $path, StepInterface $expectedStep): void
     {
         $stepLoader = StepLoader::createLoader();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\ResultType;
@@ -23,9 +24,7 @@ class ValueValidatorTest extends TestCase
         $this->valueValidator = ValueValidator::create();
     }
 
-    /**
-     * @dataProvider invalidValueDataProvider
-     */
+    #[DataProvider('invalidValueDataProvider')]
     public function testValidateNotValid(string $value, string $expectedReason): void
     {
         $expectedResult = new InvalidResult($value, ResultType::VALUE, $expectedReason);
@@ -33,9 +32,7 @@ class ValueValidatorTest extends TestCase
         $this->assertEquals($expectedResult, $this->valueValidator->validate($value));
     }
 
-    /**
-     * @dataProvider validValueDataProvider
-     */
+    #[DataProvider('validValueDataProvider')]
     public function testValidateIsValid(string $value): void
     {
         $expectedResult = new ValidResult($value);

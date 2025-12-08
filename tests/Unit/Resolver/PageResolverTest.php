@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\PageResolver;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
@@ -22,9 +23,7 @@ class PageResolverTest extends TestCase
         $this->resolver = PageResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveSuccessDataProvider
-     */
+    #[DataProvider('resolveSuccessDataProvider')]
     public function testResolveSuccess(
         PageInterface $page,
         PageInterface $expectedPage

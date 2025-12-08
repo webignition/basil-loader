@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StepResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
@@ -32,11 +33,9 @@ class StepResolverTest extends TestCase
         $this->resolver = StepResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveForPendingImportResolutionStepDataProvider
-     * @dataProvider resolveActionsAndAssertionsDataProvider
-     * @dataProvider resolveIdentifierCollectionDataProvider
-     */
+    #[DataProvider('resolveForPendingImportResolutionStepDataProvider')]
+    #[DataProvider('resolveActionsAndAssertionsDataProvider')]
+    #[DataProvider('resolveIdentifierCollectionDataProvider')]
     public function testResolveSuccess(
         StepInterface $step,
         PageProviderInterface $pageProvider,
@@ -430,9 +429,7 @@ class StepResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolvePageElementReferencesThrowsExceptionDataProvider
-     */
+    #[DataProvider('resolvePageElementReferencesThrowsExceptionDataProvider')]
     public function testResolvePageElementReferencesThrowsException(
         StepInterface $step,
         PageProviderInterface $pageProvider,

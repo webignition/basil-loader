@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\CircularStepImportException;
 use webignition\BasilLoader\Resolver\StepImportResolver;
@@ -31,9 +32,7 @@ class StepImportResolverTest extends TestCase
         $this->resolver = StepImportResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveStepImportDataProvider
-     */
+    #[DataProvider('resolveStepImportDataProvider')]
     public function testResolveStepImport(
         StepInterface $step,
         StepProviderInterface $stepProvider,
@@ -145,9 +144,7 @@ class StepImportResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveDataProviderImportDataProvider
-     */
+    #[DataProvider('resolveDataProviderImportDataProvider')]
     public function testResolveDataProviderImport(
         StepInterface $step,
         DataSetProviderInterface $dataSetProvider,
@@ -210,9 +207,7 @@ class StepImportResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveStepImportThrowsCircularReferenceExceptionDataProvider
-     */
+    #[DataProvider('resolveStepImportThrowsCircularReferenceExceptionDataProvider')]
     public function testResolveStepImportThrowsCircularReferenceException(
         StepInterface $step,
         StepProviderInterface $stepProvider,

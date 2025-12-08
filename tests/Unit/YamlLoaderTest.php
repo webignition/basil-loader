@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
@@ -62,9 +63,7 @@ class YamlLoaderTest extends TestCase
         $yamlLoader->loadArray($path);
     }
 
-    /**
-     * @dataProvider loadArrayWithEmptyContentDataProvider
-     */
+    #[DataProvider('loadArrayWithEmptyContentDataProvider')]
     public function testLoadArrayWithEmptyContent(string $path): void
     {
         $yamlLoader = YamlLoader::createLoader();

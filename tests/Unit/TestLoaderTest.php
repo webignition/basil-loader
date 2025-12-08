@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Exception\EmptyTestException;
 use webignition\BasilLoader\Exception\InvalidPageException;
@@ -42,12 +43,10 @@ class TestLoaderTest extends TestCase
     }
 
     /**
-     * @param non-empty-string $path
-     *
-     * @dataProvider loadSuccessDataProvider
-     *
+     * @param non-empty-string     $path
      * @param NamedTestInterface[] $expectedTests
      */
+    #[DataProvider('loadSuccessDataProvider')]
     public function testLoadSuccess(string $path, array $expectedTests): void
     {
         $tests = $this->testLoader->load($path);
@@ -202,9 +201,8 @@ class TestLoaderTest extends TestCase
 
     /**
      * @param non-empty-string $path
-     *
-     * @dataProvider loadThrowsNonRetrievableImportExceptionDataProvider
      */
+    #[DataProvider('loadThrowsNonRetrievableImportExceptionDataProvider')]
     public function testLoadThrowsNonRetrievableImportException(
         string $path,
         string $expectedFailedImportPath,
@@ -261,10 +259,9 @@ class TestLoaderTest extends TestCase
     }
 
     /**
-     * @dataProvider loadThrowsInvalidTestExceptionDataProvider
-     *
      * @param non-empty-string $path
      */
+    #[DataProvider('loadThrowsInvalidTestExceptionDataProvider')]
     public function testLoadThrowsInvalidTestException(string $path, InvalidTestException $expected): void
     {
         try {
@@ -345,9 +342,8 @@ class TestLoaderTest extends TestCase
 
     /**
      * @param non-empty-string $path
-     *
-     * @dataProvider loadThrowsParseExceptionDataProvider
      */
+    #[DataProvider('loadThrowsParseExceptionDataProvider')]
     public function testLoadThrowsParseException(
         string $path,
         bool $expectedIsUnparseableTestException,
@@ -413,9 +409,8 @@ class TestLoaderTest extends TestCase
 
     /**
      * @param non-empty-string $path
-     *
-     * @dataProvider addTestNameToResolverThrownExceptionDataProvider
      */
+    #[DataProvider('addTestNameToResolverThrownExceptionDataProvider')]
     public function testAddTestNameToResolverThrownException(
         string $path,
         string $expectedExceptionClass,

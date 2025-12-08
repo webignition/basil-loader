@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Exception;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
@@ -11,9 +12,7 @@ use webignition\BasilLoader\Exception\YamlLoaderException;
 
 class YamlLoaderExceptionTest extends TestCase
 {
-    /**
-     * @dataProvider getPathForFileDoesNotExistExceptionDataProvider
-     */
+    #[DataProvider('getPathForFileDoesNotExistExceptionDataProvider')]
     public function testGetPathForFileDoesNotExistException(string $path): void
     {
         $parseException = $this->createFileDoesNotExistParseException($path);

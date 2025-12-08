@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Validator\Assertion;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Validator\Assertion\AssertionValidator;
 use webignition\BasilLoader\Validator\InvalidResult;
@@ -26,9 +27,7 @@ class AssertionValidatorTest extends TestCase
         $this->validator = AssertionValidator::create();
     }
 
-    /**
-     * @dataProvider invalidAssertionDataProvider
-     */
+    #[DataProvider('invalidAssertionDataProvider')]
     public function testValidateNotValid(AssertionInterface $assertion, InvalidResultInterface $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->validator->validate($assertion));
@@ -81,11 +80,9 @@ class AssertionValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validAssertionIdentifierDataProvider
-     * @dataProvider validAssertionOperatorDataProvider
-     * @dataProvider validAssertionValueDataProvider
-     */
+    #[DataProvider('validAssertionIdentifierDataProvider')]
+    #[DataProvider('validAssertionOperatorDataProvider')]
+    #[DataProvider('validAssertionValueDataProvider')]
     public function testValidateIsValid(AssertionInterface $assertion): void
     {
         $expectedResult = new ValidResult($assertion);

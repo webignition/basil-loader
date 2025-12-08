@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\DataSetLoader;
 use webignition\BasilLoader\Tests\Services\FixturePathFinder;
@@ -12,9 +13,7 @@ use webignition\BasilModels\Model\DataSet\DataSetCollectionInterface;
 
 class DataSetLoaderTest extends TestCase
 {
-    /**
-     * @dataProvider loadDataProvider
-     */
+    #[DataProvider('loadDataProvider')]
     public function testLoad(string $path, DataSetCollectionInterface $expectedDataSetCollection): void
     {
         $dataSetLoader = DataSetLoader::createLoader();

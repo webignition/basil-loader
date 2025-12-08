@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\TestResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
@@ -44,9 +45,7 @@ class TestResolverTest extends TestCase
         $this->resolver = TestResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveSuccessDataProvider
-     */
+    #[DataProvider('resolveSuccessDataProvider')]
     public function testResolveSuccess(
         TestInterface $test,
         PageProviderInterface $pageProvider,
@@ -525,9 +524,7 @@ class TestResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveThrowsExceptionDataProvider
-     */
+    #[DataProvider('resolveThrowsExceptionDataProvider')]
     public function testResolveThrowsException(
         TestInterface $test,
         PageProviderInterface $pageProvider,

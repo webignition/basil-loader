@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Tests\Unit\Resolver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StatementResolver;
 use webignition\BasilModels\Model\Action\ResolvedAction;
@@ -30,10 +31,8 @@ class StatementResolverTest extends TestCase
         $this->resolver = StatementResolver::createResolver();
     }
 
-    /**
-     * @dataProvider resolveAlreadyResolvedActionDataProvider
-     * @dataProvider resolveAlreadyResolvedAssertionDataProvider
-     */
+    #[DataProvider('resolveAlreadyResolvedActionDataProvider')]
+    #[DataProvider('resolveAlreadyResolvedAssertionDataProvider')]
     public function testResolveAlreadyResolved(StatementInterface $statement): void
     {
         $resolvedStatement = $this->resolver->resolve(
@@ -79,10 +78,8 @@ class StatementResolverTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider resolveIsResolvedActionDataProvider
-     * @dataProvider resolveIsResolvedAssertionDataProvider
-     */
+    #[DataProvider('resolveIsResolvedActionDataProvider')]
+    #[DataProvider('resolveIsResolvedAssertionDataProvider')]
     public function testResolveIsResolved(
         StatementInterface $statement,
         PageProviderInterface $pageProvider,
