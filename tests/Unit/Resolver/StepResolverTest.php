@@ -432,7 +432,7 @@ class StepResolverTest extends TestCase
                     ]),
                     new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$page_import_name.elements.page_element_name exists', 0),
+                            $assertionParser->parse('$page_import_name.elements.page_element_name exists', 1),
                             '$".resolved"'
                         ),
                     ])

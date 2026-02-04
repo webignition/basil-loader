@@ -47,7 +47,7 @@ class StepLoaderTest extends TestCase
                         $actionParser->parse('click $".button"', 0),
                     ]),
                     new AssertionCollection([
-                        $assertionParser->parse('$".heading" includes "example"', 0),
+                        $assertionParser->parse('$".heading" includes "example"', 1),
                     ])
                 ),
             ],

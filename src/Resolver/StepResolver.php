@@ -82,7 +82,7 @@ class StepResolver
             foreach ($step->getActions() as $action) {
                 $resolvedAction = $this->statementResolver->resolve($action, $pageProvider, $identifierProvider);
                 if ($resolvedAction instanceof ActionInterface) {
-                    $resolvedActions->append(new ActionCollection([$resolvedAction]));
+                    $resolvedActions = $resolvedActions->append(new ActionCollection([$resolvedAction]));
                 }
             }
         } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
@@ -116,7 +116,7 @@ class StepResolver
                 );
 
                 if ($resolvedAssertion instanceof AssertionInterface) {
-                    $resolvedAssertions->append(new AssertionCollection([$resolvedAssertion]));
+                    $resolvedAssertions = $resolvedAssertions->append(new AssertionCollection([$resolvedAssertion]));
                 }
             }
         } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {

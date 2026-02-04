@@ -83,7 +83,7 @@ class TestResolverTest extends TestCase
                 new AssertionCollection([
                     new Assertion(
                         '$".assertion-selector" is $data.key2',
-                        0,
+                        1,
                         '$".assertion-selector"',
                         'is',
                         '$data.key2'
@@ -178,7 +178,7 @@ class TestResolverTest extends TestCase
                         new AssertionCollection([
                             new Assertion(
                                 '$".assertion-selector" exists',
-                                0,
+                                1,
                                 '$".assertion-selector"',
                                 'exists'
                             )
@@ -223,7 +223,7 @@ class TestResolverTest extends TestCase
                         ]),
                         new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$page_import_name.elements.assertion_selector exists', 0),
+                                $assertionParser->parse('$page_import_name.elements.assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
                         ])
@@ -266,7 +266,7 @@ class TestResolverTest extends TestCase
                         new AssertionCollection([
                             new Assertion(
                                 '$".assertion-selector" exists',
-                                0,
+                                1,
                                 '$".assertion-selector"',
                                 'exists'
                             )
@@ -319,7 +319,7 @@ class TestResolverTest extends TestCase
                         ]),
                         new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.elements_assertion_selector exists', 0),
+                                $assertionParser->parse('$elements.elements_assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
                         ])
@@ -444,7 +444,7 @@ class TestResolverTest extends TestCase
                         ]),
                         new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.assertion_selector exists', 0),
+                                $assertionParser->parse('$elements.assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
                         ])
@@ -512,7 +512,7 @@ class TestResolverTest extends TestCase
                         ]),
                         new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.assertion_selector is $data.key2', 0),
+                                $assertionParser->parse('$elements.assertion_selector is $data.key2', 1),
                                 '$".assertion-selector"',
                                 '$data.key2'
                             ),

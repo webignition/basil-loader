@@ -107,7 +107,7 @@ class TestLoaderTest extends TestCase
                                     $actionParser->parse('click $".button"', 0),
                                 ]),
                                 new AssertionCollection([
-                                    $assertionParser->parse('$".heading" includes $data.expected_title', 0),
+                                    $assertionParser->parse('$".heading" includes $data.expected_title', 1),
                                 ])
                             )->withData(new DataSetCollection([
                                 '0' => [
@@ -136,7 +136,7 @@ class TestLoaderTest extends TestCase
                                 ]),
                                 new AssertionCollection([
                                     new ResolvedAssertion(
-                                        $assertionParser->parse('$elements.heading includes "example"', 0),
+                                        $assertionParser->parse('$elements.heading includes "example"', 1),
                                         '$".heading"',
                                         '"example"'
                                     ),
@@ -160,7 +160,7 @@ class TestLoaderTest extends TestCase
                                         '$".form"'
                                     ),
                                     new ResolvedAssertion(
-                                        $assertionParser->parse('$page_import_name.elements.input exists', 0),
+                                        $assertionParser->parse('$page_import_name.elements.input exists', 1),
                                         '$".form" >> $".input"'
                                     ),
                                 ])
