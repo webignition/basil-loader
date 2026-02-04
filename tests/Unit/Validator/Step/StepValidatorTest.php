@@ -145,11 +145,11 @@ class StepValidatorTest extends TestCase
             $incompleteDataSetCollection,
             ResultType::DATA,
             DataValidator::REASON_DATASET_INVALID,
-            (new InvalidResult(
+            new InvalidResult(
                 new DataSet('1', $incompleteDataSet),
                 ResultType::DATASET,
                 DataSetValidator::REASON_DATASET_INCOMPLETE
-            ))->withContext([
+            )->withContext([
                 DataSetValidator::CONTEXT_DATA_PARAMETER_NAME => 'key1',
             ])
         );
@@ -197,7 +197,7 @@ class StepValidatorTest extends TestCase
                     ResultType::STEP,
                     StepValidator::REASON_INVALID_ACTION,
                     new InvalidResult(
-                        $actionParser->parse('click $elements.element_name'),
+                        $actionParser->parse('click $elements.element_name', 0),
                         ResultType::ACTION,
                         ActionValidator::REASON_INVALID_IDENTIFIER
                     )
@@ -210,7 +210,7 @@ class StepValidatorTest extends TestCase
                     ResultType::STEP,
                     StepValidator::REASON_INVALID_ASSERTION,
                     new InvalidResult(
-                        $assertionParser->parse('$elements.element_name exists'),
+                        $assertionParser->parse('$elements.element_name exists', 0),
                         ResultType::ASSERTION,
                         AssertionValidator::REASON_INVALID_IDENTIFIER,
                         new InvalidResult(
@@ -239,35 +239,35 @@ class StepValidatorTest extends TestCase
             ],
             'invalid step: action uses data parameter, key missing from step data' => [
                 'step' => $invalidActionDataStepDataParameterMissing,
-                'expectedResult' => (new InvalidResult(
+                'expectedResult' => new InvalidResult(
                     $invalidActionDataStepDataParameterMissing,
                     ResultType::STEP,
                     StepValidator::REASON_DATA_INVALID,
                     $invalidDataResult
-                ))->withContext([
-                    StepValidator::CONTEXT_STATEMENT => $actionParser->parse('set $".selector1" to $data.key1'),
+                )->withContext([
+                    StepValidator::CONTEXT_STATEMENT => $actionParser->parse('set $".selector1" to $data.key1', 0),
                 ]),
             ],
             'invalid step: assertion uses data parameter, value key missing from step data' => [
                 'step' => $invalidAssertionDataStepDataParameterMissing1,
-                'expectedResult' => (new InvalidResult(
+                'expectedResult' => new InvalidResult(
                     $invalidAssertionDataStepDataParameterMissing1,
                     ResultType::STEP,
                     StepValidator::REASON_DATA_INVALID,
                     $invalidDataResult
-                ))->withContext([
-                    StepValidator::CONTEXT_STATEMENT => $assertionParser->parse('$".selector1" is $data.key1'),
+                )->withContext([
+                    StepValidator::CONTEXT_STATEMENT => $assertionParser->parse('$".selector1" is $data.key1', 0),
                 ]),
             ],
             'invalid step: assertion uses data parameter, identifier key missing from step data' => [
                 'step' => $invalidAssertionDataStepDataParameterMissing2,
-                'expectedResult' => (new InvalidResult(
+                'expectedResult' => new InvalidResult(
                     $invalidAssertionDataStepDataParameterMissing2,
                     ResultType::STEP,
                     StepValidator::REASON_DATA_INVALID,
                     $invalidDataResult
-                ))->withContext([
-                    StepValidator::CONTEXT_STATEMENT => $assertionParser->parse('$data.key1 is "value1"'),
+                )->withContext([
+                    StepValidator::CONTEXT_STATEMENT => $assertionParser->parse('$data.key1 is "value1"', 0),
                 ]),
             ],
         ];

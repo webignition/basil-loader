@@ -19,9 +19,11 @@ use webignition\BasilLoader\Tests\Services\FixturePathFinder;
 use webignition\BasilLoader\Validator\InvalidResult;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Test\TestValidator;
-use webignition\BasilModels\Model\Action\ResolvedAction;
-use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Action\ResolvedAction;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\NamedTest;
@@ -69,10 +71,10 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
                             'verify page is open' => new Step(
-                                [],
-                                [
-                                    $assertionParser->parse('$page.url is "https://example.com"'),
-                                ]
+                                new ActionCollection([]),
+                                new AssertionCollection([
+                                    $assertionParser->parse('$page.url is "https://example.com"', 0),
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal.yml')
@@ -85,10 +87,10 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
                             'verify page is open' => new Step(
-                                [],
-                                [
-                                    $assertionParser->parse('$page.url is "https://example.com"'),
-                                ]
+                                new ActionCollection([]),
+                                new AssertionCollection([
+                                    $assertionParser->parse('$page.url is "https://example.com"', 0),
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.import-step-verify-open-literal.yml')
@@ -100,14 +102,14 @@ class TestLoaderTest extends TestCase
                 'expectedTests' => [
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
-                            'data parameters step' => (new Step(
-                                [
-                                    $actionParser->parse('click $".button"'),
-                                ],
-                                [
-                                    $assertionParser->parse('$".heading" includes $data.expected_title'),
-                                ]
-                            ))->withData(new DataSetCollection([
+                            'data parameters step' => new Step(
+                                new ActionCollection([
+                                    $actionParser->parse('click $".button"', 0),
+                                ]),
+                                new AssertionCollection([
+                                    $assertionParser->parse('$".heading" includes $data.expected_title', 0),
+                                ])
+                            )->withData(new DataSetCollection([
                                 '0' => [
                                     'expected_title' => 'Foo',
                                 ],
@@ -126,19 +128,19 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
                             'element parameters step' => new Step(
-                                [
+                                new ActionCollection([
                                     new ResolvedAction(
-                                        $actionParser->parse('click $elements.button'),
+                                        $actionParser->parse('click $elements.button', 0),
                                         '$".button"'
                                     ),
-                                ],
-                                [
+                                ]),
+                                new AssertionCollection([
                                     new ResolvedAssertion(
-                                        $assertionParser->parse('$elements.heading includes "example"'),
+                                        $assertionParser->parse('$elements.heading includes "example"', 0),
                                         '$".heading"',
                                         '"example"'
                                     ),
-                                ]
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.import-step-element-parameters.yml')
@@ -151,18 +153,17 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
                             'descendant element parameters step' => new Step(
-                                [
-                                ],
-                                [
+                                new ActionCollection([]),
+                                new AssertionCollection([
                                     new ResolvedAssertion(
-                                        $assertionParser->parse('$page_import_name.elements.form exists'),
+                                        $assertionParser->parse('$page_import_name.elements.form exists', 0),
                                         '$".form"'
                                     ),
                                     new ResolvedAssertion(
-                                        $assertionParser->parse('$page_import_name.elements.input exists'),
+                                        $assertionParser->parse('$page_import_name.elements.input exists', 0),
                                         '$".form" >> $".input"'
                                     ),
-                                ]
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.descendant-element-parameters.yml')
@@ -175,10 +176,10 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('chrome', 'https://example.com', new StepCollection([
                             'verify page is open' => new Step(
-                                [],
-                                [
-                                    $assertionParser->parse('$page.url is "https://example.com"'),
-                                ]
+                                new ActionCollection([]),
+                                new AssertionCollection([
+                                    $assertionParser->parse('$page.url is "https://example.com"', 0),
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml')
@@ -186,10 +187,10 @@ class TestLoaderTest extends TestCase
                     new NamedTest(
                         new Test('firefox', 'https://example.com', new StepCollection([
                             'verify page is open' => new Step(
-                                [],
-                                [
-                                    $assertionParser->parse('$page.url is "https://example.com"'),
-                                ]
+                                new ActionCollection([]),
+                                new AssertionCollection([
+                                    $assertionParser->parse('$page.url is "https://example.com"', 0),
+                                ])
                             )
                         ])),
                         FixturePathFinder::find('Test/example.com.verify-open-literal-multiple-browsers.yml')

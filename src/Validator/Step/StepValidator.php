@@ -15,7 +15,9 @@ use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilModels\Model\DataParameter\DataParameter;
 use webignition\BasilModels\Model\DataParameter\DataParameterInterface;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
-use webignition\BasilModels\Model\StatementInterface;
+use webignition\BasilModels\Model\Statement\Action\ActionInterface;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Statement\StatementInterface;
 use webignition\BasilModels\Model\Step\StepInterface;
 
 class StepValidator
@@ -72,6 +74,10 @@ class StepValidator
         }
 
         foreach ($step->getActions() as $action) {
+            if (!$action instanceof ActionInterface) {
+                continue;
+            }
+
             $actionValidationResult = $this->actionValidator->validate($action);
 
             if ($actionValidationResult instanceof InvalidResultInterface) {
@@ -97,6 +103,10 @@ class StepValidator
         }
 
         foreach ($assertions as $assertion) {
+            if (!$assertion instanceof AssertionInterface) {
+                continue;
+            }
+
             $assertionValidationResult = $this->assertionValidator->validate($assertion);
 
             if ($assertionValidationResult instanceof InvalidResultInterface) {
