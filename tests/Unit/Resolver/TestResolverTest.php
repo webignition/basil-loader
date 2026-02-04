@@ -9,12 +9,14 @@ use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\TestResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
-use webignition\BasilModels\Model\Action\Action;
-use webignition\BasilModels\Model\Action\ResolvedAction;
-use webignition\BasilModels\Model\Assertion\Assertion;
-use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
 use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Statement\Action\Action;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Action\ResolvedAction;
+use webignition\BasilModels\Model\Statement\Assertion\Assertion;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\Test;
@@ -67,25 +69,27 @@ class TestResolverTest extends TestCase
         $assertionParser = AssertionParser::create();
 
         $expectedResolvedDataTest = new Test('chrome', 'http://example.com/', new StepCollection([
-            'step name' => (new Step(
-                [
+            'step name' => new Step(
+                new ActionCollection([
                     new Action(
                         'set $".action-selector" to $data.key1',
+                        0,
                         'set',
                         '$".action-selector" to $data.key1',
                         '$".action-selector"',
                         '$data.key1'
                     )
-                ],
-                [
+                ]),
+                new AssertionCollection([
                     new Assertion(
                         '$".assertion-selector" is $data.key2',
+                        1,
                         '$".assertion-selector"',
                         'is',
                         '$data.key2'
                     )
-                ]
-            ))->withData(new DataSetCollection([
+                ])
+            )->withData(new DataSetCollection([
                 '0' => [
                     'key1' => 'key1value1',
                     'key2' => 'key2value1',
@@ -139,7 +143,7 @@ class TestResolverTest extends TestCase
                 'stepProvider' => new EmptyStepProvider(),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
-                    'step name' => new Step([], []),
+                    'step name' => new Step(new ActionCollection([]), new AssertionCollection([])),
                 ])),
             ],
             'no imports, actions and assertions require no resolution' => [
@@ -162,21 +166,23 @@ class TestResolverTest extends TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
-                        [
+                        new ActionCollection([
                             new Action(
                                 'click $".action-selector"',
+                                0,
                                 'click',
                                 '$".action-selector"',
                                 '$".action-selector"'
                             )
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new Assertion(
                                 '$".assertion-selector" exists',
+                                1,
                                 '$".assertion-selector"',
                                 'exists'
                             )
-                        ]
+                        ])
                     ),
                 ])),
             ],
@@ -209,18 +215,18 @@ class TestResolverTest extends TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
-                        [
+                        new ActionCollection([
                             new ResolvedAction(
-                                $actionParser->parse('click $page_import_name.elements.action_selector'),
+                                $actionParser->parse('click $page_import_name.elements.action_selector', 0),
                                 '$".action-selector"'
                             ),
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$page_import_name.elements.assertion_selector exists'),
+                                $assertionParser->parse('$page_import_name.elements.assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
-                        ]
+                        ])
                     ),
                 ])),
             ],
@@ -248,21 +254,23 @@ class TestResolverTest extends TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
-                        [
+                        new ActionCollection([
                             new Action(
                                 'click $".action-selector"',
+                                0,
                                 'click',
                                 '$".action-selector"',
                                 '$".action-selector"'
                             )
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new Assertion(
                                 '$".assertion-selector" exists',
+                                1,
                                 '$".assertion-selector"',
                                 'exists'
                             )
-                        ]
+                        ])
                     ),
                 ])),
             ],
@@ -303,18 +311,18 @@ class TestResolverTest extends TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
-                        [
+                        new ActionCollection([
                             new ResolvedAction(
-                                $actionParser->parse('click $elements.elements_action_selector'),
+                                $actionParser->parse('click $elements.elements_action_selector', 0),
                                 '$".action-selector"'
                             ),
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.elements_assertion_selector exists'),
+                                $assertionParser->parse('$elements.elements_assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
-                        ]
+                        ])
                     ),
                 ])),
             ],
@@ -428,18 +436,18 @@ class TestResolverTest extends TestCase
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
                     'step name' => new Step(
-                        [
+                        new ActionCollection([
                             new ResolvedAction(
-                                $actionParser->parse('click $elements.action_selector'),
+                                $actionParser->parse('click $elements.action_selector', 0),
                                 '$".action-selector"'
                             ),
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.assertion_selector exists'),
+                                $assertionParser->parse('$elements.assertion_selector exists', 1),
                                 '$".assertion-selector"'
                             ),
-                        ]
+                        ])
                     ),
                 ])),
             ],
@@ -494,22 +502,22 @@ class TestResolverTest extends TestCase
                     ]),
                 ]),
                 'expectedTest' => new Test('chrome', 'http://example.com/', new StepCollection([
-                    'step name' => (new Step(
-                        [
+                    'step name' => new Step(
+                        new ActionCollection([
                             new ResolvedAction(
-                                $actionParser->parse('set $elements.action_selector to $data.key1'),
+                                $actionParser->parse('set $elements.action_selector to $data.key1', 0),
                                 '$".action-selector"',
                                 '$data.key1'
                             ),
-                        ],
-                        [
+                        ]),
+                        new AssertionCollection([
                             new ResolvedAssertion(
-                                $assertionParser->parse('$elements.assertion_selector is $data.key2'),
+                                $assertionParser->parse('$elements.assertion_selector is $data.key2', 1),
                                 '$".assertion-selector"',
                                 '$data.key2'
                             ),
-                        ]
-                    ))->withData(new DataSetCollection([
+                        ])
+                    )->withData(new DataSetCollection([
                         '0' => [
                             'key1' => 'key1value1',
                             'key2' => 'key2value1',
@@ -562,7 +570,7 @@ class TestResolverTest extends TestCase
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
                 'stepProvider' => new StepProvider([
-                    'step_import_name' => new Step([], []),
+                    'step_import_name' => new Step(new ActionCollection([]), new AssertionCollection([])),
                 ]),
                 'dataSetProvider' => new EmptyDataSetProvider(),
                 'expectedException' => (function () {

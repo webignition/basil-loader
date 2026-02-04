@@ -9,9 +9,11 @@ use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\StepResolver;
 use webignition\BasilLoader\Resolver\UnknownElementException;
 use webignition\BasilLoader\Resolver\UnknownPageElementException;
-use webignition\BasilModels\Model\Action\ResolvedAction;
-use webignition\BasilModels\Model\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Page\Page;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Action\ResolvedAction;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\ResolvedAssertion;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Parser\ActionParser;
@@ -57,14 +59,16 @@ class StepResolverTest extends TestCase
                     'use' => 'import_name',
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([], []))->withImportName('import_name'),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
+                    ->withImportName('import_name'),
             ],
             'pending import step: has data provider import name' => [
                 'step' => self::createStep([
                     'data' => 'data_import_name',
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([], []))->withDataImportName('data_import_name'),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
+                    ->withDataImportName('data_import_name'),
             ],
         ];
     }
@@ -107,13 +111,16 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => new Step([
-                    new ResolvedAction(
-                        $actionParser->parse('set $page_import_name.elements.examined to "value"'),
-                        '$".examined"',
-                        '"value"'
-                    ),
-                ], []),
+                'expectedStep' => new Step(
+                    new ActionCollection([
+                        new ResolvedAction(
+                            $actionParser->parse('set $page_import_name.elements.examined to "value"', 0),
+                            '$".examined"',
+                            '"value"'
+                        ),
+                    ]),
+                    new AssertionCollection([])
+                ),
             ],
             'page element reference in action value' => [
                 'step' => self::createStep([
@@ -130,13 +137,16 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => new Step([
-                    new ResolvedAction(
-                        $actionParser->parse('set $".examined" to $page_import_name.elements.expected'),
-                        '$".examined"',
-                        '$".expected"'
-                    ),
-                ], []),
+                'expectedStep' => new Step(
+                    new ActionCollection([
+                        new ResolvedAction(
+                            $actionParser->parse('set $".examined" to $page_import_name.elements.expected', 0),
+                            '$".examined"',
+                            '$".expected"'
+                        ),
+                    ]),
+                    new AssertionCollection([])
+                ),
             ],
             'page element reference in assertion examined value' => [
                 'step' => self::createStep([
@@ -153,12 +163,15 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => new Step([], [
-                    new ResolvedAssertion(
-                        $assertionParser->parse('$page_import_name.elements.examined exists'),
-                        '$".examined"'
-                    ),
-                ]),
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
+                        new ResolvedAssertion(
+                            $assertionParser->parse('$page_import_name.elements.examined exists', 0),
+                            '$".examined"'
+                        ),
+                    ])
+                ),
             ],
             'page element reference in assertion expected value' => [
                 'step' => self::createStep([
@@ -175,13 +188,16 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => new Step([], [
-                    new ResolvedAssertion(
-                        $assertionParser->parse('$".examined" is $page_import_name.elements.expected'),
-                        '$".examined"',
-                        '$".expected"'
-                    ),
-                ]),
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
+                        new ResolvedAssertion(
+                            $assertionParser->parse('$".examined" is $page_import_name.elements.expected', 0),
+                            '$".examined"',
+                            '$".expected"'
+                        ),
+                    ])
+                ),
             ],
             'element reference in action identifier' => [
                 'step' => self::createStep([
@@ -193,16 +209,16 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([
                         new ResolvedAction(
-                            $actionParser->parse('set $elements.examined to "value"'),
+                            $actionParser->parse('set $elements.examined to "value"', 0),
                             '$".examined"',
                             '"value"'
                         ),
-                    ],
-                    []
-                ))->withIdentifiers([
+                    ]),
+                    new AssertionCollection([]),
+                )->withIdentifiers([
                     'examined' => '$".examined"',
                 ]),
             ],
@@ -216,16 +232,16 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([
                         new ResolvedAction(
-                            $actionParser->parse('set $".examined" to $elements.expected'),
+                            $actionParser->parse('set $".examined" to $elements.expected', 0),
                             '$".examined"',
                             '$".expected"'
                         ),
-                    ],
-                    []
-                ))->withIdentifiers([
+                    ]),
+                    new AssertionCollection([]),
+                )->withIdentifiers([
                     'expected' => '$".expected"',
                 ]),
             ],
@@ -239,16 +255,16 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([
                         new ResolvedAction(
-                            $actionParser->parse('set $".examined" to $elements.expected.attribute_name'),
+                            $actionParser->parse('set $".examined" to $elements.expected.attribute_name', 0),
                             '$".examined"',
                             '$".expected".attribute_name'
                         ),
-                    ],
-                    []
-                ))->withIdentifiers([
+                    ]),
+                    new AssertionCollection([]),
+                )->withIdentifiers([
                     'expected' => '$".expected"'
                 ]),
             ],
@@ -262,15 +278,15 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [],
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$elements.examined exists'),
+                            $assertionParser->parse('$elements.examined exists', 0),
                             '$".examined"'
                         ),
-                    ]
-                ))->withIdentifiers([
+                    ])
+                )->withIdentifiers([
                     'examined' => '$".examined"'
                 ]),
             ],
@@ -284,16 +300,16 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [],
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$".examined-selector" is $elements.expected'),
+                            $assertionParser->parse('$".examined-selector" is $elements.expected', 0),
                             '$".examined-selector"',
                             '$".expected"'
                         ),
-                    ]
-                ))->withIdentifiers([
+                    ])
+                )->withIdentifiers([
                     'expected' => '$".expected"'
                 ]),
             ],
@@ -307,15 +323,15 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [],
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$elements.examined.attribute_name exists'),
+                            $assertionParser->parse('$elements.examined.attribute_name exists', 0),
                             '$".examined".attribute_name'
                         ),
-                    ]
-                ))->withIdentifiers([
+                    ])
+                )->withIdentifiers([
                     'examined' => '$".examined"'
                 ]),
             ],
@@ -329,16 +345,16 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step(
-                    [],
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([]),
+                    new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$".examined" is $elements.expected.attribute_name'),
+                            $assertionParser->parse('$".examined" is $elements.expected.attribute_name', 0),
                             '$".examined"',
                             '$".expected".attribute_name'
                         ),
-                    ]
-                ))->withIdentifiers([
+                    ])
+                )->withIdentifiers([
                     'expected' => '$".expected"'
                 ]),
             ],
@@ -361,7 +377,7 @@ class StepResolverTest extends TestCase
                     ],
                 ]),
                 'pageProvider' => new EmptyPageProvider(),
-                'expectedStep' => (new Step([], []))
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withIdentifiers([
                         'name' => '$".selector"',
                     ]),
@@ -381,7 +397,7 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => (new Step([], []))
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withIdentifiers([
                         'step_element_name' => '$".resolved"',
                     ]),
@@ -407,20 +423,20 @@ class StepResolverTest extends TestCase
                         ]
                     )
                 ]),
-                'expectedStep' => (new Step(
-                    [
+                'expectedStep' => new Step(
+                    new ActionCollection([
                         new ResolvedAction(
-                            $actionParser->parse('click $page_import_name.elements.page_element_name'),
+                            $actionParser->parse('click $page_import_name.elements.page_element_name', 0),
                             '$".resolved"',
                         ),
-                    ],
-                    [
+                    ]),
+                    new AssertionCollection([
                         new ResolvedAssertion(
-                            $assertionParser->parse('$page_import_name.elements.page_element_name exists'),
+                            $assertionParser->parse('$page_import_name.elements.page_element_name exists', 1),
                             '$".resolved"'
                         ),
-                    ]
-                ))
+                    ])
+                )
                     ->withIdentifiers([])
                     ->withIdentifiers([
                         'step_element_name' => '$".resolved"',

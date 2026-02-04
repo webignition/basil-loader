@@ -13,7 +13,9 @@ use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\Step\StepValidator;
 use webignition\BasilLoader\Validator\Test\TestValidator;
 use webignition\BasilLoader\Validator\ValidResult;
-use webignition\BasilModels\Model\Assertion\Assertion;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\Assertion;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepCollection;
 use webignition\BasilModels\Model\Test\Test;
@@ -46,14 +48,17 @@ class TestValidatorTest extends TestCase
     {
         $testWithNoSteps = new Test('chrome', 'http://example.com/', new StepCollection([]));
 
-        $invalidStep = new Step([], []);
+        $invalidStep = new Step(new ActionCollection([]), new AssertionCollection([]));
         $testWithInvalidStep = new Test('chrome', 'http://example.com/', new StepCollection([
             'invalid step name' => $invalidStep,
         ]));
 
-        $validStep = new Step([], [
-            new Assertion('$page.title is "Example"', '$page.title', 'is', '"Example"'),
-        ]);
+        $validStep = new Step(
+            new ActionCollection([]),
+            new AssertionCollection([
+                new Assertion('$page.title is "Example"', 0, '$page.title', 'is', '"Example"'),
+            ])
+        );
         $validStepCollection = new StepCollection(['step name' => $validStep]);
 
         return [

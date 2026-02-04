@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace webignition\BasilLoader\Resolver;
 
-use webignition\BasilModels\Model\Action\ActionInterface;
-use webignition\BasilModels\Model\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Action\ActionInterface;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionInterface;
 use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Provider\Exception\UnknownItemException;
 use webignition\BasilModels\Provider\Identifier\EmptyIdentifierProvider;
@@ -72,13 +74,16 @@ class StepResolver
      */
     private function resolveActions(StepInterface $step, PageProviderInterface $pageProvider): StepInterface
     {
-        $resolvedActions = [];
+        $resolvedActions = new ActionCollection([]);
         $identifierProvider = new IdentifierProvider($step->getIdentifiers());
         $action = null;
 
         try {
             foreach ($step->getActions() as $action) {
-                $resolvedActions[] = $this->statementResolver->resolve($action, $pageProvider, $identifierProvider);
+                $resolvedAction = $this->statementResolver->resolve($action, $pageProvider, $identifierProvider);
+                if ($resolvedAction instanceof ActionInterface) {
+                    $resolvedActions = $resolvedActions->append(new ActionCollection([$resolvedAction]));
+                }
             }
         } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             if ($action instanceof ActionInterface) {
@@ -87,10 +92,6 @@ class StepResolver
 
             throw $exception;
         }
-
-        $resolvedActions = array_filter($resolvedActions, function ($item) {
-            return $item instanceof ActionInterface;
-        });
 
         return $step->withActions($resolvedActions);
     }
@@ -102,17 +103,21 @@ class StepResolver
      */
     private function resolveAssertions(StepInterface $step, PageProviderInterface $pageProvider): StepInterface
     {
-        $resolvedAssertions = [];
+        $resolvedAssertions = new AssertionCollection([]);
         $identifierProvider = new IdentifierProvider($step->getIdentifiers());
         $assertion = null;
 
         try {
             foreach ($step->getAssertions() as $assertion) {
-                $resolvedAssertions[] = $this->statementResolver->resolve(
+                $resolvedAssertion = $this->statementResolver->resolve(
                     $assertion,
                     $pageProvider,
                     $identifierProvider
                 );
+
+                if ($resolvedAssertion instanceof AssertionInterface) {
+                    $resolvedAssertions = $resolvedAssertions->append(new AssertionCollection([$resolvedAssertion]));
+                }
             }
         } catch (UnknownElementException | UnknownItemException | UnknownPageElementException $exception) {
             if ($assertion instanceof AssertionInterface) {
@@ -121,10 +126,6 @@ class StepResolver
 
             throw $exception;
         }
-
-        $resolvedAssertions = array_filter($resolvedAssertions, function ($item) {
-            return $item instanceof AssertionInterface;
-        });
 
         return $step->withAssertions($resolvedAssertions);
     }

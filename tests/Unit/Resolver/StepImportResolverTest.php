@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 use webignition\BasilLoader\Resolver\CircularStepImportException;
 use webignition\BasilLoader\Resolver\StepImportResolver;
 use webignition\BasilModels\Model\DataSet\DataSetCollection;
+use webignition\BasilModels\Model\Statement\Action\ActionCollection;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionCollection;
 use webignition\BasilModels\Model\Step\Step;
 use webignition\BasilModels\Model\Step\StepInterface;
 use webignition\BasilModels\Parser\ActionParser;
@@ -52,36 +54,38 @@ class StepImportResolverTest extends TestCase
         $actionParser = ActionParser::create();
         $assertionParser = AssertionParser::create();
 
-        $nonResolvableActions = [
-            $actionParser->parse('wait 1'),
-        ];
+        $nonResolvableActions = new ActionCollection([
+            $actionParser->parse('wait 1', 0),
+        ]);
 
-        $nonResolvableAssertions = [
-            $assertionParser->parse('$".selector" exists'),
-        ];
+        $nonResolvableAssertions = new AssertionCollection([
+            $assertionParser->parse('$".selector" exists', 0),
+        ]);
 
-        $resolvableActions = [
-            $actionParser->parse('click $page_import_name.elements.element_name'),
-            $actionParser->parse('click $elements.element_name'),
+        $resolvableActions = new ActionCollection([
+            $actionParser->parse('click $page_import_name.elements.element_name', 0),
+            $actionParser->parse('click $elements.element_name', 0),
             $actionParser->parse(
-                'set $page_import_name.elements.element_name to $page_import_name.elements.element_name'
+                'set $page_import_name.elements.element_name to $page_import_name.elements.element_name',
+                0,
             ),
             $actionParser->parse(
-                'set $elements.element_name to $elements.element_name'
+                'set $elements.element_name to $elements.element_name',
+                0,
             ),
-        ];
+        ]);
 
-        $resolvableAssertions = [
-            $assertionParser->parse('$page_import_name.elements.element_name exists'),
-            $assertionParser->parse('$elements.element_name exists'),
-            $assertionParser->parse('$elements.element_name.attribute_name exists'),
-        ];
+        $resolvableAssertions = new AssertionCollection([
+            $assertionParser->parse('$page_import_name.elements.element_name exists', 0),
+            $assertionParser->parse('$elements.element_name exists', 0),
+            $assertionParser->parse('$elements.element_name.attribute_name exists', 0),
+        ]);
 
         return [
             'empty step, no imports' => [
                 'step' => $stepParser->parse([]),
                 'stepProvider' => new EmptyStepProvider(),
-                'expectedStep' => new Step([], []),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([])),
             ],
             'empty step imports empty step' => [
                 'step' => $stepParser->parse([
@@ -90,7 +94,7 @@ class StepImportResolverTest extends TestCase
                 'stepProvider' => new StepProvider([
                     'step_import_name' => $stepParser->parse([]),
                 ]),
-                'expectedStep' => new Step([], []),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([])),
             ],
             'empty step imports non-empty step, non-resolvable actions and assertions' => [
                 'step' => $stepParser->parse([
@@ -111,34 +115,34 @@ class StepImportResolverTest extends TestCase
                 'expectedStep' => new Step($resolvableActions, $resolvableAssertions),
             ],
             'step with actions and assertions imports step with actions and assertions' => [
-                'step' => (new Step($resolvableActions, $resolvableAssertions))
+                'step' => new Step($resolvableActions, $resolvableAssertions)
                     ->withImportName('step_import_name'),
                 'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
                 'expectedStep' => new Step(
-                    array_merge($nonResolvableActions, $resolvableActions),
-                    array_merge($nonResolvableAssertions, $resolvableAssertions)
+                    $nonResolvableActions->append($resolvableActions),
+                    $nonResolvableAssertions->append($resolvableAssertions),
                 ),
             ],
             'deferred' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('deferred_step_import_name'),
                 'stepProvider' => new StepProvider([
-                    'deferred_step_import_name' => (new Step([], []))
+                    'deferred_step_import_name' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('step_import_name'),
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
                 'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions),
             ],
             'empty step imports actions and assertions, has data provider import name' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('step_import_name')
                     ->withDataImportName('data_provider_import_name'),
                 'stepProvider' => new StepProvider([
                     'step_import_name' => new Step($nonResolvableActions, $nonResolvableAssertions),
                 ]),
-                'expectedStep' => (new Step($nonResolvableActions, $nonResolvableAssertions))
+                'expectedStep' => new Step($nonResolvableActions, $nonResolvableAssertions)
                     ->withDataImportName('data_provider_import_name'),
             ],
         ];
@@ -165,12 +169,12 @@ class StepImportResolverTest extends TestCase
     {
         return [
             'non-pending step' => [
-                'step' => new Step([], []),
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([])),
                 'dataSetProvider' => new EmptyDataSetProvider(),
-                'expectedStep' => new Step([], []),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([])),
             ],
             'has data provider name, empty step import name' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withDataImportName('data_provider_import_name'),
                 'dataSetProvider' => new DataSetProvider([
                     'data_provider_import_name' => new DataSetCollection([
@@ -179,14 +183,17 @@ class StepImportResolverTest extends TestCase
                         ],
                     ]),
                 ]),
-                'expectedStep' => (new Step([], []))->withData(new DataSetCollection([
-                    '0' => [
-                        'foo' => 'bar',
-                    ],
-                ])),
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
+                    ->withData(
+                        new DataSetCollection([
+                            '0' => [
+                                'foo' => 'bar',
+                            ],
+                        ])
+                    ),
             ],
             'has data provider name, has step import name' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('step_import_name')
                     ->withDataImportName('data_provider_import_name'),
                 'dataSetProvider' => new DataSetProvider([
@@ -196,7 +203,7 @@ class StepImportResolverTest extends TestCase
                         ]
                     ]),
                 ]),
-                'expectedStep' => (new Step([], []))
+                'expectedStep' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('step_import_name')
                     ->withData(new DataSetCollection([
                         '0' => [
@@ -229,34 +236,34 @@ class StepImportResolverTest extends TestCase
     {
         return [
             'direct self-circular reference' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('start'),
                 'stepProvider' => new StepProvider([
-                    'start' => (new Step([], []))
+                    'start' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('start'),
                 ]),
                 'expectedCircularImportName' => 'start',
             ],
             'indirect self-circular reference' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('start'),
                 'stepProvider' => new StepProvider([
-                    'start' => (new Step([], []))
+                    'start' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('middle'),
-                    'middle' => (new Step([], []))
+                    'middle' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('start'),
                 ]),
                 'expectedCircularImportName' => 'start',
             ],
             'indirect circular reference' => [
-                'step' => (new Step([], []))
+                'step' => new Step(new ActionCollection([]), new AssertionCollection([]))
                     ->withImportName('one'),
                 'stepProvider' => new StepProvider([
-                    'one' => (new Step([], []))
+                    'one' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('two'),
-                    'two' => (new Step([], []))
+                    'two' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('three'),
-                    'three' => (new Step([], []))
+                    'three' => new Step(new ActionCollection([]), new AssertionCollection([]))
                         ->withImportName('two'),
                 ]),
                 'expectedCircularImportName' => 'two',

@@ -12,8 +12,8 @@ use webignition\BasilLoader\Validator\InvalidResultInterface;
 use webignition\BasilLoader\Validator\ResultType;
 use webignition\BasilLoader\Validator\ValidResult;
 use webignition\BasilLoader\Validator\ValueValidator;
-use webignition\BasilModels\Model\Assertion\Assertion;
-use webignition\BasilModels\Model\Assertion\AssertionInterface;
+use webignition\BasilModels\Model\Statement\Assertion\Assertion;
+use webignition\BasilModels\Model\Statement\Assertion\AssertionInterface;
 use webignition\BasilModels\Parser\AssertionParser;
 
 class AssertionValidatorTest extends TestCase
@@ -42,9 +42,9 @@ class AssertionValidatorTest extends TestCase
 
         return [
             'invalid identifier' => [
-                'assertion' => $assertionParser->parse('$elements.element_name is "value"'),
+                'assertion' => $assertionParser->parse('$elements.element_name is "value"', 0),
                 'expectedResult' => new InvalidResult(
-                    $assertionParser->parse('$elements.element_name is "value"'),
+                    $assertionParser->parse('$elements.element_name is "value"', 0),
                     ResultType::ASSERTION,
                     AssertionValidator::REASON_INVALID_IDENTIFIER,
                     new InvalidResult(
@@ -55,9 +55,9 @@ class AssertionValidatorTest extends TestCase
                 ),
             ],
             'invalid operator' => [
-                'assertion' => new Assertion('$".button" glows', '$".button"', 'glows'),
+                'assertion' => new Assertion('$".button" glows', 0, '$".button"', 'glows'),
                 'expectedResult' => (new InvalidResult(
-                    new Assertion('$".button" glows', '$".button"', 'glows'),
+                    new Assertion('$".button" glows', 0, '$".button"', 'glows'),
                     ResultType::ASSERTION,
                     AssertionValidator::REASON_INVALID_OPERATOR
                 ))->withContext([
@@ -65,9 +65,9 @@ class AssertionValidatorTest extends TestCase
                 ]),
             ],
             'invalid value' => [
-                'assertion' => $assertionParser->parse('$".selector" is $elements.element_name'),
+                'assertion' => $assertionParser->parse('$".selector" is $elements.element_name', 0),
                 'expectedResult' => new InvalidResult(
-                    $assertionParser->parse('$".selector" is $elements.element_name'),
+                    $assertionParser->parse('$".selector" is $elements.element_name', 0),
                     ResultType::ASSERTION,
                     AssertionValidator::REASON_INVALID_VALUE,
                     new InvalidResult(
@@ -99,28 +99,28 @@ class AssertionValidatorTest extends TestCase
 
         return [
             'identifier: element identifier' => [
-                'assertion' => $assertionParser->parse('$".selector" is "value"'),
+                'assertion' => $assertionParser->parse('$".selector" is "value"', 0),
             ],
             'identifier: descendant element identifier' => [
-                'assertion' => $assertionParser->parse('$".parent" >> $".child" is "value"'),
+                'assertion' => $assertionParser->parse('$".parent" >> $".child" is "value"', 0),
             ],
             'identifier: attribute identifier' => [
-                'assertion' => $assertionParser->parse('$".selector".attribute_name is "value"'),
+                'assertion' => $assertionParser->parse('$".selector".attribute_name is "value"', 0),
             ],
             'identifier: quoted literal' => [
-                'assertion' => $assertionParser->parse('"value" is "value"'),
+                'assertion' => $assertionParser->parse('"value" is "value"', 0),
             ],
             'identifier: browser property' => [
-                'assertion' => $assertionParser->parse('$browser.size is "value"'),
+                'assertion' => $assertionParser->parse('$browser.size is "value"', 0),
             ],
             'identifier: page property' => [
-                'assertion' => $assertionParser->parse('$page.title is "value"'),
+                'assertion' => $assertionParser->parse('$page.title is "value"', 0),
             ],
             'identifier: data parameter' => [
-                'assertion' => $assertionParser->parse('$data.key is "value"'),
+                'assertion' => $assertionParser->parse('$data.key is "value"', 0),
             ],
             'identifier: environment parameter' => [
-                'assertion' => $assertionParser->parse('$env.KEY is "value"'),
+                'assertion' => $assertionParser->parse('$env.KEY is "value"', 0),
             ],
         ];
     }
@@ -134,25 +134,25 @@ class AssertionValidatorTest extends TestCase
 
         return [
             'operator: is' => [
-                'assertion' => $assertionParser->parse('$".selector" is "value"'),
+                'assertion' => $assertionParser->parse('$".selector" is "value"', 0),
             ],
             'operator: is-not' => [
-                'assertion' => $assertionParser->parse('$".selector" is-not "value"'),
+                'assertion' => $assertionParser->parse('$".selector" is-not "value"', 0),
             ],
             'operator: exists' => [
-                'assertion' => $assertionParser->parse('$".selector" exists'),
+                'assertion' => $assertionParser->parse('$".selector" exists', 0),
             ],
             'operator: not-exists' => [
-                'assertion' => $assertionParser->parse('$".selector" not-exists'),
+                'assertion' => $assertionParser->parse('$".selector" not-exists', 0),
             ],
             'operator: includes' => [
-                'assertion' => $assertionParser->parse('$".selector" includes "value"'),
+                'assertion' => $assertionParser->parse('$".selector" includes "value"', 0),
             ],
             'operator: excludes' => [
-                'assertion' => $assertionParser->parse('$".selector" excludes "value"'),
+                'assertion' => $assertionParser->parse('$".selector" excludes "value"', 0),
             ],
             'operator: matches' => [
-                'assertion' => $assertionParser->parse('$".selector" matches "value"'),
+                'assertion' => $assertionParser->parse('$".selector" matches "value"', 0),
             ],
         ];
     }
@@ -166,28 +166,28 @@ class AssertionValidatorTest extends TestCase
 
         return [
             'value: element identifier' => [
-                'assertion' => $assertionParser->parse('"value" is $".selector"'),
+                'assertion' => $assertionParser->parse('"value" is $".selector"', 0),
             ],
             'value: descendant element identifier' => [
-                'assertion' => $assertionParser->parse('"value" is $".parent" >> $".child"'),
+                'assertion' => $assertionParser->parse('"value" is $".parent" >> $".child"', 0),
             ],
             'value: attribute identifier' => [
-                'assertion' => $assertionParser->parse('"value" is $".selector".attribute_name'),
+                'assertion' => $assertionParser->parse('"value" is $".selector".attribute_name', 0),
             ],
             'value: quoted literal' => [
-                'assertion' => $assertionParser->parse('"value" is "value"'),
+                'assertion' => $assertionParser->parse('"value" is "value"', 0),
             ],
             'value: browser property' => [
-                'assertion' => $assertionParser->parse('"value" is $browser.size'),
+                'assertion' => $assertionParser->parse('"value" is $browser.size', 0),
             ],
             'value: page property' => [
-                'assertion' => $assertionParser->parse('"value" is $page.title'),
+                'assertion' => $assertionParser->parse('"value" is $page.title', 0),
             ],
             'value: data parameter' => [
-                'assertion' => $assertionParser->parse('"value" is $data.key'),
+                'assertion' => $assertionParser->parse('"value" is $data.key', 0),
             ],
             'value: environment parameter' => [
-                'assertion' => $assertionParser->parse('"value" is $env.KEY'),
+                'assertion' => $assertionParser->parse('"value" is $env.KEY', 0),
             ],
         ];
     }
