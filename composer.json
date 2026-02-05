@@ -60,5 +60,6 @@
         "allow-plugins": {
             "phpstan/extension-installer": true
         }
-    }
+    },
+    "abandoned": true
 }
